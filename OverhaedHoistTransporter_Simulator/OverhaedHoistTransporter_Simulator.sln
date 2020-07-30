@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirle.OHT.Simulator", "OverhaedHoistTransporter_Simulator\Mirle.OHT.Simulator.csproj", "{52941356-E626-42FA-8C04-80F38A304449}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52941356-E626-42FA-8C04-80F38A304449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52941356-E626-42FA-8C04-80F38A304449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52941356-E626-42FA-8C04-80F38A304449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52941356-E626-42FA-8C04-80F38A304449}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ABC161F5-1560-4A9E-A608-D49742B32B37}
+	EndGlobalSection
+EndGlobal
