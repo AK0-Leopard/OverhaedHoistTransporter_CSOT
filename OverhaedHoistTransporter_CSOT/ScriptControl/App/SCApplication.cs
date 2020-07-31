@@ -110,6 +110,8 @@ namespace com.mirle.ibg3k0.sc.App
         private CommObjCacheManager commObjCacheManager;
         private RedisCacheManager redisCacheManager;
         private NatsManager natsManager;
+        private Mirle.AK0.Hlt.ReserveSection.Map.MapAPI _reserveSectionAPI { get; set; }
+        private Mirle.AK0.Hlt.ReserveSection.Map.ViewModels.MapViewModel reserveSectionAPI { get; set; }
 
         public HAProxyConnectionTest hAProxyConnectionTest { get; private set; }
         //        const string REDIS_SERVER_CONFIGURATION = "redis.ohxc.mirle.com.tw:6379";
@@ -777,7 +779,7 @@ namespace com.mirle.ibg3k0.sc.App
 
             dataCollectionCss = (DataCollectionConfigSections)ConfigurationManager.GetSection(SCAppConstants.CONFIG_DATA_COLLECTION_SETTING);
 
-
+            initialReserveSectionAPI();
             startBLL();
             initWIF();      //Initial WIF   //A0.01
             initialCatchDataFromDB();
@@ -831,8 +833,39 @@ namespace com.mirle.ibg3k0.sc.App
 
             //NancyHost = new NancyHost(new Uri("http://localhost:9527"), hostConfigs);
         }
+        private void initialReserveSectionAPI()
+        {
+            _reserveSectionAPI = new Mirle.AK0.Hlt.ReserveSection.Map.MapAPI();
+            reserveSectionAPI = _reserveSectionAPI.MapVM;
 
-        //DBTableWatcher bdTableWatcher = null;
+            setHltVehicleInfo();
+
+            LoadMapFiles();
+        }
+
+        private void setHltVehicleInfo()
+        {
+            int vh_highi = getInt("VehicleHeight", 1800);
+            int vh_width = getInt("VehicleWidth", 3200);
+            int vh_sensor_wlength = getInt("SensorWLength", 1200);
+            reserveSectionAPI.VehicleHeight = vh_highi;
+            reserveSectionAPI.VehicleWidth = vh_width;
+            reserveSectionAPI.SensorLength = vh_sensor_wlength;
+        }
+
+        private void LoadMapFiles(string addressPath = null, string sectionPath = null)
+        {
+            try
+            {
+                string map_info_path = Environment.CurrentDirectory + this.getString("CsvConfig", "");
+                if (addressPath == null) addressPath = $@"{map_info_path}\MapInfo\AADDRESS.csv";
+                reserveSectionAPI.LoadMapAddresses(addressPath);
+
+                if (sectionPath == null) sectionPath = $@"{map_info_path}\MapInfo\ASECTION.csv";
+                reserveSectionAPI.LoadMapSections(sectionPath);
+            }
+            finally { }
+        }
 
 
         private void initialCatchDataFromDB()
@@ -1756,6 +1789,11 @@ namespace com.mirle.ibg3k0.sc.App
         {
             return natsManager;
         }
+        public Mirle.AK0.Hlt.ReserveSection.Map.ViewModels.MapViewModel getReserveSectionAPI()
+        {
+            return reserveSectionAPI;
+        }
+
 
         //A0.07 Begin
         /// <summary>

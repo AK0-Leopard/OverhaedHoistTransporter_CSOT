@@ -529,6 +529,8 @@
     <None Include="Config\CSOT_T4\CSV\EQPTLOCATIONINFO.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Config\CSOT_T4\CSV\MapInfo\AADDRESS.csv" />
+    <None Include="Config\CSOT_T4\CSV\MapInfo\ASECTION.csv" />
     <None Include="Config\CSOT_T4\CSV\RETURNCODEMAP.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
