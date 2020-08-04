@@ -702,7 +702,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 int obstacleDIST = receive_gpp.ObstDistance;
                 string obstacleVhID = receive_gpp.ObstVehicleID;
 
-                if(isSync) //A0.04
+                if (isSync) //A0.04
                 {
                     scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
                     scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);

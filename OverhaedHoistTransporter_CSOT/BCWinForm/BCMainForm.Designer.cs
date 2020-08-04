@@ -102,6 +102,7 @@ namespace com.mirle.ibg3k0.bc.winform
             this.engineerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.engineeringModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reserveInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.CMS_OnLineMode.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -355,7 +356,8 @@ namespace com.mirle.ibg3k0.bc.winform
             this.uASToolStripMenuItem,
             this.toolStripSeparator1,
             this.transferCommandToolStripMenuItem,
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.reserveInfoToolStripMenuItem});
             this.mataToolStripMenuItem.Name = "mataToolStripMenuItem";
             resources.ApplyResources(this.mataToolStripMenuItem, "mataToolStripMenuItem");
             // 
@@ -453,6 +455,12 @@ namespace com.mirle.ibg3k0.bc.winform
             this.engineeringModeToolStripMenuItem.Name = "engineeringModeToolStripMenuItem";
             resources.ApplyResources(this.engineeringModeToolStripMenuItem, "engineeringModeToolStripMenuItem");
             this.engineeringModeToolStripMenuItem.Click += new System.EventHandler(this.engineeringModeToolStripMenuItem_Click);
+            // 
+            // reserveInfoToolStripMenuItem
+            // 
+            this.reserveInfoToolStripMenuItem.Name = "reserveInfoToolStripMenuItem";
+            resources.ApplyResources(this.reserveInfoToolStripMenuItem, "reserveInfoToolStripMenuItem");
+            this.reserveInfoToolStripMenuItem.Click += new System.EventHandler(this.reserveInfoToolStripMenuItem_Click);
             // 
             // BCMainForm
             // 
@@ -604,6 +612,7 @@ namespace com.mirle.ibg3k0.bc.winform
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem transferCommandToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem reserveInfoToolStripMenuItem;
     }
 
     /// <summary>

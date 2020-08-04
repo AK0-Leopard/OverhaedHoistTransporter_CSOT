@@ -532,6 +532,8 @@ namespace com.mirle.ibg3k0.sc.App
         public SegmentBLL SegmentBLL { get { return segmentBLL; } }
         private EquipmentBLL equipmentBLL = null;
         public EquipmentBLL EquipmentBLL { get { return equipmentBLL; } }
+        public ReserveBLL ReserveBLL { get; private set; } = null; //A0.01
+
 
         /// <summary>
         /// 在OHT尚未改成新格式前先保留
@@ -1414,6 +1416,7 @@ namespace com.mirle.ibg3k0.sc.App
             sectinoBLL = new SectionBLL();
             segmentBLL = new SegmentBLL();
             equipmentBLL = new EquipmentBLL();
+            ReserveBLL = new ReserveBLL();
             datasynBLL = new DataSyncBLL();
 
             hidBLL = new HIDBLL();
@@ -1474,6 +1477,7 @@ namespace com.mirle.ibg3k0.sc.App
             SectionBLL.start(this);
             SegmentBLL.start(this);
             equipmentBLL.start(this);
+            ReserveBLL.start(this);
             NodeBLL.start(this);
         }
 
