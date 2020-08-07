@@ -794,7 +794,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                             {
                                 bestSuitableVh = scApp.VehicleBLL.getVehicleByRealID(hostsource);
                                 //A0.04 if (bestSuitableVh.IsError || bestSuitableVh.MODE_STATUS != VHModeStatus.AutoRemote) 
-                                if (bestSuitableVh.IsError || bestSuitableVh.MODE_STATUS != VHModeStatus.AutoRemote|| bestSuitableVh.ACT_STATUS != VHActionStatus.NoCommand) //A0.04
+                                if (bestSuitableVh.IsError || bestSuitableVh.MODE_STATUS != VHModeStatus.AutoRemote || bestSuitableVh.ACT_STATUS != VHActionStatus.NoCommand) //A0.04
                                 {
                                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
                                        Data: $"vh id:{bestSuitableVh.VEHICLE_ID} current mode status is {bestSuitableVh.MODE_STATUS},is error flag:{bestSuitableVh.IsError},act status is {bestSuitableVh.ACT_STATUS}." +
@@ -1581,7 +1581,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return isSuccess;
         }
-        
+
         public List<string> loadAllCMDID()
         {
             List<string> acmd_ohtcids = null;

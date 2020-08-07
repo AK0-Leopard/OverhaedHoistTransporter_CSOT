@@ -243,9 +243,9 @@ namespace com.mirle.ibg3k0.bc.winform
                 {
                     progress.ShowDialog();
                 }
-#if DEBUG
+//#if DEBUG
                 openForm(typeof(OHT_Form).Name);
-#endif
+//#endif
             }
             catch (Exception ex)
             {

@@ -699,6 +699,14 @@ namespace com.mirle.ibg3k0.sc.BLL
                     Where(block_master => SCUtility.isMatche(block_master.ENTRY_SEC_ID, entrySectionID)).SingleOrDefault();
                 return block_zone_master;
             }
+            public List<ABLOCKZONEMASTER> loadBlockZoneMasterByReleaseAddress(string releaseAdr)
+            {
+                var block_zone_masters = commObjCache.getBlockMasterZone().
+                    Where(block_master => SCUtility.isMatche(block_master.LEAVE_ADR_ID_1, releaseAdr) ||
+                                          SCUtility.isMatche(block_master.LEAVE_ADR_ID_2, releaseAdr)).
+                    ToList();
+                return block_zone_masters;
+            }
         }
 
     }

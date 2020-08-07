@@ -21,6 +21,7 @@ using com.mirle.ibg3k0.sc.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using com.mirle.iibg3k0.ttc.Common;
+using Mirle.AK0.Hlt.Utils;
 using NLog;
 using StackExchange.Redis;
 using System;
@@ -132,6 +133,49 @@ namespace com.mirle.ibg3k0.sc.BLL
             //showObj.NotifyPropertyChanged(nameof(showObj.ACC_SEC_DIST2Show));
             vh.NotifyVhPositionChange();
             return true;
+        }
+        public HltResult updateVheiclePositionToReserveControlModule(BLL.ReserveBLL reserveBLL, AVEHICLE vh, string currentSectionID, string adrID, double dis, double dirctionAngle, double vehicleAngle, double speed,
+                                                                      HltDirection sensorDir, HltDirection forkDir)
+        {
+            string vh_id = vh.VEHICLE_ID;
+            string section_id = currentSectionID;
+            ASECTION sec = scApp.SectionBLL.cache.GetSection(section_id);
+            var from_adr_axis = reserveBLL.GetHltMapAddress(sec.FROM_ADR_ID);
+            var to_adr_axis = reserveBLL.GetHltMapAddress(sec.TO_ADR_ID);
+            var vh_axis = tryGetVhAxis(dis, from_adr_axis.x, from_adr_axis.y, to_adr_axis.x, to_adr_axis.y);
+
+            return reserveBLL.TryAddVehicleOrUpdate(vh_id, section_id, vh_axis.x, vh_axis.y, vh_axis.angle, speed, sensorDir, forkDir);
+        }
+        private (double x, double y, float angle) tryGetVhAxis(double dis, double from_x, double from_y, double to_x, double to_y)
+        {
+            double x = 0;
+            double y = 0;
+            float angle = 0;
+            if (from_x == to_x)
+            {
+                x = from_x;
+                if (from_y > to_y)
+                    y = from_y - dis;
+                else
+                    y = from_y + dis;
+                angle = 90;
+            }
+            else if (from_y == to_y)
+            {
+                if (from_x > to_x)
+                    x = from_x - dis;
+                else
+                    x = from_x + dis;
+                y = from_y;
+                angle = 0;
+
+            }
+            else
+            {
+                x = from_x;
+                y = from_y;
+            }
+            return (x, y, angle);
         }
         public void updateVehicleActionStatus(AVEHICLE vh, EventType vhPassEvent)
         {

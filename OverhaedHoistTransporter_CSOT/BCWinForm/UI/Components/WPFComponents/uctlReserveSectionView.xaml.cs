@@ -47,7 +47,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
             //宣告Timer
 
             //設定呼叫間隔時間為30ms
-            _timer.Interval = TimeSpan.FromMilliseconds(3000);
+            _timer.Interval = TimeSpan.FromMilliseconds(100);
 
             //加入callback function
             _timer.Tick += _timer_Tick;
@@ -92,7 +92,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
         System.Diagnostics.Stopwatch refresh_sw { get; set; } = new System.Diagnostics.Stopwatch();
         public void RefreshReserveSectionInfo()
         {
-            if (refresh_sw.ElapsedMilliseconds < 1000) return;
+            //if (refresh_sw.ElapsedMilliseconds < 500) return;
+            Console.WriteLine(refresh_sw.ElapsedMilliseconds);
             refresh_sw.Restart();
             scApp.ReserveBLL.DrawAllReserveSectionInfo();
             var Bitmap = scApp.ReserveBLL.GetCurrentReserveInfoMap();

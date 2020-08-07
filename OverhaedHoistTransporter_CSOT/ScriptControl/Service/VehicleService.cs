@@ -26,6 +26,7 @@ using com.mirle.ibg3k0.sc.Data.SECS.CSOT;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using KingAOP;
+using Mirle.AK0.Hlt.Utils;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
@@ -231,27 +232,18 @@ namespace com.mirle.ibg3k0.sc.Service
             leave_section?.Leave(vh.VEHICLE_ID);
             entry_section?.Entry(vh.VEHICLE_ID);
 
+            if (leave_section != null)
+            {
+                scApp.ReserveBLL.RemoveManyReservedSectionsByVIDSID(vh.VEHICLE_ID, leave_section.SEC_ID);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"vh:{vh.VEHICLE_ID} leave section {leave_section.SEC_ID},remove reserved.",
+                   VehicleID: vh.VEHICLE_ID);
+            }
+
             if (vh.WillPassSectionID != null)
             {
                 vh.WillPassSectionID.Remove(SCUtility.Trim(leave_section.SEC_ID, true));
             }
-
-            //if (leave_section != null && entry_section != null)
-            //{
-            //    if (SCUtility.isMatche(leave_section.TO_ADR_ID, entry_section.FROM_ADR_ID))
-            //    {
-            //        string cross_address = leave_section.TO_ADR_ID;
-            //        var release_result = doBlockRelease(vh, cross_address, false);
-            //        if (release_result.hasRelease)
-            //        {
-            //            LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-            //               Data: $"Process block force release by ohxc, release address id:{cross_address}, " +
-            //                     $"release entry section id:{release_result.releaseBlockMaster.ENTRY_SEC_ID}",
-            //               VehicleID: vh.VEHICLE_ID,
-            //               CarrierID: vh.CST_ID);
-            //        }
-            //    }
-            //}
 
             if (scApp.getEQObjCacheManager().getLine().ServiceMode == AppServiceMode.Active)
                 scApp.VehicleBLL.NetworkQualityTest(vh.VEHICLE_ID, e.EntrySection, vh.CUR_ADR_ID, 0);
@@ -1504,6 +1496,9 @@ namespace com.mirle.ibg3k0.sc.Service
                 {
                     ALINE line = scApp.getEQObjCacheManager().getLine();
                     scApp.VehicleBLL.updateVheiclePosition_CacheManager(vh, current_adr_id, current_sec_id, current_seg_id, sec_dis);
+                    var update_result = scApp.VehicleBLL.updateVheiclePositionToReserveControlModule
+                        (scApp.ReserveBLL, vh, current_sec_id, current_adr_id, sec_dis, 0, 0, 1,
+                         HltDirection.Forward, HltDirection.Forward);
 
                     if (line.ServiceMode == SCAppConstants.AppServiceMode.Active)
                     {
@@ -1542,70 +1537,6 @@ namespace com.mirle.ibg3k0.sc.Service
                 logger.Error(ex, "Exception:");
             }
         }
-
-        //[ClassAOPAspect]
-        //public void TranEventReport(BCFApplication bcfApp, AVEHICLE eqpt, ID_136_TRANS_EVENT_REP recive_str, int seq_num)
-        //{
-        //    if (scApp.getEQObjCacheManager().getLine().ServerPreStop)
-        //        return;
-
-        //    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //       seq_num: seq_num,
-        //       Data: recive_str,
-        //       VehicleID: eqpt.VEHICLE_ID,
-        //       CarrierID: eqpt.CST_ID);
-
-        //    SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, seq_num, recive_str);
-        //    EventType eventType = recive_str.EventType;
-        //    string current_adr_id = recive_str.CurrentAdrID;
-        //    string current_sec_id = recive_str.CurrentSecID;
-        //    string carrier_id = recive_str.CSTID;
-        //    string last_adr_id = eqpt.CUR_ADR_ID;
-        //    string last_sec_id = eqpt.CUR_SEC_ID;
-        //    string req_block_id = recive_str.RequestBlockID;
-        //    //lock (eqpt.PositionRefresh_Sync)
-        //    //{
-        //    //    switch (eventType)
-        //    //    {
-        //    //        case EventType.LoadArrivals:
-        //    //        case EventType.UnloadArrivals:
-        //    //        case EventType.VhmoveArrivals:
-        //    //            scApp.VehicleBLL.deleteRedisOfPositionReport(eqpt.VEHICLE_ID); //為了確保在PositionReportTimerAction要更新位置時，不會拿到舊的
-        //    //            break;
-        //    //    }
-        //    //    doUpdateVheiclePositionAndCmdSchedule(eqpt, current_adr_id, current_sec_id, last_adr_id, last_sec_id, (uint)eqpt.ACC_SEC_DIST, eventType, loadCSTStatus);
-        //    //}
-        //    scApp.VehicleBLL.updateVehicleActionStatus(eqpt, eventType);
-
-        //    switch (eventType)
-        //    {
-        //        case EventType.BlockReq:
-        //            PositionReport_BlockReq_New(bcfApp, eqpt, seq_num, recive_str.RequestBlockID);
-        //            break;
-        //        case EventType.Hidreq:
-        //            PositionReport_HIDRequest(bcfApp, eqpt, seq_num, recive_str.RequestBlockID);
-        //            break;
-        //        case EventType.LoadArrivals:
-        //        case EventType.LoadComplete:
-        //        case EventType.UnloadArrivals:
-        //        case EventType.UnloadComplete:
-        //        case EventType.VhmoveArrivals:
-        //        case EventType.AdrOrMoveArrivals:
-        //            PositionReport_ArriveAndComplete(bcfApp, eqpt, seq_num, recive_str.EventType, recive_str.CurrentAdrID, recive_str.CurrentSecID, carrier_id);
-        //            break;
-        //        case EventType.Vhloading:
-        //        case EventType.Vhunloading:
-        //            PositionReport_LoadingUnloading(bcfApp, eqpt, recive_str, seq_num, eventType);
-
-        //            break;
-        //        case EventType.BlockRelease:
-        //            PositionReport_BlockRelease(bcfApp, eqpt, recive_str, seq_num);
-        //            break;
-        //        case EventType.Hidrelease:
-        //            PositionReport_HIDRelease(bcfApp, eqpt, recive_str, seq_num);
-        //            break;
-        //    }
-        //}
 
         private void PositionReport_LoadingUnloading(BCFApplication bcfApp, AVEHICLE eqpt, ID_136_TRANS_EVENT_REP recive_str, int seq_num, EventType eventType)
         {
@@ -1925,178 +1856,6 @@ namespace com.mirle.ibg3k0.sc.Service
             return is_happend;
         }
 
-        //private void PositionReport_BlockReq(BCFApplication bcfApp, AVEHICLE eqpt, int seqNum, string req_block_id)
-        //{
-        //    bool isSucess = true;
-        //    bool canPass = false;
-        //    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //       Data: $"Process block request,request block id:{req_block_id}",
-        //       VehicleID: eqpt.VEHICLE_ID,
-        //       CarrierID: eqpt.CST_ID);
-
-        //    //判斷是否有重覆要這個Block
-        //    //if (!isReqBlockAgain)
-        //    //{
-        //    //    List<BLOCKZONEQUEUE> sameVhNotReleaseblockZoneQueues = null;
-        //    //    //判斷是否有要了其他的Block未釋放
-
-        //    //    if (checkHasOrtherBolckZoneQueueNonRelease(eqpt, out sameVhNotReleaseblockZoneQueues))
-        //    //    {
-        //    //        //using (TransactionScope tx = new TransactionScope())
-        //    //        //using (TransactionScope tx = new
-        //    //        //    TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-        //    //        List<KeyValuePair<string, string>> ReleaseBlocks = new List<KeyValuePair<string, string>>();
-        //    //        using (TransactionScope tx = SCUtility.getTransactionScope())
-        //    //        {
-        //    //            using (DBConnection_EF con = DBConnection_EF.GetUContext())
-        //    //            {
-        //    //                //con.BeginTransaction();
-        //    //                isSucess = true;
-        //    //                foreach (BLOCKZONEQUEUE queue in sameVhNotReleaseblockZoneQueues)
-        //    //                {
-        //    //                    isSucess &= scApp.MapBLL.updateBlockZoneQueue_AbnormalEnd(queue,
-        //    //                        SCAppConstants.BlockQueueState.Abnormal_Release_OrtherNonRelease);
-        //    //                    isSucess &= scApp.MapBLL.NoticeBlockVhPassByEntrySecID(queue.ENTRY_SEC_ID);
-        //    //                    ReleaseBlocks.Add(new KeyValuePair<string, string>(queue.CAR_ID, queue.ENTRY_SEC_ID));
-        //    //                }
-        //    //                if (isSucess)
-        //    //                {
-        //    //                    tx.Complete();
-        //    //                    foreach (var keyValue in ReleaseBlocks)
-        //    //                    {
-        //    //                        scApp.MapBLL.DeleteBlockControlKeyWordToRedis(keyValue.Key);
-        //    //                    }
-        //    //                }
-        //    //                else
-        //    //                {
-        //    //                    //return;
-        //    //                }
-        //    //            }
-        //    //        }
-        //    //    }
-        //    //}
-        //    if (DebugParameter.isForcedPassBlockControl)
-        //    {
-        //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //           Data: "test flag: Force pass block control is open, will driect reply to vh can pass block",
-        //           VehicleID: eqpt.VEHICLE_ID,
-        //           CarrierID: eqpt.CST_ID);
-
-        //        reply_Trans_Event_Report(bcfApp, EventType.BlockReq, eqpt, seqNum, canBlockPass: true);
-        //        return;
-        //    }
-        //    if (DebugParameter.isForcedRejectBlockControl)
-        //    {
-        //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //           Data: "test flag: Force reject block control is open, will driect reply to vh can't pass block",
-        //           VehicleID: eqpt.VEHICLE_ID,
-        //           CarrierID: eqpt.CST_ID);
-
-        //        reply_Trans_Event_Report(bcfApp, EventType.BlockReq, eqpt, seqNum, canBlockPass: false);
-        //        return;
-        //    }
-
-        //    string current_block_id_status = string.Empty;
-        //    bool hasAskOrtherBlock =
-        //        scApp.MapBLL.HasOrtherBlockControlAskedFromRedis(eqpt.VEHICLE_ID, req_block_id, out current_block_id_status);
-        //    if (hasAskOrtherBlock)
-        //    {
-        //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //           Data: "this vh has ask orther block,so can't request current block",
-        //           VehicleID: eqpt.VEHICLE_ID,
-        //           CarrierID: eqpt.CST_ID);
-
-        //        LogCollection.BlockControlLogger.Trace($"vh id:{eqpt.VEHICLE_ID} has ask orther block.");
-        //        reply_Trans_Event_Report(bcfApp, EventType.BlockReq, eqpt, seqNum, canBlockPass: false);
-        //        return;
-        //    }
-
-        //    //bool isBlocking = scApp.MapBLL.isBlockingBlockZoneByVhIDAndCrtBlockSecID(eqpt.VEHICLE_ID, req_block_id);
-        //    bool isBlocking = SCUtility.isMatche(current_block_id_status, SCAppConstants.BlockQueueState.Blocking)
-        //                      || SCUtility.isMatche(current_block_id_status, SCAppConstants.BlockQueueState.Through);
-        //    if (isBlocking)
-        //    {
-        //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //           Data: $"vh get block id:{req_block_id} again!",
-        //           VehicleID: eqpt.VEHICLE_ID,
-        //           CarrierID: eqpt.CST_ID);
-        //        reply_Trans_Event_Report(bcfApp, EventType.BlockReq, eqpt, seqNum, canBlockPass: true);
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        //using (TransactionScope tx = new
-        //        //    TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = SCAppConstants.ISOLATION_LEVEL }))
-        //        using (TransactionScope tx = SCUtility.getTransactionScope())
-        //        {
-        //            using (DBConnection_EF con = DBConnection_EF.GetUContext())
-        //            {
-        //                //if (!isReqBlockAgain)
-        //                if (!SCUtility.isMatche(current_block_id_status, SCAppConstants.BlockQueueState.Request))
-        //                {
-        //                    //先確認他所上報的SEC ID 是Block的SEC ID
-        //                    ABLOCKZONEMASTER block_master = scApp.MapBLL.getBlockZoneMasterByEntrySecID(req_block_id);
-        //                    if (block_master != null)
-        //                    {
-        //                        //確認VH是否可以通過
-        //                        DateTime reqest_time = DateTime.Now;
-        //                        canPass = canPassBlockZone(req_block_id);
-
-        //                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                           Data: $"Vh:{eqpt.VEHICLE_ID} ask block:{req_block_id},ask result:{canPass}",
-        //                           VehicleID: eqpt.VEHICLE_ID,
-        //                           CarrierID: eqpt.CST_ID);
-
-        //                        scApp.MapBLL.doCreatBlockZoneQueueByReqStatus(eqpt.VEHICLE_ID, req_block_id, canPass, reqest_time);
-        //                        scApp.MapBLL.CreatBlockControlKeyWordToRedis(eqpt.VEHICLE_ID, req_block_id, canPass, reqest_time);
-        //                    }
-        //                    else
-        //                    {
-        //                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                           Data: $"Vh:{eqpt.VEHICLE_ID} ask block:{req_block_id},but this block id not exist!",
-        //                           VehicleID: eqpt.VEHICLE_ID,
-        //                           CarrierID: eqpt.CST_ID);
-
-        //                        logger.Warn("vh:{0} req block id not exist {1}", eqpt.VEHICLE_ID, req_block_id);
-
-        //                        canPass = false;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    canPass = canPassBlockZone(req_block_id);
-
-        //                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                       Data: $"Vh:{eqpt.VEHICLE_ID} ask again block:{req_block_id},ask result:{canPass}",
-        //                       VehicleID: eqpt.VEHICLE_ID,
-        //                       CarrierID: eqpt.CST_ID);
-        //                    if (canPass)
-        //                    {
-        //                        if (scApp.MapBLL.IsBlockControlStatus
-        //                            (eqpt.VEHICLE_ID, SCAppConstants.BlockQueueState.Request))
-        //                        {
-        //                            scApp.MapBLL.updateBlockZoneQueue_BlockTime(eqpt.VEHICLE_ID, req_block_id);
-        //                            scApp.MapBLL.ChangeBlockControlStatus_Blocking(eqpt.VEHICLE_ID);
-        //                        }
-        //                    }
-        //                }
-
-        //                Boolean resp_cmp = reply_Trans_Event_Report(bcfApp, EventType.BlockReq, eqpt, seqNum, canPass);
-
-        //                if (resp_cmp)
-        //                {
-        //                    tx.Complete();
-        //                }
-        //                else
-        //                {
-        //                    //con.Rollback();
-        //                    return;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
 
 
         private void ProcessBlockOrHIDReq(BCFApplication bcfApp, AVEHICLE eqpt, EventType eventType, int seqNum, string req_block_id, string req_hid_secid)
@@ -2107,7 +1866,8 @@ namespace com.mirle.ibg3k0.sc.Service
             using (TransactionScope tx = SCUtility.getTransactionScope())
             {
                 if (eventType == EventType.BlockReq || eventType == EventType.BlockHidreq)
-                    can_block_pass = ProcessBlockReqNew(bcfApp, eqpt, req_block_id);
+                    can_block_pass = ProcessBlockReqByReserveModule(bcfApp, eqpt, req_block_id);
+                //can_block_pass = ProcessBlockReqNew(bcfApp, eqpt, req_block_id);
                 if (eventType == EventType.Hidreq || eventType == EventType.BlockHidreq)
                     can_hid_pass = ProcessHIDRequest(bcfApp, eqpt, req_hid_secid);
                 isSuccess = replyTranEventReport(bcfApp, eventType, eqpt, seqNum, canBlockPass: can_block_pass, canHIDPass: can_hid_pass);
@@ -2117,118 +1877,9 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
 
-            //if (isSuccess &&
-            //    (eventType == EventType.Hidreq || eventType == EventType.BlockHidreq))
-            //{
-            //    scApp.HIDBLL.VHEntryHIDZone(req_hid_secid);
-            //    Task.Run(() => checkHIDSpaceIsSufficient(eqpt, req_hid_secid));
-            //}
         }
 
-        //private bool ProcessBlockReq(BCFApplication bcfApp, AVEHICLE eqpt, string req_block_id)
-        //{
-        //    bool canBlockPass = false;
-        //    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //       Data: $"Process block request,request block id:{req_block_id}",
-        //       VehicleID: eqpt.VEHICLE_ID,
-        //       CarrierID: eqpt.CST_ID);
-        //    if (DebugParameter.isForcedPassBlockControl)
-        //    {
-        //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //           Data: "test flag: Force pass block control is open, will driect reply to vh can pass block",
-        //           VehicleID: eqpt.VEHICLE_ID,
-        //           CarrierID: eqpt.CST_ID);
-        //        canBlockPass = true;
-        //    }
-        //    else if (DebugParameter.isForcedRejectBlockControl)
-        //    {
-        //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //           Data: "test flag: Force reject block control is open, will driect reply to vh can't pass block",
-        //           VehicleID: eqpt.VEHICLE_ID,
-        //           CarrierID: eqpt.CST_ID);
-        //        canBlockPass = false;
-        //    }
-        //    else
-        //    {
-        //        using (DBConnection_EF con = DBConnection_EF.GetUContext())
-        //        {
-        //            //先確認在Redis上是否該台VH 已經有要過的Block
-        //            bool hasAskedBlock = scApp.MapBLL.HasBlockControlAskedFromRedis
-        //                (eqpt.VEHICLE_ID, out string current_asked_block_id, out string current_asked_block_status);
-        //            if (hasAskedBlock)
-        //            {
-        //                bool isBlocking = SCUtility.isMatche(current_asked_block_status, SCAppConstants.BlockQueueState.Blocking)
-        //                               || SCUtility.isMatche(current_asked_block_status, SCAppConstants.BlockQueueState.Through);
-        //                //確認當前要的Block與目前Redis上存放的是不是同一個
-        //                if (SCUtility.isMatche(req_block_id, current_asked_block_id))
-        //                {
-        //                    //如果要的是同一個，則確認是否已經給該台VH
-        //                    if (isBlocking)
-        //                    {
-        //                        //如果已經給過該台VH通行權，則直接讓它通過。
-        //                        canBlockPass = true;
-        //                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                           Data: $"Vh:{eqpt.VEHICLE_ID} ask again block:{req_block_id},but it is the owner so ask result:{canBlockPass}",
-        //                           VehicleID: eqpt.VEHICLE_ID,
-        //                           CarrierID: eqpt.CST_ID);
-        //                    }
-        //                    else
-        //                    {
-        //                        //如果還沒有給過該台VH通行權，則需再判斷一次該Vh是否已經可以通過
-        //                        canBlockPass = canPassBlockZone(eqpt, req_block_id);
-        //                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                           Data: $"Vh:{eqpt.VEHICLE_ID} ask again block:{req_block_id},ask result:{canBlockPass}",
-        //                           VehicleID: eqpt.VEHICLE_ID,
-        //                           CarrierID: eqpt.CST_ID);
-        //                        if (canBlockPass)
-        //                        {
-        //                            scApp.MapBLL.updateBlockZoneQueue_BlockTime(eqpt.VEHICLE_ID, req_block_id);
-        //                            scApp.MapBLL.ChangeBlockControlStatus_Blocking(eqpt.VEHICLE_ID);
-        //                        }
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    //如果不是同一個，則要判斷目前asked的Block狀態是否已經是Blocking或Through，                           
-        //                    if (isBlocking)
-        //                    {
-        //                        //如果是的話才可以再進行新的BlockControlRequest的建立流程
-        //                        canBlockPass = tryCreatBlockControlRequest(eqpt, req_block_id);
-        //                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                           Data: $"Vh:{eqpt.VEHICLE_ID} already has a block:{current_asked_block_id}," +
-        //                           $"asking for another one at a time ,block:{req_block_id}, ask result:{canBlockPass}",
-        //                           VehicleID: eqpt.VEHICLE_ID,
-        //                           CarrierID: eqpt.CST_ID);
-        //                    }
-        //                    else
-        //                    {
-        //                        //如果不是，則不可以再給他另外一個Block
-        //                        canBlockPass = false;
-        //                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                           Data: $"Vh:{eqpt.VEHICLE_ID} already has a block:{current_asked_block_id}," +
-        //                           $"but the status is Request,so ask block:{req_block_id} result:{canBlockPass}",
-        //                           VehicleID: eqpt.VEHICLE_ID,
-        //                           CarrierID: eqpt.CST_ID);
-        //                        DateTime reqest_time = DateTime.Now;
-        //                        //scApp.MapBLL.doCreatBlockZoneQueueByReqStatus(eqpt.VEHICLE_ID, req_block_id, canBlockPass, reqest_time);
-        //                        //scApp.MapBLL.CreatBlockControlKeyWordToRedis(eqpt.VEHICLE_ID, req_block_id, canBlockPass, reqest_time);
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            {
-        //                //如果目前Redis上沒有要求的Block的話，則可以嘗試建立新的BlocControlRequest，
-        //                //並判斷是否可以給其通行權
-        //                canBlockPass = tryCreatBlockControlRequest(eqpt, req_block_id);
-        //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-        //                   Data: $"Vh:{eqpt.VEHICLE_ID} ask block:{req_block_id},ask result:{canBlockPass}",
-        //                   VehicleID: eqpt.VEHICLE_ID,
-        //                   CarrierID: eqpt.CST_ID);
-        //            }
-        //        }
-        //    }
-        //    return canBlockPass;
-        //}
+
 
 
         public bool ProcessBlockReqTest(BCFApplication bcfApp, AVEHICLE eqpt, string req_block_id)
@@ -2356,6 +2007,113 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
             return canBlockPass;
+        }
+        private bool ProcessBlockReqByReserveModule(BCFApplication bcfApp, AVEHICLE eqpt, string req_block_id)
+        {
+            string vhID = eqpt.VEHICLE_ID;
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"Process block request,request block id:{req_block_id}",
+               VehicleID: eqpt.VEHICLE_ID,
+               CarrierID: eqpt.CST_ID);
+            if (DebugParameter.isForcedPassBlockControl)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: "test flag: Force pass block control is open, will driect reply to vh can pass block",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+                return true;
+            }
+            else if (DebugParameter.isForcedRejectBlockControl)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: "test flag: Force reject block control is open, will driect reply to vh can't pass block",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+                return true;
+            }
+            else
+            {
+                lock (block_control_lock_obj)
+                {
+                    var block_master = scApp.BlockControlBLL.cache.getBlockZoneMaster(req_block_id);
+                    if (block_master == null)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"Vh:{eqpt.VEHICLE_ID} ask block:{req_block_id},but this block id not exist!",
+                           VehicleID: eqpt.VEHICLE_ID,
+                           CarrierID: eqpt.CST_ID);
+                        return false;
+                    }
+                    var block_detail_section = block_master.GetBlockZoneDetailSectionIDs();
+                    if (block_detail_section == null || block_detail_section.Count == 0)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"Vh:{eqpt.VEHICLE_ID} ask block:{req_block_id},but this block id of detail is null!",
+                           VehicleID: eqpt.VEHICLE_ID,
+                           CarrierID: eqpt.CST_ID);
+                        return false;
+                    }
+                    bool is_first_vh = isNextPassVh(eqpt, req_block_id);
+                    if (!is_first_vh)
+                    {
+                        return false;
+                    }
+                    foreach (var detail in block_detail_section)
+                    {
+                        HltDirection hltDirection = HltDirection.None;
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{vhID} Try add reserve section:{detail} ,hlt dir:{hltDirection}...",
+                           VehicleID: vhID);
+                        var result = scApp.ReserveBLL.TryAddReservedSection(vhID, detail,
+                                                                             sensorDir: hltDirection,
+                                                                             isAsk: false);
+
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{vhID} Try add reserve section:{detail},result:{result}",
+                           VehicleID: vhID);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"current reserve section:{scApp.ReserveBLL.GetCurrentReserveSection()}",
+                           VehicleID: vhID);
+                        if (!result.OK)
+                        {
+                            Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
+                            return false;
+                        }
+                    }
+                    foreach (var detail in block_detail_section)
+                    {
+                        HltDirection hltDirection = HltDirection.None;
+                        var result = scApp.ReserveBLL.TryAddReservedSection(vhID, detail,
+                                                                             sensorDir: hltDirection,
+                                                                             isAsk: true);
+                    }
+                    return true;
+                }
+            }
+        }
+
+        private bool checkIsFirstVh(AVEHICLE vh, string reqBlockId)
+        {
+            string vh_id = vh.VEHICLE_ID;
+            string current_adr = SCUtility.Trim(vh.CUR_ADR_ID);
+            ASECTION req_block_sec = scApp.SectionBLL.cache.GetSection(reqBlockId);
+            string[] will_pass_section_ids = scApp.CMDBLL.
+                     getShortestRouteSection(current_adr, req_block_sec.FROM_ADR_ID).
+                     routeSection;
+            foreach (string sec in will_pass_section_ids)
+            {
+                var result = scApp.ReserveBLL.TryAddReservedSection(vh_id, sec,
+                                              sensorDir: HltDirection.Forward,
+                                              isAsk: true);
+                if (!result.OK)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"vh:{vh_id} Try ask reserve section:{sec},result:{result}",
+                       VehicleID: vh_id);
+                    return false;
+                }
+            }
+            return true;
         }
 
         private bool ProcessHIDRequest(BCFApplication bcfApp, AVEHICLE eqpt, string req_hid_secid)
@@ -3452,6 +3210,24 @@ namespace com.mirle.ibg3k0.sc.Service
             }
             return hasRelease;
         }
+        public bool tryReleaseBlockZoneByReserveModule(string vh_id, string release_adr)
+        {
+            bool hasRelease = false;
+            AVEHICLE vh_vo = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
+            lock (vh_vo.BlockControl_SyncForRedis)
+            {
+                var related_block_masters = scApp.BlockControlBLL.cache.loadBlockZoneMasterByReleaseAddress(release_adr);
+                foreach (var block_master in related_block_masters)
+                {
+                    var block_detail_sections = block_master.GetBlockZoneDetailSectionIDs();
+                    foreach (var detail_sec in block_detail_sections)
+                    {
+                        scApp.ReserveBLL.RemoveManyReservedSectionsByVIDSID(vh_id, detail_sec);
+                    }
+                }
+            }
+            return hasRelease;
+        }
 
         public bool tryReleaseHIDZone(string vh_id, string release_adr, out AHIDZONEMASTER releaseHIDMaster)
         {
@@ -3506,7 +3282,8 @@ namespace com.mirle.ibg3k0.sc.Service
             bool hasRelease = false;
             try
             {
-                hasRelease = tryReleaseBlockZone(eqpt.VEHICLE_ID, release_adr, isThrowException, out releaseBlockMaster);
+                //hasRelease = tryReleaseBlockZone(eqpt.VEHICLE_ID, release_adr, isThrowException, out releaseBlockMaster);
+                hasRelease = tryReleaseBlockZoneByReserveModule(eqpt.VEHICLE_ID, release_adr);
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                    Data: $"Process block release, release address id:{release_adr}, release result:{hasRelease}",
                    VehicleID: eqpt.VEHICLE_ID,

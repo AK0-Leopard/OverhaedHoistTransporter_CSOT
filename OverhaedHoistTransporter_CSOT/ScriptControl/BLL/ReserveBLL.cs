@@ -92,11 +92,8 @@ namespace com.mirle.ibg3k0.sc.BLL
             LogHelper.Log(logger: logger, LogLevel: NLog.LogLevel.Debug, Class: nameof(ReserveBLL), Device: "AGV",
                Data: $"add vh in reserve system: vh:{vhID},x:{vehicleX},y:{vehicleY},angle:{vehicleAngle},speedMmPerSecond:{speedMmPerSecond},sensorDir:{sensorDir},forkDir:{forkDir}",
                VehicleID: vhID);
-            //HltResult result = mapAPI.TryAddVehicleOrUpdate(vhID, vehicleX, vehicleY, vehicleAngle, sensorDir, forkDir);
-            //var hlt_vh = new HltVehicle(vhID, vehicleX, vehicleY, vehicleAngle, speedMmPerSecond, sensorDirection: sensorDir, forkDirection: forkDir);
             var hlt_vh = new HltVehicle(vhID, vehicleX, vehicleY, vehicleAngle, speedMmPerSecond, sensorDirection: sensorDir, forkDirection: forkDir, currentSectionID: currentSectionID);
             HltResult result = mapAPI.TryAddOrUpdateVehicle(hlt_vh, isKeepRestSection: false);
-            //mapAPI.KeepRestSection(hlt_vh, currentSectionID);
             onReserveStatusChange();
 
             return result;
@@ -105,7 +102,6 @@ namespace com.mirle.ibg3k0.sc.BLL
         {
             var adr_obj = mapAPI.GetAddressObjectByID(adrID);
             var hlt_vh = new HltVehicle(vhID, adr_obj.X, adr_obj.Y, angle, sensorDirection: HltDirection.NESW);
-            //HltResult result = mapAPI.TryAddVehicleOrUpdate(vhID, adr_obj.X, adr_obj.Y, 0, vehicleSensorDirection: HltDirection.NESW);
             HltResult result = mapAPI.TryAddOrUpdateVehicle(hlt_vh);
             onReserveStatusChange();
 
@@ -114,8 +110,6 @@ namespace com.mirle.ibg3k0.sc.BLL
 
         public virtual void RemoveManyReservedSectionsByVIDSID(string vhID, string sectionID)
         {
-            //int sec_id = 0;
-            //int.TryParse(sectionID, out sec_id);
             string sec_id = SCUtility.Trim(sectionID);
             mapAPI.RemoveManyReservedSectionsByVIDSID(vhID, sec_id);
             onReserveStatusChange();
@@ -150,11 +144,8 @@ namespace com.mirle.ibg3k0.sc.BLL
             HltDirection sensorDir = HltDirection.ForwardReverse, HltDirection forkDir = HltDirection.None,
             DriveDirction driveDirection = DriveDirction.DriveDirNone, bool isAsk = false)
         {
-            //int sec_id = 0;
-            //int.TryParse(sectionID, out sec_id);
             string sec_id = SCUtility.Trim(sectionID);
             int vehicle_direction = getVehicleDirection(driveDirection);
-            //HltResult result = mapAPI.TryAddReservedSection(vhID, sec_id, sensorDir, forkDir, isAsk);
             HltResult result = mapAPI.TryAddReservedSection(vhID, sec_id, sensorDir, forkDir, vehicle_direction, isAsk);
             LogHelper.Log(logger: logger, LogLevel: NLog.LogLevel.Info, Class: nameof(ReserveBLL), Device: "AGV",
                Data: $"vh:{vhID} Try add reserve section:{sectionID} dir:{sensorDir},result:{result}",
@@ -181,8 +172,6 @@ namespace com.mirle.ibg3k0.sc.BLL
 
         public virtual HltResult RemoveAllReservedSectionsBySectionID(string sectionID)
         {
-            //int sec_id = 0;
-            //int.TryParse(sectionID, out sec_id);
             string sec_id = SCUtility.Trim(sectionID);
             HltResult result = mapAPI.RemoveAllReservedSectionsBySectionID(sec_id);
             onReserveStatusChange();
