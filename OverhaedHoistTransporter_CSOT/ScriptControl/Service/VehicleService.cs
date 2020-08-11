@@ -2076,7 +2076,8 @@ namespace com.mirle.ibg3k0.sc.Service
                            VehicleID: vhID);
                         if (!result.OK)
                         {
-                            Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
+                            if (!SCUtility.isEmpty(result.VehicleID))
+                                Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
                             return false;
                         }
                     }

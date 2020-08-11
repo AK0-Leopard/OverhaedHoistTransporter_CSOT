@@ -731,6 +731,12 @@
     <None Include="Config\Taichung\CSV\EQPTLOCATIONINFO.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Config\Taichung\CSV\MapInfo\AADDRESS.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\Taichung\CSV\MapInfo\ASECTION.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Config\Taichung\CSV\RETURNCODEMAP.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
