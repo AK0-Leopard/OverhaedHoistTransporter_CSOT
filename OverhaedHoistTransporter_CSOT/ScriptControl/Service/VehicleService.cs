@@ -15,6 +15,9 @@
 // 2020/06/02    Kevin Wei      N/A            A0.03   加入當發生Table:AVEHICLE 與 Table:ACMD_OHTC狀態不匹配時，
 //                                                     會再次檢查兩邊的狀態，以防發生在趕車時，無法順利趕走的問題。(因為有命令殘留)
 // 2020/07/28    Mark Chou      N/A            A0.04   發送43 Event詢問車輛一律更新車輛狀態，但車輛位置是否更新可由參數決定。
+// 2020/08/06    Mark Chou      N/A            A0.05   用BackgroundWorkQueue取代Lock來確保通行權邏輯的時序，並提升效率。
+// 2020/08/08    Kevin Wei      N/A            A0.06   在判斷是否為最接近 Req block的車子時，多增加一個條件，確認車子是否已經是在該Block中，
+//                                                     如果是就讓它當作已經是最靠近該Block的
 //**********************************************************************************
 using com.mirle.ibg3k0.bcf.App;
 using com.mirle.ibg3k0.bcf.Common;
@@ -29,6 +32,7 @@ using KingAOP;
 using Mirle.AK0.Hlt.Utils;
 using Newtonsoft.Json.Linq;
 using NLog;
+using RouteKit;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -1866,8 +1870,13 @@ namespace com.mirle.ibg3k0.sc.Service
             using (TransactionScope tx = SCUtility.getTransactionScope())
             {
                 if (eventType == EventType.BlockReq || eventType == EventType.BlockHidreq)
-                    can_block_pass = ProcessBlockReqByReserveModule(bcfApp, eqpt, req_block_id);
-                //can_block_pass = ProcessBlockReqNew(bcfApp, eqpt, req_block_id);
+                {
+                    //A0.05 can_block_pass = ProcessBlockReqNew(bcfApp, eqpt, req_block_id);
+                    var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(bcfApp, eqpt, eventType, seqNum, req_block_id, req_hid_secid);//A0.05
+                    scApp.BackgroundWorkBlockQueue.triggerBackgroundWork("BlockQueue", workItem);//A0.05
+                    return;//A0.05
+                }
+
                 if (eventType == EventType.Hidreq || eventType == EventType.BlockHidreq)
                     can_hid_pass = ProcessHIDRequest(bcfApp, eqpt, req_hid_secid);
                 isSuccess = replyTranEventReport(bcfApp, eventType, eqpt, seqNum, canBlockPass: can_block_pass, canHIDPass: can_hid_pass);
@@ -2008,7 +2017,128 @@ namespace com.mirle.ibg3k0.sc.Service
             }
             return canBlockPass;
         }
-        private bool ProcessBlockReqByReserveModule(BCFApplication bcfApp, AVEHICLE eqpt, string req_block_id)
+
+        public bool ProcessBlockReqNewNew(BCFApplication bcfApp, AVEHICLE eqpt, string req_block_id)
+        {
+            bool canBlockPass = false;
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"Process block request,request block id:{req_block_id}",
+               VehicleID: eqpt.VEHICLE_ID,
+               CarrierID: eqpt.CST_ID);
+            if (DebugParameter.isForcedPassBlockControl)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: "test flag: Force pass block control is open, will driect reply to vh can pass block",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+                canBlockPass = true;
+            }
+            else if (DebugParameter.isForcedRejectBlockControl)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: "test flag: Force reject block control is open, will driect reply to vh can't pass block",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+                canBlockPass = false;
+            }
+            else
+            {
+                lock (block_control_lock_obj)
+                {
+                    using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                    {
+                        //先確認在Redis上是否該台VH 已經有要過的Block
+                        //bool hasAskedBlock = scApp.MapBLL.HasBlockControlAskedFromRedis
+                        //    (eqpt.VEHICLE_ID, out string current_asked_block_id, out string current_asked_block_status);
+                        List<BLOCKZONEQUEUE> ask_block_queues = scApp.MapBLL.loadNonReleaseBlockQueueByCarID(eqpt.VEHICLE_ID);
+                        bool hasAskedBlock = ask_block_queues != null && ask_block_queues.Count > 0;
+                        if (hasAskedBlock)
+                        {
+                            //bool isBlocking = SCUtility.isMatche(current_asked_block_status, SCAppConstants.BlockQueueState.Blocking)
+                            //               || SCUtility.isMatche(current_asked_block_status, SCAppConstants.BlockQueueState.Through);
+
+                            //確認當前要的Block是否有存在目前的DB中。
+                            BLOCKZONEQUEUE current_request_again_block_queue = ask_block_queues.
+                                                                         Where(queue => SCUtility.isMatche(queue.ENTRY_SEC_ID, req_block_id)).
+                                                                         FirstOrDefault();
+                            //if (SCUtility.isMatche(req_block_id, current_asked_block_id))
+                            if (current_request_again_block_queue != null)
+                            {
+                                //如果要的是同一個，則確認是否已經給該台VH
+                                //if (isBlocking)
+                                if (SCUtility.isMatche(current_request_again_block_queue.STATUS, SCAppConstants.BlockQueueState.Blocking) ||
+                                    SCUtility.isMatche(current_request_again_block_queue.STATUS, SCAppConstants.BlockQueueState.Through))
+                                {
+                                    //如果已經給過該台VH通行權，則直接讓它通過。
+                                    canBlockPass = true;
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"Vh:{eqpt.VEHICLE_ID} ask again block:{req_block_id},but it is the owner so ask result:{canBlockPass}",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
+                                }
+                                else
+                                {
+                                    //如果還沒有給過該台VH通行權，則需再判斷一次該Vh是否已經可以通過
+                                    canBlockPass = canPassBlockZone(eqpt, req_block_id);
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"Vh:{eqpt.VEHICLE_ID} ask again block:{req_block_id},ask result:{canBlockPass}",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
+                                    if (canBlockPass)
+                                    {
+                                        scApp.MapBLL.updateBlockZoneQueue_BlockTime(eqpt.VEHICLE_ID, req_block_id);
+                                        scApp.MapBLL.ChangeBlockControlStatus_Blocking(eqpt.VEHICLE_ID, req_block_id, DateTime.Now);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                bool has_in_request = ask_block_queues.Where(queue => SCUtility.isMatche(queue.STATUS, SCAppConstants.BlockQueueState.Request))
+                                                                      .Count() > 0;
+                                string[] current_using_block_ids = ask_block_queues.Select(queue => queue.ENTRY_SEC_ID).ToArray();
+                                //如果不是同一個，則要判斷目前asked的Blocks狀態是否沒有在Request中的                           
+                                //if (isBlocking)
+                                if (!has_in_request)
+                                {
+                                    //如果是的話才可以再進行新的BlockControlRequest的建立流程
+                                    canBlockPass = tryCreatBlockControlRequest(eqpt, req_block_id);
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"Vh:{eqpt.VEHICLE_ID} already has a block:{string.Join(",", current_using_block_ids)}," +
+                                       $"asking for another one at a time ,block:{req_block_id}, ask result:{canBlockPass}",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
+                                }
+                                else
+                                {
+                                    //如果不是，則不可以再給他另外一個Block
+                                    canBlockPass = false;
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"Vh:{eqpt.VEHICLE_ID} already has a block:{string.Join(",", current_using_block_ids)}," +
+                                       $"but the status is Request,so ask block:{req_block_id} result:{canBlockPass}",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
+                                    DateTime reqest_time = DateTime.Now;
+                                    //scApp.MapBLL.doCreatBlockZoneQueueByReqStatus(eqpt.VEHICLE_ID, req_block_id, canBlockPass, reqest_time);
+                                    //scApp.MapBLL.CreatBlockControlKeyWordToRedis(eqpt.VEHICLE_ID, req_block_id, canBlockPass, reqest_time);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //如果目前Redis上沒有要求的Block的話，則可以嘗試建立新的BlocControlRequest，
+                            //並判斷是否可以給其通行權
+                            canBlockPass = tryCreatBlockControlRequest(eqpt, req_block_id);
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"Vh:{eqpt.VEHICLE_ID} ask block:{req_block_id},ask result:{canBlockPass}",
+                               VehicleID: eqpt.VEHICLE_ID,
+                               CarrierID: eqpt.CST_ID);
+                        }
+                    }
+                }
+            }
+            return canBlockPass;
+        }
+        public bool ProcessBlockReqByReserveModule(BCFApplication bcfApp, AVEHICLE eqpt, string req_block_id)
         {
             string vhID = eqpt.VEHICLE_ID;
             LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
@@ -2393,7 +2523,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     break;
             }
         }
-        private bool replyTranEventReport(BCFApplication bcfApp, EventType eventType, AVEHICLE eqpt, int seq_num, bool canBlockPass = true, bool canHIDPass = true,
+        public bool replyTranEventReport(BCFApplication bcfApp, EventType eventType, AVEHICLE eqpt, int seq_num, bool canBlockPass = true, bool canHIDPass = true,
                                           string renameCarrierID = "", CMDCancelType cancelType = CMDCancelType.CmdNone)
         {
             ID_36_TRANS_EVENT_RESPONSE send_str = new ID_36_TRANS_EVENT_RESPONSE
@@ -2744,11 +2874,21 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
 
-            //b.經過"a"的判斷後，如果自己已經是在該Block的前一段Section上，則即為該Block的下一台將要通過的Vh
+            //b-0.經過"a"的判斷後，如果自己已經是在該Block裡面，則代表該vh已經是最接近這個Block的車子了 //A0.06
+            bool is_already_in_req_block = SCUtility.isMatche(vh_current_section_id, block_entry_section_id);
+            if (is_already_in_req_block)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"vh:{vh.VEHICLE_ID} is already in req block,it is closest block:{block_entry_section_id}",
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
+                return true;
+            }
+            //b-1.經過"a"的判斷後，如果自己已經是在該Block的前一段Section上，則即為該Block的下一台將要通過的Vh
             List<string> entry_section_of_previous_section_id =
-                scApp.SectionBLL.cache.GetSectionsByToAddress(block_entry_section.FROM_ADR_ID).
-                Select(section => SCUtility.Trim(section.SEC_ID)).
-                ToList();
+            scApp.SectionBLL.cache.GetSectionsByToAddress(block_entry_section.FROM_ADR_ID).
+            Select(section => SCUtility.Trim(section.SEC_ID)).
+            ToList();
             if (entry_section_of_previous_section_id.Contains(vh_current_section_id))
             {
                 return true;
@@ -3402,6 +3542,143 @@ namespace com.mirle.ibg3k0.sc.Service
                     if (!SCUtility.isEmpty(eqpt.MCS_CMD))
                     {
                         scApp.ReportBLL.newReportTransferCommandPaused(eqpt.MCS_CMD, null);
+                    }
+                    //當Error Flag有變化且被切為On的時候，需要檢查車輛是否在CV所在的Segment，在的話要把該Segment禁用並取消要前往該處的命令。
+                    if (errorStat == VhStopSingle.StopSingleOn)
+                    {
+                        string section_id = eqpt.CUR_SEC_ID;
+                        ASECTION section = scApp.SectionBLL.cache.GetSection(section_id);
+                        List<EqptLocationInfo> OHCVLocations = scApp.getEQObjCacheManager().loadAllOHCVLocationInfoList();
+                        AEQPT ohcv = null;
+                        bool is_in_cv = false;
+                        if (OHCVLocations != null)
+                        {
+                            for (int i = 0; i < OHCVLocations.Count; i++)
+                            {
+                                if (SCUtility.isMatche(OHCVLocations[i].SEGMENT_ID, section.SEG_NUM))
+                                {
+                                    ohcv = scApp.getEQObjCacheManager().getEquipmentByEQPTID(OHCVLocations[i].EQPT_ID);
+                                    is_in_cv = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (is_in_cv)
+                        {
+                            if (scApp.MapBLL.IsSegmentActive(section.SEG_NUM))
+                            {
+
+
+                                //將segment 更新成  disable
+                                //ASEGMENT pre_control_segment_vo = scApp.SegmentBLL.cache.GetSegment(section.SEG_NUM);
+                                //ASEGMENT pre_control_segment_do = scApp.MapBLL.DisableSegment(section.SEG_NUM);
+                                //pre_control_segment_vo.put(pre_control_segment_do);
+                                bool is_success = scApp.RoadControlService.doEnableDisableSegment(section.SEG_NUM, E_PORT_STATUS.OutOfService, ASEGMENT.DisableType.User, Data.SECS.CSOT.SECSConst.LANECUTTYPE_LaneCutVehicle);
+                                if (is_success)
+                                {
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHxC",
+                                    Data: $"vehicle error in cv disable segment{section.SEG_NUM} ohcv:{ohcv.EQPT_ID} success.",
+                                    VehicleID: ohcv.EQPT_ID);
+
+                                    //還有命令還會通過這裡的車輛命令進行取消
+                                    List<string> will_be_pass_cmd_ids = null;
+                                    bool has_vh_will_pass = scApp.CMDBLL.HasCmdWillPassSegment(section.SEG_NUM, out will_be_pass_cmd_ids);
+                                    if (has_vh_will_pass)
+                                    {
+
+                                        List<AVEHICLE> will_pass_of_vh = scApp.VehicleBLL.cache.loadVhsByOHTCCommandIDs(will_be_pass_cmd_ids);
+
+                                        string[] will_pass_of_vh_ids = will_pass_of_vh.Select(vh => vh.VEHICLE_ID).ToArray();
+                                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHxC",
+                                                 Data: $"disable segment:{section.SEG_NUM} clear,but has vh will pass. " +
+                                                 $"cmd ids:{string.Join(",", will_be_pass_cmd_ids)} and vh id:{string.Join(",", will_pass_of_vh_ids)}");
+                                        foreach (AVEHICLE vh in will_pass_of_vh)
+                                        {
+                                            //doAbortCommand(vh, vh.OHTC_CMD, ProtocolFormat.OHTMessage.CMDCancelType.CmdCancel);
+
+                                            string mcs_cmd_id = vh.MCS_CMD;
+                                            if (!string.IsNullOrWhiteSpace(mcs_cmd_id))
+                                            {
+                                                ACMD_MCS mcs_cmd = scApp.CMDBLL.getCMD_MCSByID(mcs_cmd_id);
+                                                if (mcs_cmd == null)
+                                                {
+
+                                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHxC",
+                                                        Data: $"Can't find MCS command:[{mcs_cmd_id}] in database. ");
+                                                    //result = $"Can't find MCS command:[{mcs_cmd_id}] in database.";
+
+                                                }
+                                                else
+                                                {
+                                                    CMDCancelType actType = default(CMDCancelType);
+                                                    if (mcs_cmd.TRANSFERSTATE < sc.E_TRAN_STATUS.Transferring)
+                                                    {
+                                                        actType = CMDCancelType.CmdCancel;
+                                                        scApp.VehicleService.doCancelOrAbortCommandByMCSCmdID(mcs_cmd_id, actType);
+                                                    }
+                                                    else if (mcs_cmd.TRANSFERSTATE < sc.E_TRAN_STATUS.Canceling)
+                                                    {
+                                                        actType = CMDCancelType.CmdAbort;
+                                                        scApp.VehicleService.doCancelOrAbortCommandByMCSCmdID(mcs_cmd_id, actType);
+                                                    }
+                                                    else
+                                                    {
+
+                                                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHxC",
+                                                            Data: $"MCS command:[{mcs_cmd_id}] can't excute cancel / abort,\r\ncurrent state:{mcs_cmd.TRANSFERSTATE}");
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                string ohtc_cmd_id = vh.OHTC_CMD;
+                                                if (string.IsNullOrWhiteSpace(ohtc_cmd_id))
+                                                {
+
+
+                                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHxC",
+                                                        Data: $"Vehicle:[{vh.VEHICLE_ID}] do not have command.");
+                                                }
+                                                else
+                                                {
+                                                    ACMD_OHTC ohtc_cmd = scApp.CMDBLL.getCMD_OHTCByID(ohtc_cmd_id);
+                                                    if (ohtc_cmd == null)
+                                                    {
+
+                                                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHxC",
+                                                            Data: $"Can't find vehicle command:[{ohtc_cmd_id}] in database.");
+                                                    }
+                                                    else
+                                                    {
+                                                        CMDCancelType actType = ohtc_cmd.CMD_STAUS >= E_CMD_STATUS.Execution ? CMDCancelType.CmdAbort : CMDCancelType.CmdCancel;
+                                                        scApp.VehicleService.doAbortCommand(vh, ohtc_cmd_id, actType);
+
+                                                    }
+                                                }
+                                            }
+
+
+
+                                        }
+
+
+                                    }
+
+                                }
+
+
+
+
+
+
+
+
+
+
+                            }
+                        }
+
                     }
                 }
 

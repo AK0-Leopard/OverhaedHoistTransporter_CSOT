@@ -134,6 +134,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             vh.NotifyVhPositionChange();
             return true;
         }
+
         public HltResult updateVheiclePositionToReserveControlModule(BLL.ReserveBLL reserveBLL, AVEHICLE vh, string currentSectionID, string adrID, double dis, double dirctionAngle, double vehicleAngle, double speed,
                                                                       HltDirection sensorDir, HltDirection forkDir)
         {
