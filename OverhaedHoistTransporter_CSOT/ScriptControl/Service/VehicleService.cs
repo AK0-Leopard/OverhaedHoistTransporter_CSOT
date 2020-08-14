@@ -2855,6 +2855,7 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             string vh_current_section_id = SCUtility.Trim(vh.CUR_SEC_ID, true);
             string block_entry_section_id = blockMaster.ENTRY_SEC_ID;
+            block_entry_section_id = block_entry_section_id.Substring(0, 5);
             ASECTION vh_current_section = scApp.SectionBLL.cache.GetSection(vh_current_section_id);
             ASECTION block_entry_section = scApp.SectionBLL.cache.GetSection(block_entry_section_id);
 
