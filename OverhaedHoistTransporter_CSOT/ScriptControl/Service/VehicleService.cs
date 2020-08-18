@@ -18,6 +18,8 @@
 // 2020/08/06    Mark Chou      N/A            A0.05   用BackgroundWorkQueue取代Lock來確保通行權邏輯的時序，並提升效率。
 // 2020/08/08    Kevin Wei      N/A            A0.06   在判斷是否為最接近 Req block的車子時，多增加一個條件，確認車子是否已經是在該Block中，
 //                                                     如果是就讓它當作已經是最靠近該Block的
+// 2020/08/15    Kevin Wei      N/A            A0.07   加入判斷當該次136事件為Block req...等地事件上報時，就不去觸發狀態變化的事件，
+//                                                     避免狀態變化畫面頻繁更新影響效能
 //**********************************************************************************
 using com.mirle.ibg3k0.bcf.App;
 using com.mirle.ibg3k0.bcf.Common;
@@ -112,6 +114,11 @@ namespace com.mirle.ibg3k0.sc.Service
             else
             {
                 vh.StatusRequestFailTimes = 0;
+
+                if(vh.ACT_STATUS== VHActionStatus.NoCommand)
+                {
+                    scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(vh.VEHICLE_ID);
+                }
             }
         }
 
@@ -248,6 +255,23 @@ namespace com.mirle.ibg3k0.sc.Service
             {
                 vh.WillPassSectionID.Remove(SCUtility.Trim(leave_section.SEC_ID, true));
             }
+
+            //if (leave_section != null && entry_section != null)
+            //{
+            //    if (SCUtility.isMatche(leave_section.TO_ADR_ID, entry_section.FROM_ADR_ID))
+            //    {
+            //        string cross_address = leave_section.TO_ADR_ID;
+            //        var release_result = doBlockRelease(vh, cross_address, false);
+            //        if (release_result.hasRelease)
+            //        {
+            //            LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+            //               Data: $"Process block force release by ohxc, release address id:{cross_address}, " +
+            //                     $"release entry section id:{release_result.releaseBlockMaster.ENTRY_SEC_ID}",
+            //               VehicleID: vh.VEHICLE_ID,
+            //               CarrierID: vh.CST_ID);
+            //        }
+            //    }
+            //}
 
             if (scApp.getEQObjCacheManager().getLine().ServiceMode == AppServiceMode.Active)
                 scApp.VehicleBLL.NetworkQualityTest(vh.VEHICLE_ID, e.EntrySection, vh.CUR_ADR_ID, 0);
@@ -640,7 +664,7 @@ namespace com.mirle.ibg3k0.sc.Service
         public void VehicleInfoSynchronize(string vh_id)
         {
             /*與Vehicle進行狀態同步*/
-            VehicleStatusRequest(vh_id, true);
+            VehicleStatusRequestInit(vh_id, true);
             /*要求Vehicle進行Alarm的Reset，如果成功後會將OHxC上針對該Vh的Alarm清除*/
             if (AlarmResetRequest(vh_id))
             {
@@ -716,6 +740,73 @@ namespace com.mirle.ibg3k0.sc.Service
             return isSuccess;
         }
 
+        //只於車輛上線時使用，多檢查了車輛當前命令狀態，如果從有命令變沒命令，要Force Finish Command
+        public bool VehicleStatusRequestInit(string vh_id, bool isSync = false)
+        {
+            bool isSuccess = false;
+            string reason = string.Empty;
+            AVEHICLE vh = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
+            ID_143_STATUS_RESPONSE receive_gpp;
+            ID_43_STATUS_REQUEST send_gpp = new ID_43_STATUS_REQUEST()
+            {
+                SystemTime = DateTime.Now.ToString(SCAppConstants.TimestampFormat_16)
+            };
+            SCUtility.RecodeReportInfo(vh.VEHICLE_ID, 0, send_gpp);
+            isSuccess = vh.send_S43(send_gpp, out receive_gpp);
+            SCUtility.RecodeReportInfo(vh.VEHICLE_ID, 0, receive_gpp, isSuccess.ToString());
+            //A0.04 if (isSync && isSuccess)
+            if (isSuccess) //A0.04
+            {
+                string current_adr_id = receive_gpp.CurrentAdrID;
+                VHModeStatus modeStat = DecideVhModeStatus(vh.VEHICLE_ID, current_adr_id, receive_gpp.ModeStatus);
+                VHActionStatus actionStat = receive_gpp.ActionStatus;
+                VhPowerStatus powerStat = receive_gpp.PowerStatus;
+                string cstID = receive_gpp.CSTID;
+                VhStopSingle obstacleStat = receive_gpp.ObstacleStatus;
+                VhStopSingle blockingStat = receive_gpp.BlockingStatus;
+                VhStopSingle pauseStat = receive_gpp.PauseStatus;
+                VhStopSingle hidStat = receive_gpp.HIDStatus;
+                VhStopSingle errorStat = receive_gpp.ErrorStatus;
+                VhLoadCSTStatus loadCSTStatus = receive_gpp.HasCST;
+                //VhGuideStatus leftGuideStat = recive_str.LeftGuideLockStatus;
+                //VhGuideStatus rightGuideStat = recive_str.RightGuideLockStatus;
+
+
+                int obstacleDIST = receive_gpp.ObstDistance;
+                string obstacleVhID = receive_gpp.ObstVehicleID;
+
+                if (isSync) //A0.04
+                {
+                    scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
+                    scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
+                }
+                //A0.04 scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
+                //A0.04 scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
+                if (!scApp.VehicleBLL.doUpdateVehicleStatus(vh, cstID,
+                                       modeStat, actionStat,
+                                       blockingStat, pauseStat, obstacleStat, hidStat, errorStat, loadCSTStatus))
+                {
+                    isSuccess = false;
+                }
+                if (actionStat == VHActionStatus.NoCommand)
+                {
+                    ACMD_OHTC executed_cmd = scApp.CMDBLL.geExecutedCMD_OHTCByVehicleID(vh.VEHICLE_ID);
+                    if (executed_cmd != null)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                        Data: $"Excute force command finish for vh:[{vh_id}] , OHTC_CMD:[{SCUtility.Trim(executed_cmd.CMD_ID, true)}] ",
+                        VehicleID: vh?.VEHICLE_ID,
+                        CarrierID: vh?.CST_ID);
+                        Task.Run(() =>
+                        {
+                            scApp.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
+                        });
+                    }
+                }
+            }
+            vhCommandExcuteStatusCheck(vh.VEHICLE_ID);
+            return isSuccess;
+        }
         /// <summary>
         /// 如果在車子已有回報是無命令狀態下，但在OHXC的AVEHICLE欄位"CMD_OHTC"卻還有命令時，
         /// 則需要在檢查在ACMD_OHTC是否已無命令，如果也沒有的話，則要將AVEHICLE改成正確的
@@ -1542,6 +1633,70 @@ namespace com.mirle.ibg3k0.sc.Service
             }
         }
 
+        //[ClassAOPAspect]
+        //public void TranEventReport(BCFApplication bcfApp, AVEHICLE eqpt, ID_136_TRANS_EVENT_REP recive_str, int seq_num)
+        //{
+        //    if (scApp.getEQObjCacheManager().getLine().ServerPreStop)
+        //        return;
+
+        //    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+        //       seq_num: seq_num,
+        //       Data: recive_str,
+        //       VehicleID: eqpt.VEHICLE_ID,
+        //       CarrierID: eqpt.CST_ID);
+
+        //    SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, seq_num, recive_str);
+        //    EventType eventType = recive_str.EventType;
+        //    string current_adr_id = recive_str.CurrentAdrID;
+        //    string current_sec_id = recive_str.CurrentSecID;
+        //    string carrier_id = recive_str.CSTID;
+        //    string last_adr_id = eqpt.CUR_ADR_ID;
+        //    string last_sec_id = eqpt.CUR_SEC_ID;
+        //    string req_block_id = recive_str.RequestBlockID;
+        //    //lock (eqpt.PositionRefresh_Sync)
+        //    //{
+        //    //    switch (eventType)
+        //    //    {
+        //    //        case EventType.LoadArrivals:
+        //    //        case EventType.UnloadArrivals:
+        //    //        case EventType.VhmoveArrivals:
+        //    //            scApp.VehicleBLL.deleteRedisOfPositionReport(eqpt.VEHICLE_ID); //為了確保在PositionReportTimerAction要更新位置時，不會拿到舊的
+        //    //            break;
+        //    //    }
+        //    //    doUpdateVheiclePositionAndCmdSchedule(eqpt, current_adr_id, current_sec_id, last_adr_id, last_sec_id, (uint)eqpt.ACC_SEC_DIST, eventType, loadCSTStatus);
+        //    //}
+        //    scApp.VehicleBLL.updateVehicleActionStatus(eqpt, eventType);
+
+        //    switch (eventType)
+        //    {
+        //        case EventType.BlockReq:
+        //            PositionReport_BlockReq_New(bcfApp, eqpt, seq_num, recive_str.RequestBlockID);
+        //            break;
+        //        case EventType.Hidreq:
+        //            PositionReport_HIDRequest(bcfApp, eqpt, seq_num, recive_str.RequestBlockID);
+        //            break;
+        //        case EventType.LoadArrivals:
+        //        case EventType.LoadComplete:
+        //        case EventType.UnloadArrivals:
+        //        case EventType.UnloadComplete:
+        //        case EventType.VhmoveArrivals:
+        //        case EventType.AdrOrMoveArrivals:
+        //            PositionReport_ArriveAndComplete(bcfApp, eqpt, seq_num, recive_str.EventType, recive_str.CurrentAdrID, recive_str.CurrentSecID, carrier_id);
+        //            break;
+        //        case EventType.Vhloading:
+        //        case EventType.Vhunloading:
+        //            PositionReport_LoadingUnloading(bcfApp, eqpt, recive_str, seq_num, eventType);
+
+        //            break;
+        //        case EventType.BlockRelease:
+        //            PositionReport_BlockRelease(bcfApp, eqpt, recive_str, seq_num);
+        //            break;
+        //        case EventType.Hidrelease:
+        //            PositionReport_HIDRelease(bcfApp, eqpt, recive_str, seq_num);
+        //            break;
+        //    }
+        //}
+
         private void PositionReport_LoadingUnloading(BCFApplication bcfApp, AVEHICLE eqpt, ID_136_TRANS_EVENT_REP recive_str, int seq_num, EventType eventType)
         {
             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
@@ -1649,8 +1804,13 @@ namespace com.mirle.ibg3k0.sc.Service
             //}
             //doUpdateVheiclePositionAndCmdSchedule(eqpt, current_adr_id, current_sec_id, last_adr_id, last_sec_id, (uint)eqpt.ACC_SEC_DIST, eventType, loadCSTStatus);
             //}
-            scApp.VehicleBLL.updateVehicleActionStatus(eqpt, eventType);
-
+            if (eventType != EventType.BlockReq &&         //A0.07
+                eventType != EventType.BlockHidreq &&      //A0.07
+                eventType != EventType.BlockHidrelease &&  //A0.07
+                eventType != EventType.BlockRelease)       //A0.07
+            {
+                scApp.VehicleBLL.updateVehicleActionStatus(eqpt, eventType);
+            }
 
             switch (eventType)
             {

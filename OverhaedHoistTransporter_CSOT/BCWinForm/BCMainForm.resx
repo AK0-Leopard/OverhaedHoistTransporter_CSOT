@@ -128,7 +128,7 @@
     <value>326, 17</value>
   </metadata>
   <data name="toolStripStatusLabel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>671, 27</value>
+    <value>640, 27</value>
   </data>
   <data name="tssl_Version_Name.Size" type="System.Drawing.Size, System.Drawing">
     <value>65, 27</value>
@@ -410,9 +410,6 @@
   </data>
   <data name="reserveInfoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>300, 26</value>
-  </data>
-  <data name="reserveInfoToolStripMenuItem.Text" xml:space="preserve">
-    <value>Reserve Info</value>
   </data>
   <data name="mataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>128, 26</value>
@@ -1322,6 +1319,12 @@
   <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;reserveInfoToolStripMenuItem.Name" xml:space="preserve">
+    <value>reserveInfoToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;reserveInfoToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;languageToolStripMenuItem.Name" xml:space="preserve">
     <value>languageToolStripMenuItem</value>
   </data>
@@ -1380,12 +1383,6 @@
     <value>engineeringModeToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;engineeringModeToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;reserveInfoToolStripMenuItem.Name" xml:space="preserve">
-    <value>reserveInfoToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;reserveInfoToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

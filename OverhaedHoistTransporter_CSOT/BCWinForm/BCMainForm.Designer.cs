@@ -92,6 +92,7 @@ namespace com.mirle.ibg3k0.bc.winform
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.transferCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.reserveInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zh_twToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,7 +103,6 @@ namespace com.mirle.ibg3k0.bc.winform
             this.engineerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.engineeringModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reserveInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.CMS_OnLineMode.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -390,6 +390,12 @@ namespace com.mirle.ibg3k0.bc.winform
             resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
+            // reserveInfoToolStripMenuItem
+            // 
+            this.reserveInfoToolStripMenuItem.Name = "reserveInfoToolStripMenuItem";
+            resources.ApplyResources(this.reserveInfoToolStripMenuItem, "reserveInfoToolStripMenuItem");
+            this.reserveInfoToolStripMenuItem.Click += new System.EventHandler(this.reserveInfoToolStripMenuItem_Click);
+            // 
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -455,12 +461,6 @@ namespace com.mirle.ibg3k0.bc.winform
             this.engineeringModeToolStripMenuItem.Name = "engineeringModeToolStripMenuItem";
             resources.ApplyResources(this.engineeringModeToolStripMenuItem, "engineeringModeToolStripMenuItem");
             this.engineeringModeToolStripMenuItem.Click += new System.EventHandler(this.engineeringModeToolStripMenuItem_Click);
-            // 
-            // reserveInfoToolStripMenuItem
-            // 
-            this.reserveInfoToolStripMenuItem.Name = "reserveInfoToolStripMenuItem";
-            resources.ApplyResources(this.reserveInfoToolStripMenuItem, "reserveInfoToolStripMenuItem");
-            this.reserveInfoToolStripMenuItem.Click += new System.EventHandler(this.reserveInfoToolStripMenuItem_Click);
             // 
             // BCMainForm
             // 

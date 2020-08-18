@@ -553,6 +553,7 @@
             this.btn_AutoMove.TabIndex = 2;
             this.btn_AutoMove.Text = "Auto Move";
             this.btn_AutoMove.UseVisualStyleBackColor = true;
+            this.btn_AutoMove.Visible = false;
             this.btn_AutoMove.Click += new System.EventHandler(this.btn_AutoMove_Click);
             // 
             // btn_start
