@@ -181,7 +181,13 @@ namespace com.mirle.ibg3k0.sc.BLL
         public void updateVehicleActionStatus(AVEHICLE vh, EventType vhPassEvent)
         {
             vh.VhRecentTranEvent = vhPassEvent;
-            vh.NotifyVhStatusChange();
+            if (vhPassEvent != EventType.BlockReq &&
+                vhPassEvent != EventType.BlockRelease &&
+                vhPassEvent != EventType.BlockHidreq &&
+                vhPassEvent != EventType.Hidrelease &&
+                vhPassEvent != EventType.BlockHidreq &&
+                vhPassEvent != EventType.BlockHidrelease)
+                vh.NotifyVhStatusChange();
         }
         public void updateVehicleBCRReadResult(AVEHICLE vh, BCRReadResult bcrReadResult)
         {

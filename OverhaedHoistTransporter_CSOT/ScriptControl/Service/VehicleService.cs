@@ -2196,7 +2196,7 @@ namespace com.mirle.ibg3k0.sc.Service
                            VehicleID: vhID);
                         var result = scApp.ReserveBLL.TryAddReservedSection(vhID, detail,
                                                                              sensorDir: hltDirection,
-                                                                             isAsk: false);
+                                                                             isAsk: true);
 
                         LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                            Data: $"vh:{vhID} Try add reserve section:{detail},result:{result}",
@@ -2216,7 +2216,7 @@ namespace com.mirle.ibg3k0.sc.Service
                         HltDirection hltDirection = HltDirection.None;
                         var result = scApp.ReserveBLL.TryAddReservedSection(vhID, detail,
                                                                              sensorDir: hltDirection,
-                                                                             isAsk: true);
+                                                                             isAsk: false);
                     }
                     return true;
                 }
