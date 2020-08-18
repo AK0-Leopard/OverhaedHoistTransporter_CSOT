@@ -616,7 +616,6 @@
             this.cb_StartGenAntoCmd.TabIndex = 18;
             this.cb_StartGenAntoCmd.Text = "Start Generates Transfer Command";
             this.cb_StartGenAntoCmd.UseVisualStyleBackColor = true;
-            this.cb_StartGenAntoCmd.Visible = false;
             this.cb_StartGenAntoCmd.CheckedChanged += new System.EventHandler(this.cb_StartGenAntoCmd_CheckedChanged);
             // 
             // groupBox2
@@ -2543,7 +2542,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 8);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;

@@ -115,7 +115,7 @@ namespace com.mirle.ibg3k0.sc.Service
             {
                 vh.StatusRequestFailTimes = 0;
 
-                if(vh.ACT_STATUS== VHActionStatus.NoCommand)
+                if (vh.ACT_STATUS == VHActionStatus.NoCommand)
                 {
                     scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(vh.VEHICLE_ID);
                 }
@@ -250,6 +250,20 @@ namespace com.mirle.ibg3k0.sc.Service
                    Data: $"vh:{vh.VEHICLE_ID} leave section {leave_section.SEC_ID},remove reserved.",
                    VehicleID: vh.VEHICLE_ID);
             }
+
+            var entry_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(e.EntrySection);
+            var leave_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(e.LeaveSection);
+            var entry_blocks = entry_sec_related_blocks.Except(leave_sec_related_blocks);
+            foreach (var entry_block in entry_blocks)
+            {
+                entry_block.Entry(vh.VEHICLE_ID);
+            }
+            var leave_blocks = leave_sec_related_blocks.Except(entry_sec_related_blocks);
+            foreach (var leave_block in leave_blocks)
+            {
+                leave_block.Leave(vh.VEHICLE_ID);
+            }
+
 
             if (vh.WillPassSectionID != null)
             {

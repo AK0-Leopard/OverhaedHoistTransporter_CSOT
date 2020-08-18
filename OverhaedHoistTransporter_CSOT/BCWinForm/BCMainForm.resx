@@ -128,7 +128,7 @@
     <value>326, 17</value>
   </metadata>
   <data name="toolStripStatusLabel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>640, 27</value>
+    <value>671, 27</value>
   </data>
   <data name="tssl_Version_Name.Size" type="System.Drawing.Size, System.Drawing">
     <value>65, 27</value>
@@ -410,6 +410,9 @@
   </data>
   <data name="reserveInfoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>300, 26</value>
+  </data>
+  <data name="reserveInfoToolStripMenuItem.Text" xml:space="preserve">
+    <value>Reserve Info</value>
   </data>
   <data name="mataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>128, 26</value>

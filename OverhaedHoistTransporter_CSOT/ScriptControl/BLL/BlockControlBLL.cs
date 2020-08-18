@@ -707,6 +707,20 @@ namespace com.mirle.ibg3k0.sc.BLL
                     ToList();
                 return block_zone_masters;
             }
+
+            public List<ABLOCKZONEMASTER> loadBlockZoneMasterBySectionID(string secID)
+            {
+                var block_zone_masters = commObjCache.getBlockMasterZone().
+                    Where(block_master => block_master.GetBlockZoneDetailSectionIDs().Contains(secID)).
+                    ToList();
+                return block_zone_masters;
+            }
+            public List<ABLOCKZONEMASTER> loadAllBlockZoneMaster()
+            {
+                var block_zone_masters = commObjCache.getBlockMasterZone();
+                return block_zone_masters;
+            }
+
         }
 
     }

@@ -17,6 +17,29 @@ namespace com.mirle.ibg3k0.sc
 {
     public partial class ABLOCKZONEMASTER
     {
+        public event EventHandler<string> VehicleLeave;
+        public event EventHandler<string> VehicleEntry;
+
+
+        private void onSectinoLeave(string vh_id)
+        {
+            VehicleLeave?.Invoke(this, vh_id);
+        }
+        private void onSectinoEntry(string vh_id)
+        {
+            VehicleEntry?.Invoke(this, vh_id);
+        }
+
+        public void Leave(string vh_id)
+        {
+            onSectinoLeave(vh_id);
+        }
+        public void Entry(string vh_id)
+        {
+            onSectinoEntry(vh_id);
+        }
+
+
         List<string> BlockZoneDetailSectionIDs;
         public void SetBlockDetailList(BLL.MapBLL mapBLL)
         {
@@ -24,7 +47,14 @@ namespace com.mirle.ibg3k0.sc
         }
         public List<string> GetBlockZoneDetailSectionIDs()
         {
-            return BlockZoneDetailSectionIDs;
+            if (BlockZoneDetailSectionIDs == null)
+            { 
+                return new List<string>();
+            }
+            else
+            {
+                return BlockZoneDetailSectionIDs;
+            }
         }
 
     }

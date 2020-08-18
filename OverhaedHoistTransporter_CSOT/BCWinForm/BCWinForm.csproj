@@ -556,8 +556,12 @@
     <None Include="Config\CSOT_T4\CSV\EQPTLOCATIONINFO.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Config\CSOT_T4\CSV\MapInfo\AADDRESS.csv" />
-    <None Include="Config\CSOT_T4\CSV\MapInfo\ASECTION.csv" />
+    <None Include="Config\CSOT_T4\CSV\MapInfo\AADDRESS.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4\CSV\MapInfo\ASECTION.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Config\CSOT_T4\CSV\RETURNCODEMAP.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -736,8 +740,12 @@
     <None Include="Config\Taichung\CSV\EQPTLOCATIONINFO.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Config\Taichung\CSV\MapInfo\AADDRESS.csv" />
-    <None Include="Config\Taichung\CSV\MapInfo\ASECTION.csv" />
+    <None Include="Config\Taichung\CSV\MapInfo\AADDRESS.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\Taichung\CSV\MapInfo\ASECTION.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Config\Taichung\CSV\RETURNCODEMAP.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
