@@ -2400,10 +2400,11 @@ namespace com.mirle.ibg3k0.sc.Service
         private bool checkIsFirstVh(AVEHICLE vh, string reqBlockId)
         {
             string vh_id = vh.VEHICLE_ID;
-            string current_adr = SCUtility.Trim(vh.CUR_ADR_ID);
+            string current_sec_id = SCUtility.Trim(vh.CUR_SEC_ID);
+            ASECTION vh_current_sec = scApp.SectionBLL.cache.GetSection(current_sec_id);
             ASECTION req_block_sec = scApp.SectionBLL.cache.GetSection(reqBlockId);
             string[] will_pass_section_ids = scApp.CMDBLL.
-                     getShortestRouteSection(current_adr, req_block_sec.FROM_ADR_ID).
+                     getShortestRouteSection(vh_current_sec.TO_ADR_ID, req_block_sec.FROM_ADR_ID).
                      routeSection;
             foreach (string sec in will_pass_section_ids)
             {
@@ -2918,56 +2919,52 @@ namespace com.mirle.ibg3k0.sc.Service
             try
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                   Data: $"Start check is next pass vh...",
+                   Data: $"Start check is next pass vh,block id:{currentRequestBlockID}...",
                    VehicleID: vh.VEHICLE_ID,
                    CarrierID: vh.CST_ID);
                 bool is_next_pass_vh = false;
-                ABLOCKZONEMASTER request_block_master = scApp.BlockControlBLL.cache.getBlockZoneMaster(currentRequestBlockID);
+                //ABLOCKZONEMASTER request_block_master = scApp.BlockControlBLL.cache.getBlockZoneMaster(currentRequestBlockID);
                 //先判斷是不是最接近該Block的第一台車，不然會有後車先要到該Block的問題
                 //  a.要先判斷在同一段Section是否有其他車輛且的他的距離在前面
                 //  b.判斷是否自己已經是在該Block的前一段Section上，如果是則即為該Block的第一台Vh
                 //  c.如果不是在前一段Section，則需要去找出從vh目前所在位置到該Block的Entry section中，
                 //    是否有其他車輛在
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                   Data: $"Start check is closest block vh...",
-                   VehicleID: vh.VEHICLE_ID,
-                   CarrierID: vh.CST_ID);
-                is_next_pass_vh = IsClosestBlockOfVh(vh, request_block_master);
+                is_next_pass_vh = IsClosestBlockOfVh(vh, currentRequestBlockID);
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                    Data: $"End check is closest block vh,result:{is_next_pass_vh}",
                    VehicleID: vh.VEHICLE_ID,
                    CarrierID: vh.CST_ID);
-
-                //如果判斷出來是該Block下一台要通過的vh，接著就要開始判斷同一組的Block
-                //1.先判斷該Block是否為合流點，如果是，則需要判斷可以讓哪一邊的先走，如果不是則不用
-                //2.合流點，需依照
-                //  a.在等待的車子，所載的CST數量
-                //  b.在等待的車子，MCS Command的Prioruty Sum的數值
-                //來決定要先放行哪邊的車子
-                if (is_next_pass_vh)
-                {
-                    if (request_block_master.BLOCK_ZONE_TYPE == E_BLOCK_ZONE_TYPE.Merge)
-                    {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"Start check is next pass block...,block id:{currentRequestBlockID}",
-                           VehicleID: vh.VEHICLE_ID,
-                           CarrierID: vh.CST_ID);
-                        bool is_next_pass_block = isNextPassBlock(vh, currentRequestBlockID);
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"End check is next pass block,block id:{currentRequestBlockID}, result:{is_next_pass_block}",
-                           VehicleID: vh.VEHICLE_ID,
-                           CarrierID: vh.CST_ID);
-                        return is_next_pass_block;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
+                return is_next_pass_vh;
+                ////如果判斷出來是該Block下一台要通過的vh，接著就要開始判斷同一組的Block
+                ////1.先判斷該Block是否為合流點，如果是，則需要判斷可以讓哪一邊的先走，如果不是則不用
+                ////2.合流點，需依照
+                ////  a.在等待的車子，所載的CST數量
+                ////  b.在等待的車子，MCS Command的Prioruty Sum的數值
+                ////來決定要先放行哪邊的車子
+                //if (is_next_pass_vh)
+                //{
+                //    if (request_block_master.BLOCK_ZONE_TYPE == E_BLOCK_ZONE_TYPE.Merge)
+                //    {
+                //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                //           Data: $"Start check is next pass block...,block id:{currentRequestBlockID}",
+                //           VehicleID: vh.VEHICLE_ID,
+                //           CarrierID: vh.CST_ID);
+                //        bool is_next_pass_block = isNextPassBlock(vh, currentRequestBlockID);
+                //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                //           Data: $"End check is next pass block,block id:{currentRequestBlockID}, result:{is_next_pass_block}",
+                //           VehicleID: vh.VEHICLE_ID,
+                //           CarrierID: vh.CST_ID);
+                //        return is_next_pass_block;
+                //    }
+                //    else
+                //    {
+                //        return true;
+                //    }
+                //}
+                //else
+                //{
+                //    return false;
+                //}
             }
             catch (Exception ex)
             {
@@ -3025,11 +3022,12 @@ namespace com.mirle.ibg3k0.sc.Service
                 return true;
             }
         }
-        private bool IsClosestBlockOfVh(AVEHICLE vh, ABLOCKZONEMASTER blockMaster)
+        private bool IsClosestBlockOfVh(AVEHICLE vh, string blockSecID)
         {
             string vh_current_section_id = SCUtility.Trim(vh.CUR_SEC_ID, true);
-            string block_entry_section_id = blockMaster.ENTRY_SEC_ID;
-            block_entry_section_id = block_entry_section_id.Substring(0, 5);
+            string block_entry_section_id = SCUtility.Trim(blockSecID, true);
+            if (block_entry_section_id.Length > 5)
+                block_entry_section_id = block_entry_section_id.Substring(0, 5);
             ASECTION vh_current_section = scApp.SectionBLL.cache.GetSection(vh_current_section_id);
             ASECTION block_entry_section = scApp.SectionBLL.cache.GetSection(block_entry_section_id);
 
@@ -3071,35 +3069,46 @@ namespace com.mirle.ibg3k0.sc.Service
 
             //  c.如果不是在前一段Section，則需要去找出從vh目前所在位置到該Block的Entry section中，
             //    將經過的Vh，是否有其他車輛在
-            string vh_current_section_of_to_adr = vh_current_section.TO_ADR_ID;
-            string block_entry_section_of_from_adr = block_entry_section.FROM_ADR_ID;
-            string[] will_pass_section_ids = scApp.CMDBLL.
-                                                  getShortestRouteSection(vh_current_section_of_to_adr, block_entry_section_of_from_adr).
-                                                  routeSection;
-            if (will_pass_section_ids == null || will_pass_section_ids.Count() == 0)
-            {
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                   Data: $"vh:{vh.VEHICLE_ID} at section:{vh_current_section_id} ,it to address:{vh_current_section_of_to_adr} to block entry section of from adr:{block_entry_section_of_from_adr}," +
-                         $"can't find the path, not sure if it's the closest vh.",
-                   VehicleID: vh.VEHICLE_ID,
-                   CarrierID: vh.CST_ID);
-                return false;
-            }
-            foreach (string will_pass_section_id in will_pass_section_ids)
-            {
-                var on_will_pass_section_of_vhs = scApp.VehicleBLL.cache.loadVhsBySectionID(will_pass_section_id);
-                if (on_will_pass_section_of_vhs != null && on_will_pass_section_of_vhs.Count > 0)
-                {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"Has vhs:{string.Join(",", on_will_pass_section_of_vhs.Select(v => v.VEHICLE_ID))} on section:{will_pass_section_id},from adr:{vh_current_section_of_to_adr} to adr:{block_entry_section_of_from_adr}," +
-                             $"will pass section ids:{string.Join(",", will_pass_section_ids)},so request vh:{vh.VEHICLE_ID} it not closest block vh",
-                       VehicleID: vh.VEHICLE_ID,
-                       CarrierID: vh.CST_ID);
-                    return false;
-                }
-            }
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"vh:{vh.VEHICLE_ID} start check it is closest block id:{block_entry_section_id} of vh...",
+               VehicleID: vh.VEHICLE_ID,
+               CarrierID: vh.CST_ID);
+            bool is_Closest = checkIsFirstVh(vh, block_entry_section_id);
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"vh:{vh.VEHICLE_ID} start check it is closest block id:{block_entry_section_id} , check result:{is_Closest}",
+               VehicleID: vh.VEHICLE_ID,
+               CarrierID: vh.CST_ID);
+
+            return is_Closest;
+            //string vh_current_section_of_to_adr = vh_current_section.TO_ADR_ID;
+            //string block_entry_section_of_from_adr = block_entry_section.FROM_ADR_ID;
+            //string[] will_pass_section_ids = scApp.CMDBLL.
+            //                                      getShortestRouteSection(vh_current_section_of_to_adr, block_entry_section_of_from_adr).
+            //                                      routeSection;
+            //if (will_pass_section_ids == null || will_pass_section_ids.Count() == 0)
+            //{
+            //    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+            //       Data: $"vh:{vh.VEHICLE_ID} at section:{vh_current_section_id} ,it to address:{vh_current_section_of_to_adr} to block entry section of from adr:{block_entry_section_of_from_adr}," +
+            //             $"can't find the path, not sure if it's the closest vh.",
+            //       VehicleID: vh.VEHICLE_ID,
+            //       CarrierID: vh.CST_ID);
+            //    return false;
+            //}
+            //foreach (string will_pass_section_id in will_pass_section_ids)
+            //{
+            //    var on_will_pass_section_of_vhs = scApp.VehicleBLL.cache.loadVhsBySectionID(will_pass_section_id);
+            //    if (on_will_pass_section_of_vhs != null && on_will_pass_section_of_vhs.Count > 0)
+            //    {
+            //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+            //           Data: $"Has vhs:{string.Join(",", on_will_pass_section_of_vhs.Select(v => v.VEHICLE_ID))} on section:{will_pass_section_id},from adr:{vh_current_section_of_to_adr} to adr:{block_entry_section_of_from_adr}," +
+            //                 $"will pass section ids:{string.Join(",", will_pass_section_ids)},so request vh:{vh.VEHICLE_ID} it not closest block vh",
+            //           VehicleID: vh.VEHICLE_ID,
+            //           CarrierID: vh.CST_ID);
+            //        return false;
+            //    }
+            //}
             //如果都沒有則該Vh也是下一台將要通過的vh
-            return true;
+            //return true;
         }
 
         private int BlockZoneQueueGroupCompare(IGrouping<string, BLOCKZONEQUEUE> group1, IGrouping<string, BLOCKZONEQUEUE> group2)

@@ -774,6 +774,7 @@
     <Content Include="MapFile\CSOT_T4\CSOT_T4_20191029.sql" />
     <Content Include="MapFile\CSOT_T4\CSOT_T4_20191212.sql" />
     <Content Include="MapFile\CSOT_T4\CSOT_T4_20200819.sql" />
+    <Content Include="MapFile\CSOT_T4\OHTC_CSOT_T4_v2_20200820.sql" />
     <Content Include="MapFile\CSOT_T4\T4_華星光電地圖_20190820.jpg" />
     <Content Include="MapFile\MIRLE_100_OHSC\MIRLE_100_OHSC_20191029.sql" />
     <Content Include="OHxC.ico" />
