@@ -4666,8 +4666,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     }
                 }
                 scApp.getRedisCacheManager().ExecuteTransaction();
-                //通知有Alarm的資訊改變。
-                scApp.getNatsManager().PublishAsync(SCAppConstants.NATS_SUBJECT_CURRENT_ALARM, new byte[0]);
+
 
 
                 foreach (ALARM report_alarm in alarms)
@@ -4735,6 +4734,8 @@ namespace com.mirle.ibg3k0.sc.Service
                    CarrierID: eqpt.CST_ID);
 
                 scApp.LineService.SpecifySeriousAlarmCheck();
+                //通知有Alarm的資訊改變。
+                scApp.getNatsManager().PublishAsync(SCAppConstants.NATS_SUBJECT_CURRENT_ALARM, new byte[0]);
             }
             catch (Exception ex)
             {

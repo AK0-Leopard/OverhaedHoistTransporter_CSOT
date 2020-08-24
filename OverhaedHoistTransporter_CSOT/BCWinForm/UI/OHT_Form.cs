@@ -81,8 +81,16 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
             initialEvent();
             SetHostControlState(scApp.getEQObjCacheManager().getLine());
-
+            scApp.RoadControlService.SegmentListChanged += RoadControlService_SegmentListChanged;
             RefreshMapColor();
+        }
+
+        private void RoadControlService_SegmentListChanged(object sender, ASEGMENT e)
+        {
+            Adapter.Invoke((obj) =>
+            {
+                RefreshMapColor();
+            }, null);
         }
 
         private void initialEvent()
