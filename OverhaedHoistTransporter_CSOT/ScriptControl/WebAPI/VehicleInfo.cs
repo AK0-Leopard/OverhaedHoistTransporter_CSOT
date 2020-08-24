@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -203,8 +204,22 @@ namespace com.mirle.ibg3k0.sc.WebAPI
                 }
                 var response = (Response)query_data;
                 response.ContentType = restfulContentType;
-
                 return response;
+            };
+
+            Get["ReserveInfo/ReserveMap"] = (p) =>
+            {
+                byte[] reserve_info = new byte[0];
+                try
+                {
+                    SCApplication scApp = SCApplication.getInstance();
+                    reserve_info = scApp.ReserveBLL.GetCurrentReserveInfoMapByte();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Execption:");
+                }
+                return Response.FromByteArray(reserve_info);
             };
 
             Get["SystemExcuteInfo/{SystemExcuteInfoType}"] = (p) =>
@@ -230,6 +245,8 @@ namespace com.mirle.ibg3k0.sc.WebAPI
                 return response;
             };
         }
+
+
 
         private void RegisterVehilceEvent()
         {
@@ -743,5 +760,32 @@ namespace com.mirle.ibg3k0.sc.WebAPI
         }
         const string PROMETHEUS_TOKEN_HELP = "HELP";
         const string PROMETHEUS_TOKEN_TYPE = "TYPE";
+    }
+    public static class Extensions
+    {
+        public static Response FromByteArray(this IResponseFormatter formatter, byte[] body, string contentType = null)
+        {
+            return new ByteArrayResponse(body, contentType);
+        }
+    }
+    public class ByteArrayResponse : Response
+    {
+        /// <summary>
+        /// Byte array response
+        /// </summary>
+        /// <param name="body">Byte array to be the body of the response</param>
+        /// <param name="contentType">Content type to use</param>
+        public ByteArrayResponse(byte[] body, string contentType = null)
+        {
+            this.ContentType = contentType ?? "application/octet-stream";
+
+            this.Contents = stream =>
+                {
+                    using (var writer = new BinaryWriter(stream))
+                    {
+                        writer.Write(body);
+                    }
+                };
+        }
     }
 }

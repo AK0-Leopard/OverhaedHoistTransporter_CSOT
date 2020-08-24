@@ -983,8 +983,19 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                     return;
                 }
                 btn_changeToRemove.Enabled = false;
-                await Task.Run(() => bcApp.SCApplication.VehicleService.Remove(vh_id));
-                MessageBox.Show($"{vh_id} remove ok");
+                //await Task.Run(() => bcApp.SCApplication.VehicleService.Remove(vh_id));
+                (bool isSuccess, string result) check_result = default((bool isSuccess, string result));
+                await Task.Run(() => check_result = bcApp.SCApplication.VehicleService.RemoveNew(vh_id));
+                //MessageBox.Show($"{vh_id} remove ok");
+                if (check_result.isSuccess)
+                {
+                    MessageBox.Show($"{vh_id} remove ok");
+                }
+                else
+                {
+                    MessageBox.Show($"{vh_id} remove fail.{Environment.NewLine}" +
+                                    $"result:{check_result.result}");
+                }
                 lbl_install_status.Text = noticeCar?.IS_INSTALLED.ToString();
             }
             finally
@@ -1004,8 +1015,19 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 }
 
                 btn_changeToInstall.Enabled = false;
-                await Task.Run(() => bcApp.SCApplication.VehicleService.Install(vh_id));
-                MessageBox.Show($"{vh_id} install ok");
+                (bool isSuccess, string result) check_result = default((bool isSuccess, string result));
+                //await Task.Run(() => bcApp.SCApplication.VehicleService.Install(vh_id));
+                await Task.Run(() => check_result = bcApp.SCApplication.VehicleService.InstallNew(vh_id));
+                //MessageBox.Show($"{vh_id} install ok");
+                if (check_result.isSuccess)
+                {
+                    MessageBox.Show($"{vh_id} install ok");
+                }
+                else
+                {
+                    MessageBox.Show($"{vh_id} install fail.{Environment.NewLine}" +
+                                    $"result:{check_result.result}");
+                }
                 lbl_install_status.Text = noticeCar?.IS_INSTALLED.ToString();
             }
             finally
@@ -1362,6 +1384,24 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             }
         }
 
+        private void num_test_dis_ValueChanged(object sender, EventArgs e)
+        {
+            string vh_id = cmb_tcpipctr_Vehicle.Text;
+            string sec_id = txt_sec_id.Text;
+            uint distance = (uint)num_test_dis.Value;
+            var section_obj = mainForm.BCApp.SCApplication.SectionBLL.cache.GetSection(sec_id);
+            sc.ProtocolFormat.OHTMessage.ID_134_TRANS_EVENT_REP id_134_trans_event_rep = new sc.ProtocolFormat.OHTMessage.ID_134_TRANS_EVENT_REP()
+            {
+                CurrentAdrID = section_obj == null ? "" : section_obj.TO_ADR_ID,
+                CurrentSecID = sec_id,
+                EventType = sc.ProtocolFormat.OHTMessage.EventType.AdrPass,
+                SecDistance = distance,
+            };
 
+            Task.Run(() =>
+            {
+                mainForm.BCApp.SCApplication.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh_id, id_134_trans_event_rep);
+            });
+        }
     }
 }

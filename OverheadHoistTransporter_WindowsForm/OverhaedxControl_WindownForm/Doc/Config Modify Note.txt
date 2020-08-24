@@ -1,0 +1,12 @@
+﻿**********************************************
+*  OverheadHoistTransporter_WindowsForm
+*  Latest modifications record
+*  Date  : 2019/11/21
+*  Author: 
+*  Mail  : 
+*  Tel   : 03-5783280
+**********************************************
+***v1.2.0
+   2019/11/21  (MarkChou)
+功能修正
+--修正權限控管Vehicle Management被發配到Operation底下的問題。

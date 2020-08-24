@@ -47,7 +47,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
             //宣告Timer
 
             //設定呼叫間隔時間為30ms
-            _timer.Interval = TimeSpan.FromMilliseconds(100);
+            _timer.Interval = TimeSpan.FromMilliseconds(5000);
 
             //加入callback function
             _timer.Tick += _timer_Tick;

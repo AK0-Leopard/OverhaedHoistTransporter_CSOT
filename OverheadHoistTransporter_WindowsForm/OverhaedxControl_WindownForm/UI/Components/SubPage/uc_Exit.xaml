@@ -1,0 +1,142 @@
+﻿<UserControl x:Class="com.mirle.ibg3k0.ohxc.winform.UI.Components.SubPage.uc_Exit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:com.mirle.ibg3k0.ohxc.winform.UI.Components.SubPage"
+             mc:Ignorable="d"  FontFamily="MicrosoftSansSerif"
+             d:DesignHeight="367" d:DesignWidth="420" Background="#f6f6f6" Foreground="White" FontSize="18" Loaded="Window_Loaded">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type PasswordBox}">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="#070022"/>
+            <Setter Property="FontFamily" Value="MicrosoftSansSerif"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type PasswordBox}">
+                        <Border x:Name="border" Width="auto" Height="auto" BorderThickness="1" BorderBrush="#adadad">
+                            <Grid x:Name="grid" Background="White">
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="33"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#005ba8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder" CornerRadius="5" BorderThickness="0,0,0,3">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="#003366"/>
+                            </Border.BorderBrush>
+                            <Border.Background>
+                                <LinearGradientBrush>
+                                    <GradientStop Color="#005ba8" Offset="0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.FontWeight="Normal"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="ButtonBorder" Value="#008aff"/>
+                                <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="#003366"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="Transparent"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#b2b2b2" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TextBlock_Default">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="#1b2338"/>
+            <Setter Property="FontFamily" Value="MicrosoftSansSerif"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="Content_14px" BasedOn="{StaticResource TextBlock_Default}">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#070022"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="PopupTitle_20px" BasedOn="{StaticResource TextBlock_Default}">
+            <Setter Property="Background" Value="#d9ecfc"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Padding" Value="0,34,0,0"/>
+        </Style>
+        <Style TargetType="{x:Type TextBox}" x:Key="TextBox_Default">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="#070022"/>
+            <Setter Property="FontFamily" Value="MicrosoftSansSerif"/>
+            <Setter Property="CharacterCasing" Value="Upper"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" Width="auto" Height="auto" BorderThickness="1" BorderBrush="#adadad">
+                            <Grid x:Name="grid" Background="White">
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type TextBox}" x:Key="Textbox_None_Border" BasedOn="{StaticResource TextBox_Default}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" Width="auto" Height="30" BorderThickness="0">
+                            <Grid x:Name="grid" Background="White">
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="75"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="154"/>
+            <RowDefinition Height="83"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource Content_14px}" Margin="0,8,0,0">Enter your password to exit the system.</TextBlock>
+        <StackPanel Grid.Row="2" Grid.Column="1">
+            <TextBlock Style="{StaticResource Content_14px}" HorizontalAlignment="Left">User ID</TextBlock>
+            <TextBox Style="{StaticResource Textbox_None_Border}" Name="txt_UserID" IsReadOnly="True"></TextBox>
+            <Border Height="17"/>
+            <TextBlock Style="{StaticResource Content_14px}" HorizontalAlignment="Left">Password</TextBlock>
+            <PasswordBox Name="password_box" MaxLength="16" PasswordChar="●"></PasswordBox>
+        </StackPanel>
+        <Border Grid.Row="0" Grid.ColumnSpan="3" BorderThickness="0,0,0,1" BorderBrush="#979797">
+            <TextBlock Style="{StaticResource PopupTitle_20px}">Exit</TextBlock>
+        </Border>
+        <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+            <Button Name="btn_Exit" VerticalAlignment="Top" Margin="0,0,7,0" Click="Button_Click" IsDefault="True">Exit</Button>
+            <Button Name="btn_Cancel" VerticalAlignment="Top" Margin="7,0,0,0" Click="Button_Click" IsCancel="True">Cancel</Button>
+        </DockPanel>
+    </Grid>
+</UserControl>

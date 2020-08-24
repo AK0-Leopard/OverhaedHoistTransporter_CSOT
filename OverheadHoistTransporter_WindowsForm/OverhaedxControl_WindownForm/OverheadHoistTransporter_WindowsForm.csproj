@@ -1,0 +1,1557 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DE15D2BC-F779-4A9D-9B55-EE85AFEF4B95}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>com.mirle.ibg3k0.ohxc.winform</RootNamespace>
+    <AssemblyName>OverhaedxControl_WindownForm</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'HistoricalPlayer|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\HistoricalPlayer\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SysIcon_OHxC.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoClosingMessageBox, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoClosingMessageBox.1.0.0.2\lib\net40\AutoClosingMessageBox.dll</HintPath>
+    </Reference>
+    <Reference Include="BlockControlFramework, Version=3.0.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\BlockControlFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="CSkin, Version=16.1.14.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\CSkin.dll</HintPath>
+    </Reference>
+    <Reference Include="Elasticsearch.Net, Version=7.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Elasticsearch.Net.7.1.0\lib\net461\Elasticsearch.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="GenericParsing, Version=1.1.3.20921, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\GenericParsing.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="MirleGO_UIFrameWork, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\MirleGO_UIFrameWork.dll</HintPath>
+    </Reference>
+    <Reference Include="NATS.Client, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NATS.Client.0.8.1\lib\net45\NATS.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Nest, Version=7.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.7.1.0\lib\net461\Nest.dll</HintPath>
+    </Reference>
+    <Reference Include="Nest.7xUpgradeAssistant, Version=7.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.7xUpgradeAssistant.7.1.0\lib\net461\Nest.7xUpgradeAssistant.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Pipelines.Sockets.Unofficial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42ea0a778e13fbe2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Pipelines.Sockets.Unofficial.1.0.7\lib\net461\Pipelines.Sockets.Unofficial.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="ScriptControl, Version=1.3.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\ScriptControl.dll</HintPath>
+    </Reference>
+    <Reference Include="SECSTrxControl, Version=2.0.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\SECSTrxControl.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.2.0.513\lib\net461\StackExchange.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="STAN.Client, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\STAN.Client.0.1.4\lib\net45\STAN.Client.DLL</HintPath>
+    </Reference>
+    <Reference Include="Stateless, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93038f0927583c9a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stateless.4.2.1\lib\net45\Stateless.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.PerformanceCounter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.PerformanceCounter.4.5.0\lib\net461\System.Diagnostics.PerformanceCounter.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Pipelines, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.4.5.2\lib\netstandard2.0\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Channels, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Channels.4.5.0\lib\netstandard2.0\System.Threading.Channels.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.1\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ToggleSwitch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="Utility_LogQuery, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Utility_LogQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WpfAnimatedGif, Version=1.4.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfAnimatedGif.1.4.18\lib\net\WpfAnimatedGif.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App\BCAppConstants.cs" />
+    <Compile Include="App\WindownApplication.cs" />
+    <Compile Include="BackgroundWork\BackgroundWork_ProcessVhPositionUpdate.cs" />
+    <Compile Include="BLL\OperationHistoryBLL.cs" />
+    <Compile Include="BLL\SegmentBLL.cs" />
+    <Compile Include="BLL\PortStationBLL.cs" />
+    <Compile Include="BLL\CmdBLL.cs" />
+    <Compile Include="BLL\UserBLL.cs" />
+    <Compile Include="BLL\AlarmBLL.cs" />
+    <Compile Include="Common\CsvUtility.cs" />
+    <Compile Include="Common\UASUtility.cs" />
+    <Compile Include="EventAction\QueryExtension.cs" />
+    <Compile Include="EventAction\ImmediateNotificationRegister.cs" />
+    <Compile Include="EventAction\DBTableWatcher.cs" />
+    <Compile Include="ObjectRelay\MTLMTSDatailViewObj.cs" />
+    <Compile Include="ObjectRelay\SegmentViewObj.cs" />
+    <Compile Include="ObjectRelay\TarnferCMDViewObj.cs" />
+    <Compile Include="ObjectRelay\CommandDatailViewObj.cs" />
+    <Compile Include="ObjectRelay\PortStationViewObj.cs" />
+    <Compile Include="OHxCMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OHxCMainForm.Designer.cs">
+      <DependentUpon>OHxCMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BLL\HistoricalReply.cs" />
+    <Compile Include="BLL\MapBLL.cs" />
+    <Compile Include="BLL\LineBLL.cs" />
+    <Compile Include="BLL\SysExcuteQualityBLL.cs" />
+    <Compile Include="BLL\VehicleBLL.cs" />
+    <Compile Include="Common\ElasticSearchManager.cs" />
+    <Compile Include="Common\NatsManager.cs" />
+    <Compile Include="Common\ObjCacheManager.cs" />
+    <Compile Include="Common\RedisCacheManager.cs" />
+    <Compile Include="Common\WebClientManager.cs" />
+    <Compile Include="Common\WinFromUtility.cs" />
+    <Compile Include="Dao\MirleOHS_100\SectionControl_100.cs" />
+    <Compile Include="i18n\LocalizedDisplayNameAttribute.cs" />
+    <Compile Include="i18n\MsgHelper.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectRelay\VSection_100ObjToShow.cs" />
+    <Compile Include="ObjectRelay\VehicleObjToShow.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\SystemIcon.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SystemIcon.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Schedule\BackgroundWorkDriver.cs" />
+    <Compile Include="Schedule\BackgroundWorkItem.cs" />
+    <Compile Include="Service\HistoricalReplyService.cs" />
+    <Compile Include="Service\SysExcuteQualityQueryService.cs" />
+    <Compile Include="UI\Components\MyUserControl\uc_btn_Close.xaml.cs">
+      <DependentUpon>uc_btn_Close.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_Button.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_Button.Designer.cs">
+      <DependentUpon>uc_Button.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_ControlStatusSignal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_ControlStatusSignal.designer.cs">
+      <DependentUpon>uc_ControlStatusSignal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_DeviceStatusSignal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_DeviceStatusSignal.Designer.cs">
+      <DependentUpon>uc_DeviceStatusSignal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_MTLMTS1Status.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_MTLMTS1Status.designer.cs">
+      <DependentUpon>uc_MTLMTS1Status.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_MTS2Status.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_MTS2Status.designer.cs">
+      <DependentUpon>uc_MTS2Status.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_TabDeviceStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_TabDeviceStatus.Designer.cs">
+      <DependentUpon>uc_TabDeviceStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_TabSystemControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_TabSystemControl.Designer.cs">
+      <DependentUpon>uc_TabSystemControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_About.xaml.cs">
+      <DependentUpon>uc_About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_AccountManagement.xaml.cs">
+      <DependentUpon>uc_AccountManagement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_ChangePriority.xaml.cs">
+      <DependentUpon>uc_ChangePriority.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_Exit.xaml.cs">
+      <DependentUpon>uc_Exit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_Login.xaml.cs">
+      <DependentUpon>uc_Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_PasswordChange.xaml.cs">
+      <DependentUpon>uc_PasswordChange.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_AdvancedSettings.xaml.cs">
+      <DependentUpon>uc_SP_AdvancedSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_AlarmMaintenance.xaml.cs">
+      <DependentUpon>uc_SP_AlarmMaintenance.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_CommunicationLog.xaml.cs">
+      <DependentUpon>uc_SP_CommunicationLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_MCSCommandLog.xaml.cs">
+      <DependentUpon>uc_SP_MCSCommandLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_MTLMTSMaintenance.xaml.cs">
+      <DependentUpon>uc_SP_MTLMTSMaintenance.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_PathControlList.xaml.cs">
+      <DependentUpon>uc_SP_PathControlList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_PortMaint.xaml.cs">
+      <DependentUpon>uc_SP_PortMaint.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_SystemModeControl.xaml.cs">
+      <DependentUpon>uc_SP_SystemModeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_TransferManagement.xaml.cs">
+      <DependentUpon>uc_SP_TransferManagement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SP_VehicleManagement.xaml.cs">
+      <DependentUpon>uc_SP_VehicleManagement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_SystemModeControl.xaml.cs">
+      <DependentUpon>uc_SystemModeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\SubPage\uc_TransferCommand.xaml.cs">
+      <DependentUpon>uc_TransferCommand.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\TabControlEx2.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Components\Tool\ChecksModel.cs" />
+    <Compile Include="UI\Components\Tool\FooViewModel.cs" />
+    <Compile Include="UI\Components\Tool\NumericUpDown.xaml.cs">
+      <DependentUpon>NumericUpDown.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\Tool\ToggleButton.xaml.cs">
+      <DependentUpon>ToggleButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\Tool\TreeViewModel.cs" />
+    <Compile Include="UI\Components\Tool\VirtualToggleButton.cs" />
+    <Compile Include="UI\Components\ucMTLVehicleTable.xaml.cs">
+      <DependentUpon>ucMTLVehicleTable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctlPathControlList.xaml.cs">
+      <DependentUpon>uctlPathControlList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctl_AlarmList.xaml.cs">
+      <DependentUpon>uctl_AlarmList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_ControlStatusSignal.xaml.cs">
+      <DependentUpon>uc_ControlStatusSignal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_DeviceStatusSignal.xaml.cs">
+      <DependentUpon>uc_DeviceStatusSignal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_MTLMTSInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_MTLMTSInfo.Designer.cs">
+      <DependentUpon>uc_MTLMTSInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_LockStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_LockStatus.Designer.cs">
+      <DependentUpon>uc_LockStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_StatusSignal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_StatusSignal.designer.cs">
+      <DependentUpon>uc_StatusSignal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_StatusSignal.xaml.cs">
+      <DependentUpon>uc_StatusSignal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_StatusSignal_1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_StatusSignal_1.designer.cs">
+      <DependentUpon>uc_StatusSignal_1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_TabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_TabControl.Designer.cs">
+      <DependentUpon>uc_TabControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_VehicleStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_VehicleStatus.Designer.cs">
+      <DependentUpon>uc_VehicleStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_MCSQueueStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_MCSQueueStatus.Designer.cs">
+      <DependentUpon>uc_MCSQueueStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_TipMessage\TipMessage_Type_Light.xaml.cs">
+      <DependentUpon>TipMessage_Type_Light.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uctlReserveSectionView.xaml.cs">
+      <DependentUpon>uctlReserveSectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_FunctionKey.xaml.cs">
+      <DependentUpon>uc_FunctionKey.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_grid_CurAlarm.xaml.cs">
+      <DependentUpon>uc_grid_CurAlarm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_grid_SystemLog.xaml.cs">
+      <DependentUpon>uc_grid_SystemLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_grid_TransCMD.xaml.cs">
+      <DependentUpon>uc_grid_TransCMD.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_grid_VHStatus.xaml.cs">
+      <DependentUpon>uc_grid_VHStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_Log.xaml.cs">
+      <DependentUpon>uc_Log.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_MTLMTSStatus.xaml.cs">
+      <DependentUpon>uc_MTLMTSStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_PlFunctionKey.xaml.cs">
+      <DependentUpon>uc_PlFunctionKey.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_StatusControl.xaml.cs">
+      <DependentUpon>uc_StatusControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_StatusControlC.xaml.cs">
+      <DependentUpon>uc_StatusControlC.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_StatusInfo.xaml.cs">
+      <DependentUpon>uc_StatusInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_StatusInfo_Default.xaml.cs">
+      <DependentUpon>uc_StatusInfo_Default.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndComboBox_H.xaml.cs">
+      <DependentUpon>uc_TextBlockAndComboBox_H.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndNumeric.xaml.cs">
+      <DependentUpon>uc_TextBlockAndNumeric.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndPasswordbox.xaml.cs">
+      <DependentUpon>uc_TextBlockAndPasswordbox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndComboBox.xaml.cs">
+      <DependentUpon>uc_TextBlockAndComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndRadioButton.xaml.cs">
+      <DependentUpon>uc_TextBlockAndRadioButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndRadioButton_V.xaml.cs">
+      <DependentUpon>uc_TextBlockAndRadioButton_V.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndTextBoxNB.xaml.cs">
+      <DependentUpon>uc_TextBlockAndTextBoxNB.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlockAndTextBox.xaml.cs">
+      <DependentUpon>uc_TextBlockAndTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TextBlock_H.xaml.cs">
+      <DependentUpon>uc_TextBlock_H.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_TitleContent.xaml.cs">
+      <DependentUpon>uc_TitleContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_Vehicle.xaml.cs">
+      <DependentUpon>uc_Vehicle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_VhSettingS1.xaml.cs">
+      <DependentUpon>uc_VhSettingS1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_VhSettingS2.xaml.cs">
+      <DependentUpon>uc_VhSettingS2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\WPF_UserControl\uc_VhSettingS3.xaml.cs">
+      <DependentUpon>uc_VhSettingS3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Help\AboutPopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Help\AboutPopupForm.Designer.cs">
+      <DependentUpon>AboutPopupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Maintenance\frm_Maintenance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Maintenance\frm_Maintenance.designer.cs">
+      <DependentUpon>frm_Maintenance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Maintenance\ReserveSectionInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Maintenance\ReserveSectionInfoForm.designer.cs">
+      <DependentUpon>ReserveSectionInfoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Maintenance\uc_MTLMTSMaint.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Maintenance\uc_MTLMTSMaint.designer.cs">
+      <DependentUpon>uc_MTLMTSMaint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\frm_Operation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\frm_Operation.designer.cs">
+      <DependentUpon>frm_Operation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\AssignVehiclePopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\AssignVehiclePopupForm.Designer.cs">
+      <DependentUpon>AssignVehiclePopupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\ChangePriorityPopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\ChangePriorityPopupForm.Designer.cs">
+      <DependentUpon>ChangePriorityPopupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\ChangeStatusPopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\ChangeStatusPopupForm.Designer.cs">
+      <DependentUpon>ChangeStatusPopupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\ShiftCommandPopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Operation\RequestPopupForm\ShiftCommandPopupForm.Designer.cs">
+      <DependentUpon>ShiftCommandPopupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Query\frm_Query.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Query\frm_Query.designer.cs">
+      <DependentUpon>frm_Query.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Query\uc_CommunicationLog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Query\uc_CommunicationLog.designer.cs">
+      <DependentUpon>uc_CommunicationLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_Query\uc_McsCommandLog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_Query\uc_McsCommandLog.designer.cs">
+      <DependentUpon>uc_McsCommandLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_System\ChangePwdForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_System\ChangePwdForm.Designer.cs">
+      <DependentUpon>ChangePwdForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_System\ExitSystemPopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_System\ExitSystemPopupForm.Designer.cs">
+      <DependentUpon>ExitSystemPopupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_System\LoginPopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_System\LoginPopupForm.Designer.cs">
+      <DependentUpon>LoginPopupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Menu_System\UserAccountMgt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Menu_System\UserAccountMgt.Designer.cs">
+      <DependentUpon>UserAccountMgt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OHxC_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OHxC_Form.Designer.cs">
+      <DependentUpon>OHxC_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\LabelExt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\RoundButton_AllRound.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\RoundPanel_AllRound.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\TabControlEx1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_AddressData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_AddressData.Designer.cs">
+      <DependentUpon>uc_AddressData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_bt_DownloadToVehicle.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_bt_DownloadToVehicle.Designer.cs">
+      <DependentUpon>uc_bt_DownloadToVehicle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_bt_Save.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_bt_Save.Designer.cs">
+      <DependentUpon>uc_bt_Save.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_ControlData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_ControlData.Designer.cs">
+      <DependentUpon>uc_ControlData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_GuideData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_GuideData.Designer.cs">
+      <DependentUpon>uc_GuideData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_ScaleData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_ScaleData.Designer.cs">
+      <DependentUpon>uc_ScaleData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_SectionData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_SectionData.Designer.cs">
+      <DependentUpon>uc_SectionData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_TravelBaseData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\MyUserControl\uc_TravelBaseData.Designer.cs">
+      <DependentUpon>uc_TravelBaseData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctlAddress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uctlAddress.Designer.cs">
+      <DependentUpon>uctlAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctlHistoricalReplyPlayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uctlHistoricalReplyPlayer.Designer.cs">
+      <DependentUpon>uctlHistoricalReplyPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctlNewVehicle.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uctlNewVehicle.Designer.cs">
+      <DependentUpon>uctlNewVehicle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctlPortNew.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uctlPortNew.Designer.cs">
+      <DependentUpon>uctlPortNew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctlRail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uctlRail.Designer.cs">
+      <DependentUpon>uctlRail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctl_ElasticQuery_System_Process.xaml.cs">
+      <DependentUpon>uctl_ElasticQuery_System_Process.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctl_ElasticQuery.xaml.cs">
+      <DependentUpon>uctl_ElasticQuery.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctl_Map.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uctl_Map.Designer.cs">
+      <DependentUpon>uctl_Map.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uctl_Dashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uctl_Dashboard.Designer.cs">
+      <DependentUpon>uctl_Dashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_SystemInformation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_SystemInformation.Designer.cs">
+      <DependentUpon>uc_SystemInformation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_SystemSignal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_SystemSignal.Designer.cs">
+      <DependentUpon>uc_SystemSignal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\uc_CSTStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Components\uc_CSTStatus.Designer.cs">
+      <DependentUpon>uc_CSTStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CSTInterfaceOverview_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\CSTInterfaceOverview_Form.Designer.cs">
+      <DependentUpon>CSTInterfaceOverview_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CSTInterface_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\CSTInterface_Form.Designer.cs">
+      <DependentUpon>CSTInterface_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\LogQueryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\LogQueryForm.Designer.cs">
+      <DependentUpon>LogQueryForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OHT_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OHT_Form.Designer.cs">
+      <DependentUpon>OHT_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Operate\frmSegmentReservation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Operate\frmSegmentReservation.Designer.cs">
+      <DependentUpon>frmSegmentReservation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Operate\frmMTL_MTSOperation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Operate\frmMTL_MTSOperation.Designer.cs">
+      <DependentUpon>frmMTL_MTSOperation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Operate\frmManualCommand.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Operate\frmManualCommand.Designer.cs">
+      <DependentUpon>frmManualCommand.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Operate\VehicleDataSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Operate\VehicleDataSettingForm.Designer.cs">
+      <DependentUpon>VehicleDataSettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Vo\ObjectRelayVo\AlarmObjToShow.cs" />
+    <Compile Include="Vo\User.cs" />
+    <Compile Include="Vo\UserFunc.cs" />
+    <Compile Include="Vo\UserGroup.cs" />
+    <Compile Include="Vo\VehicleHistoricalInfo.cs" />
+    <EmbeddedResource Include="OHxCMainForm.resx">
+      <DependentUpon>OHxCMainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Properties\SystemIcon.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SystemIcon.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_Button.resx">
+      <DependentUpon>uc_Button.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_ControlStatusSignal.resx">
+      <DependentUpon>uc_ControlStatusSignal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_DeviceStatusSignal.resx">
+      <DependentUpon>uc_DeviceStatusSignal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_MTLMTS1Status.resx">
+      <DependentUpon>uc_MTLMTS1Status.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_MTS2Status.resx">
+      <DependentUpon>uc_MTS2Status.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_TabDeviceStatus.resx">
+      <DependentUpon>uc_TabDeviceStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_TabSystemControl.resx">
+      <DependentUpon>uc_TabSystemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_MTLMTSInfo.resx">
+      <DependentUpon>uc_MTLMTSInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_LockStatus.resx">
+      <DependentUpon>uc_LockStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_StatusSignal.resx">
+      <DependentUpon>uc_StatusSignal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_StatusSignal_1.resx">
+      <DependentUpon>uc_StatusSignal_1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_TabControl.resx">
+      <DependentUpon>uc_TabControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_VehicleStatus.resx">
+      <DependentUpon>uc_VehicleStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_MCSQueueStatus.resx">
+      <DependentUpon>uc_MCSQueueStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Help\AboutPopupForm.resx">
+      <DependentUpon>AboutPopupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Maintenance\frm_Maintenance.resx">
+      <DependentUpon>frm_Maintenance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Maintenance\ReserveSectionInfoForm.resx">
+      <DependentUpon>ReserveSectionInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Maintenance\uc_MTLMTSMaint.resx">
+      <DependentUpon>uc_MTLMTSMaint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Operation\frm_Operation.resx">
+      <DependentUpon>frm_Operation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Operation\RequestPopupForm\AssignVehiclePopupForm.resx">
+      <DependentUpon>AssignVehiclePopupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Operation\RequestPopupForm\ChangePriorityPopupForm.resx">
+      <DependentUpon>ChangePriorityPopupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Operation\RequestPopupForm\ChangeStatusPopupForm.resx">
+      <DependentUpon>ChangeStatusPopupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Operation\RequestPopupForm\ShiftCommandPopupForm.resx">
+      <DependentUpon>ShiftCommandPopupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Query\frm_Query.resx">
+      <DependentUpon>frm_Query.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Query\uc_CommunicationLog.resx">
+      <DependentUpon>uc_CommunicationLog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_Query\uc_McsCommandLog.resx">
+      <DependentUpon>uc_McsCommandLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_System\ChangePwdForm.resx">
+      <DependentUpon>ChangePwdForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_System\ExitSystemPopupForm.resx">
+      <DependentUpon>ExitSystemPopupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_System\LoginPopupForm.resx">
+      <DependentUpon>LoginPopupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Menu_System\UserAccountMgt.resx">
+      <DependentUpon>UserAccountMgt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OHxC_Form.resx">
+      <DependentUpon>OHxC_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\RoundButton_AllRound.resx">
+      <DependentUpon>RoundButton_AllRound.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\RoundPanel_AllRound.resx">
+      <DependentUpon>RoundPanel_AllRound.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_AddressData.resx">
+      <DependentUpon>uc_AddressData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_bt_DownloadToVehicle.resx">
+      <DependentUpon>uc_bt_DownloadToVehicle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_bt_Save.resx">
+      <DependentUpon>uc_bt_Save.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_ControlData.resx">
+      <DependentUpon>uc_ControlData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_GuideData.resx">
+      <DependentUpon>uc_GuideData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_ScaleData.resx">
+      <DependentUpon>uc_ScaleData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_SectionData.resx">
+      <DependentUpon>uc_SectionData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\MyUserControl\uc_TravelBaseData.resx">
+      <DependentUpon>uc_TravelBaseData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uctlAddress.resx">
+      <DependentUpon>uctlAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uctlHistoricalReplyPlayer.resx">
+      <DependentUpon>uctlHistoricalReplyPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uctlNewVehicle.resx">
+      <DependentUpon>uctlNewVehicle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uctlPortNew.resx">
+      <DependentUpon>uctlPortNew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uctlRail.resx">
+      <DependentUpon>uctlRail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uctl_Dashboard.resx">
+      <DependentUpon>uctl_Dashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uctl_Map.resx">
+      <DependentUpon>uctl_Map.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_SystemInformation.resx">
+      <DependentUpon>uc_SystemInformation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_SystemSignal.resx">
+      <DependentUpon>uc_SystemSignal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Components\uc_CSTStatus.resx">
+      <DependentUpon>uc_CSTStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CSTInterfaceOverview_Form.resx">
+      <DependentUpon>CSTInterfaceOverview_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CSTInterface_Form.resx">
+      <DependentUpon>CSTInterface_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\LogQueryForm.resx">
+      <DependentUpon>LogQueryForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OHT_Form.resx">
+      <DependentUpon>OHT_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Operate\frmSegmentReservation.resx">
+      <DependentUpon>frmSegmentReservation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Operate\frmMTL_MTSOperation.resx">
+      <DependentUpon>frmMTL_MTSOperation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Operate\frmManualCommand.resx">
+      <DependentUpon>frmManualCommand.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Operate\VehicleDataSettingForm.resx">
+      <DependentUpon>VehicleDataSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Config\NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="DLL\ScriptControl.dll.config" />
+    <None Include="DLL\SECSTrxControl.dll.config" />
+    <None Include="DLL\TCPIPTrxControl.dll.config" />
+    <None Include="Doc\CSOTt4_xMCS-IBSEM CommunicationSpecifications_ModuleOHT_v4.2%28E%29.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\com.mirle.ibg3k0.ohxc.winform.ObjectRelay.VehicleObjToShow.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DLL\BlockControlFramework.dll" />
+    <Content Include="DLL\CSkin.dll" />
+    <Content Include="DLL\GenericParsing.dll" />
+    <Content Include="DLL\hasp_net_windows.dll" />
+    <Content Include="DLL\MirleGO_UIFrameWork.dll" />
+    <Content Include="DLL\NLog.dll" />
+    <Content Include="DLL\ScriptControl.dll" />
+    <Content Include="DLL\ScriptControl.pdb" />
+    <Content Include="DLL\SECSTrxControl.dll" />
+    <Content Include="DLL\SECSTrxControl.pdb" />
+    <Content Include="DLL\TCPIPTrxControl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DLL\TCPIPTrxControl.pdb" />
+    <Content Include="DLL\ToggleSwitch.dll" />
+    <Content Include="DLL\UtilityCommon.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DLL\Utility_LogQuery.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\Control status_LinkOk.bmp" />
+    <None Include="Resources\Control status_LinkOk.png" />
+    <None Include="Resources\Control status_LinkFail.png" />
+    <None Include="Resources\Connection Control_On.png" />
+    <None Include="Resources\Connection Control_Off.png" />
+    <Resource Include="Resources\SystemIcon\TipMessage_Close.png" />
+    <Resource Include="Resources\SystemIcon\TipMessage_Error.png" />
+    <Resource Include="Resources\SystemIcon\TipMessage_Info.png" />
+    <Resource Include="Resources\SystemIcon\Connection Control_Off.png" />
+    <Resource Include="Resources\SystemIcon\Connection Control_On.png" />
+    <Resource Include="Resources\SystemIcon\MTL_Down_Flicker.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SystemIcon\MTL_Up_Flicker.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <None Include="Resources\icon_CSOTLogo.png" />
+    <None Include="Resources\icon_MirleLogo.png" />
+    <Content Include="Doc\Config Modify Note.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Doc\ForV.1.2.0update.sql" />
+    <Content Include="Doc\Version Release Note.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Resources\SystemIcon\chk_no.png" />
+    <Resource Include="Resources\SystemIcon\chk_null.png" />
+    <Resource Include="Resources\SystemIcon\chk_yes.png" />
+    <Content Include="SysIcon_OHxC.ico" />
+    <None Include="Resources\icon_Home.png" />
+    <None Include="Resources\icon_Hamburger.png" />
+    <Resource Include="Resources\FunctionKeyIcon\FuncKey_AutomaticReset.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\FunctionKeyIcon\FuncKey_ManualCommand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\FunctionKeyIcon\FuncKey_MCSCommand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\FunctionKeyIcon\FuncKey_MTLMTSMaintenance.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\FunctionKeyIcon\FuncKey_RestoreElectricity.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\FunctionKeyIcon\FuncKey_SegmentReservation.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="DLL\Xceed.Wpf.Toolkit.dll" />
+    <Content Include="Resources\SystemIcon\icon_Home.png" />
+    <Resource Include="Resources\VehiclePisplay\MTL Vehicle _None.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\VehiclePisplay\MTL Vehicle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <None Include="Resources\Control status_confirm.png" />
+    <None Include="Resources\Control status_error.png" />
+    <Content Include="Resources\GlassInterface\Chart_Load.png" />
+    <Content Include="Resources\GlassInterface\Chart_Unload.png" />
+    <None Include="Resources\MTL_Down_Off.png" />
+    <None Include="Resources\MTL_Down_On.png" />
+    <None Include="Resources\MTL_green.png" />
+    <None Include="Resources\MTL_red.png" />
+    <None Include="Resources\MTL_Up_Off.png" />
+    <None Include="Resources\MTL_Up_On.png" />
+    <Resource Include="Resources\MTS_green.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\MTS_red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SystemIcon\Control status_confirm.png" />
+    <Resource Include="Resources\SystemIcon\Control status_error.png" />
+    <Resource Include="Resources\SystemIcon\Control status_LinkFail.png" />
+    <Resource Include="Resources\SystemIcon\Control status_LinkOk.png" />
+    <Content Include="Resources\SystemIcon\Lifer Down 1.png" />
+    <Content Include="Resources\SystemIcon\Lifer Down 2.png" />
+    <Content Include="Resources\SystemIcon\Lifter Up 1.png" />
+    <Content Include="Resources\SystemIcon\Lifter Up 2.png" />
+    <Resource Include="Resources\SystemIcon\Mirle_logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Resources\SystemIcon\MTL_Down_Off.png" />
+    <Resource Include="Resources\SystemIcon\MTL_Down_On.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SystemIcon\MTL_green.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SystemIcon\MTL_red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Resources\SystemIcon\MTL_Up_Off.png" />
+    <Resource Include="Resources\SystemIcon\MTL_Up_On.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Resources\SystemIcon\Stop Hover.png" />
+    <Content Include="Resources\SystemIcon\Stop.png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Unconnected]_OHT.png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Power on]_OHT.png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Manual]_OHT.png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Auto-Remote]_OHT.png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Auto-Local]_OHT.png" />
+    <None Include="Resources\SystemIcon\Safty door.png" />
+    <None Include="Resources\SystemIcon\Safty door Alarm.png" />
+    <None Include="Resources\SystemIcon\FUU.png" />
+    <None Include="Resources\SystemIcon\FUU Alarm.png" />
+    <Resource Include="Resources\SystemIcon\icon_Link_ON.png" />
+    <Resource Include="Resources\SystemIcon\icon_Link_OFF.png" />
+    <None Include="Resources\SystemIcon\ZoomUp.png" />
+    <None Include="Resources\SystemIcon\Zoom-Out-icon.png" />
+    <None Include="Resources\SystemIcon\Zoom-In-icon.png" />
+    <None Include="Resources\SystemIcon\ZoomDown.png" />
+    <None Include="Resources\SystemIcon\ZoomDef.png" />
+    <None Include="Resources\SystemIcon\zoom out.png" />
+    <None Include="Resources\SystemIcon\zoom in.png" />
+    <None Include="Resources\SystemIcon\zoom defualt.png" />
+    <None Include="Resources\SystemIcon\yes.png" />
+    <None Include="Resources\SystemIcon\x.png" />
+    <None Include="Resources\SystemIcon\WorkOrderOperation.png" />
+    <None Include="Resources\SystemIcon\windows1.png" />
+    <None Include="Resources\SystemIcon\windows.png" />
+    <None Include="Resources\SystemIcon\warning-28-xxl.png" />
+    <None Include="Resources\SystemIcon\Visibility.png" />
+    <None Include="Resources\SystemIcon\van-gogh-vincent-starry-night_2.jpg" />
+    <None Include="Resources\SystemIcon\user.png" />
+    <None Include="Resources\SystemIcon\unlock2.png" />
+    <None Include="Resources\SystemIcon\tip-alarm3.png" />
+    <None Include="Resources\SystemIcon\tip-alarm2.png" />
+    <None Include="Resources\SystemIcon\tip-alarm1.png" />
+    <None Include="Resources\SystemIcon\tip_alarm_info.png" />
+    <None Include="Resources\SystemIcon\tip.png" />
+    <None Include="Resources\SystemIcon\TabControl_Select_BG.PNG" />
+    <None Include="Resources\SystemIcon\system2.png" />
+    <None Include="Resources\SystemIcon\system1.png" />
+    <None Include="Resources\SystemIcon\system.png" />
+    <None Include="Resources\SystemIcon\StatusBar_UserIcon.png" />
+    <None Include="Resources\SystemIcon\StatusBar_HotKey.png" />
+    <None Include="Resources\SystemIcon\StatusBar_Auto Remote.png" />
+    <None Include="Resources\SystemIcon\StatusBar_Auto Local.png" />
+    <None Include="Resources\SystemIcon\status.png" />
+    <None Include="Resources\SystemIcon\start.png" />
+    <None Include="Resources\SystemIcon\setting.png" />
+    <None Include="Resources\SystemIcon\send.png" />
+    <None Include="Resources\SystemIcon\search-37.png" />
+    <None Include="Resources\SystemIcon\se.png" />
+    <None Include="Resources\SystemIcon\save.png" />
+    <None Include="Resources\SystemIcon\remote-control-label-icon_141372982.png" />
+    <None Include="Resources\SystemIcon\refresh.png" />
+    <None Include="Resources\SystemIcon\red light.png" />
+    <None Include="Resources\SystemIcon\question-mark1.png" />
+    <None Include="Resources\SystemIcon\question-mark.png" />
+    <None Include="Resources\SystemIcon\query1.png" />
+    <None Include="Resources\SystemIcon\query.png" />
+    <None Include="Resources\SystemIcon\QTY2.png" />
+    <None Include="Resources\SystemIcon\priority1.png" />
+    <None Include="Resources\SystemIcon\priority.png" />
+    <None Include="Resources\SystemIcon\PPID maintenance.png" />
+    <None Include="Resources\SystemIcon\PortIcon.png" />
+    <None Include="Resources\SystemIcon\pinch.png" />
+    <None Include="Resources\SystemIcon\pinch open.png" />
+    <None Include="Resources\SystemIcon\pinch closed.png" />
+    <None Include="Resources\SystemIcon\OS_Scenario.png" />
+    <None Include="Resources\SystemIcon\operation1.png" />
+    <None Include="Resources\SystemIcon\operation.png" />
+    <None Include="Resources\SystemIcon\mirle-logo.gif" />
+    <None Include="Resources\SystemIcon\Mirle_Mini_Color_Logo.png" />
+    <None Include="Resources\SystemIcon\Mirle_Logo3.png" />
+    <None Include="Resources\SystemIcon\Mirle_Loading_9.gif" />
+    <None Include="Resources\SystemIcon\MIRLE loge_boe.png" />
+    <None Include="Resources\SystemIcon\message.png" />
+    <None Include="Resources\SystemIcon\maintenanceMenu.png" />
+    <None Include="Resources\SystemIcon\maintenance5.png" />
+    <None Include="Resources\SystemIcon\maintenace1.png" />
+    <None Include="Resources\SystemIcon\maintenace.png" />
+    <None Include="Resources\SystemIcon\main.jpg" />
+    <None Include="Resources\SystemIcon\login1.png" />
+    <None Include="Resources\SystemIcon\login_out2.png" />
+    <None Include="Resources\SystemIcon\login_out.png" />
+    <None Include="Resources\SystemIcon\login.png" />
+    <None Include="Resources\SystemIcon\lock2.png" />
+    <None Include="Resources\SystemIcon\line layout.png" />
+    <None Include="Resources\SystemIcon\Line Detail.png" />
+    <None Include="Resources\SystemIcon\Light_Red.png" />
+    <None Include="Resources\SystemIcon\Light_Green.png" />
+    <None Include="Resources\SystemIcon\LAMI_Scenario.png" />
+    <None Include="Resources\SystemIcon\Invisibility.png" />
+    <None Include="Resources\SystemIcon\information.png" />
+    <None Include="Resources\SystemIcon\InfoIcon.png" />
+    <None Include="Resources\SystemIcon\info1.png" />
+    <None Include="Resources\SystemIcon\import.png" />
+    <None Include="Resources\SystemIcon\icon_ZoomOut.png" />
+    <None Include="Resources\SystemIcon\icon_ZoomIn.png" />
+    <None Include="Resources\SystemIcon\icon_zoom_out.png" />
+    <None Include="Resources\SystemIcon\icon_zoom_in.png" />
+    <None Include="Resources\SystemIcon\icon_zoom_default.png" />
+    <None Include="Resources\SystemIcon\icon_Work_Order_Operation.png" />
+    <None Include="Resources\SystemIcon\icon_User.png" />
+    <None Include="Resources\SystemIcon\icon_Startup.png" />
+    <None Include="Resources\SystemIcon\icon_Shut Down.png" />
+    <None Include="Resources\SystemIcon\icon_ShortCut.png" />
+    <None Include="Resources\SystemIcon\icon_ShortCut.bmp" />
+    <None Include="Resources\SystemIcon\icon_PPID_Maintenance.png" />
+    <None Include="Resources\SystemIcon\icon_PLC Link OFF.png" />
+    <None Include="Resources\SystemIcon\icon_Others.png" />
+    <None Include="Resources\SystemIcon\icon_Maintenance.png" />
+    <None Include="Resources\SystemIcon\icon_MainMenu_Remote.png" />
+    <None Include="Resources\SystemIcon\icon_MainMenu_Local.png" />
+    <None Include="Resources\SystemIcon\icon_LoginAndout.png" />
+    <None Include="Resources\SystemIcon\icon_IDLE.png" />
+    <None Include="Resources\SystemIcon\icon_Glass_Interface_flow.png" />
+    <None Include="Resources\SystemIcon\icon_EQflowReceived.png" />
+    <None Include="Resources\SystemIcon\icon_EQflowfailto receive.png" />
+    <None Include="Resources\SystemIcon\icon_Default.png" />
+    <None Include="Resources\SystemIcon\icon_Connection_Control.png" />
+    <None Include="Resources\SystemIcon\icon_CIM ON _ RUN1.png" />
+    <None Include="Resources\SystemIcon\icon_CIM ON _ RUN.png" />
+    <None Include="Resources\SystemIcon\icon_CIM OFF.png" />
+    <None Include="Resources\SystemIcon\history.png" />
+    <None Include="Resources\SystemIcon\help1.png" />
+    <None Include="Resources\SystemIcon\help.png" />
+    <None Include="Resources\SystemIcon\green light.png" />
+    <None Include="Resources\SystemIcon\gif_Mirle_Logo_Loading.gif" />
+    <None Include="Resources\SystemIcon\FilmCut_Layout.png" />
+    <None Include="Resources\SystemIcon\export.png" />
+    <None Include="Resources\SystemIcon\EmptyCST.png" />
+    <None Include="Resources\SystemIcon\edit.png" />
+    <None Include="Resources\SystemIcon\delete.png" />
+    <None Include="Resources\SystemIcon\DELAMI_Scenario.png" />
+    <None Include="Resources\SystemIcon\CUT_Scenario.png" />
+    <None Include="Resources\SystemIcon\current.png" />
+    <None Include="Resources\SystemIcon\CST and TRAY data information.png" />
+    <None Include="Resources\SystemIcon\connetion control.png" />
+    <None Include="Resources\SystemIcon\ConnectControl.png" />
+    <None Include="Resources\SystemIcon\close.png" />
+    <None Include="Resources\SystemIcon\Circle_Yellow.png" />
+    <None Include="Resources\SystemIcon\Circle_Red.png" />
+    <None Include="Resources\SystemIcon\Circle_Green.png" />
+    <None Include="Resources\SystemIcon\Circle_Gray.png" />
+    <None Include="Resources\SystemIcon\Circle_Blue.png" />
+    <None Include="Resources\SystemIcon\cancel.png" />
+    <None Include="Resources\SystemIcon\Buffer Detail.png" />
+    <None Include="Resources\SystemIcon\BOE_logo-02.png" />
+    <None Include="Resources\SystemIcon\BOE logo_boe.png" />
+    <None Include="Resources\SystemIcon\Bitmap1.bmp" />
+    <None Include="Resources\SystemIcon\Ball_Yellow.png" />
+    <None Include="Resources\SystemIcon\AssignbuttonIcon.png" />
+    <None Include="Resources\SystemIcon\ArrowUP.png" />
+    <None Include="Resources\SystemIcon\ArrowDown.png" />
+    <None Include="Resources\SystemIcon\arrowblue.png" />
+    <None Include="Resources\SystemIcon\arrow1.png" />
+    <None Include="Resources\SystemIcon\arrow.png" />
+    <None Include="Resources\SystemIcon\AroundLine3.png" />
+    <None Include="Resources\SystemIcon\AroundLine2.png" />
+    <None Include="Resources\SystemIcon\AroundLine.png" />
+    <None Include="Resources\SystemIcon\Alarm QTY.png" />
+    <None Include="Resources\SystemIcon\add1.png" />
+    <None Include="Resources\SystemIcon\add.png" />
+    <None Include="Resources\SystemIcon\100per.png" />
+    <None Include="Resources\SystemIcon\75per.png" />
+    <None Include="Resources\SystemIcon\50per.png" />
+    <None Include="Resources\SystemIcon\25per.png" />
+    <None Include="Resources\SystemIcon\0per.png" />
+    <None Include="Resources\VehiclePisplay\Vehicle display_V2.3.png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Unconnected].png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Power on].png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Manual].png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Auto-Remote].png" />
+    <None Include="Resources\VehiclePisplay\Vehicle [Auto-Local].png" />
+    <None Include="Resources\VehiclePisplay\Speed [Slow].png" />
+    <None Include="Resources\VehiclePisplay\Speed [Medium].png" />
+    <None Include="Resources\VehiclePisplay\Speed [Fast].png" />
+    <None Include="Resources\VehiclePisplay\Pause [Safety].png" />
+    <None Include="Resources\VehiclePisplay\Pause [Pause].png" />
+    <None Include="Resources\VehiclePisplay\Pause [Obstructed].png" />
+    <None Include="Resources\VehiclePisplay\Pause [HID].png" />
+    <None Include="Resources\VehiclePisplay\Pause [Earthquake].png" />
+    <None Include="Resources\VehiclePisplay\Pause [Block].png" />
+    <None Include="Resources\VehiclePisplay\Alarm [Warning].png" />
+    <None Include="Resources\VehiclePisplay\Alarm [Error].png" />
+    <None Include="Resources\VehiclePisplay\Alarm [Alert].png" />
+    <None Include="Resources\VehiclePisplay\Action [Unloading].png" />
+    <None Include="Resources\VehiclePisplay\Action [Receive command].png" />
+    <None Include="Resources\VehiclePisplay\Action [Parking].png" />
+    <None Include="Resources\VehiclePisplay\Action [Parked].png" />
+    <None Include="Resources\VehiclePisplay\Action [Moving].png" />
+    <None Include="Resources\VehiclePisplay\Action [Maintenance].png" />
+    <None Include="Resources\VehiclePisplay\Action [Loading].png" />
+    <None Include="Resources\VehiclePisplay\Action [Correcting action].png" />
+    <None Include="Resources\VehiclePisplay\Action [Cassette].png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\Components\MyUserControl\uc_btn_Close.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_About.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_AccountManagement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_ChangePriority.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_Exit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_Login.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_PasswordChange.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_AdvancedSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_AlarmMaintenance.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_CommunicationLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_MCSCommandLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_MTLMTSMaintenance.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_PathControlList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_PortMaint.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_SystemModeControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_TransferManagement.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SP_VehicleManagement.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_SystemModeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\SubPage\uc_TransferCommand.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\Tool\NumericUpDown.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\Tool\ToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\ucMTLVehicleTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\uctlPathControlList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\uctl_AlarmList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\uctl_ElasticQuery_System_Process.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\uctl_ElasticQuery.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\uc_ControlStatusSignal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\uc_DeviceStatusSignal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\uc_StatusSignal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_TipMessage\TipMessage_Type_Light.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uctlReserveSectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_FunctionKey.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_grid_CurAlarm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_grid_SystemLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_grid_TransCMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_grid_VHStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_Log.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_MTLMTSStatus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_PlFunctionKey.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_StatusControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_StatusControlC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_StatusInfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_StatusInfo_Default.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndComboBox_H.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndNumeric.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndPasswordbox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndRadioButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndRadioButton_V.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndTextBoxNB.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlockAndTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TextBlock_H.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_TitleContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_Vehicle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_VhSettingS1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_VhSettingS2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Components\WPF_UserControl\uc_VhSettingS3.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
