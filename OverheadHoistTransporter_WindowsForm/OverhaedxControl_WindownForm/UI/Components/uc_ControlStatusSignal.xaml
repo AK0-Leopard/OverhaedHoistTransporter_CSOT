@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="WPF.Components.uc_ControlStatusSignal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPF.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="269">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="TextBlock_Default">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="#1b2338"/>
+            <Setter Property="FontFamily" Value="MicrosoftSansSerif"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="37"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Border BorderBrush="#e6e6e6" BorderThickness="5,5,0,5" Background="White">
+            <Image Name="LinkSignal" Width="15" Height="15"/>
+        </Border>
+        <!--<Border Name="LinkFail" BorderBrush="#e6e6e6" BorderThickness="5,5,0,5" Background="White">
+            <Image Width="15" Height="15" Source="/Resources/SystemIcon/Control status_LinkFail.png"/>
+        </Border>-->
+        <Border Grid.Column="1" BorderBrush="#e6e6e6" BorderThickness="0,5,5,5" Background="White">
+            <TextBlock Name="TitleName" Style="{StaticResource TextBlock_Default}" HorizontalAlignment="Left" Text="TitleName"/>
+        </Border>
+    </Grid>
+</UserControl>

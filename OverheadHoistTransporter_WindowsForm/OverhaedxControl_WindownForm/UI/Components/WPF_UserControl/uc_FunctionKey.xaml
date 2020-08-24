@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="com.mirle.ibg3k0.ohxc.winform.UI.Components.WPF_UserControl.uc_FunctionKey"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:com.mirle.ibg3k0.ohxc.winform.UI.Components.WPF_UserControl"
+             mc:Ignorable="d" d:DesignHeight="45" d:DesignWidth="180">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="FontFamily" Value="MicrosoftSansSerif"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Button Name="btn_FuncKey" BorderThickness="0" Background="Transparent">
+            <Grid Margin="23,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45"/>
+                    <ColumnDefinition Width="13.3"/>
+                    <ColumnDefinition Width="112"/>
+                </Grid.ColumnDefinitions>
+                <Image Name="pic_FuncKey"/>
+                <TextBlock Name="txb_FuncKeyName" Grid.Column="2" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,15,0"></TextBlock>
+            </Grid>
+        </Button>
+    </Grid>
+</UserControl>

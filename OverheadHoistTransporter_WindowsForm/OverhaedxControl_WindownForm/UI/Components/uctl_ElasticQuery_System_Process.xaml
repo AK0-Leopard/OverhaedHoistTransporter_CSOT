@@ -1,0 +1,185 @@
+﻿<UserControl x:Class="com.mirle.ibg3k0.ohxc.winform.UI.Components.uctl_ElasticQuery_System_Process"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:com.mirle.ibg3k0.ohxc.winform.UI.Components"
+             mc:Ignorable="d" Height="auto" Width="auto" 
+             d:DesignHeight="450" d:DesignWidth="800" FontFamily="Microsoft Sans Serif" FontSize="10.5pt" Foreground="#1b2338" BorderThickness="3" BorderBrush="#e6e6e6"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <!-- DataGridColumnHeader style -->
+        <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="10,4,10,7" />
+            <Setter Property="Background" Value="#bed0df"/>
+            <Setter Property="Foreground" Value="#1b2338"/>
+            <Setter Property="FontSize" Value="10.5pt"/>
+            <Setter Property="BorderBrush" Value="#e6e6e6"/>
+            <Setter Property="BorderThickness"  Value="0,1,1,1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                        <Grid Name="HedearGrid" Background="#bed0df" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="BackgroundBorder" BorderThickness="0,1,1,1" BorderBrush="#e6e6e6" Grid.ColumnSpan="2" />
+                            <ContentPresenter  Margin="6,3,6,3" VerticalAlignment="Center" Grid.Column="0" />
+                            <Path x:Name="SortArrow" Visibility="Collapsed" Data="M0,0 L1,0 0.5,1 z" Stretch="Fill" 
+                            Grid.Column="1" Width="8" Height="6" Fill="#1b2338" Margin="0,0,8,0" 
+                            VerticalAlignment="Center" RenderTransformOrigin="0.5,0.4" />
+                            <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Cursor="SizeWE" Grid.Column="1" >
+                                <Thumb.Style>
+                                    <Style TargetType="{x:Type Thumb}">
+                                        <Setter Property="Width" Value="2" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                                    <Border Background="Transparent"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Thumb.Style>
+                            </Thumb>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="SortDirection" Value="Ascending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="SortArrow" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="180" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="SortDirection" Value="Descending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- DataGridColumnContent style -->
+        <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
+            <Setter Property="Padding" Value="10,4,10,7" />
+        </Style>
+
+        <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
+            <!--网格线颜色-->
+            <Setter Property="BorderBrush" Value="#e6e6e6" />
+            <Setter Property="HorizontalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#e6e6e6"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="VerticalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#e6e6e6"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <DataGrid x:Name="dgv_log_query" IsReadOnly="True" RowDetailsVisibilityMode="Collapsed" SelectionMode="Single" AutoGenerateColumns="False" CanUserAddRows="False"  Style="{DynamicResource DataGridStyle1}" AlternationCount="2" CanUserSortColumns="True">
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                <Grid Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"></ContentPresenter>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                        </Trigger>
+                        <!--<Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                        </Trigger>-->
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <EventSetter Event="MouseDoubleClick" Handler="RowDoubleClick"/>
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="#1b2338" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#f2f9ff" />
+                            <Setter Property="Foreground" Value="#1b2338" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <!--<Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>-->
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.RowHeaderTemplate>
+                <DataTemplate>
+                    <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed">
+                    </Expander>
+                </DataTemplate>
+            </DataGrid.RowHeaderTemplate>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="MCS Cmd. ID"     Binding="{Binding MCS_CMD_ID}" ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="OHTC Cmd. ID"    Binding="{Binding OHTC_CMD_ID}"></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Vehicle ID"      Binding="{Binding VH_ID}"      ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Msg. From"       Binding="{Binding MSG_FROM}"   ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Msg. To"         Binding="{Binding MSG_TO}"     ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Function Name"   Binding="{Binding FUN_NAME}"   ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Seq. No."        Binding="{Binding SEQ_NUM}"    ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Action Type"     Binding="{Binding ACT_TYPE}"   ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Travel Distance" Binding="{Binding TRAVEL_DIS}"  ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Address ID"      Binding="{Binding ADR_ID}"      ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Section ID"      Binding="{Binding SEC_ID}"     ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Event Type"      Binding="{Binding EVENT_TYPE}" ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Time"            Binding="{Binding Timestamp, StringFormat=\{0:yyyy/MM/dd &#x0a;HH:mm:ss\}, Mode=OneWay}" FontSize="11" ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Sec Dis."        Binding="{Binding SEC_DIS}"></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Block Sec ID"    Binding="{Binding BLOCK_SEC_ID}"></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Is Block Pass"   Binding="{Binding IS_BLOCK_PASS}"></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Is HID Pass"     Binding="{Binding IS_HID_PASS}"></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="VH Status"       Binding="{Binding VH_STATUS}"></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Result"          Binding="{Binding RESULT}"></DataGridTextColumn>
+            </DataGrid.Columns>
+
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock FontFamily="Microsoft Sans Serif" FontSize="12pt" Foreground="#1b2338" Text="Details: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBlock FontFamily="Microsoft Sans Serif" FontSize="10.5pt" Foreground="#1b2338" Text="{Binding MSG_BODY}" Width="1400" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,4 @@
+﻿***v1.2.1
+   2019/12/21  (MarkChou)
+   加入Dynamic Command功能。
+

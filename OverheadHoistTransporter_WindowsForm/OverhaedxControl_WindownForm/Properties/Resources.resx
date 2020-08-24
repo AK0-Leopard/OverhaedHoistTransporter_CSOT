@@ -1,0 +1,685 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Direction_of_Guide_2" xml:space="preserve">
+    <value>Direction of Guide-2</value>
+  </data>
+  <data name="Dircetion_of_Home" xml:space="preserve">
+    <value>Dircetion of Home</value>
+  </data>
+  <data name="From_Address" xml:space="preserve">
+    <value>From Address</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Lifer_Down_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SystemIcon\Lifer Down 1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IS_ADR_RPT" xml:space="preserve">
+    <value>IS ADR RPT</value>
+  </data>
+  <data name="Chart_Load" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GlassInterface\Chart_Load.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MTL_Up_On" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTL_Up_On.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MTS_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTS_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Pause__HID_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Pause [HID].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Front_Right_Lock_Position" xml:space="preserve">
+    <value>Front-Right Lock Position</value>
+  </data>
+  <data name="Collision_Avoidance_Left_Straight" xml:space="preserve">
+    <value>Collision Avoidance : Left Straight</value>
+  </data>
+  <data name="DIRC_DRIV" xml:space="preserve">
+    <value>DIRC DRIV</value>
+  </data>
+  <data name="Vehicle_display_V2_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle display_V2.3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DIRC_GUID" xml:space="preserve">
+    <value>DIRC GUID</value>
+  </data>
+  <data name="Presence_Address_Report" xml:space="preserve">
+    <value>Presence Address Report</value>
+  </data>
+  <data name="Speed__Slow_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Speed [Slow].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Vehicle" xml:space="preserve">
+    <value>Vehicle</value>
+  </data>
+  <data name="SEC_DIS" xml:space="preserve">
+    <value>Sec Dis.</value>
+  </data>
+  <data name="Vehicle__Manual_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Manual].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MTL_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTL_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Area_Sensor_1" xml:space="preserve">
+    <value>Area Sensor-1</value>
+  </data>
+  <data name="Segment_Number_1" xml:space="preserve">
+    <value>Segment Number-1</value>
+  </data>
+  <data name="Timeout_of_T8" xml:space="preserve">
+    <value>Timeout of T8</value>
+  </data>
+  <data name="Segment_No" xml:space="preserve">
+    <value>Segment No.</value>
+  </data>
+  <data name="Connection_Control_Off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Connection Control_Off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Total_Pulse_Of_One_Scale" xml:space="preserve">
+    <value>Total Pulse Of One Scale</value>
+  </data>
+  <data name="Vehicle_Setting" xml:space="preserve">
+    <value>Vehicle Command</value>
+  </data>
+  <data name="Action__Parked_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Parked].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Direction_of_Read" xml:space="preserve">
+    <value>Direction of Read</value>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="CHG_SEG_NUM_1" xml:space="preserve">
+    <value>CHG SEG NUM 1</value>
+  </data>
+  <data name="Alarm__Alert_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Alarm [Alert].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Speed__Fast_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Speed [Fast].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Section_Speed" xml:space="preserve">
+    <value>Section Speed</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="START_BC1" xml:space="preserve">
+    <value>Start BC 1</value>
+  </data>
+  <data name="AREA_SECSOR" xml:space="preserve">
+    <value>AREA SECSOR</value>
+  </data>
+  <data name="FROM_ADR_ID" xml:space="preserve">
+    <value>From Adr.</value>
+  </data>
+  <data name="MTS_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTS_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Scale_Data" xml:space="preserve">
+    <value>Scale Data</value>
+  </data>
+  <data name="Inposition_Area" xml:space="preserve">
+    <value>Inposition Area</value>
+  </data>
+  <data name="Collision_Avoidance_Forward_Straight" xml:space="preserve">
+    <value>Collision Avoidance : Forward Straight</value>
+  </data>
+  <data name="OBS_SENSOR" xml:space="preserve">
+    <value>OBS Sensor</value>
+  </data>
+  <data name="Section_ID" xml:space="preserve">
+    <value>Section ID</value>
+  </data>
+  <data name="Front_Limit" xml:space="preserve">
+    <value>Front Limit</value>
+  </data>
+  <data name="Collision_Avoidance_Right_Straight" xml:space="preserve">
+    <value>Collision Avoidance : Right Straight</value>
+  </data>
+  <data name="Chart_Unload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GlassInterface\Chart_Unload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Vehicle__Unconnected__OHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Unconnected]_OHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Vehicle__Auto_Local_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Auto-Local].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Update_Time" xml:space="preserve">
+    <value>Update Time : </value>
+  </data>
+  <data name="Sgment_Detail" xml:space="preserve">
+    <value>Sgment Detail</value>
+  </data>
+  <data name="Travel_Base_Data" xml:space="preserve">
+    <value>Travel Base Data</value>
+  </data>
+  <data name="HID_CONTROL" xml:space="preserve">
+    <value>HID CONTROL</value>
+  </data>
+  <data name="Timeout_of_T1" xml:space="preserve">
+    <value>Timeout of T1</value>
+  </data>
+  <data name="Lifter_Up_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SystemIcon\Lifter Up 1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OBS_SENSOR_R" xml:space="preserve">
+    <value>OBS SENSOR R</value>
+  </data>
+  <data name="icon_Home" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_Home.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Maunual_High_Speed" xml:space="preserve">
+    <value>Maunual High Speed</value>
+  </data>
+  <data name="CHG_SEG_NUM_2" xml:space="preserve">
+    <value>CHG SEG NUM 2</value>
+  </data>
+  <data name="Vehicle__Power_on__OHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Power on]_OHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BRANCH_FLAG" xml:space="preserve">
+    <value>BRANCH FLAG</value>
+  </data>
+  <data name="icon_Hamburger" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_Hamburger.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Control_Data" xml:space="preserve">
+    <value>Control Data</value>
+  </data>
+  <data name="Timeout_of_T3" xml:space="preserve">
+    <value>Timeout of T3</value>
+  </data>
+  <data name="Lifer_Down_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SystemIcon\Lifer Down 2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PRE_BLO_REQ" xml:space="preserve">
+    <value>PRE BLO REQ</value>
+  </data>
+  <data name="SEC_DIR" xml:space="preserve">
+    <value>Sec Dir.</value>
+  </data>
+  <data name="Control_Setting" xml:space="preserve">
+    <value>Control Setting</value>
+  </data>
+  <data name="Guide_Data" xml:space="preserve">
+    <value>Guide Data</value>
+  </data>
+  <data name="Vehicle__Manual__OHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Manual]_OHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SEG_NUM" xml:space="preserve">
+    <value>SEG NUM</value>
+  </data>
+  <data name="START_BC2" xml:space="preserve">
+    <value>Start BC 2</value>
+  </data>
+  <data name="Alarm__Warning_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Alarm [Warning].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Timeout_of_T5" xml:space="preserve">
+    <value>Timeout of T5</value>
+  </data>
+  <data name="Presence_Blocking_Request" xml:space="preserve">
+    <value>Presence Blocking Request</value>
+  </data>
+  <data name="Lifter_Up_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SystemIcon\Lifter Up 2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MTL_Down_Off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTL_Down_Off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FUU" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SystemIcon\FUU.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Control_status_LinkFail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Control status_LinkFail.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Presence_HID_Control" xml:space="preserve">
+    <value>Presence HID Control</value>
+  </data>
+  <data name="Vehicle__Power_on_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Power on].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Alarm__Error_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Alarm [Error].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Timeout_of_Blocking_Response" xml:space="preserve">
+    <value>Timeout of Blocking Response</value>
+  </data>
+  <data name="Drive_Dir" xml:space="preserve">
+    <value>Drive Dir.</value>
+  </data>
+  <data name="SEC_SPD" xml:space="preserve">
+    <value>Sec Speed</value>
+  </data>
+  <data name="Change_Stability_Time" xml:space="preserve">
+    <value>Change Stability Time</value>
+  </data>
+  <data name="Connection_Control_On" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Connection Control_On.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SEC_TYPE" xml:space="preserve">
+    <value>Sec Type</value>
+  </data>
+  <data name="OBS_SENSOR_F" xml:space="preserve">
+    <value>OBS SENSOR F</value>
+  </data>
+  <data name="OBS_SENSOR_L" xml:space="preserve">
+    <value>OBS SENSOR L</value>
+  </data>
+  <data name="Travel_Direction" xml:space="preserve">
+    <value>Travel Direction</value>
+  </data>
+  <data name="Pause__Earthquake_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Pause [Earthquake].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Lifter_Interlock" xml:space="preserve">
+    <value>Lifter Interlock</value>
+  </data>
+  <data name="START_BC3" xml:space="preserve">
+    <value>Start BC 3</value>
+  </data>
+  <data name="CAN_GUIDE_CHG" xml:space="preserve">
+    <value>CAN GUIDE CHG</value>
+  </data>
+  <data name="Timeout_of_T2" xml:space="preserve">
+    <value>Timeout of T2</value>
+  </data>
+  <data name="RANGE_SENSOR_F" xml:space="preserve">
+    <value>RANGE SENSOR F</value>
+  </data>
+  <data name="String" xml:space="preserve">
+    <value>Control status_LinkOk.png</value>
+  </data>
+  <data name="SEC_ORDER_NUM" xml:space="preserve">
+    <value>SEC ORDER NUM</value>
+  </data>
+  <data name="Enable_Change_Guide_Area" xml:space="preserve">
+    <value>Enable Change Guide Area</value>
+  </data>
+  <data name="Section_Distance" xml:space="preserve">
+    <value>Section Distance</value>
+  </data>
+  <data name="Pause__Pause_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Pause [Pause].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SEC_ID" xml:space="preserve">
+    <value>Section ID</value>
+  </data>
+  <data name="Scale_Reset_Distance" xml:space="preserve">
+    <value>Scale Reset Distance</value>
+  </data>
+  <data name="Keep_Distance_Far" xml:space="preserve">
+    <value>Keep Distance - Far</value>
+  </data>
+  <data name="Scale_Offset" xml:space="preserve">
+    <value>Scale Offset</value>
+  </data>
+  <data name="MTS_Interlock" xml:space="preserve">
+    <value>MTS Interlock</value>
+  </data>
+  <data name="Speed__Medium_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Speed [Medium].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Timeout_of_T4" xml:space="preserve">
+    <value>Timeout of T4</value>
+  </data>
+  <data name="ENB_CHG_G_AREA" xml:space="preserve">
+    <value>ENB CHG G AREA</value>
+  </data>
+  <data name="END_BC2" xml:space="preserve">
+    <value>End BC 2</value>
+  </data>
+  <data name="Guide_Dir" xml:space="preserve">
+    <value>Guide Dir.</value>
+  </data>
+  <data name="LAST_TECH_TIME" xml:space="preserve">
+    <value>Last Tech Time</value>
+  </data>
+  <data name="Action__Loading_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Loading].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Vehicle__Auto_Remote_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Auto-Remote].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Rear_Left_Lock_Position" xml:space="preserve">
+    <value>Rear-Left Lock Position</value>
+  </data>
+  <data name="CDOG_1" xml:space="preserve">
+    <value>CDOG 1</value>
+  </data>
+  <data name="Running_Speed" xml:space="preserve">
+    <value>Running Speed</value>
+  </data>
+  <data name="MTL_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTL_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Vehicle_ID" xml:space="preserve">
+    <value>Vehicle ID</value>
+  </data>
+  <data name="Vehicle__Auto_Remote__OHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Auto-Remote]_OHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Unlock</value>
+  </data>
+  <data name="Timeout_of_T6" xml:space="preserve">
+    <value>Timeout of T6</value>
+  </data>
+  <data name="Presence_Diverge" xml:space="preserve">
+    <value>Presence Diverge</value>
+  </data>
+  <data name="TO_ADR_ID" xml:space="preserve">
+    <value>To Adr.</value>
+  </data>
+  <data name="Direction_of_Guide_1" xml:space="preserve">
+    <value>Direction of Guide-1</value>
+  </data>
+  <data name="END_BC1" xml:space="preserve">
+    <value>End BC 1</value>
+  </data>
+  <data name="Keep_Distance_Near" xml:space="preserve">
+    <value>Keep Distance - Near</value>
+  </data>
+  <data name="Rear_Right_Lock_Position" xml:space="preserve">
+    <value>Rear-Right Lock Position</value>
+  </data>
+  <data name="MTS_Mode" xml:space="preserve">
+    <value>MTS Mode:</value>
+  </data>
+  <data name="Vehicle__Auto_Local__OHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Auto-Local]_OHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Section_Data" xml:space="preserve">
+    <value>Section Data</value>
+  </data>
+  <data name="PRE_DIV" xml:space="preserve">
+    <value>Pre Div</value>
+  </data>
+  <data name="Maunual_Low_Speed" xml:space="preserve">
+    <value>Maunual Low Speed</value>
+  </data>
+  <data name="PADDING" xml:space="preserve">
+    <value>PADDING</value>
+  </data>
+  <data name="Inposition_Stability_Time" xml:space="preserve">
+    <value>Inposition Stability Time</value>
+  </data>
+  <data name="Action__Receive_command_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Receive command].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Laser_Sensor_Forward_Straight" xml:space="preserve">
+    <value>Laser Sensor : Forward Straight</value>
+  </data>
+  <data name="MTL_Down_On" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTL_Down_On.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Pause__Block_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Pause [Block].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="END_BC3" xml:space="preserve">
+    <value>End BC 3</value>
+  </data>
+  <data name="Move_to" xml:space="preserve">
+    <value>Move to</value>
+  </data>
+  <data name="Max_Speed" xml:space="preserve">
+    <value>Max Speed</value>
+  </data>
+  <data name="CHG_AREA_SECSOR_1" xml:space="preserve">
+    <value>CHG AREA SECSOR 1</value>
+  </data>
+  <data name="Action__Cassette_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Cassette].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Teaching_Speed" xml:space="preserve">
+    <value>Teaching Speed</value>
+  </data>
+  <data name="Accel_Deccel_Time" xml:space="preserve">
+    <value>Accel / Deccel Time</value>
+  </data>
+  <data name="Action__Unloading_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Unloading].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Segment_Number_2" xml:space="preserve">
+    <value>Segment Number-2</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="Timeout_of_T7" xml:space="preserve">
+    <value>Timeout of T7</value>
+  </data>
+  <data name="MTL_Mode" xml:space="preserve">
+    <value>MTL Mode:</value>
+  </data>
+  <data name="To_Address" xml:space="preserve">
+    <value>To Address</value>
+  </data>
+  <data name="Manual_Command" xml:space="preserve">
+    <value>Manual Command</value>
+  </data>
+  <data name="Action__Maintenance_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Maintenance].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PRE_ADD_REPR" xml:space="preserve">
+    <value>Pre Adr Report</value>
+  </data>
+  <data name="Address_ID" xml:space="preserve">
+    <value>Address ID</value>
+  </data>
+  <data name="Sensor_Setting" xml:space="preserve">
+    <value>Sensor Setting</value>
+  </data>
+  <data name="Action__Moving_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Moving].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CDOG_2" xml:space="preserve">
+    <value>CDOG 2</value>
+  </data>
+  <data name="S_Curve_Rate" xml:space="preserve">
+    <value>S Curve Rate</value>
+  </data>
+  <data name="Vehicle_Status" xml:space="preserve">
+    <value>Vehicle Status</value>
+  </data>
+  <data name="Start_Stop_Speed" xml:space="preserve">
+    <value>Start / Stop Speed</value>
+  </data>
+  <data name="Action__Correcting_action_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Correcting action].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Home_Speed" xml:space="preserve">
+    <value>Home Speed</value>
+  </data>
+  <data name="Lifter" xml:space="preserve">
+    <value>Lifter</value>
+  </data>
+  <data name="Rear_Limit" xml:space="preserve">
+    <value>Rear Limit</value>
+  </data>
+  <data name="Pause__Safety_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Pause [Safety].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Command" xml:space="preserve">
+    <value>Command:</value>
+  </data>
+  <data name="Pole_of_Encoder" xml:space="preserve">
+    <value>Pole of Encoder</value>
+  </data>
+  <data name="Vehicle__Unconnected_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Vehicle [Unconnected].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Pause__Obstructed_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Pause [Obstructed].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Update_User" xml:space="preserve">
+    <value>Update User : </value>
+  </data>
+  <data name="Segment_Reservation" xml:space="preserve">
+    <value>Segment Reservation</value>
+  </data>
+  <data name="Address_Data" xml:space="preserve">
+    <value>Address Data</value>
+  </data>
+  <data name="Action__Parking_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VehiclePisplay\Action [Parking].png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Keep_Distance_Speed" xml:space="preserve">
+    <value>Keep Distance Speed</value>
+  </data>
+  <data name="Control_status_LinkOk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Control status_LinkOk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Area_Sensor_2" xml:space="preserve">
+    <value>Area Sensor-2</value>
+  </data>
+  <data name="Front_Left_Lock_Position" xml:space="preserve">
+    <value>Front-Left Lock Position</value>
+  </data>
+  <data name="Safty door" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SystemIcon\Safty door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CHG_AREA_SECSOR_2" xml:space="preserve">
+    <value>CHG AREA SECSOR 2</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="MTL_Up_Off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MTL_Up_Off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_CSOTLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_CSOTLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_MirleLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_MirleLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>

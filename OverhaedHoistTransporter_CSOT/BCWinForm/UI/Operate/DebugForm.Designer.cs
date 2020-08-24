@@ -366,6 +366,8 @@
             this.label83 = new System.Windows.Forms.Label();
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
+            this.txt_sec_id = new System.Windows.Forms.TextBox();
+            this.num_test_dis = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -404,6 +406,7 @@
             this.tabPage8.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             this.tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_test_dis)).BeginInit();
             this.SuspendLayout();
             // 
             // cb_FroceBlockPass
@@ -644,6 +647,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.num_test_dis);
+            this.groupBox4.Controls.Add(this.txt_sec_id);
             this.groupBox4.Controls.Add(this.groupBox14);
             this.groupBox4.Controls.Add(this.lbl_listening_status);
             this.groupBox4.Controls.Add(this.label42);
@@ -2542,7 +2547,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 3);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 8);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4433,6 +4438,26 @@
             this.label79.TabIndex = 53;
             this.label79.Text = "Max Allow Action Time Second";
             // 
+            // txt_sec_id
+            // 
+            this.txt_sec_id.Location = new System.Drawing.Point(828, 105);
+            this.txt_sec_id.Name = "txt_sec_id";
+            this.txt_sec_id.Size = new System.Drawing.Size(149, 30);
+            this.txt_sec_id.TabIndex = 55;
+            // 
+            // num_test_dis
+            // 
+            this.num_test_dis.Location = new System.Drawing.Point(828, 148);
+            this.num_test_dis.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.num_test_dis.Name = "num_test_dis";
+            this.num_test_dis.Size = new System.Drawing.Size(149, 30);
+            this.num_test_dis.TabIndex = 56;
+            this.num_test_dis.ValueChanged += new System.EventHandler(this.num_test_dis_ValueChanged);
+            // 
             // DebugForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -4516,6 +4541,7 @@
             this.tableLayoutPanel6.PerformLayout();
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_test_dis)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -4860,5 +4886,7 @@
         private System.Windows.Forms.Label label85;
         private System.Windows.Forms.Label label83;
         private System.Windows.Forms.Label label81;
+        private System.Windows.Forms.NumericUpDown num_test_dis;
+        private System.Windows.Forms.TextBox txt_sec_id;
     }
 }

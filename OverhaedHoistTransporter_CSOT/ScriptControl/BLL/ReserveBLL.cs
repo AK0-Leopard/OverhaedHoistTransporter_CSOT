@@ -72,6 +72,28 @@ namespace com.mirle.ibg3k0.sc.BLL
             return mapAPI.MapBitmapSource;
         }
 
+        public byte[] GetCurrentReserveInfoMapByte()
+        {
+            DrawAllReserveSectionInfo();
+            return BitmapSourceToByte(mapAPI.MapBitmapSource);
+        }
+        private byte[] BitmapSourceToByte(System.Windows.Media.Imaging.BitmapSource source)
+        {
+            try
+            {
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                var frame = System.Windows.Media.Imaging.BitmapFrame.Create(source);
+                encoder.Frames.Add(frame);
+                var stream = new System.IO.MemoryStream();
+                encoder.Save(stream);
+                return stream.ToArray();
+            }
+            catch (Exception ex)
+            {
+                return new byte[0];
+            }
+        }
+
         public virtual (double x, double y, bool isTR50) GetHltMapAddress(string adrID)
         {
             var adr_obj = mapAPI.GetAddressObjectByID(adrID);

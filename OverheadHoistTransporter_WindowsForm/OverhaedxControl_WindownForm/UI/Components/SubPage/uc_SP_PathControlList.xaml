@@ -1,0 +1,226 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:com.mirle.ibg3k0.ohxc.winform.UI.Components.SubPage" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Tool="clr-namespace:com.mirle.ibg3k0.ohxc.winform.UI.Components.Tool" x:Class="com.mirle.ibg3k0.ohxc.winform.UI.Components.SubPage.uc_SP_PathControlList"
+             mc:Ignorable="d" 
+             d:DesignHeight="721" d:DesignWidth="1464" FontFamily="MicrosoftSansSerif" FontSize="18" Foreground="#1b2338" Background="#f6f6f6">
+
+    <UserControl.Resources>
+        <!-- DataGridColumnHeader style -->
+        <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Foreground" Value="#1b2338"/>
+            <Setter Property="FontSize" Value="10.5pt"/>
+            <Setter Property="BorderBrush" Value="#e6e6e6"/>
+            <Setter Property="BorderThickness"  Value="0,1,1,1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                        <Grid Name="HedearGrid" Background="#bed0df" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="BackgroundBorder" BorderThickness="0,0,1,1" BorderBrush="#e6e6e6" Grid.ColumnSpan="2" />
+                            <ContentPresenter Margin="10,4,10,5" VerticalAlignment="Center" Grid.Column="0" />
+                            <Path x:Name="SortArrow" Visibility="Collapsed" Data="M0,0 L1,0 0.5,1 z" Stretch="Fill" 
+                            Grid.Column="1" Width="8" Height="6" Fill="#1b2338" Margin="0,0,8,0" 
+                            VerticalAlignment="Center" RenderTransformOrigin="0.5,0.4" />
+                            <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Cursor="SizeWE" Grid.Column="1" >
+                                <Thumb.Style>
+                                    <Style TargetType="{x:Type Thumb}">
+                                        <Setter Property="Width" Value="2" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                                    <Border Background="Transparent"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Thumb.Style>
+                            </Thumb>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="SortDirection" Value="Ascending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="SortArrow" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="180" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="SortDirection" Value="Descending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- DataGridColumnContent style -->
+        <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
+            <Setter Property="Padding" Value="10,5,10,5" />
+        </Style>
+
+        <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+            <Setter Property="FontSize" Value="14px"/>
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
+            <!--网格线颜色-->
+            <Setter Property="BorderBrush" Value="#e6e6e6" />
+            <Setter Property="HorizontalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#e6e6e6"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="VerticalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#e6e6e6"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="33"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#005ba8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder" CornerRadius="5" BorderThickness="0,0,0,3">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="#003366"/>
+                            </Border.BorderBrush>
+                            <Border.Background>
+                                <LinearGradientBrush>
+                                    <GradientStop Color="#005ba8" Offset="0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.FontWeight="Normal"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="ButtonBorder" Value="#008aff"/>
+                                <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="#003366"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="Transparent"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#b2b2b2" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="Title_18px">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="#070022"/>
+            <Setter Property="Height" Value="21"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="36"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="36"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="42"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="123*"/>
+            <RowDefinition Height="524*"/>
+            <!--<RowDefinition Height="41"/>-->
+        </Grid.RowDefinitions>
+
+
+        <WrapPanel Grid.Row="2" Grid.Column="3" Grid.RowSpan="2">
+            <Button Click="btn_Click" Name="btn_Enable" Margin="0,0,0,5" Content="Enable"/>
+            <Button Click="btn_Click" Name="btn_Disable" Margin="0,0,0,5" Content="Disable"/>
+            <Border Width="150" Height="1" Background="#b2b2b2" Margin="0,15,0,20"/>
+            <!--<Button Click="btn_Click" Name="btn_Cancel" Margin="0,0,0,5" Content="Cancel"/>
+            <Border Width="150" Height="1" Background="#b2b2b2" Margin="0,15,0,20"/>-->
+            <Button Click="btn_Click" Name="btn_Enable_CV" Margin="0,0,0,5" Content="Enable CV"/>
+            <!--<Button Click="btn_Click" Name="btn_Enable_HID" Margin="0,0,0,5" Content="Disable HID"/>-->
+        </WrapPanel>
+        <Button Click="btn_Close_Click" Name="btn_Close" VerticalAlignment="Bottom" Content="Close" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2"/>
+        <DataGrid Name="allSegmentList" ItemsSource="{Binding}" Grid.Column="1" Grid.Row="2" AlternationCount="2" Style="{DynamicResource DataGridStyle1}" IsReadOnly="True" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" 
+      ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.RowSpan="2" CanUserSortColumns="True">
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                <Grid Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"></ContentPresenter>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="#1b2338" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#f2f9ff" />
+                            <Setter Property="Foreground" Value="#1b2338" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#005BA8"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Sgement No."     Binding="{Binding SEG_NUM}" ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Status"    Binding="{Binding STATUS}"></DataGridTextColumn>
+                <!--<DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="HID ID"      Binding="{Binding HIDID}"      ></DataGridTextColumn>-->
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="CV ID"      Binding="{Binding CVID}"      ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Previously Disable Flag"       Binding="{Binding PRE_DISABLE_FLAG}"   ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Previously Disable Time"         Binding="{Binding PRE_DISABLE_TIME}"     ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Disable Time"   Binding="{Binding DISABLE_TIME}"   ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="User Disable Flag"        Binding="{Binding DISABLE_FLAG_USER}"    ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Safety Disable Flag"        Binding="{Binding DISABLE_FLAG_SAFETY}"    ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="HID Disable Flag"        Binding="{Binding DISABLE_FLAG_HID}"    ></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="System Disable Flag"        Binding="{Binding DISABLE_FLAG_SYSTEM}"    ></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

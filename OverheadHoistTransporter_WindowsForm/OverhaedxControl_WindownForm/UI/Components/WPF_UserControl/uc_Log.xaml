@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="com.mirle.ibg3k0.ohxc.winform.UI.Components.WPF_UserControl.uc_Log"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:com.mirle.ibg3k0.ohxc.winform.UI.Components.WPF_UserControl"
+             mc:Ignorable="d" FontFamily="MicrosoftSansSerif" d:DesignHeight="386" d:DesignWidth="1235">
+    <UserControl.Resources>
+        <!-- DataGridColumnHeader style -->
+        <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="10,4,10,7" />
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="FontSize" Value="16px"/>
+            <Setter Property="BorderBrush" Value="#070022"/>
+            <Setter Property="BorderThickness"  Value="0,1,1,1"/>
+        </Style>
+        <!-- DataGridColumnContent style -->
+        <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
+            <Setter Property="Padding" Value="10,4,10,7" />
+        </Style>
+
+        <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+            <Setter Property="FontSize" Value="16px"/>
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
+            <Setter Property="FontFamily" Value="Microsoft San Self"/>
+            <!--网格线颜色-->
+            <Setter Property="BorderBrush" Value="#070022" />
+            <Setter Property="HorizontalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#070022"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="VerticalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#070022"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+
+
+    </Grid>
+</UserControl>
