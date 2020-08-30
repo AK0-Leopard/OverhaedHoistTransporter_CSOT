@@ -281,11 +281,17 @@ namespace com.mirle.ibg3k0.sc.BLL
                     port_priority = source_portStation.PRIORITY;
                 }
             }
+            E_TRAN_STATUS transferState = E_TRAN_STATUS.Queue;
+            if(checkcode!= SECSConst.HCACK_Confirm)
+            {
+                transferState = E_TRAN_STATUS.Reject;
+            }
+
             ACMD_MCS cmd = new ACMD_MCS()
             {
                 CARRIER_ID = carrier_id,
                 CMD_ID = command_id,
-                TRANSFERSTATE = E_TRAN_STATUS.Queue,
+                TRANSFERSTATE = transferState,
                 //COMMANDSTATE = SCAppConstants.TaskCmdStatus.Queue,
                 COMMANDSTATE = 0,
                 HOSTSOURCE = HostSource,

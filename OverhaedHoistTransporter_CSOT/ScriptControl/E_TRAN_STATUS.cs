@@ -22,6 +22,7 @@ namespace com.mirle.ibg3k0.sc
         Complete = 8,
         RouteChanging = 9,
         Canceling = 4,
+        Reject = 10,
         PreInitial = 2
     }
 }
