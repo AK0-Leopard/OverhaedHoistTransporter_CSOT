@@ -78,7 +78,7 @@ namespace com.mirle.ibg3k0.sc.Scheduler
             List<string> excute_ids = new List<string>();
             if (allCMDDetail != null && allCMDDetail.Count > 0)
             {
-                foreach(var detail in allCMDDetail)
+                foreach (var detail in allCMDDetail)
                 {
                     if (excute_ids.Contains(detail.CMD_ID))
                     {
