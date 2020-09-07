@@ -816,6 +816,12 @@ namespace com.mirle.ibg3k0.sc.Service
                             scApp.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
                         });
                     }
+
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"remove all reserved section when vh initial and no command,vh id:{vh_id}.",
+                       VehicleID: vh?.VEHICLE_ID,
+                       CarrierID: vh?.CST_ID);
+                    scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
                 }
             }
             vhCommandExcuteStatusCheck(vh.VEHICLE_ID);
@@ -4052,6 +4058,7 @@ namespace com.mirle.ibg3k0.sc.Service
             string cst_id = SCUtility.Trim(recive_str.CSTID, true);
             VhLoadCSTStatus vhLoadCSTStatus = recive_str.HasCST;
             string car_cst_id = recive_str.CarCSTID;
+            string vh_id = eqpt.VEHICLE_ID;
             bool isSuccess = true;
 
             if (scApp.CMDBLL.isCMCD_OHTCFinish(cmd_id))
@@ -4196,6 +4203,12 @@ namespace com.mirle.ibg3k0.sc.Service
             }
 
             replyCommandComplete(eqpt, seq_num, finish_ohxc_cmd, finish_mcs_cmd);
+
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"remove all reserved section on command complete,vh id:{vh_id}.",
+               VehicleID: eqpt.VEHICLE_ID,
+               CarrierID: eqpt.CST_ID);
+            scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
 
             //回復結束後，若該筆命令是Mismatch、IDReadFail結束的話則要把原本車上的那顆CST Installed回來。
             if (vhLoadCSTStatus == VhLoadCSTStatus.Exist)

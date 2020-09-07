@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 
 namespace RouteKit
 {
@@ -849,6 +850,7 @@ namespace RouteKit
                 string[] returnArray = new string[2];
                 List<Section> fromSectionList = new List<Section>();
                 List<Section> toSectionList = new List<Section>();
+                StringBuilder sb = scApp.stringBuilder.GetObject();
                 try
                 {
                     foreach (Section sec in SectionList)
@@ -882,8 +884,11 @@ namespace RouteKit
 
                     //for (int i = 0; i < routeList_Sec.Count(); i++)
                     //    returnAllRoute_Sec += ";" + routeList_Sec[i] + "=" + distanceList_Sec[i];
+
                     for (int i = 0; i < routeDistanceAscIndexList_Sec.Count(); i++)
-                        returnAllRoute_Sec += ";" + routeList_Sec[routeDistanceAscIndexList_Sec[i]] + "=" + (distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999);
+                        sb.Append($";{routeList_Sec[routeDistanceAscIndexList_Sec[i]]}={(distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999)}");
+                    returnAllRoute_Sec = sb.ToString();
+                    //returnAllRoute_Sec += ";" + routeList_Sec[routeDistanceAscIndexList_Sec[i]] + "=" + (distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999);
                     switch (flag)
                     {
                         case 0:
@@ -902,6 +907,10 @@ namespace RouteKit
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Exception");
+                }
+                finally
+                {
+                    scApp.stringBuilder.PutObject(sb);
                 }
                 return returnArray;
             }
@@ -962,6 +971,7 @@ namespace RouteKit
                 int toSecIndex = Convert.ToInt16(SectionListIndex[toSec]);
                 fromSectionList.Add(SectionList[fromSecIndex]);
                 toSectionList.Add(SectionList[toSecIndex]);
+                StringBuilder sb = scApp.stringBuilder.GetObject();
                 try
                 {
                     //A0.01 DownstreamSearchSection_FromSecToSec(fromSectionList, toSectionList);
@@ -976,7 +986,9 @@ namespace RouteKit
                         returnMinRoute_Sec = routeList_Sec[routeDistanceAscIndexList_Sec[0]];
 
                     for (int i = 0; i < routeDistanceAscIndexList_Sec.Count(); i++)
-                        returnAllRoute_Sec += ";" + routeList_Sec[routeDistanceAscIndexList_Sec[i]] + "=" + (distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999);
+                        sb.Append($";{routeList_Sec[routeDistanceAscIndexList_Sec[i]]}={(distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999)}");
+                    returnAllRoute_Sec = sb.ToString();
+                    //returnAllRoute_Sec += ";" + routeList_Sec[routeDistanceAscIndexList_Sec[i]] + "=" + (distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999);
                     switch (flag)
                     {
                         case 0:
@@ -999,6 +1011,10 @@ namespace RouteKit
                 {
                     logger.Error(ex, "Exception");
                 }
+                finally
+                {
+                    scApp.stringBuilder.PutObject(sb);
+                }
                 return returnArray;
             }
         }
@@ -1020,6 +1036,7 @@ namespace RouteKit
                 foreach (Section sec in SectionList)
                     if (sec.FromAdr == toAdr)
                         toSectionList.Add(sec);
+                StringBuilder sb = scApp.stringBuilder.GetObject();
                 try
                 {
                     //A0.01 DownstreamSearchSection_FromSecToSec(fromSectionList, toSectionList);
@@ -1035,7 +1052,9 @@ namespace RouteKit
                         returnMinRoute_Sec = routeList_Sec[routeDistanceAscIndexList_Sec[0]] + "=" + (distanceList_Sec[routeDistanceAscIndexList_Sec[0]] - 999999999999999); ;
 
                     for (int i = 0; i < routeDistanceAscIndexList_Sec.Count(); i++)
-                        returnAllRoute_Sec += ";" + routeList_Sec[routeDistanceAscIndexList_Sec[i]] + "=" + (distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999);
+                        sb.Append($";{routeList_Sec[routeDistanceAscIndexList_Sec[i]]}={(distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999)}");
+                    returnAllRoute_Sec = sb.ToString();
+                    //returnAllRoute_Sec += ";" + routeList_Sec[routeDistanceAscIndexList_Sec[i]] + "=" + (distanceList_Sec[routeDistanceAscIndexList_Sec[i]] - 999999999999999);
                     switch (flag)
                     {
                         case 0:
@@ -1054,6 +1073,10 @@ namespace RouteKit
                 catch (Exception ex)
                 {
                     logger.Error(ex, "Exception");
+                }
+                finally
+                {
+                    scApp.stringBuilder.PutObject(sb);
                 }
                 return returnArray;
             }
