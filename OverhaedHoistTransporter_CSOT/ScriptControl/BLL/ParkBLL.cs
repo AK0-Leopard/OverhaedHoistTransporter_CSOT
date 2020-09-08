@@ -266,7 +266,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     {
                         lstParkZoneMasterAndDis.Add
                             (new KeyValuePair<APARKZONEMASTER, double>(park_zone_master, double.MinValue));
-                        //break;
+                        break;
                     }
 
 
@@ -339,78 +339,77 @@ namespace com.mirle.ibg3k0.sc.BLL
                     Data: $"Start find Park Address Alternative.vh current:{vh_current_adr} Park Type:{scApp.getEQObjCacheManager().getLine().Currnet_Park_Type} Vehicle Type:{e_VH_TYPE}");
                 ParkAdrInfoTarce();
                 List<APARKZONEMASTER> masters = loadByParkTypeID(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, e_VH_TYPE);
-                if (masters != null && masters.Count > 0)
+                List<APARKZONEDETAIL> details = new List<APARKZONEDETAIL>();
+                foreach (APARKZONEMASTER master in masters)
                 {
-                    List<KeyValuePair<APARKZONEMASTER, double>> lstParkZoneMasterAndDis = new List<KeyValuePair<APARKZONEMASTER, double>>();
-                    foreach (APARKZONEMASTER master in masters)
+                    List<APARKZONEDETAIL> details_temp = loadAllParkZoneDetailByZoneID(master.PARK_ZONE_ID);
+                    if (details_temp != null)
+                    {
+                        details.AddRange(details_temp);
+                    }
+                }
+                if (details != null && details.Count > 0)
+                {
+                    List<KeyValuePair<APARKZONEDETAIL, double>> lstParkZoneDetailAndDis = new List<KeyValuePair<APARKZONEDETAIL, double>>();
+                    //List<KeyValuePair<APARKZONEMASTER, double>> lstParkZoneMasterAndDis = new List<KeyValuePair<APARKZONEMASTER, double>>();
+                    foreach (APARKZONEDETAIL detail in details)
                     {
                         KeyValuePair<string[], double> route_distance;
 
-                        if (SCUtility.isMatche(master.ENTRY_ADR_ID, vh_current_adr))
+                        if (SCUtility.isMatche(detail.ADR_ID, vh_current_adr))
                         {
-                            lstParkZoneMasterAndDis.Add
-                                (new KeyValuePair<APARKZONEMASTER, double>(master, double.MinValue));
-                            break;
+                            continue;
+                            //lstParkZoneDetailAndDis.Add
+                            //    (new KeyValuePair<APARKZONEDETAIL, double>(detail, double.MinValue));
                         }
 
 
-                        if (scApp.RouteGuide.checkRoadIsWalkable(vh_current_adr, master.ENTRY_ADR_ID, out route_distance))
+                        if (scApp.RouteGuide.checkRoadIsWalkable(vh_current_adr, detail.ADR_ID, out route_distance))
                         {
-                            lstParkZoneMasterAndDis.Add
-                                (new KeyValuePair<APARKZONEMASTER, double>(master, route_distance.Value));
-                        }
-
-
-                        if (lstParkZoneMasterAndDis.Count > 0)
-                        {
-                            lstParkZoneMasterAndDis = lstParkZoneMasterAndDis.OrderBy(o => o.Value).ToList();
-                            foreach (KeyValuePair<APARKZONEMASTER, double> keyValue in lstParkZoneMasterAndDis)
-                            {
-                                APARKZONEMASTER zone_master_temp = keyValue.Key;
-                                APARKZONEDETAIL bestParkDetailTemp = null;
-                                bestParkDetailTemp = findFitParkZoneDetailInParkMater(zone_master_temp);
-                                if (bestParkDetailTemp != null)
-                                {
-                                    if (SCUtility.isMatche(vh_current_adr, bestParkDetailTemp.ADR_ID))
-                                    {
-                                        bestParkDetailTemp = scApp.ParkBLL.getParkDetailByZoneIDAndPRIO
-                                        (bestParkDetailTemp.PARK_ZONE_ID, bestParkDetailTemp.PRIO - 1);
-                                        if (bestParkDetailTemp == null)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    bsetParkDeatil = bestParkDetailTemp;
-                                    isSuccess = true;
-                                    result = FindParkResult.Success;
-                                    break;
-                                }
-                            }
+                            lstParkZoneDetailAndDis.Add
+                                (new KeyValuePair<APARKZONEDETAIL, double>(detail, route_distance.Value));
                         }
                     }
 
-
-                    if (result != FindParkResult.Success)
+                    if (lstParkZoneDetailAndDis.Count > 0)
                     {
-                        foreach (APARKZONEMASTER master in masters)
+                        lstParkZoneDetailAndDis = lstParkZoneDetailAndDis.OrderBy(o => o.Value).ToList();
+                        foreach (KeyValuePair<APARKZONEDETAIL, double> keyValue in lstParkZoneDetailAndDis)
                         {
-                            APARKZONEDETAIL bestParkDetailTemp = null;
-                            bestParkDetailTemp = findFitParkZoneDetailInParkMater(master);
-                            if (bestParkDetailTemp != null)
+                            APARKZONEDETAIL zone_detail = keyValue.Key;
+
+                            if (zone_detail != null)
                             {
-                                if (SCUtility.isMatche(vh_current_adr, bestParkDetailTemp.ADR_ID))
-                                {
-                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(ParkBLL), Device: "OHTC",
-                                       Data: $"Using find Park Address Alternative,try find the park adr,but current:{vh_current_adr} with want to parking adr is same,pass this one. Park Type:{scApp.getEQObjCacheManager().getLine().Currnet_Park_Type} Vehicle Type:{e_VH_TYPE}");
-                                    continue;
-                                }
-                                bsetParkDeatil = bestParkDetailTemp;
+                                bsetParkDeatil = zone_detail;
                                 isSuccess = true;
                                 result = FindParkResult.Success;
                                 break;
                             }
                         }
                     }
+
+
+                    //if (result != FindParkResult.Success)
+                    //{
+                    //    foreach (APARKZONEMASTER master in masters)
+                    //    {
+                    //        APARKZONEDETAIL bestParkDetailTemp = null;
+                    //        bestParkDetailTemp = findFitParkZoneDetailInParkMater(master);
+                    //        if (bestParkDetailTemp != null)
+                    //        {
+                    //            if (SCUtility.isMatche(vh_current_adr, bestParkDetailTemp.ADR_ID))
+                    //            {
+                    //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(ParkBLL), Device: "OHTC",
+                    //                   Data: $"Using find Park Address Alternative,try find the park adr,but current:{vh_current_adr} with want to parking adr is same,pass this one. Park Type:{scApp.getEQObjCacheManager().getLine().Currnet_Park_Type} Vehicle Type:{e_VH_TYPE}");
+                    //                continue;
+                    //            }
+                    //            bsetParkDeatil = bestParkDetailTemp;
+                    //            isSuccess = true;
+                    //            result = FindParkResult.Success;
+                    //            break;
+                    //        }
+                    //    }
+                    //}
                 }
                 else
                 {
@@ -545,7 +544,17 @@ namespace com.mirle.ibg3k0.sc.BLL
             return rtnParkZoneMaster;
         }
 
-
+        public List<APARKZONEDETAIL> loadAllParkZoneDetailByZoneID(string zone_id)
+        {
+            //DBConnection_EF con = DBConnection_EF.GetContext();
+            //using (DBConnection_EF con = new DBConnection_EF())
+            List<APARKZONEDETAIL> parkZoneDetails = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                parkZoneDetails = parkZoneDetailDao.loadByParkZoneID(con, zone_id);
+            }
+            return parkZoneDetails;
+        }
         public APARKZONEDETAIL findFitParkZoneDetailInParkMater(string zone_master_id)
         {
             //DBConnection_EF con = DBConnection_EF.GetContext();
