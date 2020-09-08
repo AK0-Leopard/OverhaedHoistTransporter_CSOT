@@ -12,6 +12,7 @@
 //                                                     CST ID填成CMD ID的問題。
 // 2019/10/09    Kevin Wei      N/A            A0.02   修改Confirm route的return code填入不正確的問題。
 // 2019/10/11    Kevin Wei      N/A            A0.03   增加搬送命令狀態是Pre initial 的時候，無法接受Cancel命令。
+// 2020/09/08    Mark Chou      N/A            A0.04   暫時移除S2F33更新RPT內容的功能。
 //**********************************************************************************
 using com.mirle.ibg3k0.bcf.App;
 using com.mirle.ibg3k0.bcf.Controller;
@@ -143,22 +144,23 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
 
                 if (rtnCode != TrxSECS.ReturnCode.Normal)
                 {
-                    logger.Warn("Reply EQPT S2F18 Error:{0}", rtnCode);
+                    logger.Warn("Reply EQPT S2F34 Error:{0}", rtnCode);
                 }
+                //A0.04 start
+                //scApp.CEIDBLL.DeleteRptInfoByBatch();
 
-                scApp.CEIDBLL.DeleteRptInfoByBatch();
-
-                if (s2f33.RPTITEMS != null && s2f33.RPTITEMS.Length > 0)
-                    scApp.CEIDBLL.buildReportIDAndVid(s2f33.ToDictionary());
+                //if (s2f33.RPTITEMS != null && s2f33.RPTITEMS.Length > 0)
+                //    scApp.CEIDBLL.buildReportIDAndVid(s2f33.ToDictionary());
 
 
 
-                SECSConst.setDicRPTIDAndVID(scApp.CEIDBLL.loadDicRPTIDAndVID());
+                //SECSConst.setDicRPTIDAndVID(scApp.CEIDBLL.loadDicRPTIDAndVID());
+                //A0.04 end
 
             }
             catch (Exception ex)
             {
-                logger.Error("MESDefaultMapAction has Error[Line Name:{0}],[Error method:{1}],[Error Message:{2}", line.LINE_ID, "S2F17_Receive_Date_Time_Req", ex.ToString());
+                logger.Error("MESDefaultMapAction has Error[Line Name:{0}],[Error method:{1}],[Error Message:{2}", line.LINE_ID, "S2F33ReceiveDefineReport", ex.ToString());
             }
         }
         protected override void S2F35ReceiveLinkEventReport(object sender, SECSEventArgs e)
