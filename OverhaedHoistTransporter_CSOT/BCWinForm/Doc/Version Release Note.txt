@@ -6,6 +6,33 @@
 *  Mail  : 
 *  Tel   : 03-5783280
 **********************************************
+
+***v1.12.1.6
+   2020/09/08  (Mark Chou)
+功能增加
+-- 於接收132時更新車輛ActionStatus。
+-- MCS Command TransferState 加入Reject狀態
+   2020/09/08  (Kevin Wei)
+功能增加
+-- 增加清除reserved section的時機，避免有漏掉的，a.在命令結束的時候。b.initial時，若43問回來的狀態為no command時。
+-- 修改判斷是否可以執行MCS命令的判斷式。 若是在sending以前的，就先不加入可派送名單中。
+-- 修改Vehicle Remove、Install的邏輯，在進行Remove時，會該VH的資訊從Reserve模組中移除。
+-- 新增可以讓Viewer詢問Reserve Map的API
+Bug修正
+-- 修正 在計算路徑進行組合字串的時候，造成outofmemory的問題。目前改用stringbuilder。
+
+
+***v1.9.34
+   2020/08/17  (Mark Chou)
+功能增加
+-- 增加車輛結束後進行停車位查找的Log紀錄。
+-- 車輛重新上線時，詢問其命令狀態，若已無命令，檢查OHTC端對該車輛是否有殘留命令，有的話予以刪除。
+-- 人員自OHTC介面手動下達Loadunload命令時檢查load port於unload port位置須不同。
+-- 修正尋找停車點邏輯，當選定的停車點無法到達時，將找其他停車點進行替代。
+-- 被禁用路徑標示改為常時顯示。
+-- MCS下達Unload命令，但指定Tray盤已有命令，OHTC會予以拒絕。
+-- 自動MTL流程被取消時，需檢查選定車輛當前執行命令是否跟MTL流程有關，再決定要不要取消車輛命令。
+
 ***v1.9.34
    2020/08/17  (Mark Chou)
 功能增加
