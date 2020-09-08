@@ -4348,7 +4348,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
             eqpt.onCommandComplete(completeStatus);
-            eqpt.NotifyVhStatusChange();
+            scApp.VehicleBLL.updateVehicleActionStatus(eqpt, EventType.AdrPass);
         }
 
         private bool replyCommandComplete(AVEHICLE eqpt, int seq_num, string finish_ohxc_cmd, string finish_mcs_cmd)
