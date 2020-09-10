@@ -332,6 +332,8 @@ namespace com.mirle.ibg3k0.sc.BLL
             {
                 result = FindParkResult.NoParkZone;
             }
+
+
             // mark modify start
             if (result != FindParkResult.Success)
             {

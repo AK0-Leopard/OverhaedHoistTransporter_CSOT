@@ -4072,10 +4072,6 @@ namespace com.mirle.ibg3k0.sc.Service
                 return;
             }
 
-
-
-
-
             string mcs_cmd_result = SECSConst.convert2MCS(completeStatus);
             scApp.VIDBLL.upDateVIDResultCode(eqpt.VEHICLE_ID, mcs_cmd_result);
 

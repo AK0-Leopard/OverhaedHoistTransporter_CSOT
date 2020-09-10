@@ -1864,10 +1864,14 @@ namespace com.mirle.ibg3k0.sc.BLL
         private long ohxc_cmd_SyncPoint = 0;
         public void checkOHxC_TransferCommand()
         {
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: string.Empty,
+             Data: $"Start check OHxC transfer command begin");
             if (System.Threading.Interlocked.Exchange(ref ohxc_cmd_SyncPoint, 1) == 0)
             {
                 try
                 {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: string.Empty,
+                    Data: $"check OHxC transfer command into critical zone");
                     if (scApp.getEQObjCacheManager().getLine().ServiceMode
                         != SCAppConstants.AppServiceMode.Active)
                         return;
