@@ -45,6 +45,8 @@ namespace com.mirle.ibg3k0.bc.winform.App
         /// </summary>
         /// <value>The sc application.</value>
         public SCApplication SCApplication { get { return scApp; } }
+        public event EventHandler<string[]> TestGuideSectionSearch;
+
 
         #region UAS
         /// <summary>
@@ -241,6 +243,10 @@ namespace com.mirle.ibg3k0.bc.winform.App
         }
 
 
+        public void onTestGuideSectionSearch(string[] arrays)
+        {
+            TestGuideSectionSearch?.Invoke(this, arrays);
+        }
 
 
 

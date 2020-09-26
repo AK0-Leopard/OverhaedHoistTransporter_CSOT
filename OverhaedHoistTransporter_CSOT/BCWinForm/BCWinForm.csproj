@@ -373,6 +373,9 @@
     <Compile Include="UI\Components\VhOfPLCInfo.Designer.cs">
       <DependentUpon>VhOfPLCInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Components\WPFComponents\uctlMapWPF.xaml.cs">
+      <DependentUpon>uctlMapWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Components\WPFComponents\uctlReserveSectionView.xaml.cs">
       <DependentUpon>uctlReserveSectionView.xaml</DependentUpon>
     </Compile>
@@ -393,6 +396,12 @@
     </Compile>
     <Compile Include="UI\MonitorForm.Designer.cs">
       <DependentUpon>MonitorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OHT_FormNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OHT_FormNew.Designer.cs">
+      <DependentUpon>OHT_FormNew.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\OHT_Form.cs">
       <SubType>Form</SubType>
@@ -593,6 +602,66 @@
     </None>
     <None Include="Config\CSOT_T4\ValueEventRelativeDefs.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\AddressBaseDefs_simple.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\AppSettings_simple.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSTTranSchedule.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\ALARMMAP.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\ALARMMAP_Source.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\APSETTING.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\ECDATAMAP.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\EQPTLOCATIONINFO.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\MapInfo\AADDRESS.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\MapInfo\ASECTION.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\CSV\RETURNCODEMAP.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\DataCollectionSetting.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\EQMapToValueEvent.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\EquipmentDefs_simple.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\MPLCConnectionSetting.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\SECSConnectionSetting.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\TcpIpConnectionSetting.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\ValueDefs_simple.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\CSOT_T4_PH2\ValueEventRelativeDefs.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Config\Hsinchu\CSV\APSETTING.csv">
@@ -1087,6 +1156,9 @@
     <EmbeddedResource Include="UI\MonitorForm.resx">
       <DependentUpon>MonitorForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\OHT_FormNew.resx">
+      <DependentUpon>OHT_FormNew.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\OHT_Form.resx">
       <DependentUpon>OHT_Form.cs</DependentUpon>
     </EmbeddedResource>
@@ -1288,6 +1360,10 @@
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Components\WPFComponents\uctlMapWPF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Components\WPFComponents\uctlReserveSectionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
