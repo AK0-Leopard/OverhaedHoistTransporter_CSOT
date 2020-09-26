@@ -253,8 +253,13 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                                 bool isCreatScuess = true;
                                 if (!SCUtility.isMatche(SECSConst.HCACK_Rejected_Already_Requested, s2f50.HCACK))
                                     isCreatScuess &= scApp.CMDBLL.doCreatMCSCommand(cmdID, priority, replace, cstID, source, dest, s2f50.HCACK);
+                                if (!isCreatScuess)
+                                {
+                                    s2f50.HCACK = SECSConst.HCACK_Current_Not_Able_Execute;
+                                }
                                 if (s2f50.HCACK == SECSConst.HCACK_Confirm)
                                     isCreatScuess &= scApp.SysExcuteQualityBLL.creatSysExcuteQuality(cmdID, cstID, source, dest);
+
                                 if (isCreatScuess)
                                 {
                                     TrxSECS.ReturnCode rtnCode = ISECSControl.replySECS(bcfApp, s2f50);
@@ -268,6 +273,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                                         isCreatScuess = false;
                                     }
                                 }
+
                                 if (isCreatScuess)
                                 {
                                     tx.Complete();

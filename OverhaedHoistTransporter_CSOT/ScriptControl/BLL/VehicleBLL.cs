@@ -1818,14 +1818,27 @@ namespace com.mirle.ibg3k0.sc.BLL
                 APARKZONEDETAIL nextParkDetail = null;
                 SCUtility.LockWithTimeout(scApp.park_lock_obj, SCAppConstants.LOCK_TIMEOUT_MS, () =>
                 {
-                    nextParkDetail = scApp.ParkBLL.getParkDetailByZoneIDAndPRIO
-                    (parkDetail.PARK_ZONE_ID, parkDetail.PRIO - 1);
-                    aCMD = scApp.CMDBLL.doCreatTransferCommandObj(vh.VEHICLE_ID
-                           , string.Empty
-                           , string.Empty
-                           , E_CMD_TYPE.Move_Park
-                           , vh.CUR_ADR_ID
-                           , nextParkDetail.ADR_ID, 0, 0, SCAppConstants.GenOHxCCommandType.Auto);
+
+                    if (scApp.CMDBLL.isCMD_OHTCExcuteByVh(vh.VEHICLE_ID))//從queue到excute都算
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"vehicle already have ohtc command exist,stop find park zone. vh id:{vh.VEHICLE_ID} ",
+                        VehicleID: vh.VEHICLE_ID,
+                        CarrierID: vh.CST_ID);
+                    }
+                    else
+                    {
+                        nextParkDetail = scApp.ParkBLL.getParkDetailByZoneIDAndPRIO
+                        (parkDetail.PARK_ZONE_ID, parkDetail.PRIO - 1);
+                        aCMD = scApp.CMDBLL.doCreatTransferCommandObj(vh.VEHICLE_ID
+                               , string.Empty
+                               , string.Empty
+                               , E_CMD_TYPE.Move_Park
+                               , vh.CUR_ADR_ID
+                               , nextParkDetail.ADR_ID, 0, 0, SCAppConstants.GenOHxCCommandType.Auto);
+                    }
+
+
                     //scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID
                     //       , string.Empty
                     //       , string.Empty
@@ -1877,7 +1890,19 @@ namespace com.mirle.ibg3k0.sc.BLL
                 Data: $"start FindParkZoneOrCycleRunZoneNew into critical zone. vh id:{vh.VEHICLE_ID} ",
                 VehicleID: vh.VEHICLE_ID,
                 CarrierID: vh.CST_ID);
+
+                if (scApp.CMDBLL.isCMD_OHTCExcuteByVh(vh.VEHICLE_ID))//從queue到excute都算
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                    Data: $"vehicle already have ohtc command exist,stop find park zone. vh id:{vh.VEHICLE_ID} ",
+                    VehicleID: vh.VEHICLE_ID,
+                    CarrierID: vh.CST_ID);
+                    return;
+                }
+
                 APARKZONEDETAIL bestParkDetail = null;
+
+
 
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
                 Data: $"start find park zone. vh id:{vh.VEHICLE_ID} ",

@@ -1628,6 +1628,7 @@ namespace com.mirle.ibg3k0.sc.Service
                             //TODO 要改成查一次CMD出來然後直接帶入CMD ID
                             if (!SCUtility.isEmpty(vh.OHTC_CMD))
                             {
+
                                 scApp.CMDBLL.update_CMD_DetailEntryTime(vh.OHTC_CMD, current_adr_id, current_sec_id);
                                 scApp.CMDBLL.update_CMD_DetailLeaveTime(vh.OHTC_CMD, last_adr_id, last_sec_id);
                                 List<string> willPassSecID = null;
@@ -4341,6 +4342,7 @@ namespace com.mirle.ibg3k0.sc.Service
                         //}
                         //else if ((eqpt.MODE_STATUS == VHModeStatus.AutoRemote) && eqpt.HAS_CST == 0)
                         //{
+                        scApp.CMDBLL.checkMCS_TransferCommand();
                         scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(eqpt.VEHICLE_ID);
                         //}
                         break;
