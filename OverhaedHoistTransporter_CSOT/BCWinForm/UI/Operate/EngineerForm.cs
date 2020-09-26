@@ -59,10 +59,6 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cmb_toAdr.AutoCompleteCustomSource.AddRange(allAdr);
             cmb_toAdr.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmb_toAdr.AutoCompleteSource = AutoCompleteSource.ListItems;
-            cmb_startAdr.DataSource = allAdr.ToArray();
-            cmb_startAdr.AutoCompleteCustomSource.AddRange(allAdr);
-            cmb_startAdr.AutoCompleteMode = AutoCompleteMode.Suggest;
-            cmb_startAdr.AutoCompleteSource = AutoCompleteSource.ListItems;
 
             string[] allSec = bcApp.SCApplication.MapBLL.loadAllSection().Select(sec => sec.SEC_ID).ToArray();
             cmb_fromSection.DataSource = allSec;
@@ -70,15 +66,13 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cmb_fromSection.AutoCompleteMode = AutoCompleteMode.Suggest;
             cmb_fromSection.AutoCompleteSource = AutoCompleteSource.ListItems;
 
-
-
         }
 
-        private void btn_Start_Click(object sender, EventArgs e)
+        private void btn_FromAdrToAdr_Click(object sender, EventArgs e)
         {
             string fromAdr = cmb_fromAdr.Text;
             string toAdr = cmb_toAdr.Text;
-            string[] Reutrn = bcApp.SCApplication.RouteGuide.DownstreamSearchSection(fromAdr, toAdr, 1);
+            string[] Reutrn = bcApp.SCApplication.RouteGuide.DownstreamSearchSection(fromAdr, toAdr, 0);
             StringBuilder sb = new StringBuilder();
             if (string.IsNullOrEmpty(Reutrn[0]))
                 sb.AppendLine("SegmentClosed");
@@ -94,7 +88,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
             var minRoute = Reutrn[0].Split('=');
             string[] minRouteSeg = minRoute[0].Split(',');
-             //evtSegmentSelected(minRouteSeg);
+            bcApp.onTestGuideSectionSearch(minRouteSeg);
         }
 
         private string[] loadAllAdr()
@@ -104,89 +98,20 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             return allAdrID;
         }
 
-        private void btn_close_Click(object sender, EventArgs e)
-        {
-            if (evtSegmentSelected != null)
-            {
-                evtSegmentSelected(new string[0]);
-            }
-            if (evtSectionSelected != null)
-            {
-                evtSectionSelected(new string[0], string.Empty, string.Empty, string.Empty);
-            }
-            this.PrcHide();
-        }
+       
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btn_FromSecToAdr_Click(object sender, EventArgs e)
         {
-            bcApp.SCApplication.RouteGuide.OpenSegment(txt_open.Text);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            bcApp.SCApplication.RouteGuide.CloseSegment(txt_Close.Text);
-
-        }
-
-        private void btn_StartSec_Click(object sender, EventArgs e)
-        {
-            string startAdr = cmb_startAdr.Text;
-            string fromAdr = cmb_fromAdr.Text;
+            string fromSec = cmb_fromSection.Text;
             string toAdr = cmb_toAdr.Text;
-            string[] ReutrnStart2From = new string[0];
-            string[] ReutrnFrom2To = bcApp.SCApplication.RouteGuide.DownstreamSearchSection(fromAdr, toAdr, 1);
-            StringBuilder sb = new StringBuilder();
-            if (startAdr != fromAdr)
-            {
-                ReutrnStart2From = bcApp.SCApplication.RouteGuide.DownstreamSearchSection(startAdr, fromAdr, 1);
-                if (string.IsNullOrEmpty(ReutrnStart2From[0]))
-                    sb.AppendLine("ReutrnStart2From,SegmentClosed");
-                else
-                {
-                    var allRoute = ReutrnStart2From[1].Split(';');
-                    foreach (string route in allRoute)
-                        sb.AppendLine(route);
-                    sb.AppendLine("ReutrnStart2From,<MinRoute>");
-                    sb.AppendLine(ReutrnStart2From[0]);
-                }
-            }
-
-            if (string.IsNullOrEmpty(ReutrnFrom2To[0]))
-                sb.AppendLine("ReutrnFrom2To,SegmentClosed");
-            else
-            {
-                var allRoute = ReutrnFrom2To[1].Split(';');
-                foreach (string route in allRoute)
-                    sb.AppendLine(route);
-                sb.AppendLine("ReutrnFrom2To,<MinRoute>");
-                sb.AppendLine(ReutrnFrom2To[0]);
-            }
-            txt_Route.Text = sb.ToString();
-            string[] minRoute_Start2From = new string[0];
-            string[] minRouteSeg_Start2From = new string[0];
-            if (ReutrnStart2From.Count() > 0)
-            {
-                minRoute_Start2From = ReutrnStart2From[0].Split('=');
-                minRouteSeg_Start2From = minRoute_Start2From[0].Split(',');
-            }
-
-            var minRoute_From2To = ReutrnFrom2To[0].Split('=');
-            string[] minRouteSeg_From2To = minRoute_From2To[0].Split(',');
-
-            List<string> minRouteSeg = new List<string>();
-            minRouteSeg.AddRange(minRouteSeg_Start2From);
-            minRouteSeg.AddRange(minRouteSeg_From2To);
-
-            //if (!string.IsNullOrWhiteSpace(minRoute_From2To[0]))
-            //    evtSectionSelected(minRouteSeg.ToArray(), startAdr, fromAdr, toAdr);
-        }
-
-        private void btn_seachSec2Adr_Click(object sender, EventArgs e)
-        {
             string[] ReutrnVh2FromAdr = bcApp.SCApplication.RouteGuide.DownstreamSearchSection_FromSecToAdr
-      (cmb_fromSection.Text, cmb_toAdr.Text, 1);
+                    (fromSec, toAdr, 0);
             string svh2FromAdr = (ReutrnVh2FromAdr != null && ReutrnVh2FromAdr.Count() > 0) ? ReutrnVh2FromAdr[0] : string.Empty;
             txt_Route.Text = svh2FromAdr;
+            var minRoute = ReutrnVh2FromAdr[0].Split('=');
+            string[] minRouteSeg = minRoute[0].Split(',');
+            bcApp.onTestGuideSectionSearch(minRouteSeg);
+
         }
 
         private void EngineerForm_FormClosed(object sender, FormClosedEventArgs e)

@@ -144,6 +144,8 @@ namespace com.mirle.ibg3k0.sc.BLL
             var from_adr_axis = reserveBLL.GetHltMapAddress(sec.FROM_ADR_ID);
             var to_adr_axis = reserveBLL.GetHltMapAddress(sec.TO_ADR_ID);
             var vh_axis = tryGetVhAxis(dis, from_adr_axis.x, from_adr_axis.y, to_adr_axis.x, to_adr_axis.y);
+            vh.X_Axis = vh_axis.x;
+            vh.Y_Axis = vh_axis.y;
 
             return reserveBLL.TryAddVehicleOrUpdate(vh_id, section_id, vh_axis.x, vh_axis.y, vh_axis.angle, speed, sensorDir, forkDir);
         }
