@@ -240,13 +240,12 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
                     , (s1, e1) =>
                     {
                         updateVehicleStatus(s1 as sc.AVEHICLE);
-                        updateVehiclePosition(s1 as sc.AVEHICLE);
                     });
             }
             private void updateVehiclePosition(sc.AVEHICLE vh)
             {
-                double X = (((vh.X_Axis)) * PathEnhance.Scale) - (ellipse.ActualWidth / 2)+5;
-                double Y = (((vh.Y_Axis)) * PathEnhance.Scale) - (ellipse.ActualHeight / 2);
+                double X = (((vh.X_Axis)) * PathEnhance.Scale) - (ellipse.ActualWidth / 2) + 5;
+                double Y = (((vh.Y_Axis)) * PathEnhance.Scale) - (ellipse.ActualHeight / 2) + 5;
 
                 //double X = ((vh.X_Axis) * PathEnhance.Scale);
                 //double Y = ((vh.Y_Axis) * PathEnhance.Scale);

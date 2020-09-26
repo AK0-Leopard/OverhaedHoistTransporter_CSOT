@@ -72,7 +72,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         {
             string fromAdr = cmb_fromAdr.Text;
             string toAdr = cmb_toAdr.Text;
-            string[] Reutrn = bcApp.SCApplication.RouteGuide.DownstreamSearchSection(fromAdr, toAdr, 1);
+            string[] Reutrn = bcApp.SCApplication.RouteGuide.DownstreamSearchSection(fromAdr, toAdr, 0);
             StringBuilder sb = new StringBuilder();
             if (string.IsNullOrEmpty(Reutrn[0]))
                 sb.AppendLine("SegmentClosed");
