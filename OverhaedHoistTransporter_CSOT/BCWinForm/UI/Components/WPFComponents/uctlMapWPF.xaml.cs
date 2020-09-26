@@ -67,9 +67,22 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
                 var vh_obj = new VhObj(vh);
                 vhObjs.Add(vh_obj);
                 VehicleTrack.Children.Add(vh_obj.ellipse);
+                VehicleTrack.Children.Add(vh_obj.nodeText);
+                vh_obj.EntryMonitorMode += Vh_obj_EntryMonitorMode;
             }
         }
 
+        private void Vh_obj_EntryMonitorMode(object sender, EventArgs e)
+        {
+            guidePath.RemoveAllGeometry();
+            var vh = sender as VhObj;
+            if (vh == null) return;
+            var sec_objs = sections.Where(sec => vh.GetGuideSections().Contains(sec.ID));
+            foreach (var sec in sec_objs)
+            {
+                guidePath.AddLineSegment(sec.StartAddress.Point, sec.EndAddress.Point);
+            }
+        }
 
         string event_id = string.Empty;
         private void initialVhEvent(BCApplication _bcApp)
@@ -208,12 +221,16 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
 
         class VhObj
         {
+            public event EventHandler EntryMonitorMode;
+
             public Ellipse ellipse { private set; get; } = null;
+            public TextBlock nodeText { private set; get; } = null;
             private sc.AVEHICLE vh = null;
             public VhObj(sc.AVEHICLE _vh)
             {
                 vh = _vh;
                 ellipse = GetEllipse(vh.Num);
+                nodeText = GetTextBlock(vh.Num);
                 ellipse.MouseDown += Ellipse_MouseDown;
                 updateVehicleStatus(vh);
                 initialVhEvent();
@@ -280,10 +297,10 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
                             setColor(Brushes.Blue);
                             break;
                         case VHModeStatus.AutoMts:
-                            setColor(Brushes.Yellow);
+                            setColor(Brushes.Gold);
                             break;
                         case VHModeStatus.AutoMtl:
-                            setColor(Brushes.Yellow);
+                            setColor(Brushes.Gold);
                             break;
                         case VHModeStatus.AutoRemote:
                             setColor(Brushes.Green);
@@ -298,7 +315,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
 
             private void Ellipse_MouseDown(object sender, MouseButtonEventArgs e)
             {
-
+                EntryMonitorMode?.Invoke(this, EventArgs.Empty);
             }
 
 
@@ -315,13 +332,28 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
                 myEllipse.RenderTransform = new TranslateTransform(vhNum * 30, 0);
                 return myEllipse;
             }
+            private TextBlock GetTextBlock(int vhNum)
+            {
+                TextBlock nodeText = new TextBlock(new Run(vhNum.ToString()) { Foreground = Brushes.White });
+                //nodeText.Text = vhNum.ToString();
+                nodeText.HorizontalAlignment = HorizontalAlignment.Center;
+                nodeText.VerticalAlignment = VerticalAlignment.Center;
+                nodeText.TextAlignment = TextAlignment.Center;
+                nodeText.RenderTransform = new TranslateTransform(vhNum * 30, 0);
+                return nodeText;
+            }
 
             public void setPosition(double x, double y)
             {
-                var translate = ellipse.RenderTransform as TranslateTransform;
-                if (translate == null) return;
-                translate.X = x;
-                translate.Y = y;
+                var ellipse_translate = ellipse.RenderTransform as TranslateTransform;
+                if (ellipse_translate == null) return;
+                var textblock_translate = nodeText.RenderTransform as TranslateTransform;
+                if (textblock_translate == null) return;
+
+                ellipse_translate.X = x;
+                ellipse_translate.Y = y;
+                textblock_translate.X = x;
+                textblock_translate.Y = y;
             }
             public void setColor(Brush brush)
             {
@@ -331,7 +363,12 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
                 }, null);
 
             }
-
+            public string[] GetGuideSections()
+            {
+                if (vh.WillPassSectionID == null)
+                    return new string[0];
+                return vh.WillPassSectionID?.ToArray();
+            }
         }
 
         class PathEnhance
@@ -411,6 +448,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
 
         }
 
+        private void VehicleTrack_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+        }
     }
 
     public class Address
