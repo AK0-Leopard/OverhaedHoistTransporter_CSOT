@@ -1032,11 +1032,11 @@ namespace com.mirle.ibg3k0.sc
             get { return hasSeriousAlarmHappend; }
             set
             {
-                if (hasSeriousAlarmHappend != value)
-                {
+                //if (hasSeriousAlarmHappend != value)
+                //{
                     hasSeriousAlarmHappend = value;
                     OnPropertyChanged(BCFUtility.getPropertyName(() => this.HasSeriousAlarmHappend));
-                }
+                //}
             }
         }
         private bool hasSpecifySeriousAlarmHappend;
@@ -1046,11 +1046,11 @@ namespace com.mirle.ibg3k0.sc
             get { return hasSpecifySeriousAlarmHappend; }
             set
             {
-                if (hasSpecifySeriousAlarmHappend != value)
-                {
+                //if (hasSpecifySeriousAlarmHappend != value)
+                //{
                     hasSpecifySeriousAlarmHappend = value;
                     OnPropertyChanged(BCFUtility.getPropertyName(() => this.HasSpecifySeriousAlarmHappend));
-                }
+                //}
             }
         }
 

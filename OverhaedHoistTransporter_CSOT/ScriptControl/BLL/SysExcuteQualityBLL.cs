@@ -51,17 +51,25 @@ namespace com.mirle.ibg3k0.sc.BLL
 
         public bool creatSysExcuteQuality(string cmd_id, string cstID, string source, string destination)
         {
-            bool isSuccess = true;
-            int total_act_vh = scApp.VehicleBLL.getActVhCount();
-            int total_idle_vh = scApp.VehicleBLL.getIdleVhCount();
-            int total_parking_vh = scApp.VehicleBLL.getParkingVhCount();
-            int total_cycling_vh = scApp.VehicleBLL.getCyclingVhCount();
 
-            ASYSEXCUTEQUALITY sysExcuteQuality =
-                buildSysExcuteQualityObj(cmd_id, cstID,
-                source, destination,
-                total_act_vh, total_idle_vh, total_parking_vh, total_cycling_vh);
-            addSysExcuteQuality(sysExcuteQuality);
+            bool isSuccess = true;
+            try
+            {
+                int total_act_vh = scApp.VehicleBLL.getActVhCount();
+                int total_idle_vh = scApp.VehicleBLL.getIdleVhCount();
+                int total_parking_vh = scApp.VehicleBLL.getParkingVhCount();
+                int total_cycling_vh = scApp.VehicleBLL.getCyclingVhCount();
+
+                ASYSEXCUTEQUALITY sysExcuteQuality =
+                    buildSysExcuteQualityObj(cmd_id, cstID,
+                    source, destination,
+                    total_act_vh, total_idle_vh, total_parking_vh, total_cycling_vh);
+                addSysExcuteQuality(sysExcuteQuality);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+            }
             return isSuccess;
 
         }

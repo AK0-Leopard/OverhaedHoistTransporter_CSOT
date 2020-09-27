@@ -28,11 +28,19 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void updateTransferCommand()
         {
+            try
+            {
+                var ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
+                cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+                cmsMCS_bindingSource.DataSource = cmdMCSList;
+                dgv_TransferCommand.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(TransferCommandQureyListForm), Device: "OHTC",
+                Data: $"Update Transfer Command Failed, Exception:{ex.Message}");
+            }
 
-            var ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
-            cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
-            cmsMCS_bindingSource.DataSource = cmdMCSList;
-            dgv_TransferCommand.Refresh();
         }
 
         private void btn_refresh_Click(object sender, EventArgs e)

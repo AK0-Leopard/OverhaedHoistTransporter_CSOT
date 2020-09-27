@@ -758,12 +758,20 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private async void updateTransferCommand()
         {
-            List<ACMD_MCS> ACMD_MCSs = null;
-            await Task.Run(() => ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished());
-            cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
-            //cmd_mcs_obj_to_show = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinishedObjToShow();
-            cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
-            dgv_TransferCommand.Refresh();
+            try
+            {
+                List<ACMD_MCS> ACMD_MCSs = null;
+                await Task.Run(() => ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished());
+                cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+                //cmd_mcs_obj_to_show = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinishedObjToShow();
+                cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
+                dgv_TransferCommand.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(OHT_Form), Device: "OHTC",
+                Data: $"Update Transfer Command Failed, Exception:{ex.Message}");
+            }
         }
 
 

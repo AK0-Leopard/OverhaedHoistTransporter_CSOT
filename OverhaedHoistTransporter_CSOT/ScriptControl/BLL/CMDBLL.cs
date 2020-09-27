@@ -236,31 +236,39 @@ namespace com.mirle.ibg3k0.sc.BLL
         {
             bool isSuccess = true;
             int ipriority = 0;
-            if (!int.TryParse(Priority, out ipriority))
+            try
             {
-                logger.Warn("command id :{0} of priority parse fail. priority valus:{1}"
-                            , command_id
-                            , Priority);
-            }
-            int ireplace = 0;
-            if (!int.TryParse(replace, out ireplace))
-            {
-                logger.Warn("command id :{0} of priority parse fail. priority valus:{1}"
-                            , command_id
-                            , replace);
-            }
+                if (!int.TryParse(Priority, out ipriority))
+                {
+                    logger.Warn("command id :{0} of priority parse fail. priority valus:{1}"
+                                , command_id
+                                , Priority);
+                }
+                int ireplace = 0;
+                if (!int.TryParse(replace, out ireplace))
+                {
+                    logger.Warn("command id :{0} of priority parse fail. priority valus:{1}"
+                                , command_id
+                                , replace);
+                }
 
 
-            //ACMD_MCS mcs_com = creatCommand_MCS(command_id, ipriority, carrier_id, HostSource, HostDestination, checkcode);
-            creatCommand_MCS(command_id, ipriority, ireplace, carrier_id, HostSource, HostDestination, checkcode);
-            //if (mcs_com != null)
-            //{
-            //    isSuccess = true;
-            //    scApp.SysExcuteQualityBLL.creatSysExcuteQuality(mcs_com);
-            //    //mcsDefaultMapAction.sendS6F11_TranInit(command_id);
-            //    scApp.ReportBLL.doReportTransferInitial(command_id);
-            //    checkMCS_TransferCommand();
-            //}
+                //ACMD_MCS mcs_com = creatCommand_MCS(command_id, ipriority, carrier_id, HostSource, HostDestination, checkcode);
+                creatCommand_MCS(command_id, ipriority, ireplace, carrier_id, HostSource, HostDestination, checkcode);
+                //if (mcs_com != null)
+                //{
+                //    isSuccess = true;
+                //    scApp.SysExcuteQualityBLL.creatSysExcuteQuality(mcs_com);
+                //    //mcsDefaultMapAction.sendS6F11_TranInit(command_id);
+                //    scApp.ReportBLL.doReportTransferInitial(command_id);
+                //    checkMCS_TransferCommand();
+                //}
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
             return isSuccess;
 
         }
@@ -1864,10 +1872,14 @@ namespace com.mirle.ibg3k0.sc.BLL
         private long ohxc_cmd_SyncPoint = 0;
         public void checkOHxC_TransferCommand()
         {
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: string.Empty,
+             Data: $"Start check OHxC transfer command begin");
             if (System.Threading.Interlocked.Exchange(ref ohxc_cmd_SyncPoint, 1) == 0)
             {
                 try
                 {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: string.Empty,
+                    Data: $"check OHxC transfer command into critical zone");
                     if (scApp.getEQObjCacheManager().getLine().ServiceMode
                         != SCAppConstants.AppServiceMode.Active)
                         return;
