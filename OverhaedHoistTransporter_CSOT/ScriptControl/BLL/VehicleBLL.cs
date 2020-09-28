@@ -143,13 +143,14 @@ namespace com.mirle.ibg3k0.sc.BLL
             ASECTION sec = scApp.SectionBLL.cache.GetSection(section_id);
             var from_adr_axis = reserveBLL.GetHltMapAddress(sec.FROM_ADR_ID);
             var to_adr_axis = reserveBLL.GetHltMapAddress(sec.TO_ADR_ID);
-            var vh_axis = tryGetVhAxis(dis, from_adr_axis.x, from_adr_axis.y, to_adr_axis.x, to_adr_axis.y);
+
+            var vh_axis = tryGetVhAxis(sec.SEC_DIS, dis, from_adr_axis.x, from_adr_axis.y, to_adr_axis.x, to_adr_axis.y);
             vh.X_Axis = vh_axis.x;
             vh.Y_Axis = vh_axis.y;
 
             return reserveBLL.TryAddVehicleOrUpdate(vh_id, section_id, vh_axis.x, vh_axis.y, vh_axis.angle, speed, sensorDir, forkDir);
         }
-        private (double x, double y, float angle) tryGetVhAxis(double dis, double from_x, double from_y, double to_x, double to_y)
+        private (double x, double y, float angle) tryGetVhAxis(double sectionTotalDis, double currentDis, double from_x, double from_y, double to_x, double to_y)
         {
             double x = 0;
             double y = 0;
@@ -158,25 +159,33 @@ namespace com.mirle.ibg3k0.sc.BLL
             {
                 x = from_x;
                 if (from_y > to_y)
-                    y = from_y - dis;
+                    y = from_y - currentDis;
                 else
-                    y = from_y + dis;
+                    y = from_y + currentDis;
                 angle = 90;
             }
             else if (from_y == to_y)
             {
                 if (from_x > to_x)
-                    x = from_x - dis;
+                    x = from_x - currentDis;
                 else
-                    x = from_x + dis;
+                    x = from_x + currentDis;
                 y = from_y;
                 angle = 0;
 
             }
             else
             {
-                x = from_x;
-                y = from_y;
+                if (currentDis > (sectionTotalDis / 2))
+                {
+                    x = to_x;
+                    y = to_y;
+                }
+                else
+                {
+                    x = from_x;
+                    y = from_y;
+                }
             }
             return (x, y, angle);
         }
