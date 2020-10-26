@@ -749,6 +749,27 @@ namespace com.mirle.ibg3k0.sc.BLL
 
             return AMCSREPORTQUEUEs;
         }
+
+
+        public List<AMCSREPORTQUEUE> loadBefore10Min()
+        {
+            List<AMCSREPORTQUEUE> AMCSREPORTQUEUEs;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                AMCSREPORTQUEUEs = mcsReportQueueDao.loadBefore10Min(con);
+            }
+            return AMCSREPORTQUEUEs;
+        }
+
+        public void RemoteMcsReportQueueByBatch(List<AMCSREPORTQUEUE> mcsRepoetQueue)
+        {
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                mcsReportQueueDao.RemoteByBatch(con, mcsRepoetQueue);
+            }
+        }
+
+
         #endregion MCS SXFY Report
 
 

@@ -290,7 +290,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
             }
             E_TRAN_STATUS transferState = E_TRAN_STATUS.Queue;
-            if(checkcode!= SECSConst.HCACK_Confirm)
+            if (checkcode != SECSConst.HCACK_Confirm)
             {
                 transferState = E_TRAN_STATUS.Reject;
             }
@@ -813,7 +813,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                             {
                                 bestSuitableVh = scApp.VehicleBLL.getVehicleByRealID(hostsource);
                                 //A0.04 if (bestSuitableVh.IsError || bestSuitableVh.MODE_STATUS != VHModeStatus.AutoRemote) 
-                                if (bestSuitableVh.IsError || bestSuitableVh.MODE_STATUS != VHModeStatus.AutoRemote|| bestSuitableVh.ACT_STATUS != VHActionStatus.NoCommand) //A0.04
+                                if (bestSuitableVh.IsError || bestSuitableVh.MODE_STATUS != VHModeStatus.AutoRemote || bestSuitableVh.ACT_STATUS != VHActionStatus.NoCommand) //A0.04
                                 {
                                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
                                        Data: $"vh id:{bestSuitableVh.VEHICLE_ID} current mode status is {bestSuitableVh.MODE_STATUS},is error flag:{bestSuitableVh.IsError},act status is {bestSuitableVh.ACT_STATUS}." +
@@ -3079,6 +3079,23 @@ namespace com.mirle.ibg3k0.sc.BLL
                 hcmd_mcsDao.AddByBatch(con, HCMD_MCS);
             }
         }
+        public List<HCMD_MCS> loadHCMD_MCSBefore6Months()
+        {
+            List<HCMD_MCS> AMCSREPORTQUEUEs;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                AMCSREPORTQUEUEs = hcmd_mcsDao.loadBefore6Months(con);
+            }
+            return AMCSREPORTQUEUEs;
+        }
+
+        public void RemoteHCMD_MCSByBatch(List<HCMD_MCS> hCmdMcs)
+        {
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                hcmd_mcsDao.RemoteByBatch(con, hCmdMcs);
+            }
+        }
         #endregion HCMD_MCS
         #region HCMD_OHTC
         public void CreatHCMD_OHTCs(List<HCMD_OHTC> HCMD_OHTC)
@@ -3088,6 +3105,24 @@ namespace com.mirle.ibg3k0.sc.BLL
                 hcmd_ohtcDao.AddByBatch(con, HCMD_OHTC);
             }
         }
+        public List<HCMD_OHTC> loadHCMD_OHTCBefore6Months()
+        {
+            List<HCMD_OHTC> hcmd_ohtc;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                hcmd_ohtc = hcmd_ohtcDao.loadBefore6Months(con);
+            }
+            return hcmd_ohtc;
+        }
+
+        public void RemoteHCMD_OHTCByBatch(List<HCMD_OHTC> hcmdOHTC)
+        {
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                hcmd_ohtcDao.RemoteByBatch(con, hcmdOHTC);
+            }
+        }
+
         #endregion HCMD_OHTC
 
 
