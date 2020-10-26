@@ -31,7 +31,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //this.TopMost = true; //不要讓它隨時在最上面
 
             mainForm = _mainForm;
-            oht_form = mainForm.OpenForms[nameof(OHT_Form)] as OHT_Form;
+            if (mainForm.OpenForms.ContainsKey(nameof(OHT_Form)))
+                oht_form = mainForm.OpenForms[nameof(OHT_Form)] as OHT_Form;
             bcApp = mainForm.BCApp;
             line = bcApp.SCApplication.getEQObjCacheManager().getLine();
 
@@ -42,7 +43,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
             bcApp.SCApplication.RoadControlService.SegmentListChanged += RoadControlService_SegmentListChanged;
 
-            oht_form.entrySegmentSetMode(SegmentSelectOnMap);
+            oht_form?.entrySegmentSetMode(SegmentSelectOnMap);
             RefreshMapColor();
         }
 
@@ -460,8 +461,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         {
             mainForm.removeForm(this.Name);
             bcApp.SCApplication.RoadControlService.SegmentListChanged -= RoadControlService_SegmentListChanged;
-            oht_form.LeaveSegmentSetMode(SegmentSelectOnMap);
-            oht_form.ResetAllSegment();
+            oht_form?.LeaveSegmentSetMode(SegmentSelectOnMap);
+            oht_form?.ResetAllSegment();
             RefreshMapColorNoSelected();
         }
 
@@ -474,19 +475,19 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 int index = segment_List.IndexOf(seg);
                 if (dgv_segment.Rows[index].Selected)
                 {
-                    oht_form.SetSpecifySegmentSelected(seg.SEG_NUM, Color.LightGreen);
+                    oht_form?.SetSpecifySegmentSelected(seg.SEG_NUM, Color.LightGreen);
                 }
                 else if (seg.PRE_DISABLE_FLAG)
                 {
-                    oht_form.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Pink);
+                    oht_form?.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Pink);
                 }
                 else if (seg.STATUS == E_SEG_STATUS.Closed)
                 {
-                    oht_form.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Red);
+                    oht_form?.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Red);
                 }
                 else
                 {
-                    oht_form.ResetSpecifySegmentSelected(seg.SEG_NUM);
+                    oht_form?.ResetSpecifySegmentSelected(seg.SEG_NUM);
                 }
             }
         }
@@ -498,15 +499,15 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 int index = segment_List.IndexOf(seg);
                 if (seg.PRE_DISABLE_FLAG)
                 {
-                    oht_form.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Pink);
+                    oht_form?.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Pink);
                 }
                 else if (seg.STATUS == E_SEG_STATUS.Closed)
                 {
-                    oht_form.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Red);
+                    oht_form?.SetSpecifySegmentSelected(seg.SEG_NUM, Color.Red);
                 }
                 else
                 {
-                    oht_form.ResetSpecifySegmentSelected(seg.SEG_NUM);
+                    oht_form?.ResetSpecifySegmentSelected(seg.SEG_NUM);
                 }
             }
         }
