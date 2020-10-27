@@ -567,8 +567,19 @@ VH_LINE,999,2,System internal exception,系统内部异常,a. 系统内部异常
 a2. 仅执行必要软件即可
 a3. 清理不必要档案","IPC Timeout  || Unexcepted Error
 complete all NG"
-HID_NODE,1,1,power alarm,A.HID雅米供电异常,A.HID雅米供电异常,A.检查HID电箱,
-HID_NODE,2,1,Temp alarm,A.HID温度异常,A.HID温度异常,A.检查HID电箱,
+
+HID_NODE,1,2,IGBT A alarm,雅米供電系統主機板 A 區塊報警,雅米供電系統主機板 A 區塊報警,有斷電風險，需停機檢查,
+HID_NODE,2,2,IGBT B alarm,雅米供電系統主機板 B 區塊報警,雅米供電系統主機板 B 區塊報警,有斷電風險，需停機檢查,
+HID_NODE,3,2,Temp alarm,雅米供電系統主機板溫度過高,雅米供電系統主機板溫度過高,有失火風險，需停機檢查,
+HID_NODE,4,2,power alarm,雅米供電系統電流過大,雅米供電系統電流過大,有失火風險，需停機檢查,
+HID_NODE,5,2,EMI alarm,雅米供電系統接地漏電電流異常,雅米供電系統接地漏電電流異常,有失火風險，需停機檢查,
+HID_NODE,6,2,Smoke alarm,電箱偵測到煙霧,電箱偵測到煙霧,有失火風險，需停機檢查,
+HID_NODE,7,2,Safe Circuit alarm,安全回路斷開,安全回路斷開,有斷電風險，需停機檢查,
+HID_NODE,8,2,Fan 1 alarm,散熱風扇1異常,散熱風扇1異常,有失火風險，需停機檢查,
+HID_NODE,9,2,Fan 2 alarm,散熱風扇2異常,散熱風扇2異常,有失火風險，需停機檢查,
+HID_NODE,10,2,Fan 3 alarm,散熱風扇3異常,散熱風扇3異常,有失火風險，需停機檢查,
+HID_NODE,11,1,Time out alarm,與OHTC連機異常,與OHTC連機異常,通訊異常，需檢查網路設備,
+
 MTS_NODE,1,1,OHxC timeout Alarm,A.与OHTC网络通讯异常,A.与OHTC网络通讯异常,A.检查通讯网络线,
 MTS_NODE,2,1,light curtain alarm,A.光栅侦测到异物,A.光栅侦测到异物,A.检查光栅,
 MTS_NODE,3,1,Safety door no open,A.安全门没锁,A.安全门没锁,A.检查安全门,

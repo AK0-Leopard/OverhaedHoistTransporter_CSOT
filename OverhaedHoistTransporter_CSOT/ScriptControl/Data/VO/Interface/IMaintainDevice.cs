@@ -19,6 +19,11 @@ namespace com.mirle.ibg3k0.sc.Data.VO.Interface
         MTxMode MTxMode { get; set; }
         bool CarInSafetyCheck { get; set; }
         bool CarOutSafetyCheck { get; set; }
+        bool CarOutActionTypeSystemOutToMTS { get; set; }
+        bool CarOutActionTypeSystemOutToMTL { get; set; }
+        bool CarOutActionTypeMTSToMTL { get; set; }
+        bool CarOutActionTypeSystemInFronMTS { get; set; }
+        bool CarOutActionTypeOnlyPass { get; set; }
         string PreCarOutVhID { get; set; }
         (bool isSendSuccess, UInt16 returnCode) carOutRequest(UInt16 carNum);
         bool SetCarOutInterlock(bool onOff);

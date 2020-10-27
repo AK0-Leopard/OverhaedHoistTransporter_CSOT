@@ -325,10 +325,10 @@
             this.btn_mtl_o2m_d2u_moving.Enabled = false;
             this.btn_mtl_o2m_d2u_moving.Location = new System.Drawing.Point(339, 101);
             this.btn_mtl_o2m_d2u_moving.Name = "btn_mtl_o2m_d2u_moving";
-            this.btn_mtl_o2m_d2u_moving.Size = new System.Drawing.Size(248, 26);
+            this.btn_mtl_o2m_d2u_moving.Size = new System.Drawing.Size(218, 26);
             this.btn_mtl_o2m_d2u_moving.TabIndex = 51;
             this.btn_mtl_o2m_d2u_moving.TabStop = true;
-            this.btn_mtl_o2m_d2u_moving.Text = "Bit15_Car In Interlock";
+            this.btn_mtl_o2m_d2u_moving.Text = "Bit15_Car In Moving";
             this.btn_mtl_o2m_d2u_moving.UseVisualStyleBackColor = true;
             // 
             // label28

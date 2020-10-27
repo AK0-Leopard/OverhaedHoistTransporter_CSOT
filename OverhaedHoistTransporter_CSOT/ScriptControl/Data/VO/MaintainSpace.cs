@@ -97,27 +97,79 @@ namespace com.mirle.ibg3k0.sc.Data.VO
 
         public (bool isSendSuccess, UInt16 returnCode) carOutRequest(UInt16 carNum)
         {
-            return getExcuteMapAction().OHxC_CarOutNotify(carNum);
+            //return getExcuteMapAction().OHxC_CarOutNotify(carNum,1);
+
+            MTSValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                return mapAction.OHxC_CarOutNotify(carNum, 1);
+            }
+            else
+            {
+                return getExcuteMapActionNew().OHxC_CarOutNotify(carNum, 1);
+            }
+
         }
         public bool SetCarOutInterlock(bool onOff)
         {
-            return getExcuteMapAction().setOHxC2MTL_CarOutInterlock(onOff);
+
+            //return getExcuteMapAction().setOHxC2MTL_CarOutInterlock(onOff);
+
+
+            MTSValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                return mapAction.setOHxC2MTL_CarOutInterlock(onOff);
+            }
+            else
+            {
+                return getExcuteMapActionNew().setOHxC2MTL_CarOutInterlock(onOff);
+            }
         }
         public bool SetCarInMoving(bool onOff)
         {
-            return getExcuteMapAction().setOHxC2MTL_CarInMoving(onOff);
+            //return getExcuteMapAction().setOHxC2MTL_CarInMoving(onOff);
+
+
+            MTSValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                return mapAction.setOHxC2MTL_CarInMoving(onOff);
+            }
+            else
+            {
+                return getExcuteMapActionNew().setOHxC2MTL_CarInMoving(onOff);
+            }
         }
 
         public void setCarRealTimeInfo(UInt16 car_id, UInt16 action_mode, UInt16 cst_exist, UInt16 current_section_id, UInt32 current_address_id,
                                             UInt32 buffer_distance, UInt16 speed)
         {
-            getExcuteMapAction().CarRealtimeInfo(car_id, action_mode, cst_exist, current_section_id, current_address_id, buffer_distance, speed);
+            MTSValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                mapAction.CarRealtimeInfo(car_id, action_mode, cst_exist, current_section_id, current_address_id, buffer_distance, speed);
+            }
+            else
+            {
+                getExcuteMapActionNew().CarRealtimeInfo(car_id, action_mode, cst_exist, current_section_id, current_address_id, buffer_distance, speed); ;
+            }
+            //getExcuteMapAction().CarRealtimeInfo(car_id, action_mode, cst_exist, current_section_id, current_address_id, buffer_distance, speed);
         }
 
         private MTSValueDefMapActionNew getExcuteMapAction()
         {
             MTSValueDefMapActionNew mapAction;
             mapAction = this.getMapActionByIdentityKey(typeof(MTSValueDefMapActionNew).Name) as MTSValueDefMapActionNew;
+
+            return mapAction;
+        }
+
+
+        private MTSValueDefMapActionNewPH2 getExcuteMapActionNew()
+        {
+            MTSValueDefMapActionNewPH2 mapAction;
+            mapAction = this.getMapActionByIdentityKey(typeof(MTSValueDefMapActionNewPH2).Name) as MTSValueDefMapActionNewPH2;
 
             return mapAction;
         }

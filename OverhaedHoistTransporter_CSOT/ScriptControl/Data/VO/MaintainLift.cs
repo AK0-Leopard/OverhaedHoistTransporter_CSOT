@@ -13,11 +13,11 @@ namespace com.mirle.ibg3k0.sc.Data.VO
 {
     public class MaintainLift : AEQPT, IMaintainDevice
     {
-        public readonly string MTL_SYSTEM_OUT_ADDRESS = "20292";
-        public readonly string MTL_CAR_IN_BUFFER_ADDRESS = "24294";
-        public readonly string MTL_SEGMENT = "013";
-        public readonly string MTL_ADDRESS = "20293";
-        public readonly string MTL_SYSTEM_IN_ADDRESS = "20198";
+        public string MTL_SYSTEM_OUT_ADDRESS = "20292";
+        public string MTL_CAR_IN_BUFFER_ADDRESS = "24294";
+        public string MTL_SEGMENT = "013";
+        public string MTL_ADDRESS = "20293";
+        public string MTL_SYSTEM_IN_ADDRESS = "20198";
 
         public string DeviceID { get { return EQPT_ID; } set { } }
         public string DeviceSegment { get { return MTL_SEGMENT; } set { } }
@@ -91,23 +91,63 @@ namespace com.mirle.ibg3k0.sc.Data.VO
 
         public (bool isSendSuccess, UInt16 returnCode) carOutRequest(UInt16 carNum)
         {
-            return getExcuteMapAction().OHxC_CarOutNotify(carNum);
+
+            //return getExcuteMapAction().OHxC_CarOutNotify(carNum,2);
+            MTLValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                return mapAction.OHxC_CarOutNotify(carNum, 2);
+            }
+            else
+            {
+                return getExcuteMapActionNew().OHxC_CarOutNotify(carNum, 2);
+            }
+
         }
         public bool SetCarOutInterlock(bool onOff)
         {
-            return getExcuteMapAction().setOHxC2MTL_CarOutInterlock(onOff);
+            //return getExcuteMapAction().setOHxC2MTL_CarOutInterlock(onOff);
+
+            MTLValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                return mapAction.setOHxC2MTL_CarOutInterlock(onOff);
+            }
+            else
+            {
+                return getExcuteMapActionNew().setOHxC2MTL_CarOutInterlock(onOff);
+            }
         }
         public bool SetCarInMoving(bool onOff)
         {
-            return getExcuteMapAction().setOHxC2MTL_CarInMoving(onOff);
-        }
+            //return getExcuteMapAction().setOHxC2MTL_CarInMoving(onOff);
 
+
+            MTLValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                return mapAction.setOHxC2MTL_CarInMoving(onOff);
+            }
+            else
+            {
+                return getExcuteMapActionNew().setOHxC2MTL_CarInMoving(onOff);
+            }
+        }
 
 
         public void setCarRealTimeInfo(UInt16 car_id, UInt16 action_mode, UInt16 cst_exist, UInt16 current_section_id, UInt32 current_address_id,
                                             UInt32 buffer_distance, UInt16 speed)
         {
-            getExcuteMapAction().CarRealtimeInfo(car_id, action_mode, cst_exist, current_section_id, current_address_id, buffer_distance, speed);
+            MTLValueDefMapActionNew mapAction = getExcuteMapAction();
+            if (mapAction != null)
+            {
+                mapAction.CarRealtimeInfo(car_id, action_mode, cst_exist, current_section_id, current_address_id, buffer_distance, speed);
+            }
+            else
+            {
+                getExcuteMapActionNew().CarRealtimeInfo(car_id, action_mode, cst_exist, current_section_id, current_address_id, buffer_distance, speed);
+            }
+
         }
 
         private MTLValueDefMapActionNew getExcuteMapAction()
@@ -118,6 +158,34 @@ namespace com.mirle.ibg3k0.sc.Data.VO
             return mapAction;
         }
 
+        private MTLValueDefMapActionNewPH2 getExcuteMapActionNew()
+        {
+            MTLValueDefMapActionNewPH2 mapAction;
+            mapAction = this.getMapActionByIdentityKey(typeof(MTLValueDefMapActionNewPH2).Name) as MTLValueDefMapActionNewPH2;
+
+            return mapAction;
+        }
+
+        public void setMTLSegment(string adrID)
+        {
+            MTL_SEGMENT = adrID;
+        }
+        public void setMTLAddress(string adrID)
+        {
+            MTL_ADDRESS = adrID;
+        }
+        public void setMTLSystemInAddress(string adrID)
+        {
+            MTL_SYSTEM_IN_ADDRESS = adrID;
+        }
+        public void setMTLCarInBufferAddress(string adrID)
+        {
+            MTL_CAR_IN_BUFFER_ADDRESS = adrID;
+        }
+        public void setMTLSystemOutAddress(string adrID)
+        {
+            MTL_SYSTEM_OUT_ADDRESS = adrID;
+        }
 
 
     }

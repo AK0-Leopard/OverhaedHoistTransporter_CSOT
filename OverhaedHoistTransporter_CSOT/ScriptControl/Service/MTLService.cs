@@ -235,11 +235,11 @@ namespace com.mirle.ibg3k0.sc.Service
                 isSuccess = false;
                 result = $"MTL:{mtx.DeviceID} Current Mode:{mtx.MTxMode}, can't excute cat out requset.";
             }
-            if (isSuccess && !mtx.CarOutSafetyCheck)
-            {
-                isSuccess = false;
-                result = $"MTx:{mtx.DeviceID} CarOutSafetyCheck:{mtx.CarOutSafetyCheck}, can't excute cat out requset.";
-            }
+            //if (isSuccess && !mtx.CarOutSafetyCheck)
+            //{
+            //    isSuccess = false;
+            //    result = $"MTx:{mtx.DeviceID} CarOutSafetyCheck:{mtx.CarOutSafetyCheck}, can't excute cat out requset.";
+            //}
 
             if (dockingMtx != null)
             {
@@ -248,14 +248,14 @@ namespace com.mirle.ibg3k0.sc.Service
                     isSuccess = false;
                     result = $"Docking MTx:{dockingMtx.DeviceID} Current Mode:{dockingMtx.MTxMode}, can't excute cat out requset.";
                 }
-                if (!SCUtility.isMatche(car_out_vh.CUR_ADR_ID, dockingMtx.DeviceAddress))
-                {
-                    if (isSuccess && !dockingMtx.CarOutSafetyCheck)
-                    {
-                        isSuccess = false;
-                        result = $"Docking MTx:{dockingMtx.DeviceID} CarOutSafetyCheck:{dockingMtx.CarOutSafetyCheck}, can't excute cat out requset.";
-                    }
-                }
+                //if (!SCUtility.isMatche(car_out_vh.CUR_ADR_ID, dockingMtx.DeviceAddress))
+                //{
+                //    if (isSuccess && !dockingMtx.CarOutSafetyCheck)
+                //    {
+                //        isSuccess = false;
+                //        result = $"Docking MTx:{dockingMtx.DeviceID} CarOutSafetyCheck:{dockingMtx.CarOutSafetyCheck}, can't excute cat out requset.";
+                //    }
+                //}
                 if (isSuccess && !SCUtility.isEmpty(dockingMtx.PreCarOutVhID))
                 {
                     isSuccess = false;
@@ -306,9 +306,23 @@ namespace com.mirle.ibg3k0.sc.Service
             string result = "OK";
             mtx.CancelCarOutRequest = false;
             mtx.CarOurSuccess = false;
+
+            if (!SpinWait.SpinUntil(() => mtx.CarOutSafetyCheck == true &&
+            //maintainDevice.CarOutActionTypeSystemOutToMTL == true && 
+            (mtx.DokingMaintainDevice == null || mtx.DokingMaintainDevice.CarOutSafetyCheck == true), 60000))
+            {
+                isSuccess = false;
+                result = $"Process car out scenario,but mtl:{mtx.DeviceID} status not ready " +
+                $"{nameof(mtx.CarOutSafetyCheck)}:{mtx.CarOutSafetyCheck}";
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                         Data: result,
+                         XID: mtx.DeviceID);
+                return (isSuccess, result);
+            }
+
             CarOutStart(mtx);
             //接著要開始等待MTS的兩個門都放下來之後，才可以將OHT開過來
-            if (mtx.DokingMaintainDevice is MaintainSpace)
+            if (mtx.DokingMaintainDevice!=null && mtx.DokingMaintainDevice is MaintainSpace)
             {
                 MaintainSpace dockingMaintainSpace = mtx.DokingMaintainDevice as MaintainSpace;
                 if (!SpinWait.SpinUntil(() => dockingMaintainSpace.MTSBackDoorStatus == MTSDoorStatus.Open &&
@@ -332,7 +346,7 @@ namespace com.mirle.ibg3k0.sc.Service
             if (isSuccess && SCUtility.isEmpty(pre_car_out_vh_ohtc_cmd_id))
             {
                 //在收到OHT的ID:132-命令結束後或者在變為AutoLocal後此時OHT沒有命令的話則會呼叫此Function來創建一個Transfer command，讓Vh移至移動至System out上
-                if (SCUtility.isMatche(pre_car_out_vh_cur_adr_id, mtx.MTL_SYSTEM_OUT_ADDRESS))
+                if (mtx.DokingMaintainDevice == null || SCUtility.isMatche(pre_car_out_vh_cur_adr_id, mtx.MTL_SYSTEM_OUT_ADDRESS))
                 {
                     VehicleService.doAskVhToMaintainsAddress(pre_car_out_vh_id, mtx.MTL_ADDRESS);
                 }
@@ -392,6 +406,18 @@ namespace com.mirle.ibg3k0.sc.Service
             string result = "";
             mtx.CancelCarOutRequest = false;
             mtx.CarOurSuccess = false;
+
+            if (!SpinWait.SpinUntil(() => mtx.CarOutSafetyCheck == true, 30000))
+            {
+                isSuccess = false;
+                result = $"Process car out scenario,but mts:{mtx.DeviceID} status not ready " +
+                $"{nameof(mtx.CarOutSafetyCheck)}:{mtx.CarOutSafetyCheck}";
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                 Data: result,
+                 XID: mtx.DeviceID);
+                return (false, result);
+            }
+
             CarOutStart(mtx);
             //if (!SpinWait.SpinUntil(() => mtx.MTSBackDoorStatus == MTSDoorStatus.Open, 20000))
             //需要判斷MTS的門是否已經開啟
@@ -616,16 +642,18 @@ namespace com.mirle.ibg3k0.sc.Service
 
         public void carInSafetyAndVehicleStatusCheck(MaintainLift mtl)
         {
-            CarInStart(mtl);
-            //在收到MTL的 Car in safety check後，就可以叫Vh移動至Car in 的buffer區(MTL Home)
-            //不過要先判斷vh是否已經在Auto模式下如果是則先將它變成AutoLocal的模式
-            if (!mtl.CarInSafetyCheck || mtl.MTxMode != ProtocolFormat.OHTMessage.MTxMode.Auto)
+            if (!mtl.CarInSafetyCheck || mtl.MTxMode != ProtocolFormat.OHTMessage.MTxMode.Auto || mtl.MTLLocation != MTLLocation.Upper)
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
-                         Data: $"Device:{mtl.DeviceID} car in safety check in on, but mts mode:{mtl.MTxMode}, can't excute car in.",
+                         Data: $"Device:{mtl.DeviceID} car in safety check in on, but mts mode:{mtl.MTxMode} or Location:{mtl.MTLLocation}, can't excute car in.",
                          XID: mtl.DeviceID);
                 return;
             }
+
+
+            CarInStart(mtl);
+            //在收到MTL的 Car in safety check後，就可以叫Vh移動至Car in 的buffer區(MTL Home)
+            //不過要先判斷vh是否已經在Auto模式下如果是則先將它變成AutoLocal的模式
 
             AVEHICLE car_in_vh = vehicleBLL.cache.getVhByAddressID(mtl.MTL_ADDRESS);
             if (car_in_vh != null && car_in_vh.isTcpIpConnect)
@@ -720,14 +748,14 @@ namespace com.mirle.ibg3k0.sc.Service
                 result = $"MTx:{mtx.DeviceID} Current Mode:{mtx.MTxMode}, can't excute cat in requset.";
             }
             //3.要判斷MTS的 Car In Safety Check是否是準備好的
-            if (mtx is MaintainSpace)
-            {
-                if (isSuccess && !mtx.CarInSafetyCheck)
-                {
-                    isSuccess = false;
-                    result = $"MTx:{mtx.DeviceID} {nameof(mtx.CarInSafetyCheck)}:{mtx.CarInSafetyCheck}, can't excute cat in requset.";
-                }
-            }
+            //if (mtx is MaintainSpace)
+            //{
+            //    if (isSuccess && !mtx.CarInSafetyCheck)
+            //    {
+            //        isSuccess = false;
+            //        result = $"MTx:{mtx.DeviceID} {nameof(mtx.CarInSafetyCheck)}:{mtx.CarInSafetyCheck}, can't excute cat in requset.";
+            //    }
+            //}
             //4.若有Docking的Device，則需要再判斷一次他的狀態
             if (dockingMtx != null)
             {
@@ -736,11 +764,11 @@ namespace com.mirle.ibg3k0.sc.Service
                     isSuccess = false;
                     result = $"Docking MTx:{dockingMtx.DeviceID} Current Mode:{dockingMtx.MTxMode}, can't excute cat in requset.";
                 }
-                if (isSuccess && !dockingMtx.CarOutSafetyCheck)
-                {
-                    isSuccess = false;
-                    result = $"Docking MTx:{dockingMtx.DeviceID} CarInSafetyCheck:{dockingMtx.CarOutSafetyCheck}, can't excute cat in requset.";
-                }
+                //if (isSuccess && !dockingMtx.CarOutSafetyCheck)
+                //{
+                //    isSuccess = false;
+                //    result = $"Docking MTx:{dockingMtx.DeviceID} CarInSafetyCheck:{dockingMtx.CarOutSafetyCheck}, can't excute cat in requset.";
+                //}
                 //要執行Car in的時候，如果是MTS而且有Docking MTL，則要確認MTL上面是否有車子
                 if (mtx is MaintainSpace &&
                     dockingMtx is MaintainLift)

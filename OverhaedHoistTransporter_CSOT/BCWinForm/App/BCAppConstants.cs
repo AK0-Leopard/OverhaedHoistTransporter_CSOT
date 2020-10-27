@@ -47,6 +47,40 @@ namespace com.mirle.ibg3k0.bc.winform.App
         public const string FUNC_BUTTONCONTROL_CIMON = "FUNC_BUTTONCONTROL_CIMON";                        //Button Control (CIM On)
 
         /******************************************************************/
+        /****************************** UAS *******************************/
+        //System
+        public class System_Function
+        {
+            public const string FUNC_LOGIN = "FUNC_LOGIN";
+            public const string FUNC_CLOSE_SYSTEM = "FUNC_CLOSE_SYSTEM";
+            public const string FUNC_ACCOUNT_MANAGEMENT = "FUNC_ACCOUNT_MANAGEMENT";
+        }
+
+        //Operation
+        public class Operation_Function
+        {
+            public const string FUNC_SYSTEM_CONCROL_MODE = "FUNC_SYSTEM_CONCROL_MODE";
+            public const string FUNC_TRANSFER_MANAGEMENT = "FUNC_TRANSFER_MANAGEMENT";
+        }
+
+        //Query
+
+        //Maintenance
+        public class Maintenance_Function
+        {
+            public const string FUNC_VEHICLE_MANAGEMENT = "FUNC_VEHICLE_MANAGEMENT";
+            public const string FUNC_MTS_MTL_MAINTENANCE = "FUNC_MTS_MTL_MAINTENANCE";
+            public const string FUNC_PORT_MAINTENANCE = "FUNC_PORT_MAINTENANCE";
+            public const string FUNC_ADVANCED_SETTINGS = "FUNC_ADVANCED_SETTINGS";
+            //public const string FUNC_ALARM_MAINTENANCE = "FUNC_ALARM_MAINTENANCE";
+        }
+
+        //Debug
+        public class Debug_Function
+        {
+            public const string FUNC_DEBUG = "FUNC_DEBUG";
+        }
+        /******************************************************************/
         public const string LOGIN_USER_DEFAULT = "";
 
         public static Color CLR_MAP_VHSTS_NONE_FORE = Color.Black;

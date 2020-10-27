@@ -571,6 +571,7 @@ HID_NODE,1,1,power alarm,A.HID雅米供电异常,A.HID雅米供电异常,A.检�
 HID_NODE,2,1,Temp alarm,A.HID温度异常,A.HID温度异常,A.检查HID电箱,
 MTS_NODE,1,1,OHxC timeout Alarm,A.与OHTC网络通讯异常,A.与OHTC网络通讯异常,A.检查通讯网络线,
 MTS_NODE,2,1,light curtain alarm,A.光栅侦测到异物,A.光栅侦测到异物,A.检查光栅,
+
 MTS_NODE,3,1,Safety door no open,A.安全门没锁,A.安全门没锁,A.检查安全门,
 MTS_NODE,4,1,front door no open,A.前门没开,A.前门没开,A.检查前门,
 MTS_NODE,5,1,Back door unlock,A.后门没开,A.后门没开,A.检查后门,

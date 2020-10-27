@@ -1149,6 +1149,7 @@ namespace com.mirle.ibg3k0.sc.App
             public const string DEVICE_NAME_OHT = "OHT";
             public const string DEVICE_NAME_MTx = "MTx";
             public const string DEVICE_NAME_MCS = "MCS";
+            public const string DEVICE_NAME_HID = "HID";
         }
     }
 }

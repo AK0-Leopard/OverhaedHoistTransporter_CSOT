@@ -11,6 +11,7 @@ namespace com.mirle.ibg3k0.sc.Data.PLC_Functions
 {
     public class HIDToOHxC_TempAlarm : PLC_FunBase
     {
+        public string EQ_ID;
         [PLCElement(ValueName = "HID_TO_OHXC_TEMP_ALARM")]
         public bool TempAlarmHappend;
 
