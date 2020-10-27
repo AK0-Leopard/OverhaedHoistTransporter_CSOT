@@ -31,11 +31,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //this.TopMost = true; //不要讓它隨時在最上面
 
             mainForm = _mainForm;
-            if(mainForm.OpenForms.ContainsKey(nameof(OHT_Form)))
-                {
+            if (mainForm.OpenForms.ContainsKey(nameof(OHT_Form)))
                 oht_form = mainForm.OpenForms[nameof(OHT_Form)] as OHT_Form;
-            }
-
             bcApp = mainForm.BCApp;
             line = bcApp.SCApplication.getEQObjCacheManager().getLine();
 

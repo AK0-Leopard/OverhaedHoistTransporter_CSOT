@@ -36,11 +36,12 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
             con.SaveChanges();
         }
 
-        public List<APOINT> loadAll(DBConnection_EF con)
+        public List<AMCSREPORTQUEUE> loadBefore10Min(DBConnection_EF con)
         {
-            var query = from point in con.APOINT
-                        orderby point.ADR_ID
-                        select point;
+            DateTime before_10_min = DateTime.Now.AddMinutes(-10);
+            var query = from queue in con.AMCSREPORTQUEUE
+                        where queue.REPORT_TIME < before_10_min
+                        select queue;
             return query.ToList();
         }
         public List<AMCSREPORTQUEUE> loadByNonReport(DBConnection_EF con)
@@ -51,5 +52,12 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         select queue;
             return query.ToList();
         }
+        public void RemoteByBatch(DBConnection_EF con, List<AMCSREPORTQUEUE> cmd_mcss)
+        {
+            cmd_mcss.ForEach(entity => con.Entry(entity).State = EntityState.Deleted);
+            con.AMCSREPORTQUEUE.RemoveRange(cmd_mcss);
+            con.SaveChanges();
+        }
+
     }
 }
