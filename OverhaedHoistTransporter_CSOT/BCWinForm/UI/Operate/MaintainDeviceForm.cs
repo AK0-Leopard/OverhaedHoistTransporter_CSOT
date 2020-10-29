@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -38,6 +39,10 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             string device_id = (sender as ComboBox).Text;
             MTL = bcApp.SCApplication.getEQObjCacheManager().getEquipmentByEQPTID(device_id) as MaintainLift;
             MTLValueDefMapActionBase = MTL.getMapActionByIdentityKey(nameof(MTLValueDefMapActionNew)) as MTxValueDefMapActionBase;
+            if (MTLValueDefMapActionBase == null)
+            {
+                MTLValueDefMapActionBase = MTL.getMapActionByIdentityKey(nameof(MTLValueDefMapActionNewPH2)) as MTxValueDefMapActionBase;
+            }
         }
 
         private void cmb_mts_SelectedIndexChanged(object sender, EventArgs e)
@@ -45,6 +50,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             string device_id = (sender as ComboBox).Text;
             MTS = bcApp.SCApplication.getEQObjCacheManager().getEquipmentByEQPTID(device_id) as MaintainSpace;
             MTSValueDefMapActionBase = MTS.getMapActionByIdentityKey(nameof(MTSValueDefMapActionNew)) as MTxValueDefMapActionBase;
+
+            if (MTSValueDefMapActionBase == null)
+            {
+                MTSValueDefMapActionBase = MTS.getMapActionByIdentityKey(nameof(MTSValueDefMapActionNewPH2)) as MTxValueDefMapActionBase;
+            }
         }
 
         private void btn_mtl_dateTimeSync_Click(object sender, EventArgs e)
@@ -66,20 +76,20 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void btn_mtl_car_out_notify_Click(object sender, EventArgs e)
         {
             UInt16 car_id = UInt16.Parse(txt_mtl_car_out_notify_car_id.Text);
-            CarOutNotify(MTLValueDefMapActionBase, car_id);
+            CarOutNotify(MTLValueDefMapActionBase, car_id, 2);
         }
 
         private void btn_mts_car_out_notify_Click(object sender, EventArgs e)
         {
             UInt16 car_id = UInt16.Parse(txt_mts_car_out_notify_car_id.Text);
-            CarOutNotify(MTSValueDefMapActionBase, car_id);
+            CarOutNotify(MTSValueDefMapActionBase, car_id, 1);
         }
 
-        private void CarOutNotify(MTxValueDefMapActionBase mTxValueDefMapActionBase, ushort carNum)
+        private void CarOutNotify(MTxValueDefMapActionBase mTxValueDefMapActionBase, ushort carNum,ushort action_type)
         {
             Task.Run(() =>
             {
-                mTxValueDefMapActionBase.OHxC_CarOutNotify(carNum);
+                mTxValueDefMapActionBase.OHxC_CarOutNotify(carNum, action_type);
             });
         }
 
@@ -179,14 +189,32 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 if (maintainDevice is sc.Data.VO.MaintainLift)
                 {
                     sc.Data.VO.Interface.IMaintainDevice dockingMTS = bcApp.SCApplication.EquipmentBLL.cache.GetDockingMTLOfMaintainSpace();
-                    r = bcApp.SCApplication.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, dockingMTS, pre_car_out_vh);
+                    if(dockingMTS!= null)
+                    {
+                        r = bcApp.SCApplication.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, dockingMTS, pre_car_out_vh);
+                    }
+                    else
+                    {
+                        r = bcApp.SCApplication.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, null, pre_car_out_vh);
+                        //r.isSuccess = true;
+                    }
                     if (r.isSuccess)
                     {
                         r = bcApp.SCApplication.MTLService.CarOurRequest(maintainDevice, pre_car_out_vh);
                     }
+                    //if (!SpinWait.SpinUntil(() => maintainDevice.CarOutSafetyCheck == true &&
+                    ////maintainDevice.CarOutActionTypeSystemOutToMTL == true && 
+                    //( dockingMTS==null||dockingMTS.CarOutSafetyCheck == true), 60000))
+                    //{
+                    //    r.isSuccess = false;
+                    //    string  result = $"Process car out scenario,but mtl:{maintainDevice.DeviceID} status not ready " +
+                    //    $"{nameof(maintainDevice.CarOutSafetyCheck)}:{maintainDevice.CarOutSafetyCheck}";
+                    //    MessageBox.Show(result);
+                    //}
                     if (r.isSuccess)
                     {
-                        r = bcApp.SCApplication.MTLService.processCarOutScenario(maintainDevice as sc.Data.VO.MaintainLift, pre_car_out_vh);
+
+                            r = bcApp.SCApplication.MTLService.processCarOutScenario(maintainDevice as sc.Data.VO.MaintainLift, pre_car_out_vh);
                     }
                 }
                 else if (maintainDevice is sc.Data.VO.MaintainSpace)
@@ -196,6 +224,14 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                     {
                         r = bcApp.SCApplication.MTLService.CarOurRequest(maintainDevice, pre_car_out_vh);
                     }
+                    //if (!SpinWait.SpinUntil(() => maintainDevice.CarOutSafetyCheck == true, 30000))
+                    //{
+                    //    r.isSuccess = false;
+                    //    string result = $"Process car out scenario,but mtl:{maintainDevice.DeviceID} status not ready " +
+                    //    $"{nameof(maintainDevice.CarOutSafetyCheck)}:{maintainDevice.CarOutSafetyCheck}";
+                    //    MessageBox.Show(result);
+                    //}
+
                     if (r.isSuccess)
                     {
                         r = bcApp.SCApplication.MTLService.processCarOutScenario(maintainDevice as sc.Data.VO.MaintainSpace, pre_car_out_vh);

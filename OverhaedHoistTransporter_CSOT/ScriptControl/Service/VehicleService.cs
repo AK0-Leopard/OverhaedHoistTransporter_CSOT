@@ -4273,7 +4273,7 @@ namespace com.mirle.ibg3k0.sc.Service
                             //在收到OHT的ID:132-SystemOut完成後，創建一個Transfer command，讓Vh移至移動至MTL上
                             //doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, MTLService.MTL_ADDRESS);
                             maintainLift = scApp.EquipmentBLL.cache.GetMaintainLiftBySystemOutAdr(cur_adr_id);
-                            if (maintainLift != null)
+                            if (maintainLift != null && maintainLift.CarOutSafetyCheck)
                                 doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, maintainLift.MTL_ADDRESS);
                         }
                         else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts)
@@ -4328,23 +4328,40 @@ namespace com.mirle.ibg3k0.sc.Service
                         }
                         break;
                     default:
-                        //if (eqpt.MODE_STATUS == VHModeStatus.AutoMtl && eqpt.HAS_CST == 0)
-                        //{
-                        //    maintainLift = scApp.EquipmentBLL.cache.GetExcuteCarOutMTL(eqpt.VEHICLE_ID);
-                        //    if (maintainLift != null)
-                        //        doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainLift.MTL_SYSTEM_OUT_ADDRESS);
-                        //}
-                        //else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts && eqpt.HAS_CST == 0)
-                        //{
-                        //    maintainSpace = scApp.EquipmentBLL.cache.GetExcuteCarOutMTS(eqpt.VEHICLE_ID);
-                        //    if (maintainSpace != null)
-                        //        doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainSpace.MTS_ADDRESS);
-                        //}
-                        //else if ((eqpt.MODE_STATUS == VHModeStatus.AutoRemote) && eqpt.HAS_CST == 0)
-                        //{
-                        scApp.CMDBLL.checkMCS_TransferCommand();
-                        scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(eqpt.VEHICLE_ID);
-                        //}
+                        if (eqpt.MODE_STATUS == VHModeStatus.AutoMtl && eqpt.HAS_CST == 0)
+                        {
+                            maintainLift = scApp.EquipmentBLL.cache.GetExcuteCarOutMTL(eqpt.VEHICLE_ID);
+                            if (maintainLift != null)
+                            {
+                                if (maintainLift.DokingMaintainDevice != null&& maintainLift.DokingMaintainDevice.CarOutSafetyCheck)
+                                {
+                                    if (maintainLift.DokingMaintainDevice.CarOutSafetyCheck)//如果SafetyCheck已經解除則不能進行出車
+                                    {
+                                        doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainLift.MTL_SYSTEM_OUT_ADDRESS);
+                                    }
+                                }
+                                else
+                                {
+                                    if (maintainLift.CarOutSafetyCheck)//如果SafetyCheck已經解除則不能進行出車
+                                    {
+                                        doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, maintainLift.MTL_ADDRESS);
+                                    }
+                                }
+
+                            }
+
+                        }
+                        else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts && eqpt.HAS_CST == 0)
+                        {
+                            maintainSpace = scApp.EquipmentBLL.cache.GetExcuteCarOutMTS(eqpt.VEHICLE_ID);
+                            if (maintainSpace != null&& maintainSpace.CarOutSafetyCheck)
+                                doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainSpace.MTS_ADDRESS);
+                        }
+                        else if ((eqpt.MODE_STATUS == VHModeStatus.AutoRemote) && eqpt.HAS_CST == 0)
+                        {
+                            scApp.CMDBLL.checkMCS_TransferCommand();
+                            scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(eqpt.VEHICLE_ID);
+                        }
                         break;
                 }
             }
@@ -5066,6 +5083,27 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
                 is_success = is_success && scApp.ReportBLL.newReportVehicleRemoved(vhID, reportqueues);
+                scApp.ReportBLL.newSendMCSMessage(reportqueues);
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: ex,
+                   VehicleID: vhID);
+                return (false, "");
+            }
+        }
+
+        public (bool isSuccess, string result) FakeRemoveInstallNew(string vhID)
+        {
+            try
+            {
+                AVEHICLE vh_vo = scApp.VehicleBLL.cache.getVhByID(vhID);
+                bool is_success = true;
+                List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
+                is_success = is_success && scApp.ReportBLL.newReportVehicleRemoved(vhID, reportqueues);
+                is_success = is_success && scApp.ReportBLL.newReportVehicleInstalled(vhID, reportqueues);
                 scApp.ReportBLL.newSendMCSMessage(reportqueues);
                 return (true, "");
             }

@@ -70,6 +70,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     case BCFAppConstants.RUN_LEVEL.ZERO:
                         CarOutSafetyChcek(null, null);
+                        CarOutActionType(null, null);
                         CarInSafetyChcek(null, null);
                         MTL_LFTStatus(null, null);
 
@@ -79,7 +80,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                         {
                             (eqpt as MaintainSpace).DokingMaintainDevice = scApp.EquipmentBLL.cache.GetMaintainLift();
                         }
-                        else if (eqpt is MaintainLift)
+                        else if (eqpt is MaintainLift&&
+                            SCUtility.isMatche((eqpt as MaintainLift).EQPT_ID, "MTL"))
                         {
                             (eqpt as MaintainLift).DokingMaintainDevice = scApp.EquipmentBLL.cache.GetDockingMTLOfMaintainSpace();
                         }
@@ -200,7 +202,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
         }
 
-        public virtual (bool isSendSuccess, UInt16 returnCode) OHxC_CarOutNotify(UInt16 car_id)
+        public virtual (bool isSendSuccess, UInt16 returnCode) OHxC_CarOutNotify(UInt16 car_id,UInt16 action_type)
         {
             bool isSendSuccess = false;
             var send_function =
@@ -464,6 +466,34 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         }
 
 
+        public virtual void CarOutActionType(object sender, ValueChangedEventArgs args)
+        {
+            var recevie_function =
+                scApp.getFunBaseObj<MtlToOHxC_CarOutActionType>(eqpt.EQPT_ID) as MtlToOHxC_CarOutActionType;
+            try
+            {
+                recevie_function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTxValueDefMapActionBase), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                         Data: recevie_function.ToString(),
+                         XID: eqpt.EQPT_ID);
+                eqpt.CarOutActionTypeSystemOutToMTS = recevie_function.ActionType1;
+                eqpt.CarOutActionTypeSystemOutToMTL = recevie_function.ActionType2;
+                eqpt.CarOutActionTypeMTSToMTL = recevie_function.ActionType3;
+                eqpt.CarOutActionTypeSystemInFronMTS = recevie_function.ActionType4;
+                eqpt.CarOutActionTypeOnlyPass = recevie_function.ActionType5;
+                eqpt.SynchronizeTime = DateTime.Now;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<MtlToOHxC_CarOutActionType>(recevie_function);
+
+            }
+        }
+
         public virtual void MTL_Alarm_Report(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =
@@ -483,8 +513,10 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 send_function.Handshake = hand_shake;
                 send_function.Write(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
                 eqpt.SynchronizeTime = DateTime.Now;
-
-                scApp.LineService.ProcessAlarmReport(eqpt.NODE_ID, eqpt.EQPT_ID, eqpt.Real_ID, "", error_code.ToString(), status);
+                if(hand_shake == 1)
+                {
+                    scApp.LineService.ProcessAlarmReport(eqpt.NODE_ID, eqpt.EQPT_ID, eqpt.Real_ID, "", error_code.ToString(), status);
+                }
 
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTxValueDefMapActionBase), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
                          Data: send_function.ToString(),
@@ -602,6 +634,27 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_SAFETY_CHECK", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => CarOutSafetyChcek(_sender, _e);
+                }
+
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_1", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_3", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_4", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_5", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
                 }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_D2U_SAFETY_CHECK", out vr))
                 {

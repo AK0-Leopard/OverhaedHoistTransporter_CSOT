@@ -22,6 +22,20 @@ namespace com.mirle.ibg3k0.sc.Data.PLC_Functions
         public UInt16 Handshake;
     }
 
+    class MtlToOHxC_MtlCarOutRepuestPH2 : PLC_FunBase
+    {
+        public DateTime Timestamp;
+        [PLCElement(ValueName = "MTL_TO_OHXC_MTL_CAR_OUT_ACTION_TYPE")]
+        public UInt16 MTLCarOutActionType;
+        [PLCElement(ValueName = "MTL_TO_OHXC_MTL_CAR_OUT_REQUEST_CAR_ID")]
+        public UInt16 CarID;
+        [PLCElement(ValueName = "MTL_TO_OHXC_MTL_CAR_OUT_CANCEL")]
+        public UInt16 Canacel;
+        [PLCElement(ValueName = "MTL_TO_OHXC_MTL_CAR_OUT_REQUEST_HS")]
+        public UInt16 Handshake;
+    }
+
+
     class OHxCToMtl_MtlCarOutReply : PLC_FunBase
     {
         public DateTime Timestamp;

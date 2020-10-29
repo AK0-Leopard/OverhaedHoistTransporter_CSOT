@@ -51,6 +51,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.uctlButton2 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.num_test_dis = new System.Windows.Forms.NumericUpDown();
             this.txt_sec_id = new System.Windows.Forms.TextBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
@@ -363,11 +364,13 @@
             this.MaxAllowActionTimeSecond_Current_txb = new System.Windows.Forms.TextBox();
             this.MaxAllowActionTimeSecond_Min_txb = new System.Windows.Forms.TextBox();
             this.MaxAllowActionTimeSecond_Max_txb = new System.Windows.Forms.TextBox();
-            this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.label85 = new System.Windows.Forms.Label();
             this.label83 = new System.Windows.Forms.Label();
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
+            this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_hid_datetime_sync = new System.Windows.Forms.Button();
+            this.comboBox_HID = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -647,6 +650,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.uctlButton2);
             this.groupBox4.Controls.Add(this.num_test_dis);
             this.groupBox4.Controls.Add(this.txt_sec_id);
             this.groupBox4.Controls.Add(this.groupBox14);
@@ -699,6 +703,16 @@
             this.groupBox4.Text = "Specify Vehicle Action";
             this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
             // 
+            // uctlButton2
+            // 
+            this.uctlButton2.Location = new System.Drawing.Point(828, 202);
+            this.uctlButton2.Name = "uctlButton2";
+            this.uctlButton2.Size = new System.Drawing.Size(169, 43);
+            this.uctlButton2.TabIndex = 57;
+            this.uctlButton2.Text = "Synchonize";
+            this.uctlButton2.UseVisualStyleBackColor = true;
+            this.uctlButton2.Click += new System.EventHandler(this.uctlButton2_Click);
+            // 
             // num_test_dis
             // 
             this.num_test_dis.Location = new System.Drawing.Point(828, 148);
@@ -723,7 +737,7 @@
             // 
             this.groupBox14.Controls.Add(this.txt_req_block_id_test);
             this.groupBox14.Controls.Add(this.button11);
-            this.groupBox14.Location = new System.Drawing.Point(861, 560);
+            this.groupBox14.Location = new System.Drawing.Point(863, 599);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Size = new System.Drawing.Size(192, 133);
             this.groupBox14.TabIndex = 54;
@@ -822,7 +836,7 @@
             // 
             // btn_changeToRemove
             // 
-            this.btn_changeToRemove.Location = new System.Drawing.Point(828, 189);
+            this.btn_changeToRemove.Location = new System.Drawing.Point(828, 256);
             this.btn_changeToRemove.Name = "btn_changeToRemove";
             this.btn_changeToRemove.Size = new System.Drawing.Size(169, 43);
             this.btn_changeToRemove.TabIndex = 46;
@@ -832,7 +846,7 @@
             // 
             // btn_changeToInstall
             // 
-            this.btn_changeToInstall.Location = new System.Drawing.Point(831, 240);
+            this.btn_changeToInstall.Location = new System.Drawing.Point(828, 308);
             this.btn_changeToInstall.Name = "btn_changeToInstall";
             this.btn_changeToInstall.Size = new System.Drawing.Size(169, 43);
             this.btn_changeToInstall.TabIndex = 45;
@@ -842,7 +856,7 @@
             // 
             // btn_changeToAutoLocal
             // 
-            this.btn_changeToAutoLocal.Location = new System.Drawing.Point(834, 364);
+            this.btn_changeToAutoLocal.Location = new System.Drawing.Point(831, 436);
             this.btn_changeToAutoLocal.Name = "btn_changeToAutoLocal";
             this.btn_changeToAutoLocal.Size = new System.Drawing.Size(166, 45);
             this.btn_changeToAutoLocal.TabIndex = 44;
@@ -852,7 +866,7 @@
             // 
             // btn_changeToAutoMTL
             // 
-            this.btn_changeToAutoMTL.Location = new System.Drawing.Point(834, 464);
+            this.btn_changeToAutoMTL.Location = new System.Drawing.Point(831, 536);
             this.btn_changeToAutoMTL.Name = "btn_changeToAutoMTL";
             this.btn_changeToAutoMTL.Size = new System.Drawing.Size(166, 45);
             this.btn_changeToAutoMTL.TabIndex = 43;
@@ -862,7 +876,7 @@
             // 
             // btn_changeToAutoMTS
             // 
-            this.btn_changeToAutoMTS.Location = new System.Drawing.Point(834, 413);
+            this.btn_changeToAutoMTS.Location = new System.Drawing.Point(831, 485);
             this.btn_changeToAutoMTS.Name = "btn_changeToAutoMTS";
             this.btn_changeToAutoMTS.Size = new System.Drawing.Size(166, 45);
             this.btn_changeToAutoMTS.TabIndex = 42;
@@ -872,7 +886,7 @@
             // 
             // btn_changeToAutoRemote
             // 
-            this.btn_changeToAutoRemote.Location = new System.Drawing.Point(834, 313);
+            this.btn_changeToAutoRemote.Location = new System.Drawing.Point(831, 385);
             this.btn_changeToAutoRemote.Name = "btn_changeToAutoRemote";
             this.btn_changeToAutoRemote.Size = new System.Drawing.Size(166, 45);
             this.btn_changeToAutoRemote.TabIndex = 41;
@@ -3582,6 +3596,8 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.comboBox_HID);
+            this.tabPage5.Controls.Add(this.btn_hid_datetime_sync);
             this.tabPage5.Controls.Add(this.button10);
             this.tabPage5.Controls.Add(this.button7);
             this.tabPage5.Controls.Add(this.lbl_sigma_w_value);
@@ -3612,7 +3628,7 @@
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(467, 115);
+            this.button10.Location = new System.Drawing.Point(515, 95);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(136, 58);
             this.button10.TabIndex = 21;
@@ -3622,7 +3638,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(467, 51);
+            this.button7.Location = new System.Drawing.Point(515, 31);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(136, 58);
             this.button7.TabIndex = 20;
@@ -3798,14 +3814,14 @@
             this.comboBox_HID_control.Items.AddRange(new object[] {
             "ON",
             "OFF"});
-            this.comboBox_HID_control.Location = new System.Drawing.Point(38, 39);
+            this.comboBox_HID_control.Location = new System.Drawing.Point(38, 59);
             this.comboBox_HID_control.Name = "comboBox_HID_control";
             this.comboBox_HID_control.Size = new System.Drawing.Size(121, 30);
             this.comboBox_HID_control.TabIndex = 2;
             // 
             // btn_SendHIDControl
             // 
-            this.btn_SendHIDControl.Location = new System.Drawing.Point(184, 40);
+            this.btn_SendHIDControl.Location = new System.Drawing.Point(231, 63);
             this.btn_SendHIDControl.Name = "btn_SendHIDControl";
             this.btn_SendHIDControl.Size = new System.Drawing.Size(202, 26);
             this.btn_SendHIDControl.TabIndex = 0;
@@ -4374,11 +4390,11 @@
             this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Current_txb);
             this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Min_txb);
             this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Max_txb);
-            this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Set_btn);
             this.tabPage9.Controls.Add(this.label85);
             this.tabPage9.Controls.Add(this.label83);
             this.tabPage9.Controls.Add(this.label81);
             this.tabPage9.Controls.Add(this.label79);
+            this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Set_btn);
             this.tabPage9.Location = new System.Drawing.Point(4, 31);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
@@ -4409,17 +4425,6 @@
             this.MaxAllowActionTimeSecond_Max_txb.Name = "MaxAllowActionTimeSecond_Max_txb";
             this.MaxAllowActionTimeSecond_Max_txb.Size = new System.Drawing.Size(113, 30);
             this.MaxAllowActionTimeSecond_Max_txb.TabIndex = 61;
-            // 
-            // MaxAllowActionTimeSecond_Set_btn
-            // 
-            this.MaxAllowActionTimeSecond_Set_btn.Location = new System.Drawing.Point(1093, 16);
-            this.MaxAllowActionTimeSecond_Set_btn.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.MaxAllowActionTimeSecond_Set_btn.Name = "MaxAllowActionTimeSecond_Set_btn";
-            this.MaxAllowActionTimeSecond_Set_btn.Size = new System.Drawing.Size(126, 34);
-            this.MaxAllowActionTimeSecond_Set_btn.TabIndex = 60;
-            this.MaxAllowActionTimeSecond_Set_btn.Text = "Set";
-            this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
-            this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
             // label85
             // 
@@ -4456,6 +4461,40 @@
             this.label79.Size = new System.Drawing.Size(290, 22);
             this.label79.TabIndex = 53;
             this.label79.Text = "Max Allow Action Time Second";
+            // 
+            // MaxAllowActionTimeSecond_Set_btn
+            // 
+            this.MaxAllowActionTimeSecond_Set_btn.Location = new System.Drawing.Point(1093, 16);
+            this.MaxAllowActionTimeSecond_Set_btn.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.MaxAllowActionTimeSecond_Set_btn.Name = "MaxAllowActionTimeSecond_Set_btn";
+            this.MaxAllowActionTimeSecond_Set_btn.Size = new System.Drawing.Size(126, 34);
+            this.MaxAllowActionTimeSecond_Set_btn.TabIndex = 60;
+            this.MaxAllowActionTimeSecond_Set_btn.Text = "Set";
+            this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
+            this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
+            // 
+            // btn_hid_datetime_sync
+            // 
+            this.btn_hid_datetime_sync.Location = new System.Drawing.Point(286, 101);
+            this.btn_hid_datetime_sync.Name = "btn_hid_datetime_sync";
+            this.btn_hid_datetime_sync.Size = new System.Drawing.Size(183, 47);
+            this.btn_hid_datetime_sync.TabIndex = 22;
+            this.btn_hid_datetime_sync.Text = "DateTime Sync";
+            this.btn_hid_datetime_sync.UseVisualStyleBackColor = true;
+            this.btn_hid_datetime_sync.Click += new System.EventHandler(this.btn_hid_datetime_sync_Click);
+            // 
+            // comboBox_HID
+            // 
+            this.comboBox_HID.FormattingEnabled = true;
+            this.comboBox_HID.Items.AddRange(new object[] {
+            "HID",
+            "HID2",
+            "HID3",
+            "HID4"});
+            this.comboBox_HID.Location = new System.Drawing.Point(38, 13);
+            this.comboBox_HID.Name = "comboBox_HID";
+            this.comboBox_HID.Size = new System.Drawing.Size(121, 30);
+            this.comboBox_HID.TabIndex = 23;
             // 
             // DebugForm
             // 
@@ -4887,5 +4926,8 @@
         private System.Windows.Forms.Label label81;
         private System.Windows.Forms.NumericUpDown num_test_dis;
         private System.Windows.Forms.TextBox txt_sec_id;
+        private Components.uctlButton uctlButton2;
+        private System.Windows.Forms.Button btn_hid_datetime_sync;
+        private System.Windows.Forms.ComboBox comboBox_HID;
     }
 }

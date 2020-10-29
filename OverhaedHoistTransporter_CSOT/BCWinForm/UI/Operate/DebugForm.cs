@@ -672,15 +672,15 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void btn_mtl_car_out_notify_Click(object sender, EventArgs e)
         {
-            UInt16 car_id = UInt16.Parse(txt_mtl_car_out_notify_car_id.Text);
-            Task.Run(() =>
-            {
-                var mtl_mapaction = maintainEQ.
-                    getMapActionByIdentityKey(nameof(com.mirle.ibg3k0.sc.Data.ValueDefMapAction.MTxValueDefMapActionBase)) as
-                    com.mirle.ibg3k0.sc.Data.ValueDefMapAction.MTxValueDefMapActionBase;
-                mtl_mapaction.OHxC_CarOutNotify(car_id);
-            }
-            );
+            //UInt16 car_id = UInt16.Parse(txt_mtl_car_out_notify_car_id.Text);
+            //Task.Run(() =>
+            //{
+            //    var mtl_mapaction = maintainEQ.
+            //        getMapActionByIdentityKey(nameof(com.mirle.ibg3k0.sc.Data.ValueDefMapAction.MTxValueDefMapActionBase)) as
+            //        com.mirle.ibg3k0.sc.Data.ValueDefMapAction.MTxValueDefMapActionBase;
+            //    mtl_mapaction.OHxC_CarOutNotify(car_id);
+            //}
+            //);
         }
 
         private void btn_rename_cst_id_Click(object sender, EventArgs e)
@@ -747,10 +747,28 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void btn_SendHIDControl_Click(object sender, EventArgs e)
         {
             SCApplication scApp = SCApplication.getInstance();
-            AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID("HID");
-            HIDValueDefMapAction mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapAction") as HIDValueDefMapAction);
-            bool signal = comboBox_HID_control.SelectedIndex == 0 ? true : false;
-            mapAction.HID_Control(signal);
+            AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
+            if (eqpt_HID != null)
+            {
+                HIDValueDefMapAction mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapAction") as HIDValueDefMapAction);
+                if (mapAction != null)
+                {
+                    bool signal = comboBox_HID_control.SelectedIndex == 0 ? true : false;
+                    mapAction.HID_Control(signal);
+                }
+                else
+                {
+                    HIDValueDefMapActionPH2 mapActionPH2 = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
+
+                    bool signal = comboBox_HID_control.SelectedIndex == 0 ? true : false;
+                    mapActionPH2.HID_Control(signal);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Please Select HID.");
+            }
         }
 
         private void button7_Click_1(object sender, EventArgs e)
@@ -846,25 +864,29 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void btn_hid_info_Click(object sender, EventArgs e)
         {
-            AEQPT eqpt_HID = bcApp.SCApplication.getEQObjCacheManager().getEquipmentByEQPTID("HID");
-            var hid_info = eqpt_HID.HID_Info;
-            if (hid_info == null) return;
-            Adapter.Invoke((obj) =>
+            AEQPT eqpt_HID = bcApp.SCApplication.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
+            if(eqpt_HID != null)
             {
-                lbl_hour_sigma_word_value.Text = hid_info.Hour_Sigma_Converted.ToString();
-                lbl_vr_value.Text = hid_info.VR_Converted.ToString();
-                lbl_vs_value.Text = hid_info.VS_Converted.ToString();
-                lbl_vt_value.Text = hid_info.VT_Converted.ToString();
+                var hid_info = eqpt_HID.HID_Info;
+                if (hid_info == null) return;
+                Adapter.Invoke((obj) =>
+                {
+                    lbl_hour_sigma_word_value.Text = hid_info.Hour_Sigma_Converted.ToString();
+                    lbl_vr_value.Text = hid_info.VR_Converted.ToString();
+                    lbl_vs_value.Text = hid_info.VS_Converted.ToString();
+                    lbl_vt_value.Text = hid_info.VT_Converted.ToString();
 
-                lbl_ar_value.Text = hid_info.AR_Converted.ToString();
-                lbl_as_value.Text = hid_info.AS_Converted.ToString();
-                lbl_at_value.Text = hid_info.AT_Converted.ToString();
+                    lbl_ar_value.Text = hid_info.AR_Converted.ToString();
+                    lbl_as_value.Text = hid_info.AS_Converted.ToString();
+                    lbl_at_value.Text = hid_info.AT_Converted.ToString();
 
-                lbl_sigma_w_value.Text = hid_info.Sigma_W_Converted.ToString();
-
-
-
-            }, null);
+                    lbl_sigma_w_value.Text = hid_info.Sigma_W_Converted.ToString();
+                }, null);
+            }
+            else
+            {
+                MessageBox.Show("Please Select HID.");
+            }
         }
 
         private void btn_mtl_info_refresh_Click(object sender, EventArgs e)
@@ -1402,6 +1424,62 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             {
                 mainForm.BCApp.SCApplication.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh_id, id_134_trans_event_rep);
             });
+        }
+
+        private async void uctlButton2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                uctlButton2.Enabled = false;
+                (bool isSuccess, string result) check_result = default((bool isSuccess, string result));
+                //await Task.Run(() => bcApp.SCApplication.VehicleService.Install(vh_id));
+                await Task.Run(() => check_result = bcApp.SCApplication.VehicleService.FakeRemoveInstallNew(vh_id));
+                //MessageBox.Show($"{vh_id} install ok");
+                if (check_result.isSuccess)
+                {
+                    MessageBox.Show($"{vh_id} synchonize ok");
+                }
+                else
+                {
+                    MessageBox.Show($"{vh_id} synchonize fail.{Environment.NewLine}" +
+                                    $"result:{check_result.result}");
+                }
+
+            }
+            finally
+            {
+                uctlButton2.Enabled = true;
+            }
+        }
+
+        private void btn_hid_datetime_sync_Click(object sender, EventArgs e)
+        {
+            SCApplication scApp = SCApplication.getInstance();
+            AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
+            if (eqpt_HID != null)
+            {
+                HIDValueDefMapAction mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapAction") as HIDValueDefMapAction);
+                if (mapAction != null)
+                {
+                    mapAction.DateTimeSyncCommand(DateTime.Now);
+                }
+                else
+                {
+                    HIDValueDefMapActionPH2 mapActionPh2 = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
+                    if (mapActionPh2 != null)
+                    {
+                        mapActionPh2.DateTimeSyncCommand(DateTime.Now);
+                    }
+                }
+
+
+            }
+            else
+            {
+                MessageBox.Show("Please Select HID.");
+            }
+
         }
     }
 }

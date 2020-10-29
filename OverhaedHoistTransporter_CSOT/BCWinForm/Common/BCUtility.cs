@@ -112,6 +112,8 @@ namespace com.mirle.ibg3k0.bc.winform.Common
             {
                 bcApp.login(loginUserID);
                 hasAuth = bcApp.SCApplication.UserBLL.checkUserAuthority(loginUserID, BCAppConstants.FUNC_LOGIN);
+                MessageBox.Show(window, BCApplication.getMessageString("Log in success."),
+                    BCApplication.getMessageString("INFO"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             if (!hasAuth)
             {

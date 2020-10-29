@@ -32,7 +32,7 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
         private static Logger logger = LogManager.GetCurrentClassLogger();
         protected SCApplication scApp = null;
         protected MPLCSMControl smControl;
-        int[] syncPoint = new int[7];
+        int[] syncPoint = new int[16];
         public OHxCAliveTimer(string name, long intervalMilliSec)
             : base(name, intervalMilliSec)
         {
@@ -48,12 +48,24 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
         {
             //Task.Run(() => AliveMTL());
             Task.Run(() => AliveToDevice(0, "MTL", "OHXC_TO_MTL_ALIVE_INDEX"));
+
             Task.Run(() => AliveToDevice(1, "MTS", "OHXC_TO_MTL_ALIVE_INDEX"));
             Task.Run(() => AliveToDevice(2, "MTS2", "OHXC_TO_MTL_ALIVE_INDEX"));
             Task.Run(() => AliveToDevice(3, "HID", "OHXC_TO_HID_ALIVE_INDEX"));
             Task.Run(() => AliveToDevice(4, "HID2", "OHXC_TO_HID_ALIVE_INDEX"));
             Task.Run(() => AliveToDevice(5, "HID3", "OHXC_TO_HID_ALIVE_INDEX"));
             Task.Run(() => AliveToDevice(6, "HID4", "OHXC_TO_HID_ALIVE_INDEX"));
+            Task.Run(() => AliveToDevice(7, "MTL2", "OHXC_TO_MTL_ALIVE_INDEX"));
+            Task.Run(() => AliveToDevice(8, "MTL3", "OHXC_TO_MTL_ALIVE_INDEX"));
+            Task.Run(() => AliveToDevice(9, "MTS3", "OHXC_TO_MTL_ALIVE_INDEX"));
+
+            Task.Run(() => AliveToDevice(10, "HID5", "OHXC_TO_HID_ALIVE_INDEX_PH2"));
+            Task.Run(() => AliveToDevice(11, "HID6", "OHXC_TO_HID_ALIVE_INDEX_PH2"));
+            Task.Run(() => AliveToDevice(12, "HID7", "OHXC_TO_HID_ALIVE_INDEX_PH2"));
+            Task.Run(() => AliveToDevice(13, "HID8", "OHXC_TO_HID_ALIVE_INDEX_PH2"));
+            Task.Run(() => AliveToDevice(14, "HID9", "OHXC_TO_HID_ALIVE_INDEX_PH2"));
+            Task.Run(() => AliveToDevice(15, "HID10", "OHXC_TO_HID_ALIVE_INDEX_PH2"));
+
         }
 
         private long syncMTLPoint = 0;

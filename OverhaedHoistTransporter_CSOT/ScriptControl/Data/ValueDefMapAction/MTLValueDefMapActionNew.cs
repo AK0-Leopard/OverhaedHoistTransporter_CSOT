@@ -139,7 +139,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
         }
 
-        public override (bool isSendSuccess, UInt16 returnCode) OHxC_CarOutNotify(UInt16 car_id)
+        public override (bool isSendSuccess, UInt16 returnCode) OHxC_CarOutNotify(UInt16 car_id,UInt16 action_type)
         {
             bool isSendSuccess = false;
             var send_function =

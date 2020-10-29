@@ -1300,7 +1300,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
 
                 //A0.04 Start
-                if (vh.ACT_STATUS != VHActionStatus.NoCommand)
+                if (vh.ACT_STATUS != VHActionStatus.NoCommand&& vh.MODE_STATUS != VHModeStatus.AutoMts&& vh.MODE_STATUS != VHModeStatus.AutoMtl)
                 {
                     check_result.Result.AppendLine($" vh:{vh_id} act status is not no command.");
                     check_result.Result.AppendLine($" please wait privious commnad finish.");
