@@ -185,9 +185,9 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
                     destination_port_station = scApp.getEQObjCacheManager().getPortStation(tranTask.DestinationPort);
                     if ((source_port_station != null && !SCUtility.isEmpty(source_port_station.CST_ID)) &&
                         scApp.CMDBLL.getCMD_MCSIsUnfinishedCountByCarrierID(source_port_station.CST_ID) == 0 &&
-                        (destination_port_station != null && SCUtility.isEmpty(destination_port_station.CST_ID)))
+                        (destination_port_station != null && SCUtility.isEmpty(destination_port_station.CST_ID)) &&
+                        scApp.CMDBLL.getCMD_MCSIsUnfinishedCountByPortID(destination_port_station.PORT_ID) == 0)
                     {
-
                         carrier_id = source_port_station.CST_ID;
                         is_find = true;
                     }

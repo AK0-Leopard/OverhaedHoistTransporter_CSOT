@@ -51,6 +51,8 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.num_test_dis = new System.Windows.Forms.NumericUpDown();
+            this.txt_sec_id = new System.Windows.Forms.TextBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.txt_req_block_id_test = new System.Windows.Forms.TextBox();
             this.button11 = new System.Windows.Forms.Button();
@@ -366,12 +368,11 @@
             this.label83 = new System.Windows.Forms.Label();
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
-            this.txt_sec_id = new System.Windows.Forms.TextBox();
-            this.num_test_dis = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_test_dis)).BeginInit();
             this.groupBox14.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
@@ -406,7 +407,6 @@
             this.tabPage8.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             this.tabPage9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.num_test_dis)).BeginInit();
             this.SuspendLayout();
             // 
             // cb_FroceBlockPass
@@ -698,6 +698,26 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Specify Vehicle Action";
             this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
+            // 
+            // num_test_dis
+            // 
+            this.num_test_dis.Location = new System.Drawing.Point(828, 148);
+            this.num_test_dis.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.num_test_dis.Name = "num_test_dis";
+            this.num_test_dis.Size = new System.Drawing.Size(149, 30);
+            this.num_test_dis.TabIndex = 56;
+            this.num_test_dis.ValueChanged += new System.EventHandler(this.num_test_dis_ValueChanged);
+            // 
+            // txt_sec_id
+            // 
+            this.txt_sec_id.Location = new System.Drawing.Point(828, 105);
+            this.txt_sec_id.Name = "txt_sec_id";
+            this.txt_sec_id.Size = new System.Drawing.Size(149, 30);
+            this.txt_sec_id.TabIndex = 55;
             // 
             // groupBox14
             // 
@@ -1426,7 +1446,6 @@
             this.gb_blockControl.TabIndex = 23;
             this.gb_blockControl.TabStop = false;
             this.gb_blockControl.Text = "Block Control";
-            this.gb_blockControl.Visible = false;
             // 
             // cb_FroceBlockReject
             // 
@@ -2547,7 +2566,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 8);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4438,26 +4457,6 @@
             this.label79.TabIndex = 53;
             this.label79.Text = "Max Allow Action Time Second";
             // 
-            // txt_sec_id
-            // 
-            this.txt_sec_id.Location = new System.Drawing.Point(828, 105);
-            this.txt_sec_id.Name = "txt_sec_id";
-            this.txt_sec_id.Size = new System.Drawing.Size(149, 30);
-            this.txt_sec_id.TabIndex = 55;
-            // 
-            // num_test_dis
-            // 
-            this.num_test_dis.Location = new System.Drawing.Point(828, 148);
-            this.num_test_dis.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.num_test_dis.Name = "num_test_dis";
-            this.num_test_dis.Size = new System.Drawing.Size(149, 30);
-            this.num_test_dis.TabIndex = 56;
-            this.num_test_dis.ValueChanged += new System.EventHandler(this.num_test_dis_ValueChanged);
-            // 
             // DebugForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -4478,6 +4477,7 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_test_dis)).EndInit();
             this.groupBox14.ResumeLayout(false);
             this.groupBox14.PerformLayout();
             this.groupBox9.ResumeLayout(false);
@@ -4541,7 +4541,6 @@
             this.tableLayoutPanel6.PerformLayout();
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.num_test_dis)).EndInit();
             this.ResumeLayout(false);
 
         }
