@@ -771,11 +771,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                 ThroughSectionFromToAdr.AddRange(ThroughSectionFromAdr);
                 ThroughSectionFromToAdr.AddRange(ThroughSectionToAdr);
                 List<APARKZONEMASTER> ThroughParkZones = null;
+                string current_park_type = scApp.getEQObjCacheManager().getLine().Currnet_Park_Type;
                 //DBConnection_EF con = DBConnection_EF.GetContext();
                 //using (DBConnection_EF con = new DBConnection_EF())
                 using (DBConnection_EF con = DBConnection_EF.GetUContext())
                 {
-                    APARKZONEMASTER vhParkMaster = parkZoneMasterDao.getByParkingAdr(con, cur_adr_id);
+                    //APARKZONEMASTER vhParkMaster = parkZoneMasterDao.getByParkingAdr(con, cur_adr_id);
+                    APARKZONEMASTER vhParkMaster = parkZoneMasterDao.getByParkingAdr(con, cur_adr_id, current_park_type);
                     ThroughParkZones = parkZoneMasterDao.laodParkZoneMasterByAdr(con, ThroughSectionFromToAdr);
                     List<KeyValuePair<List<APARKZONEDETAIL>, double>> lstParkDetailAndDis = new List<KeyValuePair<List<APARKZONEDETAIL>, double>>();
                     foreach (APARKZONEMASTER parkZoneMaster in ThroughParkZones)
@@ -793,7 +795,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                         {
                             continue;
                         }
-                        if (!SCUtility.isMatche(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, parkZoneMaster.PARK_TYPE_ID))
+                        //if (!SCUtility.isMatche(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, parkZoneMaster.PARK_TYPE_ID))
+                        if (!SCUtility.isMatche(current_park_type, parkZoneMaster.PARK_TYPE_ID))
                         {
                             continue;
                         }
