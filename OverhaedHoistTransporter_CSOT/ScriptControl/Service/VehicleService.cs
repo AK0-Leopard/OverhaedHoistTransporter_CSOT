@@ -20,6 +20,7 @@
 //                                                     如果是就讓它當作已經是最靠近該Block的
 // 2020/08/15    Kevin Wei      N/A            A0.07   加入判斷當該次136事件為Block req...等地事件上報時，就不去觸發狀態變化的事件，
 //                                                     避免狀態變化畫面頻繁更新影響效能
+// 2020/11/03    Kevin Wei      N/A            A0.08   取消註冊Redis的事件，改由直接更新到Cache中
 //**********************************************************************************
 using com.mirle.ibg3k0.bcf.App;
 using com.mirle.ibg3k0.bcf.Common;
@@ -62,7 +63,7 @@ namespace com.mirle.ibg3k0.sc.Service
         public void Start(SCApplication app)
         {
             scApp = app;
-            SubscriptionPositionChangeEvent();
+            //A0.08 SubscriptionPositionChangeEvent();
 
             List<AVEHICLE> vhs = scApp.getEQObjCacheManager().getAllVehicle();
 
