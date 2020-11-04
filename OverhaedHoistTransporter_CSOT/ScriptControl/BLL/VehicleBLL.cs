@@ -11,6 +11,8 @@
 // 2019/11/15    Kevin Wei      N/A            A0.01   修改對於OHT 上報位置的更新，改成僅透過143、132、134的事件，
 //                                                     其中143僅有在1.剛連線時、2.命令發送失敗時、3.手動同步時，才會進行更新
 // 2020/07/28    Mark Chou      N/A            A0.02   filterVh 加入檢查車輛的ACT_STATUS是否為NoCommand。
+// 2020/11/03    Kevin Wei      N/A            A0.03   修改更新Vh位置的方式。原本會將位置資訊丟置Redis中，再通知回來更新Cache的資料，
+//                                                     修改直接更新Cache中的資料，並取消會再去Redis拉資料回來更新的動作。
 //**********************************************************************************
 using com.mirle.ibg3k0.sc.App;
 using com.mirle.ibg3k0.sc.Common;
@@ -2332,15 +2334,23 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
         public void setAndPublishPositionReportInfo2Redis(string vh_id, ID_134_TRANS_EVENT_REP report_obj)
         {
-            setPositionReportInfo2Redis(vh_id, report_obj);
-            PublishPositionReportInfo2Redis(vh_id, report_obj);
+            //A0.03 setPositionReportInfo2Redis(vh_id, report_obj);
+            //A0.03 PublishPositionReportInfo2Redis(vh_id, report_obj);
+            UpdatePositionReportInfo2Cache(vh_id, report_obj);//A0.03
         }
         private void setPositionReportInfo2Redis(string vh_id, ID_134_TRANS_EVENT_REP report_obj)
         {
-            string key_word_position = $"{SCAppConstants.REDIS_KEY_WORD_POSITION_REPORT}_{vh_id}";
-            byte[] arrayByte = new byte[report_obj.CalculateSize()];
-            report_obj.WriteTo(new Google.Protobuf.CodedOutputStream(arrayByte));
-            scApp.getRedisCacheManager().Obj2ByteArraySetAsync(key_word_position, arrayByte, POSITION_TIMEOUT);
+            try
+            {
+                string key_word_position = $"{SCAppConstants.REDIS_KEY_WORD_POSITION_REPORT}_{vh_id}";
+                byte[] arrayByte = new byte[report_obj.CalculateSize()];
+                report_obj.WriteTo(new Google.Protobuf.CodedOutputStream(arrayByte));
+                scApp.getRedisCacheManager().Obj2ByteArraySetAsync(key_word_position, arrayByte, POSITION_TIMEOUT);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
         }
         private void PublishPositionReportInfo2Redis(string vh_id, ID_134_TRANS_EVENT_REP report_obj)
         {
@@ -2349,6 +2359,13 @@ namespace com.mirle.ibg3k0.sc.BLL
             report_obj.WriteTo(new Google.Protobuf.CodedOutputStream(arrayByte));
             scApp.getRedisCacheManager().PublishEvent(key_word_position, arrayByte);
         }
+        private void UpdatePositionReportInfo2Cache(string vh_id, ID_134_TRANS_EVENT_REP report_obj)
+        {
+            AVEHICLE vh = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
+            dynamic service = scApp.VehicleService;
+            service.PositionReport(scApp.getBCFApplication(), vh, report_obj);
+        }
+
 
 
         Google.Protobuf.MessageParser<ID_134_TRANS_EVENT_REP> trans_event_rep_parser = new Google.Protobuf.MessageParser<ID_134_TRANS_EVENT_REP>(() => new ID_134_TRANS_EVENT_REP());
@@ -2369,34 +2386,19 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             //}
         }
-        public void loadAllAndProcPositionReportFromRedis()
-        {
-            var listVh = scApp.getEQObjCacheManager().getAllVehicle();
-            foreach (AVEHICLE vh in listVh)
-            {
-                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
-                SpinWait.SpinUntil(() => false, 5);
-            }
-        }
 
         public void getAndProcPositionReportFromRedis(String vh_id)
         {
-            AVEHICLE vh = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
-            //lock (vh.PositionRefresh_Sync)
-            //{
-            string key_word_position = $"{SCAppConstants.REDIS_KEY_WORD_POSITION_REPORT}_{vh_id}";
-            byte[] Serialization_PositionRpt = scApp.getRedisCacheManager().StringGet(key_word_position);
-            if (Serialization_PositionRpt == null || Serialization_PositionRpt.Count() == 0)
-            {
-                return;
-            }
-            ID_134_TRANS_EVENT_REP recive_str = trans_event_rep_parser.ParseFrom(Serialization_PositionRpt);
-            dynamic service = scApp.VehicleService;
-            //ID_134_TRANS_EVENT_REP recive_str = (ID_134_TRANS_EVENT_REP)vh_position_report_args.objPacket;
-
-            service.PositionReport(scApp.getBCFApplication(), vh, recive_str);
-            //}
-            //scApp.getRedisCacheManager().KeyDelete(key_word_position);
+            //A0.03 AVEHICLE vh = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
+            //A0.03 string key_word_position = $"{SCAppConstants.REDIS_KEY_WORD_POSITION_REPORT}_{vh_id}";
+            //A0.03 byte[] Serialization_PositionRpt = scApp.getRedisCacheManager().StringGet(key_word_position);
+            //A0.03 if (Serialization_PositionRpt == null || Serialization_PositionRpt.Count() == 0)
+            //A0.03{
+            //A0.03    return;
+            //A0.03}
+            //A0.03 ID_134_TRANS_EVENT_REP recive_str = trans_event_rep_parser.ParseFrom(Serialization_PositionRpt);
+            //A0.03 dynamic service = scApp.VehicleService;
+            //A0.03 service.PositionReport(scApp.getBCFApplication(), vh, recive_str);
         }
 
         public void deleteRedisOfPositionReport(string vh_id)

@@ -715,6 +715,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return cmd_mcsDao.getCMD_MCSIsUnfinishedCountByCarrierID(con, carrier_id);
             }
         }
+        public int getCMD_MCSIsUnfinishedCountByPortID(string portID)
+        {
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                return cmd_mcsDao.getCMD_MCSIsUnfinishedCountByPortID(con, portID);
+            }
+        }
         public List<ACMD_MCS> loadACMD_MCSIsUnfinished()
         {
             //using (DBConnection_EF con = new DBConnection_EF())
@@ -1293,7 +1300,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
 
                 //A0.04 Start
-                if (vh.ACT_STATUS != VHActionStatus.NoCommand&& vh.MODE_STATUS != VHModeStatus.AutoMts&& vh.MODE_STATUS != VHModeStatus.AutoMtl)
+                if (vh.ACT_STATUS != VHActionStatus.NoCommand && vh.MODE_STATUS != VHModeStatus.AutoMts && vh.MODE_STATUS != VHModeStatus.AutoMtl)
                 {
                     check_result.Result.AppendLine($" vh:{vh_id} act status is not no command.");
                     check_result.Result.AppendLine($" please wait privious commnad finish.");
