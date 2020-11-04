@@ -297,6 +297,8 @@
             this.MTLMTS_cb_box = new System.Windows.Forms.ComboBox();
             this.plc_link_btn = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.comboBox_HID = new System.Windows.Forms.ComboBox();
+            this.btn_hid_datetime_sync = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.lbl_sigma_w_value = new System.Windows.Forms.Label();
@@ -369,8 +371,7 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_hid_datetime_sync = new System.Windows.Forms.Button();
-            this.comboBox_HID = new System.Windows.Forms.ComboBox();
+            this.btn_SlientControl = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -2580,7 +2581,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 3);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 5);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -3596,6 +3597,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.btn_SlientControl);
             this.tabPage5.Controls.Add(this.comboBox_HID);
             this.tabPage5.Controls.Add(this.btn_hid_datetime_sync);
             this.tabPage5.Controls.Add(this.button10);
@@ -3626,9 +3628,38 @@
             this.tabPage5.Text = "HID Test";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
+            // comboBox_HID
+            // 
+            this.comboBox_HID.FormattingEnabled = true;
+            this.comboBox_HID.Items.AddRange(new object[] {
+            "HID",
+            "HID2",
+            "HID3",
+            "HID4",
+            "HID5",
+            "HID6",
+            "HID7",
+            "HID8",
+            "HID9",
+            "HID10"});
+            this.comboBox_HID.Location = new System.Drawing.Point(38, 13);
+            this.comboBox_HID.Name = "comboBox_HID";
+            this.comboBox_HID.Size = new System.Drawing.Size(121, 30);
+            this.comboBox_HID.TabIndex = 23;
+            // 
+            // btn_hid_datetime_sync
+            // 
+            this.btn_hid_datetime_sync.Location = new System.Drawing.Point(286, 175);
+            this.btn_hid_datetime_sync.Name = "btn_hid_datetime_sync";
+            this.btn_hid_datetime_sync.Size = new System.Drawing.Size(183, 47);
+            this.btn_hid_datetime_sync.TabIndex = 22;
+            this.btn_hid_datetime_sync.Text = "DateTime Sync";
+            this.btn_hid_datetime_sync.UseVisualStyleBackColor = true;
+            this.btn_hid_datetime_sync.Click += new System.EventHandler(this.btn_hid_datetime_sync_Click);
+            // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(515, 95);
+            this.button10.Location = new System.Drawing.Point(515, 169);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(136, 58);
             this.button10.TabIndex = 21;
@@ -3650,7 +3681,7 @@
             // 
             this.lbl_sigma_w_value.AutoSize = true;
             this.lbl_sigma_w_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_sigma_w_value.Location = new System.Drawing.Point(210, 403);
+            this.lbl_sigma_w_value.Location = new System.Drawing.Point(210, 477);
             this.lbl_sigma_w_value.Name = "lbl_sigma_w_value";
             this.lbl_sigma_w_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_sigma_w_value.TabIndex = 19;
@@ -3660,7 +3691,7 @@
             // 
             this.lbl_at_value.AutoSize = true;
             this.lbl_at_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_at_value.Location = new System.Drawing.Point(210, 364);
+            this.lbl_at_value.Location = new System.Drawing.Point(210, 438);
             this.lbl_at_value.Name = "lbl_at_value";
             this.lbl_at_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_at_value.TabIndex = 18;
@@ -3670,7 +3701,7 @@
             // 
             this.lbl_as_value.AutoSize = true;
             this.lbl_as_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_as_value.Location = new System.Drawing.Point(210, 336);
+            this.lbl_as_value.Location = new System.Drawing.Point(210, 410);
             this.lbl_as_value.Name = "lbl_as_value";
             this.lbl_as_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_as_value.TabIndex = 17;
@@ -3680,7 +3711,7 @@
             // 
             this.lbl_ar_value.AutoSize = true;
             this.lbl_ar_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_ar_value.Location = new System.Drawing.Point(210, 308);
+            this.lbl_ar_value.Location = new System.Drawing.Point(210, 382);
             this.lbl_ar_value.Name = "lbl_ar_value";
             this.lbl_ar_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_ar_value.TabIndex = 16;
@@ -3690,7 +3721,7 @@
             // 
             this.lbl_vt_value.AutoSize = true;
             this.lbl_vt_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_vt_value.Location = new System.Drawing.Point(210, 276);
+            this.lbl_vt_value.Location = new System.Drawing.Point(210, 350);
             this.lbl_vt_value.Name = "lbl_vt_value";
             this.lbl_vt_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_vt_value.TabIndex = 15;
@@ -3700,7 +3731,7 @@
             // 
             this.lbl_vs_value.AutoSize = true;
             this.lbl_vs_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_vs_value.Location = new System.Drawing.Point(210, 250);
+            this.lbl_vs_value.Location = new System.Drawing.Point(210, 324);
             this.lbl_vs_value.Name = "lbl_vs_value";
             this.lbl_vs_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_vs_value.TabIndex = 14;
@@ -3710,7 +3741,7 @@
             // 
             this.lbl_vr_value.AutoSize = true;
             this.lbl_vr_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_vr_value.Location = new System.Drawing.Point(210, 223);
+            this.lbl_vr_value.Location = new System.Drawing.Point(210, 297);
             this.lbl_vr_value.Name = "lbl_vr_value";
             this.lbl_vr_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_vr_value.TabIndex = 13;
@@ -3720,7 +3751,7 @@
             // 
             this.lbl_hour_sigma_word_value.AutoSize = true;
             this.lbl_hour_sigma_word_value.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_hour_sigma_word_value.Location = new System.Drawing.Point(210, 188);
+            this.lbl_hour_sigma_word_value.Location = new System.Drawing.Point(210, 262);
             this.lbl_hour_sigma_word_value.Name = "lbl_hour_sigma_word_value";
             this.lbl_hour_sigma_word_value.Size = new System.Drawing.Size(212, 24);
             this.lbl_hour_sigma_word_value.TabIndex = 12;
@@ -3729,7 +3760,7 @@
             // label58
             // 
             this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(164, 405);
+            this.label58.Location = new System.Drawing.Point(164, 479);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(40, 22);
             this.label58.TabIndex = 11;
@@ -3738,7 +3769,7 @@
             // label57
             // 
             this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(164, 364);
+            this.label57.Location = new System.Drawing.Point(164, 438);
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(40, 22);
             this.label57.TabIndex = 10;
@@ -3747,7 +3778,7 @@
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(164, 338);
+            this.label56.Location = new System.Drawing.Point(164, 412);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(40, 22);
             this.label56.TabIndex = 9;
@@ -3756,7 +3787,7 @@
             // label55
             // 
             this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(164, 312);
+            this.label55.Location = new System.Drawing.Point(164, 386);
             this.label55.Name = "label55";
             this.label55.Size = new System.Drawing.Size(40, 22);
             this.label55.TabIndex = 8;
@@ -3765,7 +3796,7 @@
             // label54
             // 
             this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(164, 276);
+            this.label54.Location = new System.Drawing.Point(164, 350);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(40, 22);
             this.label54.TabIndex = 7;
@@ -3774,7 +3805,7 @@
             // label52
             // 
             this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(164, 252);
+            this.label52.Location = new System.Drawing.Point(164, 326);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(40, 22);
             this.label52.TabIndex = 6;
@@ -3783,7 +3814,7 @@
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(164, 227);
+            this.label50.Location = new System.Drawing.Point(164, 301);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(40, 22);
             this.label50.TabIndex = 5;
@@ -3792,7 +3823,7 @@
             // label48
             // 
             this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(34, 188);
+            this.label48.Location = new System.Drawing.Point(34, 262);
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(170, 22);
             this.label48.TabIndex = 4;
@@ -3800,7 +3831,7 @@
             // 
             // btn_hid_info
             // 
-            this.btn_hid_info.Location = new System.Drawing.Point(38, 101);
+            this.btn_hid_info.Location = new System.Drawing.Point(38, 175);
             this.btn_hid_info.Name = "btn_hid_info";
             this.btn_hid_info.Size = new System.Drawing.Size(228, 47);
             this.btn_hid_info.TabIndex = 3;
@@ -3821,7 +3852,7 @@
             // 
             // btn_SendHIDControl
             // 
-            this.btn_SendHIDControl.Location = new System.Drawing.Point(231, 63);
+            this.btn_SendHIDControl.Location = new System.Drawing.Point(193, 63);
             this.btn_SendHIDControl.Name = "btn_SendHIDControl";
             this.btn_SendHIDControl.Size = new System.Drawing.Size(202, 26);
             this.btn_SendHIDControl.TabIndex = 0;
@@ -4473,28 +4504,15 @@
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
-            // btn_hid_datetime_sync
+            // btn_SlientControl
             // 
-            this.btn_hid_datetime_sync.Location = new System.Drawing.Point(286, 101);
-            this.btn_hid_datetime_sync.Name = "btn_hid_datetime_sync";
-            this.btn_hid_datetime_sync.Size = new System.Drawing.Size(183, 47);
-            this.btn_hid_datetime_sync.TabIndex = 22;
-            this.btn_hid_datetime_sync.Text = "DateTime Sync";
-            this.btn_hid_datetime_sync.UseVisualStyleBackColor = true;
-            this.btn_hid_datetime_sync.Click += new System.EventHandler(this.btn_hid_datetime_sync_Click);
-            // 
-            // comboBox_HID
-            // 
-            this.comboBox_HID.FormattingEnabled = true;
-            this.comboBox_HID.Items.AddRange(new object[] {
-            "HID",
-            "HID2",
-            "HID3",
-            "HID4"});
-            this.comboBox_HID.Location = new System.Drawing.Point(38, 13);
-            this.comboBox_HID.Name = "comboBox_HID";
-            this.comboBox_HID.Size = new System.Drawing.Size(121, 30);
-            this.comboBox_HID.TabIndex = 23;
+            this.btn_SlientControl.Location = new System.Drawing.Point(38, 119);
+            this.btn_SlientControl.Name = "btn_SlientControl";
+            this.btn_SlientControl.Size = new System.Drawing.Size(218, 26);
+            this.btn_SlientControl.TabIndex = 24;
+            this.btn_SlientControl.Text = "Send Silent Control";
+            this.btn_SlientControl.UseVisualStyleBackColor = true;
+            this.btn_SlientControl.Click += new System.EventHandler(this.btn_SlientControl_Click);
             // 
             // DebugForm
             // 
@@ -4929,5 +4947,6 @@
         private Components.uctlButton uctlButton2;
         private System.Windows.Forms.Button btn_hid_datetime_sync;
         private System.Windows.Forms.ComboBox comboBox_HID;
+        private System.Windows.Forms.Button btn_SlientControl;
     }
 }

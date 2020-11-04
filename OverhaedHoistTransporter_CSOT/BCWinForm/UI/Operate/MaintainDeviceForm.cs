@@ -189,7 +189,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 if (maintainDevice is sc.Data.VO.MaintainLift)
                 {
                     sc.Data.VO.Interface.IMaintainDevice dockingMTS = bcApp.SCApplication.EquipmentBLL.cache.GetDockingMTLOfMaintainSpace();
-                    if(dockingMTS!= null)
+                    if((maintainDevice as sc.Data.VO.MaintainLift).EQPT_ID=="MTL"&& dockingMTS != null)
                     {
                         r = bcApp.SCApplication.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, dockingMTS, pre_car_out_vh);
                     }
