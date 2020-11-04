@@ -469,7 +469,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         public virtual void CarOutActionType(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =
-                scApp.getFunBaseObj<MtlToOHxC_CarOutActionType>(eqpt.EQPT_ID) as MtlToOHxC_CarOutActionType;
+                scApp.getFunBaseObj<MtlToOHxC_CarOutActionType_PH2>(eqpt.EQPT_ID) as MtlToOHxC_CarOutActionType_PH2;
             try
             {
                 recevie_function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
@@ -489,7 +489,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<MtlToOHxC_CarOutActionType>(recevie_function);
+                scApp.putFunBaseObj<MtlToOHxC_CarOutActionType_PH2>(recevie_function);
 
             }
         }
@@ -635,8 +635,16 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => CarOutSafetyChcek(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_SAFETY_CHECK_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutSafetyChcek(_sender, _e);
+                }
 
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_1", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_1_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
                 }
@@ -644,7 +652,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_2_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_3", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_3_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
                 }
@@ -652,7 +668,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_4_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_5", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_CAR_OUT_ACTION_TYPE_5_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => CarOutActionType(_sender, _e);
                 }
@@ -660,7 +684,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => CarInSafetyChcek(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_D2U_SAFETY_CHECK_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => CarInSafetyChcek(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_ALARM_REPORT_HS", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_Alarm_Report(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_ALARM_REPORT_HS_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_Alarm_Report(_sender, _e);
                 }
@@ -668,7 +700,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_DATETIME(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_DATETIME_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_DATETIME(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_ALIVE_INDEX", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_Alive(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_ALIVE_INDEX_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_Alive(_sender, _e);
                 }
@@ -676,13 +716,24 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_Current_ID(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_CURRENT_CAR_ID_INDEX_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_Current_ID(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_REPLY_OHXC_CAR_OUT_NOTIFY_HS", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_TO_OHXC_REPLY_OHXC_CAR_OUT_NOTIFY_HS(_sender, _e);
                 }
-
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_REPLY_OHXC_CAR_OUT_NOTIFY_HS_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_TO_OHXC_REPLY_OHXC_CAR_OUT_NOTIFY_HS(_sender, _e);
+                }
 
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_STATUS_HAS_VEHICLE", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_STATUS_HAS_VEHICLE_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
@@ -690,7 +741,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_STATUS_STOP_SINGLE_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_MODE", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_MODE_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
@@ -698,7 +757,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_LOCATION_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_MOVING_STATUS", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_MOVING_STATUS_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
@@ -706,7 +773,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_ENCODER_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_VEHICLE_PARKED", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_VEHICLE_PARKED_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
@@ -714,7 +789,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_FRONT_DOOR_STATUS_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_BACK_DOOR_STATUS", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_LFT_BACK_DOOR_STATUS_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_LFTStatus(_sender, _e);
                 }
@@ -723,7 +806,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_CarOutRequest(_sender, _e);
                 }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_MTL_CAR_OUT_REQUEST_HS_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_CarOutRequest(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_REQUEST_CAR_IN_DATA_CHECK_HS", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => MTL_CarInRequest(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_REQUEST_CAR_IN_DATA_CHECK_HS_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => MTL_CarInRequest(_sender, _e);
                 }

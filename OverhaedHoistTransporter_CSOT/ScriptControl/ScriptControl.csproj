@@ -570,8 +570,8 @@
     <Compile Include="Data\PLC_Functions\OHxCToHID_Control.cs" />
     <Compile Include="Data\PLC_Functions\FourColorLightRedWithBuzzer.cs" />
     <Compile Include="Data\PLC_Functions\OHxCToHID_SilentIndexPH2.cs" />
-    <Compile Include="Data\PLC_Functions\OHxCToHID_DateTimeSyncPH2.cs" />
-    <Compile Include="Data\PLC_Functions\OHxCToHID_DateTimeSync.cs" />
+    <Compile Include="Data\PLC_Functions\OHxCToMtl_DateTimeSyncPH2.cs" />
+    <Compile Include="Data\PLC_Functions\OHxCToMtl_DateTimeSync.cs" />
     <Compile Include="Data\PLC_Functions\OHxCToOHVC_RoadControlCompleteNotify.cs" />
     <Compile Include="Data\PLC_Functions\OHxCToOHVC_RoadControlInitNotify.cs" />
     <Compile Include="Data\PLC_Functions\OHxCToMtl_AlarmResetRequest.cs" />
@@ -581,7 +581,7 @@
     <Compile Include="Data\PLC_Functions\MtlToOHxC_CarOutSafetyCheck.cs" />
     <Compile Include="Data\PLC_Functions\OHxCToOHVC_Alive.cs" />
     <Compile Include="Data\PLC_Functions\OHxCToMtl_MessageDownload.cs" />
-    <Compile Include="Data\PLC_Functions\OHxCToMtl_DateTimeSync.cs" />
+    <Compile Include="Data\PLC_Functions\OHxCToHIID_DateTimeSync.cs" />
     <Compile Include="Data\PLC_Functions\MtlToOHxC_LFTStatus.cs" />
     <Compile Include="Data\PLC_Functions\MtlToOHxC_Alive.cs" />
     <Compile Include="Data\PLC_Functions\MtlToOHxC_CurrentCarID.cs" />
