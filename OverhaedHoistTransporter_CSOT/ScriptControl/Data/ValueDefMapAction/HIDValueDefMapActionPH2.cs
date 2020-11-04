@@ -494,8 +494,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         public virtual void DateTimeSyncCommand(DateTime dateTime)
         {
 
-            OHxCToHID_DateTimeSyncPH2 send_function =
-               scApp.getFunBaseObj<OHxCToHID_DateTimeSyncPH2>(eqpt.EQPT_ID) as OHxCToHID_DateTimeSyncPH2;
+            OHxCToMtl_DateTimeSyncPH2 send_function =
+               scApp.getFunBaseObj<OHxCToMtl_DateTimeSyncPH2>(eqpt.EQPT_ID) as OHxCToMtl_DateTimeSyncPH2;
             try
             {
                 lock (dateTimeSyneObj)
@@ -524,7 +524,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<OHxCToHID_DateTimeSyncPH2>(send_function);
+                scApp.putFunBaseObj<OHxCToMtl_DateTimeSyncPH2>(send_function);
             }
         }
 
@@ -532,7 +532,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
 
         object SilentSyneObj = new object();
         uint silentIndex = 0;
-        public virtual void SilentCommand(DateTime dateTime)
+        public virtual void SilentCommand()
         {
 
             OHxCToHID_SilentIndexPH2 send_function =

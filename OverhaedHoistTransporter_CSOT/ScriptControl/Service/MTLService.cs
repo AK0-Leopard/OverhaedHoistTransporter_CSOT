@@ -664,7 +664,26 @@ namespace com.mirle.ibg3k0.sc.Service
                     if (SpinWait.SpinUntil(() => car_in_vh.MODE_STATUS == VHModeStatus.AutoMtl, 10000))
                     {
                         //mtl.SetCarInMoving(true);
-                        VehicleService.doAskVhToCarInBufferAddress(car_in_vh.VEHICLE_ID, mtl.MTL_CAR_IN_BUFFER_ADDRESS);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                            Data: $"vh:{car_in_vh.VEHICLE_ID} request car in, OHTC Ready to create system in command.",
+                             XID: mtl.DeviceID,
+                            VehicleID: car_in_vh.VEHICLE_ID);
+                        bool create_result  = VehicleService.doAskVhToCarInBufferAddress(car_in_vh.VEHICLE_ID, mtl.MTL_CAR_IN_BUFFER_ADDRESS);
+                        if (create_result)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                            Data: $"vh:{car_in_vh.VEHICLE_ID} request car in, OHTC create system in command  successful.",
+                             XID: mtl.DeviceID,
+                            VehicleID: car_in_vh.VEHICLE_ID);
+                        }
+                        else
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                                Data: $"vh:{car_in_vh.VEHICLE_ID} request car in, OHTC create system in command failes.",
+                                 XID: mtl.DeviceID,
+                                VehicleID: car_in_vh.VEHICLE_ID);
+                            CarInFinish(mtl);
+                        }
                     }
                     else
                     {
@@ -678,7 +697,26 @@ namespace com.mirle.ibg3k0.sc.Service
                 else if (car_in_vh.MODE_STATUS == ProtocolFormat.OHTMessage.VHModeStatus.AutoMtl)
                 {
                     //mtl.SetCarInMoving(true);
-                    VehicleService.doAskVhToCarInBufferAddress(car_in_vh.VEHICLE_ID, mtl.MTL_CAR_IN_BUFFER_ADDRESS);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                        Data: $"vh:{car_in_vh.VEHICLE_ID} request car in, OHTC Ready to create system in command.",
+                         XID: mtl.DeviceID,
+                        VehicleID: car_in_vh.VEHICLE_ID);
+                    bool create_result = VehicleService.doAskVhToCarInBufferAddress(car_in_vh.VEHICLE_ID, mtl.MTL_CAR_IN_BUFFER_ADDRESS);
+                    if (create_result)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                        Data: $"vh:{car_in_vh.VEHICLE_ID} request car in, OHTC create system in command  successful.",
+                         XID: mtl.DeviceID,
+                        VehicleID: car_in_vh.VEHICLE_ID);
+                    }
+                    else
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                            Data: $"vh:{car_in_vh.VEHICLE_ID} request car in, OHTC create system in command failes.",
+                             XID: mtl.DeviceID,
+                            VehicleID: car_in_vh.VEHICLE_ID);
+                        CarInFinish(mtl);
+                    }
                 }
                 else
                 {
@@ -687,6 +725,12 @@ namespace com.mirle.ibg3k0.sc.Service
                              XID: mtl.DeviceID,
                              VehicleID: car_in_vh.VEHICLE_ID);
                 }
+            }
+            else
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                     Data: $"Request car in, but no vehicle at MTL or vehicle is not connected.",
+                    XID: mtl.DeviceID);
             }
         }
 

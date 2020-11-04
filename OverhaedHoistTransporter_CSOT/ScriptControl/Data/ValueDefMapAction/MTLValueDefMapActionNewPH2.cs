@@ -42,8 +42,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         public override void DateTimeSyncCommand(DateTime dateTime)
         {
 
-            OHxCToMtl_DateTimeSync send_function =
-               scApp.getFunBaseObj<OHxCToMtl_DateTimeSync>(MTL.EQPT_ID) as OHxCToMtl_DateTimeSync;
+            OHxCToMtl_DateTimeSyncPH2 send_function =
+               scApp.getFunBaseObj<OHxCToMtl_DateTimeSyncPH2>(MTL.EQPT_ID) as OHxCToMtl_DateTimeSyncPH2;
             try
             {
                 lock (dateTimeSyneObj)
@@ -72,14 +72,14 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<OHxCToMtl_DateTimeSync>(send_function);
+                scApp.putFunBaseObj<OHxCToMtl_DateTimeSyncPH2>(send_function);
             }
         }
         uint message_index = 0;
         public override void OHxCMessageDownload(string msg)
         {
-            OHxCToMtl_MessageDownload send_function =
-                scApp.getFunBaseObj<OHxCToMtl_MessageDownload>(MTL.EQPT_ID) as OHxCToMtl_MessageDownload;
+            OHxCToMtl_MessageDownload_PH2 send_function =
+                scApp.getFunBaseObj<OHxCToMtl_MessageDownload_PH2>(MTL.EQPT_ID) as OHxCToMtl_MessageDownload_PH2;
             try
             {
                 //1.建立各個Function物件
@@ -100,15 +100,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<OHxCToMtl_MessageDownload>(send_function);
+                scApp.putFunBaseObj<OHxCToMtl_MessageDownload_PH2>(send_function);
             }
         }
         UInt16 car_realtime_info = 0;
         public override void CarRealtimeInfo(UInt16 car_id, UInt16 action_mode, UInt16 cst_exist, UInt16 current_section_id, UInt32 current_address_id,
                                             UInt32 buffer_distance, UInt16 speed)
         {
-            OHxCToMtl_CarRealtimeInfo send_function =
-                scApp.getFunBaseObj<OHxCToMtl_CarRealtimeInfo>(MTL.EQPT_ID) as OHxCToMtl_CarRealtimeInfo;
+            OHxCToMtl_CarRealtimeInfo_PH2 send_function =
+                scApp.getFunBaseObj<OHxCToMtl_CarRealtimeInfo_PH2>(MTL.EQPT_ID) as OHxCToMtl_CarRealtimeInfo_PH2;
             try
             {
                 //1.建立各個Function物件
@@ -135,7 +135,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<OHxCToMtl_MessageDownload>(send_function);
+                scApp.putFunBaseObj<OHxCToMtl_CarRealtimeInfo_PH2>(send_function);
             }
         }
 
@@ -143,9 +143,9 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         {
             bool isSendSuccess = false;
             var send_function =
-                scApp.getFunBaseObj<OHxCToMtl_CarOutNotifyPH2>(MTL.EQPT_ID) as OHxCToMtl_CarOutNotifyPH2;
+                scApp.getFunBaseObj<OHxCToMtl_CarOutNotify_PH2>(MTL.EQPT_ID) as OHxCToMtl_CarOutNotify_PH2;
             var receive_function =
-                scApp.getFunBaseObj<MtlToOHxC_ReplyCarOutNotify>(MTL.EQPT_ID) as MtlToOHxC_ReplyCarOutNotify;
+                scApp.getFunBaseObj<MtlToOHxC_ReplyCarOutNotify_PH2>(MTL.EQPT_ID) as MtlToOHxC_ReplyCarOutNotify_PH2;
             try
             {
                 //1.準備要發送的資料
@@ -183,8 +183,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<OHxCToMtl_CarOutNotifyPH2>(send_function);
-                scApp.putFunBaseObj<MtlToOHxC_ReplyCarOutNotify>(receive_function);
+                scApp.putFunBaseObj<OHxCToMtl_CarOutNotify_PH2>(send_function);
+                scApp.putFunBaseObj<MtlToOHxC_ReplyCarOutNotify_PH2>(receive_function);
             }
             return (isSendSuccess, 0);
         }
@@ -308,7 +308,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         public override void CarOutSafetyChcek(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =
-                scApp.getFunBaseObj<MtlToOHxC_CarOutSafetyCheck>(MTL.EQPT_ID) as MtlToOHxC_CarOutSafetyCheck;
+                scApp.getFunBaseObj<MtlToOHxC_CarOutSafetyCheck_PH2>(MTL.EQPT_ID) as MtlToOHxC_CarOutSafetyCheck_PH2;
             try
             {
                 recevie_function.Read(bcfApp, MTL.EqptObjectCate, MTL.EQPT_ID);
@@ -323,7 +323,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<MtlToOHxC_CarOutSafetyCheck>(recevie_function);
+                scApp.putFunBaseObj<MtlToOHxC_CarOutSafetyCheck_PH2>(recevie_function);
 
             }
         }
@@ -332,7 +332,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         public override void MTL_LFTStatus(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =
-                scApp.getFunBaseObj<MtlToOHxC_LFTStatus>(MTL.EQPT_ID) as MtlToOHxC_LFTStatus;
+                scApp.getFunBaseObj<MtlToOHxC_LFTStatus_PH2>(MTL.EQPT_ID) as MtlToOHxC_LFTStatus_PH2;
             try
             {
                 recevie_function.Read(bcfApp, MTL.EqptObjectCate, MTL.EQPT_ID);
@@ -354,14 +354,14 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<MtlToOHxC_LFTStatus>(recevie_function);
+                scApp.putFunBaseObj<MtlToOHxC_LFTStatus_PH2>(recevie_function);
 
             }
         }
         public override void CarInSafetyChcek(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =
-                scApp.getFunBaseObj<MtlToOHxC_CarInSafetyCheck>(MTL.EQPT_ID) as MtlToOHxC_CarInSafetyCheck;
+                scApp.getFunBaseObj<MtlToOHxC_CarInSafetyCheck_PH2>(MTL.EQPT_ID) as MtlToOHxC_CarInSafetyCheck_PH2;
             try
             {
                 recevie_function.Read(bcfApp, MTL.EqptObjectCate, MTL.EQPT_ID);
@@ -382,15 +382,15 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<MtlToOHxC_CarInSafetyCheck>(recevie_function);
+                scApp.putFunBaseObj<MtlToOHxC_CarInSafetyCheck_PH2>(recevie_function);
             }
         }
         public override void MTL_CarOutRequest(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =
-               scApp.getFunBaseObj<MtlToOHxC_MtlCarOutRepuestPH2>(MTL.EQPT_ID) as MtlToOHxC_MtlCarOutRepuestPH2;
+               scApp.getFunBaseObj<MtlToOHxC_MtlCarOutRepuest_PH2>(MTL.EQPT_ID) as MtlToOHxC_MtlCarOutRepuest_PH2;
             var send_function =
-                scApp.getFunBaseObj<OHxCToMtl_MtlCarOutReply>(MTL.EQPT_ID) as OHxCToMtl_MtlCarOutReply;
+                scApp.getFunBaseObj<OHxCToMtl_MtlCarOutReply_PH2>(MTL.EQPT_ID) as OHxCToMtl_MtlCarOutReply_PH2;
             try
             {
                 recevie_function.Read(bcfApp, MTL.EqptObjectCate, MTL.EQPT_ID);
@@ -451,17 +451,17 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<MtlToOHxC_MtlCarOutRepuestPH2>(recevie_function);
-                scApp.putFunBaseObj<OHxCToMtl_MtlCarOutReply>(send_function);
+                scApp.putFunBaseObj<MtlToOHxC_MtlCarOutRepuest_PH2>(recevie_function);
+                scApp.putFunBaseObj<OHxCToMtl_MtlCarOutReply_PH2>(send_function);
             }
         }
 
         public override void MTL_CarInRequest(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =
-                  scApp.getFunBaseObj<MtlToOHxC_RequestCarInDataCheck>(MTL.EQPT_ID) as MtlToOHxC_RequestCarInDataCheck;
+                  scApp.getFunBaseObj<MtlToOHxC_RequestCarInDataCheck_PH2>(MTL.EQPT_ID) as MtlToOHxC_RequestCarInDataCheck_PH2;
             var send_function =
-                scApp.getFunBaseObj<OHxCToMtl_ReplyCarInDataCheck>(MTL.EQPT_ID) as OHxCToMtl_ReplyCarInDataCheck;
+                scApp.getFunBaseObj<OHxCToMtl_ReplyCarInDataCheck_PH2>(MTL.EQPT_ID) as OHxCToMtl_ReplyCarInDataCheck_PH2;
             try
             {
                 recevie_function.Read(bcfApp, MTL.EqptObjectCate, MTL.EQPT_ID);
@@ -501,11 +501,158 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<MtlToOHxC_RequestCarInDataCheck>(recevie_function);
-                scApp.putFunBaseObj<OHxCToMtl_ReplyCarInDataCheck>(send_function);
+                scApp.putFunBaseObj<MtlToOHxC_RequestCarInDataCheck_PH2>(recevie_function);
+                scApp.putFunBaseObj<OHxCToMtl_ReplyCarInDataCheck_PH2>(send_function);
 
             }
         }
+
+
+
+
+
+
+
+        public override void MTL_Alarm_Report(object sender, ValueChangedEventArgs args)
+        {
+            var recevie_function =
+                scApp.getFunBaseObj<MtlToOHxC_AlarmReport_PH2>(eqpt.EQPT_ID) as MtlToOHxC_AlarmReport_PH2;
+            var send_function =
+                scApp.getFunBaseObj<MtlToOHxC_ReplyAlarmReport_PH2>(eqpt.EQPT_ID) as MtlToOHxC_ReplyAlarmReport_PH2;
+            try
+            {
+                recevie_function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                         Data: recevie_function.ToString(),
+                         XID: eqpt.EQPT_ID);
+                UInt16 error_code = recevie_function.ErrorCode;
+                ProtocolFormat.OHTMessage.ErrorStatus status = (ProtocolFormat.OHTMessage.ErrorStatus)recevie_function.ErrorStatus;
+                ushort hand_shake = recevie_function.Handshake;
+
+                send_function.Handshake = hand_shake;
+                send_function.Write(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                eqpt.SynchronizeTime = DateTime.Now;
+                if (hand_shake == 1)
+                {
+                    scApp.LineService.ProcessAlarmReport(eqpt.NODE_ID, eqpt.EQPT_ID, eqpt.Real_ID, "", error_code.ToString(), status);
+                }
+
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                         Data: send_function.ToString(),
+                         XID: eqpt.EQPT_ID);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<MtlToOHxC_AlarmReport_PH2>(recevie_function);
+                scApp.putFunBaseObj<MtlToOHxC_ReplyAlarmReport_PH2>(send_function);
+
+            }
+        }
+
+
+        public override void MTL_Alive(object sender, ValueChangedEventArgs args)
+        {
+            var recevie_function =
+                scApp.getFunBaseObj<MtlToOHxC_Alive_PH2>(MTL.EQPT_ID) as MtlToOHxC_Alive_PH2;
+            try
+            {
+                recevie_function.Read(bcfApp, MTL.EqptObjectCate, MTL.EQPT_ID);
+                //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTSValueDefMapActionNew), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTX,
+                //         Data: recevie_function.ToString(),
+                //         XID: eqpt.EQPT_ID);
+
+                eqpt.Eq_Alive_Last_Change_time = DateTime.Now;
+                eqpt.SynchronizeTime = DateTime.Now;
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<MtlToOHxC_Alive_PH2>(recevie_function);
+
+            }
+        }
+
+        public override void MTL_Current_ID(object sender, ValueChangedEventArgs args)
+        {
+            var recevie_function =
+                scApp.getFunBaseObj<MtlToOHxC_CurrentCarID_PH2>(MTL.EQPT_ID) as MtlToOHxC_CurrentCarID_PH2;
+            try
+            {
+                recevie_function.Read(bcfApp, MTL.EqptObjectCate, MTL.EQPT_ID);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                         Data: recevie_function.ToString(),
+                         XID: MTL.EQPT_ID);
+                MTL.CurrentCarID = recevie_function.CarID.ToString();
+                MTL.SynchronizeTime = DateTime.Now;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<MtlToOHxC_CurrentCarID_PH2>(recevie_function);
+
+            }
+        }
+
+        public override bool OHxC_AlarmResetRequest()
+        {
+            bool isSendSuccess = false;
+            var send_function =
+                scApp.getFunBaseObj<OHxCToMtl_AlarmResetRequest_PH2>(eqpt.EQPT_ID) as OHxCToMtl_AlarmResetRequest_PH2;
+            var receive_function =
+                scApp.getFunBaseObj<MtlToOHxC_AlarmResetReply_PH2>(eqpt.EQPT_ID) as MtlToOHxC_AlarmResetReply_PH2;
+            try
+            {
+                //1.準備要發送的資料
+                ValueRead vr_reply = receive_function.getValueReadHandshake
+                    (bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                //2.紀錄發送資料的Log
+                send_function.Handshake = 1;
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                         Data: send_function.ToString(),
+                         XID: eqpt.EQPT_ID);
+                //3.等待回復
+                TrxMPLC.ReturnCode returnCode =
+                    send_function.SendRecv(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID, vr_reply);
+                //4.取得回復的結果
+                if (returnCode == TrxMPLC.ReturnCode.Normal)
+                {
+                    receive_function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                             Data: receive_function.ToString(),
+                             XID: eqpt.EQPT_ID);
+                    isSendSuccess = true;
+                }
+                send_function.Handshake = 0;
+                send_function.resetHandshake(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+                         Data: send_function.ToString(),
+                         XID: eqpt.EQPT_ID);
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<OHxCToMtl_AlarmResetRequest_PH2>(send_function);
+                scApp.putFunBaseObj<MtlToOHxC_AlarmResetReply_PH2>(receive_function);
+            }
+            return (isSendSuccess);
+        }
+
+
 
     }
 }

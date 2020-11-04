@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace com.mirle.ibg3k0.sc.Data.PLC_Functions
 {
-    class OHxCToHID_DateTimeSyncPH2 : PLC_FunBase
+    class OHxCToMtl_DateTimeSyncPH2 : PLC_FunBase
     {
         [PLCElement(ValueName = "OHXC_TO_MTL_DATE_TIME_SYNC_COMMAND_YEAR_PH2")]
         public uint Year;

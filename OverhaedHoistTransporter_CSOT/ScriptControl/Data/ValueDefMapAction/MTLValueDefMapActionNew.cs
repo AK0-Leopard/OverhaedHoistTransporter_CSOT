@@ -135,7 +135,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<OHxCToMtl_MessageDownload>(send_function);
+                scApp.putFunBaseObj<OHxCToMtl_CarRealtimeInfo>(send_function);
             }
         }
 
