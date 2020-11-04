@@ -21,6 +21,7 @@
 // 2020/08/15    Kevin Wei      N/A            A0.07   加入判斷當該次136事件為Block req...等地事件上報時，就不去觸發狀態變化的事件，
 //                                                     避免狀態變化畫面頻繁更新影響效能
 // 2020/11/03    Kevin Wei      N/A            A0.08   取消註冊Redis的事件，改由直接更新到Cache中
+// 2020/11/04    Kevin Wei      N/A            A0.09   取消進/出 Section的時間更新，測試這樣是否可以有效提升位置更新的效率
 //**********************************************************************************
 using com.mirle.ibg3k0.bcf.App;
 using com.mirle.ibg3k0.bcf.Common;
@@ -1630,12 +1631,13 @@ namespace com.mirle.ibg3k0.sc.Service
                             if (!SCUtility.isEmpty(vh.OHTC_CMD))
                             {
 
-                                scApp.CMDBLL.update_CMD_DetailEntryTime(vh.OHTC_CMD, current_adr_id, current_sec_id);
-                                scApp.CMDBLL.update_CMD_DetailLeaveTime(vh.OHTC_CMD, last_adr_id, last_sec_id);
-                                List<string> willPassSecID = null;
-                                vh.procProgress_Percen = scApp.CMDBLL.getAndUpdateVhCMDProgress(vh.VEHICLE_ID, out willPassSecID);
-                                var will_pass_tmp = willPassSecID.Select(route => SCUtility.Trim(route, true));
-                                vh.WillPassSectionID = will_pass_tmp.ToList();
+                                //A0.09 scApp.CMDBLL.update_CMD_DetailEntryTime(vh.OHTC_CMD, current_adr_id, current_sec_id);
+                                //A0.09 scApp.CMDBLL.update_CMD_DetailLeaveTime(vh.OHTC_CMD, last_adr_id, last_sec_id);
+                                //A0.09 List<string> willPassSecID = null;
+                                //A0.09 vh.procProgress_Percen = scApp.CMDBLL.getAndUpdateVhCMDProgress(vh.VEHICLE_ID, out willPassSecID);
+                                //A0.09 var will_pass_tmp = willPassSecID.Select(route => SCUtility.Trim(route, true));
+                                //A0.09 vh.WillPassSectionID = will_pass_tmp.ToList();
+
                                 //scApp.VehicleBLL.NetworkQualityTest(vh.VEHICLE_ID, current_adr_id, current_sec_id, 0);
                             }
                             //vh.onLocationChange(current_sec_id, last_sec_id);
@@ -4334,7 +4336,7 @@ namespace com.mirle.ibg3k0.sc.Service
                             maintainLift = scApp.EquipmentBLL.cache.GetExcuteCarOutMTL(eqpt.VEHICLE_ID);
                             if (maintainLift != null)
                             {
-                                if (maintainLift.DokingMaintainDevice != null&& maintainLift.DokingMaintainDevice.CarOutSafetyCheck)
+                                if (maintainLift.DokingMaintainDevice != null && maintainLift.DokingMaintainDevice.CarOutSafetyCheck)
                                 {
                                     if (maintainLift.DokingMaintainDevice.CarOutSafetyCheck)//如果SafetyCheck已經解除則不能進行出車
                                     {
@@ -4355,7 +4357,7 @@ namespace com.mirle.ibg3k0.sc.Service
                         else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts && eqpt.HAS_CST == 0)
                         {
                             maintainSpace = scApp.EquipmentBLL.cache.GetExcuteCarOutMTS(eqpt.VEHICLE_ID);
-                            if (maintainSpace != null&& maintainSpace.CarOutSafetyCheck)
+                            if (maintainSpace != null && maintainSpace.CarOutSafetyCheck)
                                 doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainSpace.MTS_ADDRESS);
                         }
                         else if ((eqpt.MODE_STATUS == VHModeStatus.AutoRemote) && eqpt.HAS_CST == 0)
