@@ -4258,7 +4258,14 @@ namespace com.mirle.ibg3k0.sc.Service
             if (DebugParameter.IsDebugMode && DebugParameter.IsCycleRun)
             {
                 SpinWait.SpinUntil(() => false, 3000);
-                TestCycleRun(eqpt, cmd_id);
+                if (SCUtility.isMatche(scApp.BC_ID, "Taichung"))
+                {
+                    TestCycleRunForNeverStop(eqpt);
+                }
+                else
+                {
+                    TestCycleRun(eqpt, cmd_id);
+                }
             }
             else
             {
@@ -4427,6 +4434,25 @@ namespace com.mirle.ibg3k0.sc.Service
                                             source: from_adr,
                                             destination: to_adr,
                                             gen_cmd_type: SCAppConstants.GenOHxCCommandType.Auto);
+        }
+
+        Random rnd_Index = new Random(Guid.NewGuid().GetHashCode());
+        private void TestCycleRunForNeverStop(AVEHICLE vh)
+        {
+            //1.先尋找是否有可以搬送的Transfer command
+            scApp.CMDBLL.checkMCS_TransferCommand();
+            SpinWait.SpinUntil(() => false, 1000);//等待2秒鐘後再去確認確定該Vh是否沒有適合執行的搬送。
+            //2.如果沒有則嘗試隨機下達一個移動位置
+            var port_stations = scApp.PortStationBLL.OperateCatch.loadPortStations();
+            int task_RandomIndex = rnd_Index.Next(port_stations.Count - 1);
+            var next_move_task = port_stations[task_RandomIndex];
+            string adr_id = next_move_task.ADR_ID;
+            scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID
+                                          , string.Empty
+                                          , string.Empty
+                                          , E_CMD_TYPE.Move
+                                          , string.Empty
+                                          , adr_id, 0, 0);
         }
         #endregion Command Complete Report
 
