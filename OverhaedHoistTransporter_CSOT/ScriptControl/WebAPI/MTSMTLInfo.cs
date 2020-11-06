@@ -158,7 +158,14 @@ namespace com.mirle.ibg3k0.sc.WebAPI
                     if (maintainDevice is sc.Data.VO.MaintainLift)
                     {
                         sc.Data.VO.Interface.IMaintainDevice dockingMTS = scApp.EquipmentBLL.cache.GetDockingMTLOfMaintainSpace();
-                        r = scApp.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, dockingMTS, pre_car_out_vh);
+                        if((maintainDevice as MaintainLift).EQPT_ID == "MTL")
+                        {
+                            r = scApp.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, dockingMTS, pre_car_out_vh);
+                        }
+                        else
+                        {
+                            r = scApp.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, null, pre_car_out_vh);
+                        }
                         if (r.isSuccess)
                         {
                             r = scApp.MTLService.CarOurRequest(maintainDevice, pre_car_out_vh);

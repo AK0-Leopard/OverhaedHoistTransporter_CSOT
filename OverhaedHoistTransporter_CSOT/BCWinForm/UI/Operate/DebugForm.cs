@@ -771,6 +771,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             }
         }
 
+
+
         private void button7_Click_1(object sender, EventArgs e)
         {
             SCApplication scApp = SCApplication.getInstance();
@@ -1480,6 +1482,24 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 MessageBox.Show("Please Select HID.");
             }
 
+        }
+
+        private void btn_SlientControl_Click(object sender, EventArgs e)
+        {
+            SCApplication scApp = SCApplication.getInstance();
+            AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
+            if (eqpt_HID != null)
+            {
+                HIDValueDefMapActionPH2 mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
+                if (mapAction != null)
+                {
+                    mapAction.SilentCommand();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Select HID.");
+            }
         }
     }
 }
