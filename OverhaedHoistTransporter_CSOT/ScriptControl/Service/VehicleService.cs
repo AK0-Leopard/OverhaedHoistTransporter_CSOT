@@ -4255,7 +4255,7 @@ namespace com.mirle.ibg3k0.sc.Service
             //        scApp.CMDBLL.update_CMD_Detail_UnloadEndTime(eqpt.VEHICLE_ID);
             //        break;
             //}
-            if (DebugParameter.IsDebugMode && DebugParameter.IsCycleRun)
+            if (completeStatus != CompleteStatus.CmpStatusLoadunload && DebugParameter.IsDebugMode && DebugParameter.IsCycleRun)
             {
                 SpinWait.SpinUntil(() => false, 3000);
                 if (SCUtility.isMatche(scApp.BC_ID, "Taichung"))
