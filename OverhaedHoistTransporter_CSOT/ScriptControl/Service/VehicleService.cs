@@ -4443,16 +4443,22 @@ namespace com.mirle.ibg3k0.sc.Service
             scApp.CMDBLL.checkMCS_TransferCommand();
             SpinWait.SpinUntil(() => false, 1000);//等待2秒鐘後再去確認確定該Vh是否沒有適合執行的搬送。
             //2.如果沒有則嘗試隨機下達一個移動位置
+            string vh_current_adr = SCUtility.Trim(vh.CUR_ADR_ID, true);
             var port_stations = scApp.PortStationBLL.OperateCatch.loadPortStations();
-            int task_RandomIndex = rnd_Index.Next(port_stations.Count - 1);
-            var next_move_task = port_stations[task_RandomIndex];
-            string adr_id = next_move_task.ADR_ID;
+            var port_adrs = port_stations.Select(port => SCUtility.Trim(port.ADR_ID, true)).ToList();
+            port_adrs.Remove(vh_current_adr);
+            if (port_adrs.Count == 0)
+            {
+                return;
+            }
+            int adr_randomIndex = rnd_Index.Next(port_adrs.Count - 1);
+            var next_move_adr = port_adrs[adr_randomIndex];
             scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID
                                           , string.Empty
                                           , string.Empty
                                           , E_CMD_TYPE.Move
                                           , string.Empty
-                                          , adr_id, 0, 0);
+                                          , next_move_adr, 0, 0);
         }
         #endregion Command Complete Report
 
