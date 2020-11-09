@@ -192,7 +192,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         {
             try
             {
-                ValueWrite vm_carOutInterlock = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_U2D_CAR_OUT_INTERLOCK");
+                ValueWrite vm_carOutInterlock = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_U2D_CAR_OUT_INTERLOCK_PH2");
                 //ValueWrite vm_carOutReady = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_U2D_CAR_OUT_READY");
                 //ValueWrite vm_carMoving = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_U2D_CAR_MOVING");
                 //ValueWrite vm_carMoveCmp = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_U2D_CAR_MOVE_COMPLETE");
@@ -218,7 +218,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         {
             try
             {
-                ValueWrite vm_carOutInterlock = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_U2D_CAR_OUT_INTERLOCK");
+                ValueWrite vm_carOutInterlock = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_U2D_CAR_OUT_INTERLOCK_PH2");
                 string setValue = carOutInterlock ? "1" : "0";
                 vm_carOutInterlock.setWriteValue(setValue);
                 bool result = ISMControl.writeDeviceBlock(bcfApp, vm_carOutInterlock);
@@ -239,8 +239,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         {
             try
             {
-                ValueWrite vm_carMoving = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_D2U_CAR_MOVING");
-                ValueWrite vm_carMoveCmp = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_D2U_CAR_MOVE_COMPLETE");
+                ValueWrite vm_carMoving = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_D2U_CAR_MOVING_PH2");
+                ValueWrite vm_carMoveCmp = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_D2U_CAR_MOVE_COMPLETE_PH2");
                 vm_carMoving.setWriteValue(carMoving ? "1" : "0");
                 vm_carMoveCmp.setWriteValue(carMoveComplete ? "1" : "0");
                 ISMControl.writeDeviceBlock(bcfApp, vm_carMoving);
@@ -255,7 +255,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         {
             try
             {
-                ValueWrite vm_carMoving = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_D2U_CAR_MOVING");
+                ValueWrite vm_carMoving = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_D2U_CAR_MOVING_PH2");
                 vm_carMoving.setWriteValue(carMoving ? "1" : "0");
                 bool result = ISMControl.writeDeviceBlock(bcfApp, vm_carMoving);
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNew), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
@@ -275,7 +275,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         {
             try
             {
-                ValueRead vr_safety_check = bcfApp.getReadValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "MTL_TO_OHXC_U2D_SAFETY_CHECK");
+                ValueRead vr_safety_check = bcfApp.getReadValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "MTL_TO_OHXC_U2D_SAFETY_CHECK_PH2");
                 // ValueRead vr_move_cmp = bcfApp.getReadValueEvent(eqpt.EqptObjectCate, eqpt.EQPT_ID, "MTL_TO_OHXC_U2D_MOVE_COMPLETE");
                 carOutSafelyCheck = (bool)vr_safety_check.getText();
                 // carMoveComplete = (bool)vr_move_cmp.getText();
@@ -292,8 +292,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         {
             try
             {
-                ValueRead vr_safety_check = bcfApp.getReadValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "MTL_TO_OHXC_D2U_SAFETY_CHECK");
-                ValueRead vr_car_in = bcfApp.getReadValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "MTL_TO_OHXC_D2U_CAR_IN_INTERLOCK");
+                ValueRead vr_safety_check = bcfApp.getReadValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "MTL_TO_OHXC_D2U_SAFETY_CHECK_PH2");
+                ValueRead vr_car_in = bcfApp.getReadValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "MTL_TO_OHXC_D2U_CAR_IN_INTERLOCK_PH2");
                 carOutSafelyCheck = (bool)vr_safety_check.getText();
                 carInInterlock = (bool)vr_car_in.getText();
             }
@@ -304,6 +304,37 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 carInInterlock = false;
             }
         }
+
+
+        public override void OHxCResetAllhandshake()
+        {
+            try
+            {
+                ValueWrite vw_ReplyAlarmReport = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_REPLY_ALARM_REPORT_HS_PH2");
+                ValueWrite vw_MTLAlarmResetRequest = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_ALARM_RESET_REQUEST_HS_PH2");
+                ValueWrite vr_CarOutReply = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_CAR_OUT_REPLY_HS_PH2");
+                ValueWrite vr_CarOutNotify = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_CAR_OUT_NOTIFY_HS_PH2");
+                ValueWrite vr_ReplyCatInDataCheck = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_REPLY_CAR_IN_DATA_CHECK_HS_PH2");
+                vw_ReplyAlarmReport.initWriteValue();
+                vw_MTLAlarmResetRequest.initWriteValue();
+                vr_CarOutReply.initWriteValue();
+                vr_CarOutNotify.initWriteValue();
+                vr_ReplyCatInDataCheck.initWriteValue();
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vw_ReplyAlarmReport);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vw_MTLAlarmResetRequest);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vr_CarOutReply);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vr_CarOutNotify);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vr_ReplyCatInDataCheck);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+         Data: $"Reset All Handshake.",
+         XID: MTL.EQPT_ID);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+        }
+
 
         public override void CarOutSafetyChcek(object sender, ValueChangedEventArgs args)
         {
@@ -419,8 +450,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                     else
                     {
                         AVEHICLE pre_car_out_vh = scApp.VehicleBLL.cache.getVhByNum(pre_car_out_vh_num);
-                        MaintainSpace dockingMTS = scApp.EquipmentBLL.cache.GetDockingMTLOfMaintainSpace();//todo 之後會有兩個MTS 要知道是哪個MTS
-                        var car_out_check_result = scApp.MTLService.checkVhAndMTxCarOutStatus(this.MTL, dockingMTS, pre_car_out_vh);
+                        //MaintainSpace dockingMTS = scApp.EquipmentBLL.cache.GetDockingMTLOfMaintainSpace();//todo 之後會有兩個MTS 要知道是哪個MTS
+                        var car_out_check_result = scApp.MTLService.checkVhAndMTxCarOutStatus(this.MTL, null, pre_car_out_vh);
                         send_function.ReturnCode = car_out_check_result.isSuccess ? (ushort)1 : (ushort)2;
                         LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNewPH2), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
                                  Data: $"Process MTL car out request, is success:{car_out_check_result.isSuccess},result:{car_out_check_result.result}",

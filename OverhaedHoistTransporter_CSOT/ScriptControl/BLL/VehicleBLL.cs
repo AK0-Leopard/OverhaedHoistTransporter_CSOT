@@ -1822,6 +1822,14 @@ namespace com.mirle.ibg3k0.sc.BLL
             //lock (scApp.park_lock_obj)
             //{
             //改成用VH_ID去Detail的Table找
+            //if (vh.lastParkRequestTime.AddSeconds(10) > DateTime.Now)
+            //{
+            //    return;
+            //}
+            //else
+            //{
+            //    vh.lastParkRequestTime = DateTime.Now;
+            //}
 
             APARKZONEDETAIL parkDetail = scApp.ParkBLL.getParkDetailByAdr(vh.PARK_ADR_ID);
             if (parkDetail == null) return;
@@ -1863,7 +1871,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     aCMD_OHTCs.Add(aCMD);
                 }
-                if (!SCUtility.isEmpty(nextParkDetail.CAR_ID))
+                if (nextParkDetail!=null&& !SCUtility.isEmpty(nextParkDetail.CAR_ID))
                 {
                     AVEHICLE nextParkAdrVH = scApp.VehicleBLL.getVehicleByID(nextParkDetail.CAR_ID);
                     FindParkZoneOrCycleRunZoneForDriveAway(nextParkAdrVH, ref aCMD_OHTCs);
@@ -1892,6 +1900,14 @@ namespace com.mirle.ibg3k0.sc.BLL
         {
             //lock (scApp.park_lock_obj)
             //{
+            //if (vh.lastParkRequestTime.AddSeconds(10) > DateTime.Now)
+            //{
+            //    return false;
+            //}
+            //else
+            //{
+            //    vh.lastParkRequestTime = DateTime.Now;
+            //}
             LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
             Data: $"start FindParkZoneOrCycleRunZoneNew. vh id:{vh.VEHICLE_ID} ",
             VehicleID: vh.VEHICLE_ID,
@@ -1903,6 +1919,15 @@ namespace com.mirle.ibg3k0.sc.BLL
                 Data: $"start FindParkZoneOrCycleRunZoneNew into critical zone. vh id:{vh.VEHICLE_ID} ",
                 VehicleID: vh.VEHICLE_ID,
                 CarrierID: vh.CST_ID);
+                if (!vh.isTcpIpConnect)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"vehicle disconnected,stop find park zone. vh id:{vh.VEHICLE_ID} ",
+                        VehicleID: vh.VEHICLE_ID,
+                        CarrierID: vh.CST_ID);
+                    return;
+                }
+
 
                 if (scApp.CMDBLL.isCMD_OHTCExcuteByVh(vh.VEHICLE_ID))//從queue到excute都算
                 {

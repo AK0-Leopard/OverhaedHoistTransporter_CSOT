@@ -303,6 +303,35 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
         }
 
+        public override void OHxCResetAllhandshake()
+        {
+            try
+            {
+                ValueWrite vw_ReplyAlarmReport = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_REPLY_ALARM_REPORT_HS");
+                ValueWrite vw_MTLAlarmResetRequest = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_ALARM_RESET_REQUEST_HS");
+                ValueWrite vr_CarOutReply = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_CAR_OUT_REPLY_HS");
+                ValueWrite vr_CarOutNotify = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_CAR_OUT_NOTIFY_HS");
+                ValueWrite vr_ReplyCatInDataCheck = bcfApp.getWriteValueEvent(MTL.EqptObjectCate, MTL.EQPT_ID, "OHXC_TO_MTL_REPLY_CAR_IN_DATA_CHECK_HS");
+                vw_ReplyAlarmReport.initWriteValue();
+                vw_MTLAlarmResetRequest.initWriteValue();
+                vr_CarOutReply.initWriteValue();
+                vr_CarOutNotify.initWriteValue();
+                vr_ReplyCatInDataCheck.initWriteValue();
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vw_ReplyAlarmReport);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vw_MTLAlarmResetRequest);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vr_CarOutReply);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vr_CarOutNotify);
+                ISMControl.writeDeviceBlock(scApp.getBCFApplication(), vr_ReplyCatInDataCheck);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLValueDefMapActionNew), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
+         Data: $"Reset All Handshake.",
+         XID: MTL.EQPT_ID);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+        }
+
         public override void CarOutSafetyChcek(object sender, ValueChangedEventArgs args)
         {
             var recevie_function =

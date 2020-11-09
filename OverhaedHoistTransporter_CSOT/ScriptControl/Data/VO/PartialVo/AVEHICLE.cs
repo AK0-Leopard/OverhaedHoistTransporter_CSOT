@@ -298,6 +298,7 @@ namespace com.mirle.ibg3k0.sc
             }
         }
 
+        public DateTime lastParkRequestTime = DateTime.MinValue;
 
         private bool istcpipconnect;
         [BaseElement(NonChangeFromOtherVO = true)]

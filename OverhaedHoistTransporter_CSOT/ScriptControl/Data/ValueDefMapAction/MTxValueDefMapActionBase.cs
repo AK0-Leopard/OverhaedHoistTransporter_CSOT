@@ -617,6 +617,9 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
         }
 
+        public abstract void OHxCResetAllhandshake();
+
+
         public abstract void MTL_LFTStatus(object sender, ValueChangedEventArgs args);
         public abstract void MTL_CarOutRequest(object sender, ValueChangedEventArgs args);
         public abstract void MTL_CarInRequest(object sender, ValueChangedEventArgs args);

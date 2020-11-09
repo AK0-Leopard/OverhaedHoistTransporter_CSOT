@@ -144,6 +144,7 @@
             this.cmb_mts = new System.Windows.Forms.ComboBox();
             this.btn_mts_dateTimeSync = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btn_reset_handshake = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.mtl_prepare_car_out_info.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -156,6 +157,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btn_reset_handshake);
             this.groupBox1.Controls.Add(this.btn_mtl_alarm_reset);
             this.groupBox1.Controls.Add(this.mtl_prepare_car_out_info);
             this.groupBox1.Controls.Add(this.groupBox3);
@@ -179,7 +181,7 @@
             // 
             // btn_mtl_alarm_reset
             // 
-            this.btn_mtl_alarm_reset.Location = new System.Drawing.Point(377, 177);
+            this.btn_mtl_alarm_reset.Location = new System.Drawing.Point(373, 213);
             this.btn_mtl_alarm_reset.Name = "btn_mtl_alarm_reset";
             this.btn_mtl_alarm_reset.Size = new System.Drawing.Size(198, 67);
             this.btn_mtl_alarm_reset.TabIndex = 79;
@@ -1336,6 +1338,16 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // btn_reset_handshake
+            // 
+            this.btn_reset_handshake.Location = new System.Drawing.Point(373, 147);
+            this.btn_reset_handshake.Name = "btn_reset_handshake";
+            this.btn_reset_handshake.Size = new System.Drawing.Size(210, 31);
+            this.btn_reset_handshake.TabIndex = 80;
+            this.btn_reset_handshake.Text = "Reset All Handshake";
+            this.btn_reset_handshake.UseVisualStyleBackColor = true;
+            this.btn_reset_handshake.Click += new System.EventHandler(this.btn_reset_handshake_Click);
+            // 
             // MaintainDeviceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -1488,5 +1500,6 @@
         private System.Windows.Forms.Button btn_mts_car_in_interlock_on;
         private System.Windows.Forms.Button btn_mts_car_out_interlock_off;
         private System.Windows.Forms.Button btn_mts_car_out_interlock_on;
+        private System.Windows.Forms.Button btn_reset_handshake;
     }
 }

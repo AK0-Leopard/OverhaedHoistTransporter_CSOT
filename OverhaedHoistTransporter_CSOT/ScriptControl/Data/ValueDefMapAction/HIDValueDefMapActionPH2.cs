@@ -120,24 +120,52 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 //LogManager.GetLogger("com.mirle.ibg3k0.sc.Common.LogHelper").Info(function.ToString());
                 NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
                 HIDToOHxC_ChargeInfo hid_info = new HIDToOHxC_ChargeInfo();
+                hid_info.Alive = function.Alive;
                 hid_info.HID_ID = function.HID_ID;
-                hid_info.WR_Converted = function.WR_Converted;
-                hid_info.WS_Converted = function.WS_Converted;
-                hid_info.WT_Converted = function.WT_Converted;
-                hid_info.AR_Converted = function.AR_Converted;
-                hid_info.AS_Converted = function.AS_Converted;
-                hid_info.AT_Converted = function.AT_Converted;
-                hid_info.VR_Converted = function.VR_Converted;
-                hid_info.VS_Converted = function.VS_Converted;
-                hid_info.VT_Converted = function.VT_Converted;
-                hid_info.Hour_Negative_Converted = function.Hour_Negative_Converted;
-                hid_info.Hour_Positive_Converted = function.Hour_Positive_Converted;
-                hid_info.Hour_Sigma_Converted = function.Hour_Sigma_Converted;
-                hid_info.Sigma_W_Converted = function.Sigma_W_Converted;
-                hid_info.Sigma_A_Converted = function.Sigma_A_Converted;
-                hid_info.Sigma_V_Converted = function.Sigma_V_Converted;
+                hid_info.V_Unit = function.V_Unit;
+                hid_info.V_Dot = function.V_Dot;
+                hid_info.A_Unit = function.A_Unit;
+                hid_info.A_Dot = function.A_Dot;
+                hid_info.W_Unit = function.W_Unit;
+                hid_info.W_Dot = function.W_Dot;
+                hid_info.Hour_Unit = function.Hour_Unit;
+                hid_info.Hour_Dot = function.Hour_Dot;
+                hid_info.Hour_Sigma_High_Word = function.Hour_Sigma_High_Word;
+                hid_info.Hour_Sigma_Low_Word = function.Hour_Sigma_Low_Word;
+                hid_info.Hour_Positive_High_Word = function.Hour_Positive_High_Word;
+                hid_info.Hour_Positive_Low_Word = function.Hour_Positive_Low_Word;
+                hid_info.Hour_Negative_High_Word = function.Hour_Negative_High_Word;
+                hid_info.Hour_Negative_Low_Word = function.Hour_Negative_Low_Word;
+                hid_info.VR_Source = function.VR_Source;
+                hid_info.VS_Source = function.VS_Source;
+                hid_info.VT_Source = function.VT_Source;
+                hid_info.Sigma_V_Source = function.Sigma_V_Source;
+                hid_info.AR_Source = function.AR_Source;
+                hid_info.AS_Source = function.AS_Source;
+                hid_info.AT_Source = function.AT_Source;
+                hid_info.Sigma_A_Source = function.Sigma_A_Source;
+                hid_info.WR_Source = function.WR_Source;
+                hid_info.WS_Source = function.WS_Source;
+                hid_info.WT_Source = function.WT_Source;
+                hid_info.Sigma_W_Source = function.Sigma_W_Source;
 
-                eqpt.HID_Info = hid_info;
+        //hid_info.WR_Converted = function.WR_Converted;
+        //        hid_info.WS_Converted = function.WS_Converted;
+        //        hid_info.WT_Converted = function.WT_Converted;
+        //        hid_info.AR_Converted = function.AR_Converted;
+        //        hid_info.AS_Converted = function.AS_Converted;
+        //        hid_info.AT_Converted = function.AT_Converted;
+        //        hid_info.VR_Converted = function.VR_Converted;
+        //        hid_info.VS_Converted = function.VS_Converted;
+        //        hid_info.VT_Converted = function.VT_Converted;
+        //        hid_info.Hour_Negative_Converted = function.Hour_Negative_Converted;
+        //        hid_info.Hour_Positive_Converted = function.Hour_Positive_Converted;
+        //        hid_info.Hour_Sigma_Converted = function.Hour_Sigma_Converted;
+        //        hid_info.Sigma_W_Converted = function.Sigma_W_Converted;
+        //        hid_info.Sigma_A_Converted = function.Sigma_A_Converted;
+        //        hid_info.Sigma_V_Converted = function.Sigma_V_Converted;
+
+        eqpt.HID_Info = hid_info;
 
                 eqpt.Eq_Alive_Last_Change_time = DateTime.Now;
 
@@ -494,8 +522,8 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         public virtual void DateTimeSyncCommand(DateTime dateTime)
         {
 
-            OHxCToMtl_DateTimeSyncPH2 send_function =
-               scApp.getFunBaseObj<OHxCToMtl_DateTimeSyncPH2>(eqpt.EQPT_ID) as OHxCToMtl_DateTimeSyncPH2;
+            OHxCToHID_DateTimeSync_PH2 send_function =
+               scApp.getFunBaseObj<OHxCToHID_DateTimeSync_PH2>(eqpt.EQPT_ID) as OHxCToHID_DateTimeSync_PH2;
             try
             {
                 lock (dateTimeSyneObj)
@@ -524,7 +552,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
             finally
             {
-                scApp.putFunBaseObj<OHxCToMtl_DateTimeSyncPH2>(send_function);
+                scApp.putFunBaseObj<OHxCToHID_DateTimeSync_PH2>(send_function);
             }
         }
 

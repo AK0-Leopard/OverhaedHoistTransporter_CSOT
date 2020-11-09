@@ -485,5 +485,12 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             string msg = txt_mtsMessage.Text;
             await Task.Run(() => MTSValueDefMapActionBase.OHxCMessageDownload(msg));
         }
+
+        private async void btn_reset_handshake_Click(object sender, EventArgs e)
+        {
+            string msg = txt_mtsMessage.Text;
+            await Task.Run(() => MTSValueDefMapActionBase.OHxCResetAllhandshake());
+
+        }
     }
 }
