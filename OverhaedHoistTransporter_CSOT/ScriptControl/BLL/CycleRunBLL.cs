@@ -76,7 +76,7 @@ namespace com.mirle.ibg3k0.sc.BLL
 
                     foreach (ACYCLEZONEMASTER park_zone_master in HasCycleSpaceZoneMaster)
                     {
-                        //string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchRoute
+
                         string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
                             (vh.NODE_ADR, park_zone_master.ENTRY_ADR_ID, 1);
                         string[] minRoute_From2To = ReutrnFromAdr2ToAdr[0].Split('=');

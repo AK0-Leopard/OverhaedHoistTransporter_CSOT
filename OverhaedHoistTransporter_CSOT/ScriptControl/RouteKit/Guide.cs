@@ -28,7 +28,7 @@ using System.Text;
 
 namespace RouteKit
 {
-    public class Guide
+    public class Guide: IGuide
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         static List<Section> SectionList = new List<Section>();
@@ -916,7 +916,7 @@ namespace RouteKit
             }
 
         }
-
+        
         LinkedList<Section> visitedSec = new LinkedList<Section>();
         List<Section[]> routes_Sec = new List<Section[]>();
         List<Section[]> routeArray_Sec = new List<Section[]>();

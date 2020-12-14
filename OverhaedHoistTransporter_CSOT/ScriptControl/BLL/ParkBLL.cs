@@ -272,11 +272,15 @@ namespace com.mirle.ibg3k0.sc.BLL
 
                     //string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchRoute
                     KeyValuePair<string[], double> route_distance;
+
                     if (scApp.RouteGuide.checkRoadIsWalkable(vh_current_adr, park_zone_master.ENTRY_ADR_ID, out route_distance))
                     {
                         lstParkZoneMasterAndDis.Add
                             (new KeyValuePair<APARKZONEMASTER, double>(park_zone_master, route_distance.Value));
                     }
+
+
+                    
 
 
                     //string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection

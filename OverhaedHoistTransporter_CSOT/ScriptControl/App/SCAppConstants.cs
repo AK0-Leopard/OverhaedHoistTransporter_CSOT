@@ -406,6 +406,7 @@ namespace com.mirle.ibg3k0.sc.App
         {
             public const string VERSION_NAME_OHS100 = "OHS100";
             public const string VERSION_NAME_CSOT_T4 = "CSOT_T4";
+            public const string VERSION_NAME_CSOT_T4_PH1PH2 = "CSOT_T4_PH1PH2";
             public const string VERSION_NAME_TAICHUNG = "Taichung";
             public const string VERSION_NAME_TAICHUNG6F = "Taichung6F";
         }

@@ -73,6 +73,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             string fromAdr = cmb_fromAdr.Text;
             string toAdr = cmb_toAdr.Text;
             string[] Reutrn = bcApp.SCApplication.RouteGuide.DownstreamSearchSection(fromAdr, toAdr, 0);
+
             StringBuilder sb = new StringBuilder();
             if (string.IsNullOrEmpty(Reutrn[0]))
                 sb.AppendLine("SegmentClosed");
@@ -106,6 +107,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             string toAdr = cmb_toAdr.Text;
             string[] ReutrnVh2FromAdr = bcApp.SCApplication.RouteGuide.DownstreamSearchSection_FromSecToAdr
                     (fromSec, toAdr, 0);
+
             string svh2FromAdr = (ReutrnVh2FromAdr != null && ReutrnVh2FromAdr.Count() > 0) ? ReutrnVh2FromAdr[0] : string.Empty;
             txt_Route.Text = svh2FromAdr;
             var minRoute = ReutrnVh2FromAdr[0].Split('=');

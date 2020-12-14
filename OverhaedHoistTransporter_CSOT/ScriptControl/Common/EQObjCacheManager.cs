@@ -56,12 +56,12 @@ namespace com.mirle.ibg3k0.sc.Common
             
             new MTSSetting(){ID = "MTS",MTSSegment="013", MTSAddress ="20292", SystemInAddress ="20199" },
             new MTSSetting(){ID = "MTS2",MTSSegment="019", MTSAddress ="20296", SystemInAddress ="20037" },
-            new MTSSetting(){ID = "MTS3",MTSSegment="163", MTSAddress ="10480", SystemInAddress ="10441" }
+            new MTSSetting(){ID = "MTS3",MTSSegment="163", MTSAddress ="10480", SystemInAddress ="20011" }
         };
         private List<MTLSetting> MTLSettings = new List<MTLSetting>()
         {
             new MTLSetting(){ID = "MTL",MTLSegment="013", MTLAddress ="20293", SystemInAddress ="20199",MTL_CAR_IN_BUFFER_ADDRESS ="24294" ,MTL_SYSTEM_OUT_ADDRESS = "20292" },
-            new MTLSetting(){ID = "MTL2",MTLSegment="132", MTLAddress ="10387", SystemInAddress ="10331",MTL_CAR_IN_BUFFER_ADDRESS ="10388" ,MTL_SYSTEM_OUT_ADDRESS = "10387" },
+            new MTLSetting(){ID = "MTL2",MTLSegment="132", MTLAddress ="10387", SystemInAddress ="10043",MTL_CAR_IN_BUFFER_ADDRESS ="10388" ,MTL_SYSTEM_OUT_ADDRESS = "10387" },
             new MTLSetting(){ID = "MTL3",MTLSegment="150", MTLAddress ="10110", SystemInAddress ="10113",MTL_CAR_IN_BUFFER_ADDRESS ="10111" ,MTL_SYSTEM_OUT_ADDRESS = "10110" }
     };
         /// <summary>
@@ -573,6 +573,7 @@ namespace com.mirle.ibg3k0.sc.Common
                             TcpIpAgentName = vehicleConfig.TcpIpAgentName,
                             CUR_ADR_ID = "",
                             CUR_SEC_ID = "",
+                            PRE_SEC_ID = "",
                             NODE_ID = node_id
                         };
                         vhList.Add(vhTemp);

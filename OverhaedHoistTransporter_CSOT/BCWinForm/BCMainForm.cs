@@ -244,10 +244,12 @@ namespace com.mirle.ibg3k0.bc.winform
                     progress.ShowDialog();
                 }
                 //#if DEBUG
-                if (SCUtility.isMatche("CSOT_T4_PH2", bcApp.SCApplication.BC_ID)|| SCUtility.isMatche("CSOT_T4_PH1PH2", bcApp.SCApplication.BC_ID))
-                    openForm(typeof(OHT_FormNew).Name, true, false);
-                else
+
+                //if (SCUtility.isMatche("CSOT_T4_PH2", bcApp.SCApplication.BC_ID)|| SCUtility.isMatche("CSOT_T4_PH1PH2", bcApp.SCApplication.BC_ID))
+                //    openForm(typeof(OHT_FormNew).Name, true, false);
+                //else
                     openForm(typeof(OHT_Form).Name);
+
                 //#endif
             }
             catch (Exception ex)

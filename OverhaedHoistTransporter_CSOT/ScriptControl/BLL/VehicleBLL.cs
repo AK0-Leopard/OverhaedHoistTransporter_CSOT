@@ -127,6 +127,10 @@ namespace com.mirle.ibg3k0.sc.BLL
         public bool updateVheiclePosition_CacheManager(AVEHICLE vh, string adr_id, string sec_id, string seg_id, double sce_dis)
         {
             vh.CUR_ADR_ID = adr_id;
+            if(vh.CUR_SEC_ID != sec_id)
+            {
+                vh.PRE_SEC_ID = vh.CUR_SEC_ID;
+            }
             vh.CUR_SEC_ID = sec_id;
             vh.CUR_SEG_ID = seg_id;
             vh.ACC_SEC_DIST = sce_dis;
@@ -225,6 +229,10 @@ namespace com.mirle.ibg3k0.sc.BLL
                     con.AVEHICLE.Attach(vh);
                     //con.Entry(vh).State = EntityState.Modified;
                     vh.CUR_ADR_ID = adr_id;
+                    if (vh.CUR_SEC_ID != sec_id)
+                    {
+                        vh.PRE_SEC_ID = vh.CUR_SEC_ID;
+                    }
                     vh.CUR_SEC_ID = sec_id;
                     vh.ACC_SEC_DIST = sce_dis;
                     con.Entry(vh).Property(p => p.CUR_ADR_ID).IsModified = true;

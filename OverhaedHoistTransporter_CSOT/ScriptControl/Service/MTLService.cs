@@ -217,7 +217,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 isSuccess = false;
                 result = $"vh id:{vh_id}, current address:{car_out_vh.CUR_ADR_ID} to device:{mtx.DeviceID} of address id:{mtx.DeviceAddress} not walkable.";
             }
-
+            
             //2.要判斷MTL的 Safety check是否有On且是否為Auto Mode
             if (isSuccess && !SCUtility.isEmpty(mtx.PreCarOutVhID))
             {

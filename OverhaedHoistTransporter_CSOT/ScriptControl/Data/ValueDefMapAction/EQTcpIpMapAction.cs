@@ -265,7 +265,16 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, 0, recive_str);
             if (recive_str.SecDistance > IGNORE_SECTION_DISTANCE)
             {
-                scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(eqpt.VEHICLE_ID, recive_str);
+                if(recive_str.CurrentSecID != eqpt.PRE_SEC_ID)
+                {
+                    scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(eqpt.VEHICLE_ID, recive_str);
+                }
+                else
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(EQTcpIpMapAction), Device: "OHxC",
+         Data: $"ignore vh:{eqpt.VEHICLE_ID} of position report,because current section {recive_str.CurrentSecID} is the same with privious section id.",
+         VehicleID: eqpt.VEHICLE_ID);
+                }
             }
             else
             {

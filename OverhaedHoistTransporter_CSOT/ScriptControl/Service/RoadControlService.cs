@@ -48,7 +48,8 @@ namespace com.mirle.ibg3k0.sc.Service
 
         Service.VehicleService VehicleService = null;
         Service.LineService LineService = null;
-        RouteKit.Guide RouteGuide = null;
+        //RouteKit.Guide RouteGuide = null;
+        RouteKit.GuideNew RouteGuide = null;
 
         App.SCApplication app = null;
         public void start(SCApplication _app)
@@ -65,6 +66,7 @@ namespace com.mirle.ibg3k0.sc.Service
             LineService = _app.LineService;
 
             RouteGuide = _app.RouteGuide;
+
 
             NodeBLL = _app.NodeBLL;
             app = _app;

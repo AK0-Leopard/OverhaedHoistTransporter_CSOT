@@ -184,7 +184,8 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         public virtual List<string> Alarms { get; set; }
 
-
+        [JsonIgnore]
+        public virtual string PRE_SEC_ID { get; set; }
 
         [JsonIgnore]
         public virtual E_CMD_TYPE CmdType { get; set; } = default(E_CMD_TYPE);
@@ -837,6 +838,7 @@ namespace com.mirle.ibg3k0.sc
             this.VEHICLE_TYPE = default(E_VH_TYPE);
             this.CUR_ADR_ID = null;
             this.CUR_SEC_ID = null;
+            this.PRE_SEC_ID = null;
             this.SEC_ENTRY_TIME = null;
             this.ACC_SEC_DIST = 0;
             this.MODE_STATUS = default(VHModeStatus);

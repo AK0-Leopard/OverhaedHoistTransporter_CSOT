@@ -131,6 +131,14 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
                 defaultMaxScale = 10;
                 trackBar_scale.SmallChange = 2;
             }
+            else if (BCFUtility.isMatche(mainForm.BCApp.SCApplication.BC_ID, SCAppConstants.WorkVersion.VERSION_NAME_CSOT_T4_PH1PH2))
+            {
+                space_Height_m = 40000; //CSOT-T4_PH1PH2地圖大小
+                space_Width_m = 200000;
+                zoon_Factor = 160;
+                defaultMaxScale = 10;
+                trackBar_scale.SmallChange = 2;
+            }
             else
             {
                 space_Height_m = 14000;
@@ -463,6 +471,10 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
 
             for (int i = 0; i < listGroup.Count - 1; i++)
             {
+                if (listGroup[i].SECTION_ID == "00803")
+                {
+
+                }
                 if (!BCFUtility.isMatche(listGroup[i].SECTION_ID, listGroup[i + 1].SECTION_ID))
                     continue;
                 findMatchRailPoint(listGroup[i].RAIL_ID, listGroup[i + 1].RAIL_ID);

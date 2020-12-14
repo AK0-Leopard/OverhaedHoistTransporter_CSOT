@@ -886,6 +886,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolFormat\Ohtmessage.cs" />
     <Compile Include="RouteKit\Guide.cs" />
+    <Compile Include="RouteKit\GuideNew.cs" />
+    <Compile Include="RouteKit\IGuide.cs" />
     <Compile Include="RouteKit\Section.cs" />
     <Compile Include="RouteKit\Segment.cs" />
     <Compile Include="SCALE_BASE_DATA.cs">
