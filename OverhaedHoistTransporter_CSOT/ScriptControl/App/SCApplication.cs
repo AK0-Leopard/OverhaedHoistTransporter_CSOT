@@ -599,8 +599,8 @@ namespace com.mirle.ibg3k0.sc.App
         public LineWIF LineWIF { get { return lineWIF; } }
 
 
-        //private Guide routeGuide = null;
-        //public Guide RouteGuide { get { return routeGuide; } }
+        //private Guide routeGuideOld = null;
+        //public Guide RouteGuideOld { get { return routeGuideOld; } }
 
         private GuideNew routeGuide = null;
         public GuideNew RouteGuide { get { return routeGuide; } }
@@ -795,11 +795,11 @@ namespace com.mirle.ibg3k0.sc.App
             var IpAndPort = ReportBLL.getZabbixServerIPAndPort();
 
             ZabbixService = new SenderService(IpAndPort.Item1, IpAndPort.Item2);
-         
-            //routeGuide = new Guide();
-            //routeGuide.start(this);
-            //bool importMapFlag = routeGuide.ImportMap();
-  
+
+            //routeGuideOld = new Guide();
+            //routeGuideOld.start(this);
+            //bool importMapFlag = routeGuideOld.ImportMap();
+
             routeGuide = new GuideNew();
             routeGuide.start(this,1,1);
 

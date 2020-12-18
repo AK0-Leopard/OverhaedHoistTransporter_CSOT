@@ -806,18 +806,50 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 if (actionStat == VHActionStatus.NoCommand)
                 {
-                    ACMD_OHTC executed_cmd = scApp.CMDBLL.geExecutedCMD_OHTCByVehicleID(vh.VEHICLE_ID);
-                    if (executed_cmd != null)
+                    string mcs_cmd_id = vh.MCS_CMD;
+                    //AVEHICLE excute_cmd_of_vh = scApp.VehicleBLL.cache.getVehicleByMCSCmdID(vh.MCS_CMD);
+                    ACMD_MCS mcs_cmd = scApp.CMDBLL.getCMD_MCSByID(vh.MCS_CMD);
+
+                    if (mcs_cmd != null)
                     {
                         LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                        Data: $"Excute force command finish for vh:[{vh_id}] , OHTC_CMD:[{SCUtility.Trim(executed_cmd.CMD_ID, true)}] ",
+                        Data: $"Excute force mcs command finish for vh:[{vh_id}] , MCS_CMD:[{SCUtility.Trim(mcs_cmd.CMD_ID, true)}] ",
                         VehicleID: vh?.VEHICLE_ID,
                         CarrierID: vh?.CST_ID);
                         Task.Run(() =>
                         {
-                            scApp.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
-                        });
+                            try
+                            {
+                                scApp.VehicleBLL.doTransferCommandFinish(vh.VEHICLE_ID, vh.OHTC_CMD, CompleteStatus.CmpStatusVehicleAbort);
+                                scApp.VIDBLL.initialVIDCommandInfo(vh.VEHICLE_ID);
+                                scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd_id, E_TRAN_STATUS.Aborted);
+                                scApp.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd, vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
+                                scApp.SysExcuteQualityBLL.doCommandFinish(mcs_cmd.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
+                            }
+                            catch { }
+                        }
+                        );
                     }
+                    else
+                    {
+                        ACMD_OHTC executed_cmd = scApp.CMDBLL.geExecutedCMD_OHTCByVehicleID(vh.VEHICLE_ID);
+                        if (executed_cmd != null)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                            Data: $"Excute force command finish for vh:[{vh_id}] , OHTC_CMD:[{SCUtility.Trim(executed_cmd.CMD_ID, true)}] ",
+                            VehicleID: vh?.VEHICLE_ID,
+                            CarrierID: vh?.CST_ID);
+                            Task.Run(() =>
+                            {
+                                scApp.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
+                            });
+                        }
+                    }
+    
+
+
+
+
 
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"remove all reserved section when vh initial and no command,vh id:{vh_id}.",
