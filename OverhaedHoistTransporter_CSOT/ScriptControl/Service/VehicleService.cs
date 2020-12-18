@@ -845,7 +845,7 @@ namespace com.mirle.ibg3k0.sc.Service
                             });
                         }
                     }
-    
+
 
 
 
@@ -1584,15 +1584,21 @@ namespace com.mirle.ibg3k0.sc.Service
             string last_seg_id = lase_sec == null ? string.Empty : lase_sec.SEG_NUM;
             uint sec_dis = recive_str.SecDistance;
 
-            doUpdateVheiclePositionAndCmdSchedule(eqpt, current_adr_id, current_sec_id, current_seg_id, last_adr_id, last_sec_id, last_seg_id, sec_dis, eventType);
+            //doUpdateVheiclePositionAndCmdSchedule(eqpt, current_adr_id, current_sec_id, current_seg_id, last_adr_id, last_sec_id, last_seg_id, sec_dis, eventType);
 
-            switch (eventType)
-            {
-                case EventType.AdrPass:
-                case EventType.AdrOrMoveArrivals:
-                    PositionReport_AdrPassArrivals(bcfApp, eqpt, recive_str, last_adr_id, last_sec_id);
-                    break;
-            }
+            //switch (eventType)
+            //{
+            //    case EventType.AdrPass:
+            //    case EventType.AdrOrMoveArrivals:
+            //        PositionReport_AdrPassArrivals(bcfApp, eqpt, recive_str, last_adr_id, last_sec_id);
+            //        break;
+            //}
+
+
+            var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, eqpt, recive_str);
+            scApp.BackgroundWorkProcVehiclePosition.triggerBackgroundWork(eqpt.VEHICLE_ID, workItem);
+
+
         }
         [ClassAOPAspect]
         public void PositionReport_100(BCFApplication bcfApp, AVEHICLE eqpt, ID_134_TRANS_EVENT_REP recive_str, int seq_num)

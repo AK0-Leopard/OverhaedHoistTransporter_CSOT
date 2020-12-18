@@ -747,7 +747,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         private S6F11.RPTINFO.RPTITEM.VIDITEM_254_SV buildUnitAlarmStatListItem()
         {
             List<ALARM> occurred_alarms = scApp.AlarmBLL.getCurrentAlarmsFromRedis();
-            List<ALARM> occurred_error_alarms = occurred_alarms.Where(alarm => alarm.ALAM_LVL == E_ALARM_LVL.Error&&alarm.EQPT_ID.StartsWith("OHx")).ToList();
+            List<ALARM> occurred_error_alarms = occurred_alarms.Where(alarm => alarm.ALAM_LVL == E_ALARM_LVL.Error && alarm.EQPT_ID.StartsWith("OHx")).ToList();
 
             S6F11.RPTINFO.RPTITEM.VIDITEM_254_SV viditem_254 = new S6F11.RPTINFO.RPTITEM.VIDITEM_254_SV();
             viditem_254.UNIT_ALARMS_INFO_OBJ = new S6F11.RPTINFO.RPTITEM.VIDITEM_254_SV.UNIT_ALARM_INFO[occurred_error_alarms.Count];
@@ -877,13 +877,14 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         }
         private S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV buildMonitoredVehilceInfo()
         {
-            List<string> nonActiveSeg = scApp.MapBLL.loadNonActiveSegmentNum();
-
-            int non_active_seg = nonActiveSeg.Count;
-            S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV viditem_252 = new S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV();
-            viditem_252.MONITORED_VEHICLE_INFO_OBJ = new S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV.MONITORED_VEHICLE_INFO[14];
             List<AVEHICLE> vhs = scApp.VehicleBLL.cache.loadVhs();
-            for (int i = 0; i < vhs.Count; i++)
+
+            int vh_count = vhs.Count;
+            S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV viditem_252 = new S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV();
+            //viditem_252.MONITORED_VEHICLE_INFO_OBJ = new S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV.MONITORED_VEHICLE_INFO[14];
+            viditem_252.MONITORED_VEHICLE_INFO_OBJ = new S6F11.RPTINFO.RPTITEM.VIDITEM_252_SV.MONITORED_VEHICLE_INFO[vh_count];
+            //for (int i = 0; i < vhs.Count; i++)
+            for (int i = 0; i < vh_count; i++)
             {
                 AVEHICLE vh = vhs[i];
                 string vh_id = vh.Real_ID;
