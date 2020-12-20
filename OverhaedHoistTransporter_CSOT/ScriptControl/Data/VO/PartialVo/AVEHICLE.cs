@@ -109,7 +109,7 @@ namespace com.mirle.ibg3k0.sc
             vhStateMachine.OnUnhandledTrigger(UnhandledTriggerHandler);
 
             CurrentCommandExcuteTime = new Stopwatch();
-
+            LastBlockRequestFailInterval.Restart();
         }
 
         public void TimerActionStart()
@@ -215,6 +215,9 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         [BaseElement(NonChangeFromOtherVO = true)]
         public Stopwatch PositionRefreshTimer = new Stopwatch();
+        [JsonIgnore]
+        [BaseElement(NonChangeFromOtherVO = true)]
+        public Stopwatch LastBlockRequestFailInterval = new Stopwatch();
 
         public int Pixel_Loaction_X = 0;
         public int Pixel_Loaction_Y = 0;

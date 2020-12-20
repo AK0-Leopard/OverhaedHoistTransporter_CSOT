@@ -29,7 +29,7 @@ using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 
 namespace com.mirle.ibg3k0.sc.Data
 {
-    public class BackgroundWorkBlockQueue: IBackgroundWork
+    public class BackgroundWorkBlockQueue : IBackgroundWork
     {
         NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -63,6 +63,11 @@ namespace com.mirle.ibg3k0.sc.Data
                     string req_hid_secid = item.Param[5] as string;
                     //can_block_pass = scApp.VehicleService.ProcessBlockReqNewNew(bcfApp, eqpt, req_block_id);
                     can_block_pass = scApp.VehicleService.ProcessBlockReqByReserveModule(bcfApp, eqpt, req_block_id);
+                    if (!can_block_pass)
+                    {
+                        eqpt.LastBlockRequestFailInterval.Restart();
+                    }
+
                     isSuccess = scApp.VehicleService.replyTranEventReport(bcfApp, eventType, eqpt, seqNum, canBlockPass: can_block_pass, canHIDPass: can_hid_pass);
                     if (isSuccess)
                     {

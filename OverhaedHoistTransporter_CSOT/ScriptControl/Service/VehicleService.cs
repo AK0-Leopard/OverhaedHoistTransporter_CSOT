@@ -2083,7 +2083,7 @@ namespace com.mirle.ibg3k0.sc.Service
         }
 
 
-
+        const int MAX_ALLOW_REQUEST_BLOCK_AGAIN_INTERVAL_TIME = 1500;
         private void ProcessBlockOrHIDReq(BCFApplication bcfApp, AVEHICLE eqpt, EventType eventType, int seqNum, string req_block_id, string req_hid_secid)
         {
             bool can_block_pass = true;
@@ -2093,6 +2093,16 @@ namespace com.mirle.ibg3k0.sc.Service
             {
                 if (eventType == EventType.BlockReq || eventType == EventType.BlockHidreq)
                 {
+                    //當再次要求的間隔時間小於1.5秒時，將直接拒絕
+                    if (eqpt.LastBlockRequestFailInterval.ElapsedMilliseconds < MAX_ALLOW_REQUEST_BLOCK_AGAIN_INTERVAL_TIME)
+                    {
+                        replyTranEventReport(bcfApp, eventType, eqpt, seqNum, canBlockPass: false, canHIDPass: false);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"Request block id:{req_block_id} interval time less than {MAX_ALLOW_REQUEST_BLOCK_AGAIN_INTERVAL_TIME}ms,force reply can't pass block",
+                           VehicleID: eqpt.VEHICLE_ID,
+                           CarrierID: eqpt.CST_ID);
+                        return;
+                    }
                     //A0.05 can_block_pass = ProcessBlockReqNew(bcfApp, eqpt, req_block_id);
                     var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(bcfApp, eqpt, eventType, seqNum, req_block_id, req_hid_secid);//A0.05
                     scApp.BackgroundWorkBlockQueue.triggerBackgroundWork("BlockQueue", workItem);//A0.05
