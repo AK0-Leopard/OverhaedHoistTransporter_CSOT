@@ -1113,6 +1113,9 @@ namespace com.mirle.ibg3k0.sc
                 }
             }
         }
+
+        public List<ACMD_MCS> CurrentExcuteMCSCommands = null;
+
         public TSCState SCStats = TSCState.NONE;
         void TransitionedHandler(Stateless.StateMachine<TSCState, TSCTrigger>.Transition transition)
         {

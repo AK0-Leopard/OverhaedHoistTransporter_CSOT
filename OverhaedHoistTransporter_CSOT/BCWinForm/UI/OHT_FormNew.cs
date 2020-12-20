@@ -42,7 +42,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         public OHT_FormNew(BCMainForm _form)
         {
             InitializeComponent();
-            
+
             mainform = _form;
             scApp = mainform.BCApp.SCApplication;
             uctlMapWPF1.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(29, 36, 60));
@@ -57,7 +57,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             dgv_vhStatus.DataSource = bindingSource;
             scApp.getEQObjCacheManager().CommonInfo.ObjectToShow_list.Clear();
 
-            
+
             dgv_TransferCommand.AutoGenerateColumns = false;
 
 
@@ -756,19 +756,26 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //if (currentSelectIndex != -1)
             //    dgv_vhStatus.Rows[currentSelectIndex].Selected = true;
             dgv_vhStatus.Refresh();
-            updateTransferCommand();
+            updateTransferCommand(scApp.getEQObjCacheManager().getLine());
         }
 
-        private async void updateTransferCommand()
+        //private async void updateTransferCommand()
+        //{
+        //    List<ACMD_MCS> ACMD_MCSs = null;
+        //    await Task.Run(() => ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished());
+        //    cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+        //    //cmd_mcs_obj_to_show = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinishedObjToShow();
+        //    cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
+        //    dgv_TransferCommand.Refresh();
+        //}
+        private void updateTransferCommand(ALINE line)
         {
-            List<ACMD_MCS> ACMD_MCSs = null;
-            await Task.Run(() => ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished());
+            List<ACMD_MCS> ACMD_MCSs = line.CurrentExcuteMCSCommands;
             cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
             //cmd_mcs_obj_to_show = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinishedObjToShow();
             cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
             dgv_TransferCommand.Refresh();
         }
-
 
         int currentSelectIndex = -1;
         //Equipment InObservationVh = null;

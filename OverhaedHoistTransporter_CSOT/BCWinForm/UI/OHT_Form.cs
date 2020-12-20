@@ -753,15 +753,32 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //if (currentSelectIndex != -1)
             //    dgv_vhStatus.Rows[currentSelectIndex].Selected = true;
             dgv_vhStatus.Refresh();
-            updateTransferCommand();
+            updateTransferCommand(scApp.getEQObjCacheManager().getLine());
         }
 
-        private async void updateTransferCommand()
+        //private async void updateTransferCommand()
+        //{
+        //    try
+        //    {
+        //        List<ACMD_MCS> ACMD_MCSs = null;
+        //        await Task.Run(() => ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished());
+        //        cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+        //        //cmd_mcs_obj_to_show = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinishedObjToShow();
+        //        cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
+        //        dgv_TransferCommand.Refresh();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(OHT_Form), Device: "OHTC",
+        //        Data: $"Update Transfer Command Failed, Exception:{ex.Message}");
+        //    }
+        //}
+        private void updateTransferCommand(ALINE line)
         {
             try
             {
-                List<ACMD_MCS> ACMD_MCSs = null;
-                await Task.Run(() => ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished());
+                List<ACMD_MCS> ACMD_MCSs = line.CurrentExcuteMCSCommands;
+                if (ACMD_MCSs == null) return;
                 cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
                 //cmd_mcs_obj_to_show = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinishedObjToShow();
                 cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
@@ -772,7 +789,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(OHT_Form), Device: "OHTC",
                 Data: $"Update Transfer Command Failed, Exception:{ex.Message}");
             }
+
         }
+
 
 
         int currentSelectIndex = -1;

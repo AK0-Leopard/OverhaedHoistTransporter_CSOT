@@ -51,6 +51,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
             var query = from cmd in con.ACMD_MCS.AsNoTracking()
                         where cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue && cmd.TRANSFERSTATE < E_TRAN_STATUS.Canceled
                         && cmd.CHECKCODE.Trim() == SECSConst.HCACK_Confirm
+                        orderby cmd.PRIORITY_SUM descending, cmd.CMD_INSER_TIME
                         select cmd;
 
             return query.ToList();

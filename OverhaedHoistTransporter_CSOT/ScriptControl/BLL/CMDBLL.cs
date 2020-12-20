@@ -793,6 +793,10 @@ namespace com.mirle.ibg3k0.sc.BLL
                         != SCAppConstants.AppServiceMode.Active)
                         return;
 
+                    List<ACMD_MCS> unfinish_mcs_cmd = scApp.CMDBLL.loadACMD_MCSIsUnfinished();
+                    ALINE line = scApp.getEQObjCacheManager().getLine();
+                    line.CurrentExcuteMCSCommands = unfinish_mcs_cmd == null ? new List<ACMD_MCS>() : unfinish_mcs_cmd;
+
                     if (scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSING
                         || scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSED)
                         return;
@@ -800,7 +804,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                     if (!scApp.getEQObjCacheManager().getLine().MCSCommandAutoAssign)
                         return;
 
-                    List<ACMD_MCS> ACMD_MCSs = scApp.CMDBLL.loadMCS_Command_Queue();
+                    if (unfinish_mcs_cmd == null || unfinish_mcs_cmd.Count == 0) return;
+                    List<ACMD_MCS> ACMD_MCSs = unfinish_mcs_cmd.Where(mcs_cmd => mcs_cmd.TRANSFERSTATE == E_TRAN_STATUS.Queue).
+                                               ToList();
                     if (ACMD_MCSs != null && ACMD_MCSs.Count > 0)
                     {
                         foreach (ACMD_MCS waitting_excute_mcs_cmd in ACMD_MCSs)

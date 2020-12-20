@@ -453,6 +453,14 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
                 defaultMaxScale = 13;
                 trackBar_scale.SmallChange = 2;
             }
+            else if (BCFUtility.isMatche(ohxc.winform.App.WindownApplication.ID, "CSOT_T4_PH1PH2"))
+            {
+                space_Height_m = 40000; //CSOT-T4_PH1PH2地圖大小
+                space_Width_m = 200000;
+                zoon_Factor = 160;
+                defaultMaxScale = 10;
+                trackBar_scale.SmallChange = 2;
+            }
             else
             {
                 space_Height_m = 14000;
