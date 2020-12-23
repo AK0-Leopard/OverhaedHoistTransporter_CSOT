@@ -757,6 +757,7 @@
     <Compile Include="Data\VO\PartialVo\ASEGMENT.cs" />
     <Compile Include="Data\VO\PartialVo\APORTSTATION.cs" />
     <Compile Include="Data\VO\PartialVo\ABLOCKZONEMASTER.cs" />
+    <Compile Include="Data\VO\PartialVo\APARKZONEMASTER.cs" />
     <Compile Include="Data\VO\PartialVo\BLOCKZONEQUEUE.cs" />
     <Compile Include="Data\VO\PartialVo\ACMD_MCS.cs" />
     <Compile Include="Data\VO\EqptLocationInfo.cs" />

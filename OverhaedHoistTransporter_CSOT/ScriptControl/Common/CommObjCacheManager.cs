@@ -42,6 +42,8 @@ namespace com.mirle.ibg3k0.sc.Common
         private List<ASEGMENT> Segments;
         //BlockMaster
         private List<ABLOCKZONEMASTER> BlockZoneMasters;
+        private List<APARKZONEDETAIL> ParkZoneDetails;
+        private List<APARKZONEMASTER> ParkZoneMasters;
 
 
         private CommonInfo CommonInfo;
@@ -75,6 +77,8 @@ namespace com.mirle.ibg3k0.sc.Common
             Segments = scApp.MapBLL.loadAllSegments();
             Sections = scApp.MapBLL.loadAllSection();
             BlockZoneMasters = scApp.MapBLL.loadAllBlockZoneMaster();
+            ParkZoneDetails = scApp.ParkBLL.LoadAllParkZoneDetails();
+            ParkZoneMasters = scApp.ParkBLL.LoadAllParkZoneMaster();
             foreach (ASEGMENT segment in Segments)
             {
                 segment.SetSectionList(scApp.SectionBLL);
@@ -131,6 +135,14 @@ namespace com.mirle.ibg3k0.sc.Common
         public List<ABLOCKZONEMASTER> getBlockMasterZone()
         {
             return BlockZoneMasters;
+        }
+        public List<APARKZONEMASTER> LoadParkZoneMater()
+        {
+            return ParkZoneMasters.ToList();
+        }
+        public List<APARKZONEDETAIL> LoadParkZoneDetail()
+        {
+            return ParkZoneDetails.ToList();
         }
 
         #endregion

@@ -20,6 +20,8 @@ namespace com.mirle.ibg3k0.sc.BLL
         protected Logger logger_ParkBllLog = LogManager.GetLogger("ParkBLL");
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        public Cache cache;
+
         private SCApplication scApp = null;
         public ParkBLL()
         {
@@ -31,6 +33,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             parkZoneTypeDao = scApp.ParkZoneTypeDao;
             parkZoneMasterDao = scApp.ParkZoneMasterDao;
             parkZoneDetailDao = scApp.ParkZoneDetailDao;
+            cache = new Cache(app.getEQObjCacheManager().getLine(), app.getCommObjCacheManager());
         }
 
         public List<string> loadAllParkZoneType()
@@ -1068,6 +1071,72 @@ namespace com.mirle.ibg3k0.sc.BLL
             return isSuccess;
         }
 
+        public List<APARKZONEDETAIL> LoadAllParkZoneDetails()
+        {
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                return parkZoneDetailDao.loadAll(con);
+            }
+        }
+        public List<APARKZONEMASTER> LoadAllParkZoneMaster()
+        {
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                return parkZoneMasterDao.loadAll(con);
+            }
+        }
 
+
+        public class Cache
+        {
+            CommObjCacheManager commObjCache;
+            ALINE line;
+            public Cache(ALINE _line, CommObjCacheManager _commObjCache)
+            {
+                commObjCache = _commObjCache;
+                line = _line;
+            }
+
+            public APARKZONEDETAIL getParkAddress(string adr, E_VH_TYPE vhType)
+            {
+                string park_type_id = line.Currnet_Park_Type;
+                List<string> park_master_ids = commObjCache.LoadParkZoneMater().
+                                               Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, park_type_id) && master.VEHICLE_TYPE == vhType).
+                                               Select(master => master.PARK_ZONE_ID).
+                                               ToList();
+                APARKZONEDETAIL detail = commObjCache.LoadParkZoneDetail().
+                                         Where(d => park_master_ids.Contains(d.PARK_ZONE_ID) && SCUtility.isMatche(adr, d.ADR_ID)).
+                                         FirstOrDefault();
+                return detail;
+            }
+            //public List<APARKZONEMASTER> loadByParkTypeIDAndHasParkSpaceByCount(String park_type_id, E_VH_TYPE vhType)
+            //{
+            //    List<APARKZONEMASTER> park_masters = commObjCache.LoadParkZoneMater().
+            //                                         Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, park_type_id) && master.VEHICLE_TYPE == vhType).
+            //                                         ToList();
+
+            //    //DBConnection_EF con = DBConnection_EF.GetContext();
+            //    //using (DBConnection_EF con = new DBConnection_EF())
+            //    using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            //    {
+            //        List<APARKZONEMASTER> lstParkZoneMasterTemp = parkZoneMasterDao.loadByParkTypeID(con
+            //                 , scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, vhType);
+            //        foreach (APARKZONEMASTER master in lstParkZoneMasterTemp)
+            //        {
+
+            //            int parkCount = parkZoneDetailDao.getCountByParkZoneIDAndVhOnAdrIncludeOnWay(con, master.PARK_ZONE_ID);
+            //            //int readyComeToVhCountByCMD = 0;
+            //            //if (scApp.CMDBLL.hasExcuteCMDFromToAdrIsParkInSpecifyPackZoneID
+            //            //    (master.PACK_ZONE_ID, out readyComeToVhCountByCMD))
+            //            //{
+            //            //    parkCount = parkCount + readyComeToVhCountByCMD;
+            //            //}
+            //            if (parkCount < master.TOTAL_BORDER)
+            //                rtnParkZoneMaster.Add(master);
+            //        }
+            //    }
+            //    return rtnParkZoneMaster;
+            //}
+        }
     }
 }

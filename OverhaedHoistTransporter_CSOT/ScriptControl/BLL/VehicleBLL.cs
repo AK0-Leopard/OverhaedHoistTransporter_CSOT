@@ -1520,6 +1520,7 @@ namespace com.mirle.ibg3k0.sc.BLL
 
             //TODO 要修改對於Park、Cycle run 的控制(例如:直接在Detail 中加入Park status，可以就直接得知空位、在途、已停車等資訊)
             APARKZONEDETAIL ParkAdr = scApp.ParkBLL.getParkAddress(vh.CUR_ADR_ID, vh.VEHICLE_TYPE);
+            //APARKZONEDETAIL ParkAdr = scApp.ParkBLL.cache.getParkAddress(vh.CUR_ADR_ID, vh.VEHICLE_TYPE);
             if (ParkAdr != null)
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
