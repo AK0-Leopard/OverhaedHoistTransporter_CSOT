@@ -127,7 +127,7 @@ namespace com.mirle.ibg3k0.sc.BLL
         public bool updateVheiclePosition_CacheManager(AVEHICLE vh, string adr_id, string sec_id, string seg_id, double sce_dis)
         {
             vh.CUR_ADR_ID = adr_id;
-            if(vh.CUR_SEC_ID != sec_id)
+            if (vh.CUR_SEC_ID != sec_id)
             {
                 vh.PRE_SEC_ID = vh.CUR_SEC_ID;
             }
@@ -1879,7 +1879,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     aCMD_OHTCs.Add(aCMD);
                 }
-                if (nextParkDetail!=null&& !SCUtility.isEmpty(nextParkDetail.CAR_ID))
+                if (nextParkDetail != null && !SCUtility.isEmpty(nextParkDetail.CAR_ID))
                 {
                     AVEHICLE nextParkAdrVH = scApp.VehicleBLL.getVehicleByID(nextParkDetail.CAR_ID);
                     FindParkZoneOrCycleRunZoneForDriveAway(nextParkAdrVH, ref aCMD_OHTCs);
