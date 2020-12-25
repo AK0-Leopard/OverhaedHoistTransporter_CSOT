@@ -18,11 +18,24 @@ namespace com.mirle.ibg3k0.sc
 {
     public partial class APARKZONEMASTER
     {
-        public List<APARKZONEDETAIL> ParkDetails;
+        private List<APARKZONEDETAIL> ParkDetails;
         public void setParkDetails(List<APARKZONEDETAIL> allParkZoneDetail)
         {
             ParkDetails = allParkZoneDetail.Where(detail => SCUtility.isMatche(detail.PARK_ZONE_ID, PARK_ZONE_ID)).
                                             ToList();
+        }
+
+        public List<APARKZONEDETAIL> loadParkDetails()
+        {
+            if (ParkDetails == null)
+                return new List<APARKZONEDETAIL>();
+            return ParkDetails.ToList();
+        }
+        public IEnumerable<string> loadParkAddresses()
+        {
+            if (ParkDetails == null)
+                return new List<string>();
+            return ParkDetails.Select(park_detail => SCUtility.Trim(park_detail.ADR_ID));
         }
     }
 }

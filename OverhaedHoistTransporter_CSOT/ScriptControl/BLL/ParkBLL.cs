@@ -33,7 +33,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             parkZoneTypeDao = scApp.ParkZoneTypeDao;
             parkZoneMasterDao = scApp.ParkZoneMasterDao;
             parkZoneDetailDao = scApp.ParkZoneDetailDao;
-            cache = new Cache(app.getEQObjCacheManager().getLine(), app.getCommObjCacheManager());
+            cache = new Cache(scApp);
         }
 
         public List<string> loadAllParkZoneType()
@@ -236,9 +236,10 @@ namespace com.mirle.ibg3k0.sc.BLL
             //DBConnection_EF con = DBConnection_EF.GetContext();
             //using (DBConnection_EF con = new DBConnection_EF())
             //{
+
             //packZoneMasters = packZoneMasterDao.loadByPackTypeIDAndHasPackSpace(con
             //    , scApp.getEQObjCacheManager().getLine().Currnet_Pack_Type);
-            parkZoneMasters = loadByParkTypeIDAndHasParkSpaceByCount
+            parkZoneMasters = cache.loadByParkTypeIDAndHasParkSpaceByCount
                 (scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, e_VH_TYPE);
 
             //For Park時繞回自己位置用的
@@ -264,7 +265,6 @@ namespace com.mirle.ibg3k0.sc.BLL
                     //    }
                     //}
                     //當VH 的Node_ADR 與該Park_Zone_Master的Entry_ADR_ID相同時，就直接讓該台車進入該Adr Zone，不用再找
-
                     if (SCUtility.isMatche(park_zone_master.ENTRY_ADR_ID, vh_current_adr))
                     {
                         lstParkZoneMasterAndDis.Add
@@ -312,7 +312,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                     {
                         APARKZONEMASTER zone_master_temp = keyValue.Key;
                         APARKZONEDETAIL bestParkDetailTemp = null;
-                        bestParkDetailTemp = findFitParkZoneDetailInParkMater(zone_master_temp);
+                        //bestParkDetailTemp = findFitParkZoneDetailInParkMater(zone_master_temp);
+                        bestParkDetailTemp = zone_master_temp.loadParkDetails().OrderByDescending(detail => detail.PRIO).FirstOrDefault();
                         if (bestParkDetailTemp != null)
                         {
                             if (SCUtility.isMatche(vh_current_adr, bestParkDetailTemp.ADR_ID))
@@ -347,11 +348,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(ParkBLL), Device: "OHTC",
                     Data: $"Start find Park Address Alternative.vh current:{vh_current_adr} Park Type:{scApp.getEQObjCacheManager().getLine().Currnet_Park_Type} Vehicle Type:{e_VH_TYPE}");
                 ParkAdrInfoTarce();
-                List<APARKZONEMASTER> masters = loadByParkTypeID(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, e_VH_TYPE);
+                //List<APARKZONEMASTER> masters = loadByParkTypeID(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, e_VH_TYPE);
+                List<APARKZONEMASTER> masters = cache.loadALLParkZoneMaster(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, e_VH_TYPE);
                 List<APARKZONEDETAIL> details = new List<APARKZONEDETAIL>();
                 foreach (APARKZONEMASTER master in masters)
                 {
-                    List<APARKZONEDETAIL> details_temp = loadAllParkZoneDetailByZoneID(master.PARK_ZONE_ID);
+                    //List<APARKZONEDETAIL> details_temp = loadAllParkZoneDetailByZoneID(master.PARK_ZONE_ID);
+                    List<APARKZONEDETAIL> details_temp = master.loadParkDetails();
                     if (details_temp != null)
                     {
                         details.AddRange(details_temp);
@@ -772,8 +775,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                         (cur_sec_id, bestParkDetail.ADR_ID, 1);
                 string[] FitParkAdrThroughSection = scApp.CMDBLL.findBestFitRoute(cur_sec_id, AllParkAdrThroughSection, bestParkDetail.ADR_ID, false);
                 List<ASECTION> FitParkAdrThroughSectionObj = scApp.MapBLL.loadSectionBySecIDs(FitParkAdrThroughSection.ToList());
-                List<string> ThroughSectionFromAdr = FitParkAdrThroughSectionObj.Select(sec => sec.FROM_ADR_ID).ToList();
-                List<string> ThroughSectionToAdr = FitParkAdrThroughSectionObj.Select(sec => sec.TO_ADR_ID).ToList();
+                List<string> ThroughSectionFromAdr = FitParkAdrThroughSectionObj.Select(sec => SCUtility.Trim(sec.FROM_ADR_ID)).ToList();
+                List<string> ThroughSectionToAdr = FitParkAdrThroughSectionObj.Select(sec => SCUtility.Trim(sec.TO_ADR_ID)).ToList();
                 List<string> ThroughSectionFromToAdr = new List<string>();
                 ThroughSectionFromToAdr.AddRange(ThroughSectionFromAdr);
                 ThroughSectionFromToAdr.AddRange(ThroughSectionToAdr);
@@ -781,66 +784,74 @@ namespace com.mirle.ibg3k0.sc.BLL
                 string current_park_type = scApp.getEQObjCacheManager().getLine().Currnet_Park_Type;
                 //DBConnection_EF con = DBConnection_EF.GetContext();
                 //using (DBConnection_EF con = new DBConnection_EF())
-                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                //using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                //{
+                //APARKZONEMASTER vhParkMaster = parkZoneMasterDao.getByParkingAdr(con, cur_adr_id);
+                //APARKZONEMASTER vhParkMaster = parkZoneMasterDao.getByParkingAdr(con, cur_adr_id, current_park_type);
+                APARKZONEMASTER vhParkMaster = cache.getParkZoneMaster(cur_adr_id, current_park_type);
+                //ThroughParkZones = parkZoneMasterDao.laodParkZoneMasterByAdr(con, ThroughSectionFromToAdr);
+                ThroughParkZones = cache.loadParkZoneMasterByPassEntryAdrID(ThroughSectionFromToAdr);
+                List<KeyValuePair<List<APARKZONEDETAIL>, double>> lstParkDetailAndDis = new List<KeyValuePair<List<APARKZONEDETAIL>, double>>();
+                foreach (APARKZONEMASTER parkZoneMaster in ThroughParkZones)
                 {
-                    //APARKZONEMASTER vhParkMaster = parkZoneMasterDao.getByParkingAdr(con, cur_adr_id);
-                    APARKZONEMASTER vhParkMaster = parkZoneMasterDao.getByParkingAdr(con, cur_adr_id, current_park_type);
-                    ThroughParkZones = parkZoneMasterDao.laodParkZoneMasterByAdr(con, ThroughSectionFromToAdr);
-                    List<KeyValuePair<List<APARKZONEDETAIL>, double>> lstParkDetailAndDis = new List<KeyValuePair<List<APARKZONEDETAIL>, double>>();
-                    foreach (APARKZONEMASTER parkZoneMaster in ThroughParkZones)
+                    if (vhParkMaster != null &&
+                        SCUtility.isMatche(vhParkMaster.PARK_ZONE_ID, parkZoneMaster.PARK_ZONE_ID))
                     {
-                        if (vhParkMaster != null &&
-                            SCUtility.isMatche(vhParkMaster.PARK_ZONE_ID, parkZoneMaster.PARK_ZONE_ID))
-                        {
-                            continue;
-                        }
-                        if (SCUtility.isMatche(bestParkDetail.PARK_ZONE_ID, parkZoneMaster.PARK_ZONE_ID))
-                        {
-                            continue;
-                        }
-                        if (parkZoneMaster.VEHICLE_TYPE != e_VH_TYPE)
-                        {
-                            continue;
-                        }
-                        //if (!SCUtility.isMatche(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, parkZoneMaster.PARK_TYPE_ID))
-                        if (!SCUtility.isMatche(current_park_type, parkZoneMaster.PARK_TYPE_ID))
-                        {
-                            continue;
-                        }
-
-                        List<APARKZONEDETAIL> lastDetail = parkZoneDetailDao.
-                              loadByParkZoneIDAndVhOnAdr(con, parkZoneMaster.PARK_ZONE_ID);
-                        if (lastDetail.Count == 0)
-                        {
-                            continue;
-                        }
-
-                        string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
-                            (cur_sec_id, parkZoneMaster.ENTRY_ADR_ID, 1);
-                        string[] minRoute_From2To = ReutrnFromAdr2ToAdr[0].Split('=');
-
-                        double distance = 0;
-                        if (double.TryParse(minRoute_From2To[1], out distance))
-                        {
-                            lstParkDetailAndDis.Add
-                                (new KeyValuePair<List<APARKZONEDETAIL>, double>(lastDetail, distance));
-                        }
-                        else
-                        {
-                            lstParkDetailAndDis.Add
-                                (new KeyValuePair<List<APARKZONEDETAIL>, double>(lastDetail, double.MaxValue));
-                        }
+                        continue;
                     }
-                    if (lstParkDetailAndDis.Count > 0)
+                    if (SCUtility.isMatche(bestParkDetail.PARK_ZONE_ID, parkZoneMaster.PARK_ZONE_ID))
                     {
-                        lstParkDetailAndDis = lstParkDetailAndDis.OrderBy(o => o.Value).ToList();
+                        continue;
+                    }
+                    if (parkZoneMaster.VEHICLE_TYPE != e_VH_TYPE)
+                    {
+                        continue;
+                    }
+                    //if (!SCUtility.isMatche(scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, parkZoneMaster.PARK_TYPE_ID))
+                    if (!SCUtility.isMatche(current_park_type, parkZoneMaster.PARK_TYPE_ID))
+                    {
+                        continue;
+                    }
 
-                        List<APARKZONEDETAIL> nearbyParkZoneDetails = lstParkDetailAndDis.First().Key.OrderBy(o => o.PRIO).ToList();
+                    //List<APARKZONEDETAIL> lastDetail = parkZoneDetailDao.
+                    //      loadByParkZoneIDAndVhOnAdr(con, parkZoneMaster.PARK_ZONE_ID);
+                    var find_result = cache.tryFindParkedDetail(parkZoneMaster.PARK_ZONE_ID);
+                    //if (lastDetail.Count == 0)
+                    if (!find_result.hasFind)
+                    {
+                        continue;
+                    }
 
-                        throughParkZoneOfNearest = nearbyParkZoneDetails.First();
-                        isThroughParkZone = true;
+                    string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                        (cur_sec_id, parkZoneMaster.ENTRY_ADR_ID, 1);
+                    string[] minRoute_From2To = ReutrnFromAdr2ToAdr[0].Split('=');
+
+                    double distance = 0;
+                    if (double.TryParse(minRoute_From2To[1], out distance))
+                    {
+                        //lstParkDetailAndDis.Add
+                        //    (new KeyValuePair<List<APARKZONEDETAIL>, double>(lastDetail, distance));
+                        lstParkDetailAndDis.Add
+                            (new KeyValuePair<List<APARKZONEDETAIL>, double>(find_result.parkedDetails, distance));
+                    }
+                    else
+                    {
+                        //lstParkDetailAndDis.Add
+                        //    (new KeyValuePair<List<APARKZONEDETAIL>, double>(lastDetail, double.MaxValue));
+                        lstParkDetailAndDis.Add
+                            (new KeyValuePair<List<APARKZONEDETAIL>, double>(find_result.parkedDetails, double.MaxValue));
                     }
                 }
+                if (lstParkDetailAndDis.Count > 0)
+                {
+                    lstParkDetailAndDis = lstParkDetailAndDis.OrderBy(o => o.Value).ToList();
+
+                    List<APARKZONEDETAIL> nearbyParkZoneDetails = lstParkDetailAndDis.First().Key.OrderBy(o => o.PRIO).ToList();
+
+                    throughParkZoneOfNearest = nearbyParkZoneDetails.First();
+                    isThroughParkZone = true;
+                }
+                //}
             }
             catch (Exception ex)
             {
@@ -1090,16 +1101,19 @@ namespace com.mirle.ibg3k0.sc.BLL
         public class Cache
         {
             CommObjCacheManager commObjCache;
-            ALINE line;
-            public Cache(ALINE _line, CommObjCacheManager _commObjCache)
+            SCApplication scApp;
+            VehicleBLL vehicleBLL;
+            public Cache(SCApplication _scApp)
             {
-                commObjCache = _commObjCache;
-                line = _line;
+                scApp = _scApp;
+
+                commObjCache = scApp.getCommObjCacheManager();
+                vehicleBLL = scApp.VehicleBLL;
             }
 
             public APARKZONEDETAIL getParkAddress(string adr, E_VH_TYPE vhType)
             {
-                string park_type_id = line.Currnet_Park_Type;
+                string park_type_id = scApp.getEQObjCacheManager().getLine().Currnet_Park_Type;
                 List<string> park_master_ids = commObjCache.LoadParkZoneMater().
                                                Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, park_type_id) && master.VEHICLE_TYPE == vhType).
                                                Select(master => master.PARK_ZONE_ID).
@@ -1109,34 +1123,141 @@ namespace com.mirle.ibg3k0.sc.BLL
                                          FirstOrDefault();
                 return detail;
             }
-            //public List<APARKZONEMASTER> loadByParkTypeIDAndHasParkSpaceByCount(String park_type_id, E_VH_TYPE vhType)
-            //{
-            //    List<APARKZONEMASTER> park_masters = commObjCache.LoadParkZoneMater().
-            //                                         Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, park_type_id) && master.VEHICLE_TYPE == vhType).
-            //                                         ToList();
+            public List<APARKZONEMASTER> loadByParkTypeIDAndHasParkSpaceByCount(String park_type_id, E_VH_TYPE vhType)
+            {
+                List<APARKZONEMASTER> park_masters = commObjCache.LoadParkZoneMater().
+                                                     Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, park_type_id) && master.VEHICLE_TYPE == vhType).
+                                                     ToList();
+                //1.取得目前沒有命令的車子
+                var idle_vhs_adr = vehicleBLL.cache.loadVhs().
+                                                    Where(vh => vh.ACT_STATUS == ProtocolFormat.OHTMessage.VHActionStatus.NoCommand).
+                                                    Select(vh => SCUtility.Trim(vh.CUR_ADR_ID, true));
+                //2.取得目前準備前往目的地車子
+                var will_go_to_cmd = scApp.getEQObjCacheManager().getLine().CurrentExcuteOHTCCommands.
+                                          Where(cmd => cmd.CMD_TPYE == E_CMD_TYPE.Move || cmd.CMD_TPYE == E_CMD_TYPE.Move_Park).
+                                          Select(cmd => SCUtility.Trim(cmd.DESTINATION, true));
 
-            //    //DBConnection_EF con = DBConnection_EF.GetContext();
-            //    //using (DBConnection_EF con = new DBConnection_EF())
-            //    using (DBConnection_EF con = DBConnection_EF.GetUContext())
-            //    {
-            //        List<APARKZONEMASTER> lstParkZoneMasterTemp = parkZoneMasterDao.loadByParkTypeID(con
-            //                 , scApp.getEQObjCacheManager().getLine().Currnet_Park_Type, vhType);
-            //        foreach (APARKZONEMASTER master in lstParkZoneMasterTemp)
-            //        {
+                foreach (var master in park_masters.ToList())
+                {
+                    var can_park_adrs = master.loadParkAddresses();
+                    can_park_adrs = can_park_adrs.Except(idle_vhs_adr);
+                    can_park_adrs = can_park_adrs.Except(will_go_to_cmd);
+                    if (can_park_adrs.Count() == 0)
+                        park_masters.Remove(master);
+                }
 
-            //            int parkCount = parkZoneDetailDao.getCountByParkZoneIDAndVhOnAdrIncludeOnWay(con, master.PARK_ZONE_ID);
-            //            //int readyComeToVhCountByCMD = 0;
-            //            //if (scApp.CMDBLL.hasExcuteCMDFromToAdrIsParkInSpecifyPackZoneID
-            //            //    (master.PACK_ZONE_ID, out readyComeToVhCountByCMD))
-            //            //{
-            //            //    parkCount = parkCount + readyComeToVhCountByCMD;
-            //            //}
-            //            if (parkCount < master.TOTAL_BORDER)
-            //                rtnParkZoneMaster.Add(master);
-            //        }
-            //    }
-            //    return rtnParkZoneMaster;
-            //}
+                return park_masters;
+            }
+            public List<APARKZONEMASTER> loadALLParkZoneMaster(string parkType, E_VH_TYPE vhType)
+            {
+                List<APARKZONEMASTER> park_masters = commObjCache.LoadParkZoneMater().
+                                                     Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, parkType) && master.VEHICLE_TYPE == vhType).
+                                                     ToList();
+                return park_masters;
+            }
+            public APARKZONEMASTER getParkZoneMaster(string adr, string parkType)
+            {
+                APARKZONEMASTER park_master = commObjCache.LoadParkZoneMater().
+                                                          Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, parkType) &&
+                                                                          master.loadParkAddresses().Contains(adr)).
+                                                          FirstOrDefault();
+                return park_master;
+
+            }
+            public APARKZONEMASTER getParkZoneMaster(string zoneID)
+            {
+                APARKZONEMASTER park_master = commObjCache.LoadParkZoneMater().
+                                                          Where(master => SCUtility.isMatche(master.PARK_ZONE_ID, zoneID)).
+                                                          FirstOrDefault();
+                return park_master;
+
+            }
+
+            public List<APARKZONEMASTER> loadParkZoneMasterByPassEntryAdrID(List<string> passAddresses)
+            {
+                List<APARKZONEMASTER> park_masters = commObjCache.LoadParkZoneMater().
+                                                                  Where(master => passAddresses.Contains(SCUtility.Trim(master.ENTRY_ADR_ID, true))).
+                                                                  ToList();
+                return park_masters;
+
+            }
+            public (bool hasFind, List<APARKZONEDETAIL> parkedDetails) tryFindParkedDetail(string parkZoneID)
+            {
+                APARKZONEMASTER park_master = commObjCache.LoadParkZoneMater().
+                                                          Where(master => SCUtility.isMatche(master.PARK_ZONE_ID, parkZoneID)).
+                                                          FirstOrDefault();
+                var idle_vhs_adr = vehicleBLL.cache.loadVhs().
+                                                    Where(vh => vh.ACT_STATUS == ProtocolFormat.OHTMessage.VHActionStatus.NoCommand).
+                                                    Select(vh => SCUtility.Trim(vh.CUR_ADR_ID, true));
+                var has_parked_details = park_master.loadParkDetails().Where(detail => idle_vhs_adr.Contains(detail.ADR_ID)).
+                                                                       ToList();
+                return (has_parked_details.Count() > 0, has_parked_details);
+            }
+            public APARKZONEDETAIL findFitParkZoneDetailInParkMater(string parkZoneID)
+            {
+                APARKZONEMASTER park_master = commObjCache.LoadParkZoneMater().
+                                                          Where(master => SCUtility.isMatche(master.PARK_ZONE_ID, parkZoneID)).
+                                                          FirstOrDefault();
+                return findFitParkZoneDetailInParkMater(park_master);
+            }
+
+            public APARKZONEDETAIL findFitParkZoneDetailInParkMater(APARKZONEMASTER zone_master_temp)
+            {
+                APARKZONEDETAIL bestParkDetailTemp = null;
+                switch (zone_master_temp.PARK_TYPE)
+                {
+                    case E_PARK_TYPE.OrderByAsc:
+                        bestParkDetailTemp = zone_master_temp.loadParkDetails().OrderByDescending(detail => detail.PRIO).FirstOrDefault();
+                        break;
+                    case E_PARK_TYPE.OrderByDes:
+                        bestParkDetailTemp = zone_master_temp.loadParkDetails().OrderByDescending(detail => detail.PRIO).FirstOrDefault();
+                        break;
+                }
+                return bestParkDetailTemp;
+            }
+            public APARKZONEDETAIL getActivityParkDetail(string adr)
+            {
+                string park_type_id = scApp.getEQObjCacheManager().getLine().Currnet_Park_Type;
+                var park_masters = commObjCache.LoadParkZoneMater().
+                                                Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, park_type_id)).
+                                                ToList();
+                var park_master = park_masters.Where(master => master.loadParkAddresses().Contains(adr)).FirstOrDefault();
+                if (park_master == null) return null;
+                APARKZONEDETAIL detail = park_master.loadParkDetails().Where(d => SCUtility.isMatche(d.ADR_ID, adr)).FirstOrDefault();
+                return detail;
+            }
+            public APARKZONEDETAIL getParkDetailByZoneIDAndPRIO(string zone_id, int prio)
+            {
+                APARKZONEDETAIL detail = commObjCache.LoadParkZoneDetail().
+                                         Where(d => SCUtility.isMatche(d.PARK_ZONE_ID, zone_id) && d.PRIO == prio).
+                                         FirstOrDefault();
+                return detail;
+            }
+            public bool isInParkZone(string adr, E_VH_TYPE vhType)
+            {
+                string park_type_id = scApp.getEQObjCacheManager().getLine().Currnet_Park_Type;
+                APARKZONEMASTER park_master = commObjCache.LoadParkZoneMater().
+                                                          Where(master => SCUtility.isMatche(master.PARK_TYPE_ID, park_type_id) &&
+                                                                          master.VEHICLE_TYPE == vhType &&
+                                                                          master.loadParkAddresses().Contains(adr)).
+                                                          FirstOrDefault();
+                return park_master != null;
+
+            }
+            public bool hasCmdWillComeInParkZone(string parkZoneID)
+            {
+                APARKZONEMASTER park_master = commObjCache.LoadParkZoneMater().
+                                                          Where(master => SCUtility.isMatche(master.PARK_ZONE_ID, parkZoneID)).
+                                                          FirstOrDefault();
+                var park_detail_addresses = park_master.loadParkAddresses();
+                //2.取得目前準備前往目的地車子
+                var will_go_to_cmd = scApp.getEQObjCacheManager().getLine().CurrentExcuteOHTCCommands.
+                                          Where(cmd => park_detail_addresses.Contains(SCUtility.Trim(cmd.SOURCE, true)) ||
+                                                       park_detail_addresses.Contains(SCUtility.Trim(cmd.DESTINATION, true)));
+                return (will_go_to_cmd.Count() > 0);
+            }
+
+
         }
     }
 }

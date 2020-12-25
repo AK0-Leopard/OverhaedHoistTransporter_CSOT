@@ -1519,7 +1519,8 @@ namespace com.mirle.ibg3k0.sc.BLL
 
 
             //TODO 要修改對於Park、Cycle run 的控制(例如:直接在Detail 中加入Park status，可以就直接得知空位、在途、已停車等資訊)
-            APARKZONEDETAIL ParkAdr = scApp.ParkBLL.getParkAddress(vh.CUR_ADR_ID, vh.VEHICLE_TYPE);
+            //APARKZONEDETAIL ParkAdr = scApp.ParkBLL.getParkAddress(vh.CUR_ADR_ID, vh.VEHICLE_TYPE);
+            APARKZONEDETAIL ParkAdr = scApp.ParkBLL.cache.getParkAddress(vh.CUR_ADR_ID, vh.VEHICLE_TYPE);
             //APARKZONEDETAIL ParkAdr = scApp.ParkBLL.cache.getParkAddress(vh.CUR_ADR_ID, vh.VEHICLE_TYPE);
             if (ParkAdr != null)
             {
@@ -1555,41 +1556,47 @@ namespace com.mirle.ibg3k0.sc.BLL
                     CarrierID: vh.CST_ID);
                     return;
                 }
-                bool isCycleRun = false;
-                isCycleRun = scApp.CycleBLL.checkAndUpdateVhEntryCycleRunAdr(vh.VEHICLE_ID, vh.CUR_ADR_ID);
 
-                if (!isCycleRun)
-                {
-                    using (DBConnection_EF con = DBConnection_EF.GetUContext())
-                    {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                        Data: $"start find park zone for idle vehicle. vh id:{vh.VEHICLE_ID} ",
-                        VehicleID: vh.VEHICLE_ID,
-                        CarrierID: vh.CST_ID);
-                        if (scApp.VehicleBLL.FindParkZoneOrCycleRunZoneNew(vh))
-                        {
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                            Data: $"vh id:{vh.VEHICLE_ID}  find park zone success. ",
-                            VehicleID: vh.VEHICLE_ID,
-                            CarrierID: vh.CST_ID);
-                        }
-                        else
-                        {
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                            Data: $"vh id:{vh.VEHICLE_ID}  find park zone failed. ",
-                            VehicleID: vh.VEHICLE_ID,
-                            CarrierID: vh.CST_ID);
-                        }
-                    }
-                }
-                else
-                {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                    Data: $"vh id:{vh.VEHICLE_ID}  is in cycle run address: {vh.CUR_ADR_ID}, " +
-                    $"so don't excute idle vehicle handle",
-                    VehicleID: vh.VEHICLE_ID,
-                    CarrierID: vh.CST_ID);
-                }
+                var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, vh, FindTheParkZoneTheWay.NotOnParkZone);
+                scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem);
+
+
+                //bool isCycleRun = false;
+                //isCycleRun = scApp.CycleBLL.checkAndUpdateVhEntryCycleRunAdr(vh.VEHICLE_ID, vh.CUR_ADR_ID);
+
+                //if (!isCycleRun)
+                //{
+                //    using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                //    {
+                //        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                //        Data: $"start find park zone for idle vehicle. vh id:{vh.VEHICLE_ID} ",
+                //        VehicleID: vh.VEHICLE_ID,
+                //        CarrierID: vh.CST_ID);
+
+                //        if (scApp.VehicleBLL.FindParkZoneOrCycleRunZoneNew(vh))
+                //        {
+                //            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                //            Data: $"vh id:{vh.VEHICLE_ID}  find park zone success. ",
+                //            VehicleID: vh.VEHICLE_ID,
+                //            CarrierID: vh.CST_ID);
+                //        }
+                //        else
+                //        {
+                //            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                //            Data: $"vh id:{vh.VEHICLE_ID}  find park zone failed. ",
+                //            VehicleID: vh.VEHICLE_ID,
+                //            CarrierID: vh.CST_ID);
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                //    Data: $"vh id:{vh.VEHICLE_ID}  is in cycle run address: {vh.CUR_ADR_ID}, " +
+                //    $"so don't excute idle vehicle handle",
+                //    VehicleID: vh.VEHICLE_ID,
+                //    CarrierID: vh.CST_ID);
+                //}
             }
         }
 
@@ -1826,7 +1833,7 @@ namespace com.mirle.ibg3k0.sc.BLL
 
 
 
-        public void FindParkZoneOrCycleRunZoneForDriveAway(AVEHICLE vh, ref List<ACMD_OHTC> aCMD_OHTCs)
+        public void FindParkZoneOrCycleRunZoneForDriveAway(AVEHICLE vh, ref List<ACMD_OHTC> aCMD_OHTCs, ref int count)
         {
             //lock (scApp.park_lock_obj)
             //{
@@ -1840,50 +1847,58 @@ namespace com.mirle.ibg3k0.sc.BLL
             //    vh.lastParkRequestTime = DateTime.Now;
             //}
 
-            APARKZONEDETAIL parkDetail = scApp.ParkBLL.getParkDetailByAdr(vh.PARK_ADR_ID);
+            //APARKZONEDETAIL parkDetail = scApp.ParkBLL.getParkDetailByAdr(vh.PARK_ADR_ID);
+            count++;
+            APARKZONEDETAIL parkDetail = scApp.ParkBLL.cache.getActivityParkDetail(vh.PARK_ADR_ID);
             if (parkDetail == null) return;
             if (parkDetail.PRIO > SCAppConstants.FIRST_PARK_PRIO)
             {
                 ACMD_OHTC aCMD = null;
                 APARKZONEDETAIL nextParkDetail = null;
-                SCUtility.LockWithTimeout(scApp.park_lock_obj, SCAppConstants.LOCK_TIMEOUT_MS, () =>
+                //SCUtility.LockWithTimeout(scApp.park_lock_obj, SCAppConstants.LOCK_TIMEOUT_MS, () =>
+                //{
+
+                if (scApp.CMDBLL.isCMD_OHTCExcuteByVh(vh.VEHICLE_ID))//從queue到excute都算
                 {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                    Data: $"vehicle already have ohtc command exist,stop find park zone. vh id:{vh.VEHICLE_ID} ",
+                    VehicleID: vh.VEHICLE_ID,
+                    CarrierID: vh.CST_ID);
+                }
+                else
+                {
+                    //nextParkDetail = scApp.ParkBLL.getParkDetailByZoneIDAndPRIO
+                    //(parkDetail.PARK_ZONE_ID, parkDetail.PRIO - 1);
+                    nextParkDetail = scApp.ParkBLL.cache.getParkDetailByZoneIDAndPRIO
+                    (parkDetail.PARK_ZONE_ID, parkDetail.PRIO - 1);
+                    aCMD = scApp.CMDBLL.doCreatTransferCommandObj(vh.VEHICLE_ID
+                           , string.Empty
+                           , string.Empty
+                           , E_CMD_TYPE.Move_Park
+                           , vh.CUR_ADR_ID
+                           , nextParkDetail.ADR_ID, 0, 0, SCAppConstants.GenOHxCCommandType.Auto);
+                }
 
-                    if (scApp.CMDBLL.isCMD_OHTCExcuteByVh(vh.VEHICLE_ID))//從queue到excute都算
-                    {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                        Data: $"vehicle already have ohtc command exist,stop find park zone. vh id:{vh.VEHICLE_ID} ",
-                        VehicleID: vh.VEHICLE_ID,
-                        CarrierID: vh.CST_ID);
-                    }
-                    else
-                    {
-                        nextParkDetail = scApp.ParkBLL.getParkDetailByZoneIDAndPRIO
-                        (parkDetail.PARK_ZONE_ID, parkDetail.PRIO - 1);
-                        aCMD = scApp.CMDBLL.doCreatTransferCommandObj(vh.VEHICLE_ID
-                               , string.Empty
-                               , string.Empty
-                               , E_CMD_TYPE.Move_Park
-                               , vh.CUR_ADR_ID
-                               , nextParkDetail.ADR_ID, 0, 0, SCAppConstants.GenOHxCCommandType.Auto);
-                    }
 
-
-                    //scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID
-                    //       , string.Empty
-                    //       , string.Empty
-                    //       , E_CMD_TYPE.Move_Park
-                    //       , vh.CUR_ADR_ID
-                    //       , nextParkDetail.ADR_ID, 0, 0);
-                });
+                //scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID
+                //       , string.Empty
+                //       , string.Empty
+                //       , E_CMD_TYPE.Move_Park
+                //       , vh.CUR_ADR_ID
+                //       , nextParkDetail.ADR_ID, 0, 0);
+                //});
                 if (aCMD != null)
                 {
                     aCMD_OHTCs.Add(aCMD);
                 }
+
                 if (nextParkDetail != null && !SCUtility.isEmpty(nextParkDetail.CAR_ID))
                 {
-                    AVEHICLE nextParkAdrVH = scApp.VehicleBLL.getVehicleByID(nextParkDetail.CAR_ID);
-                    FindParkZoneOrCycleRunZoneForDriveAway(nextParkAdrVH, ref aCMD_OHTCs);
+                    //AVEHICLE nextParkAdrVH = scApp.VehicleBLL.getVehicleByID(nextParkDetail.CAR_ID);
+                    AVEHICLE nextParkAdrVH = scApp.VehicleBLL.cache.getVhByAddressID(nextParkDetail.ADR_ID);
+                    if (nextParkAdrVH == null) return;
+                    if (count > 10) return;
+                    FindParkZoneOrCycleRunZoneForDriveAway(nextParkAdrVH, ref aCMD_OHTCs, ref count);
                 }
             }
             else
@@ -1891,21 +1906,24 @@ namespace com.mirle.ibg3k0.sc.BLL
                 //此功能是用在當原本停在Park位置上的VH，當他要被趕走時會先去判斷是否有任何一筆命令
                 //要來這個ParkZone，有的話則在找車位時就不在加入參考，沒有可以再加入找車位的參考中
                 APARKZONEMASTER park_master = null;
-                SCUtility.LockWithTimeout(scApp.park_lock_obj, SCAppConstants.LOCK_TIMEOUT_MS, () =>
+                //SCUtility.LockWithTimeout(scApp.park_lock_obj, SCAppConstants.LOCK_TIMEOUT_MS, () =>
+                //{
+                //int readyComeToVhCountByCMD = 0;
+                //if (!scApp.CMDBLL.hasExcuteCMDFromToAdrIsParkInSpecifyParkZoneID
+                //    (parkDetail.PARK_ZONE_ID, out readyComeToVhCountByCMD))
+                if (!scApp.ParkBLL.cache.hasCmdWillComeInParkZone(parkDetail.PARK_ZONE_ID))
                 {
-                    int readyComeToVhCountByCMD = 0;
-                    if (!scApp.CMDBLL.hasExcuteCMDFromToAdrIsParkInSpecifyParkZoneID
-                        (parkDetail.PARK_ZONE_ID, out readyComeToVhCountByCMD))
-                    {
-                        park_master = scApp.ParkBLL.getParkZoneMasterByAdrID(vh.PARK_ADR_ID);
-                        if (!park_master.IS_ACTIVE)
-                            park_master = null;
-                    }
-                });
+                    //park_master = scApp.ParkBLL.getParkZoneMasterByAdrID(vh.PARK_ADR_ID);
+                    park_master = scApp.ParkBLL.cache.getParkZoneMaster(parkDetail.PARK_ZONE_ID);
+                    if (!park_master.IS_ACTIVE)
+                        park_master = null;
+                }
+                //});
                 FindParkZoneOrCycleRunZoneNew(vh, park_master);
             }
         }
-        public bool FindParkZoneOrCycleRunZoneNew(AVEHICLE vh, APARKZONEMASTER parkMaster = null)
+
+        public void FindParkZoneOrCycleRunZoneNew(AVEHICLE vh, APARKZONEMASTER parkMaster = null)
         {
             //lock (scApp.park_lock_obj)
             //{
@@ -1922,141 +1940,142 @@ namespace com.mirle.ibg3k0.sc.BLL
             VehicleID: vh.VEHICLE_ID,
             CarrierID: vh.CST_ID);
             bool isSuccess = true;
-            SCUtility.LockWithTimeout(scApp.park_lock_obj, SCAppConstants.LOCK_TIMEOUT_MS, () =>
+            //SCUtility.LockWithTimeout(scApp.park_lock_obj, SCAppConstants.LOCK_TIMEOUT_MS, () =>
+            //{
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+            Data: $"start FindParkZoneOrCycleRunZoneNew into critical zone. vh id:{vh.VEHICLE_ID} ",
+            VehicleID: vh.VEHICLE_ID,
+            CarrierID: vh.CST_ID);
+            if (!vh.isTcpIpConnect)
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                Data: $"start FindParkZoneOrCycleRunZoneNew into critical zone. vh id:{vh.VEHICLE_ID} ",
-                VehicleID: vh.VEHICLE_ID,
-                CarrierID: vh.CST_ID);
-                if (!vh.isTcpIpConnect)
-                {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                        Data: $"vehicle disconnected,stop find park zone. vh id:{vh.VEHICLE_ID} ",
-                        VehicleID: vh.VEHICLE_ID,
-                        CarrierID: vh.CST_ID);
-                    return;
-                }
-
-
-                if (scApp.CMDBLL.isCMD_OHTCExcuteByVh(vh.VEHICLE_ID))//從queue到excute都算
-                {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                    Data: $"vehicle already have ohtc command exist,stop find park zone. vh id:{vh.VEHICLE_ID} ",
+                    Data: $"vehicle disconnected,stop find park zone. vh id:{vh.VEHICLE_ID} ",
                     VehicleID: vh.VEHICLE_ID,
                     CarrierID: vh.CST_ID);
-                    return;
-                }
-
-                APARKZONEDETAIL bestParkDetail = null;
+                return;
+            }
 
 
-
+            if (scApp.CMDBLL.isCMD_OHTCExcuteByVh(vh.VEHICLE_ID))//從queue到excute都算
+            {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                Data: $"start find park zone. vh id:{vh.VEHICLE_ID} ",
+                Data: $"vehicle already have ohtc command exist,stop find park zone. vh id:{vh.VEHICLE_ID} ",
                 VehicleID: vh.VEHICLE_ID,
                 CarrierID: vh.CST_ID);
+                return;
+            }
 
-                ParkBLL.FindParkResult parkResult = scApp.ParkBLL.tryFindParkZone(vh.VEHICLE_TYPE, vh.CUR_ADR_ID, out bestParkDetail, parkMaster);
+            APARKZONEDETAIL bestParkDetail = null;
 
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                Data: $"end find park zone. vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
-                VehicleID: vh.VEHICLE_ID,
-                CarrierID: vh.CST_ID);
 
-                //if (scApp.ParkBLL.tryFindParkZone(vh.VEHICLE_TYPE, vh.NODE_ADR, out bestParkDetail, parkMaster))
-                if (parkResult == ParkBLL.FindParkResult.Success)
+
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+            Data: $"start find park zone. vh id:{vh.VEHICLE_ID} ",
+            VehicleID: vh.VEHICLE_ID,
+            CarrierID: vh.CST_ID);
+
+            ParkBLL.FindParkResult parkResult = scApp.ParkBLL.tryFindParkZone(vh.VEHICLE_TYPE, vh.CUR_ADR_ID, out bestParkDetail, parkMaster);
+
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+            Data: $"end find park zone. vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
+            VehicleID: vh.VEHICLE_ID,
+            CarrierID: vh.CST_ID);
+
+            //if (scApp.ParkBLL.tryFindParkZone(vh.VEHICLE_TYPE, vh.NODE_ADR, out bestParkDetail, parkMaster))
+            if (parkResult == ParkBLL.FindParkResult.Success)
+            {
+                int MAX_SEARCH_THROUGH_PARK_ZONE_TIMES = 10;
+                int search_through_count = 0;
+                bool isThroughParkZone = false;
+                AVEHICLE findParkOfvh = vh;
+                do
                 {
-                    int MAX_SEARCH_THROUGH_PARK_ZONE_TIMES = 10;
-                    int search_through_count = 0;
-                    bool isThroughParkZone = false;
-                    AVEHICLE findParkOfvh = vh;
-                    do
+                    APARKZONEDETAIL ThroughParkZoneDetailOfNearest = null;
+                    isThroughParkZone =
+                        scApp.ParkBLL.tryParkRouteHasThroughParkZone(findParkOfvh.CUR_SEC_ID, findParkOfvh.CUR_ADR_ID, findParkOfvh.VEHICLE_TYPE
+                        , bestParkDetail, out ThroughParkZoneDetailOfNearest);
+                    if (isThroughParkZone)
                     {
-                        APARKZONEDETAIL ThroughParkZoneDetailOfNearest = null;
-                        isThroughParkZone =
-                            scApp.ParkBLL.tryParkRouteHasThroughParkZone(findParkOfvh.CUR_SEC_ID, findParkOfvh.CUR_ADR_ID, findParkOfvh.VEHICLE_TYPE
-                            , bestParkDetail, out ThroughParkZoneDetailOfNearest);
-                        if (isThroughParkZone)
+                        APARKZONEDETAIL bestParkDetailTemp = null;
+                        //bestParkDetailTemp = scApp.ParkBLL.findFitParkZoneDetailInParkMater(ThroughParkZoneDetailOfNearest.PARK_ZONE_ID);
+                        bestParkDetailTemp = scApp.ParkBLL.cache.findFitParkZoneDetailInParkMater(ThroughParkZoneDetailOfNearest.PARK_ZONE_ID);
+
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"find park zone success, create transfer command start in isThroughParkZone vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
+                        VehicleID: vh.VEHICLE_ID,
+                        CarrierID: vh.CST_ID);
+                        isSuccess &= scApp.CMDBLL.doCreatTransferCommand(findParkOfvh.VEHICLE_ID
+                                                      , string.Empty
+                                                      , string.Empty
+                                                      , E_CMD_TYPE.Move_Park
+                                                      , vh.CUR_ADR_ID
+                                                      , bestParkDetailTemp.ADR_ID, 0, 0);
+
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"find park zone success, create transfer command end in isThroughParkZone vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
+                        VehicleID: vh.VEHICLE_ID,
+                        CarrierID: vh.CST_ID);
+
+                        //findParkOfvh = getVehicleByID(ThroughParkZoneDetailOfNearest.CAR_ID);
+                        findParkOfvh = cache.getVhByAddressID(ThroughParkZoneDetailOfNearest.ADR_ID);
+                        if (findParkOfvh == null || !SCUtility.isEmpty(findParkOfvh.OHTC_CMD))
                         {
-                            APARKZONEDETAIL bestParkDetailTemp = null;
-                            bestParkDetailTemp = scApp.ParkBLL.findFitParkZoneDetailInParkMater(ThroughParkZoneDetailOfNearest.PARK_ZONE_ID);
-
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                            Data: $"find park zone success, create transfer command start in isThroughParkZone vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
-                            VehicleID: vh.VEHICLE_ID,
-                            CarrierID: vh.CST_ID);
-                            isSuccess &= scApp.CMDBLL.doCreatTransferCommand(findParkOfvh.VEHICLE_ID
-                                                          , string.Empty
-                                                          , string.Empty
-                                                          , E_CMD_TYPE.Move_Park
-                                                          , vh.CUR_ADR_ID
-                                                          , bestParkDetailTemp.ADR_ID, 0, 0);
-
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                            Data: $"find park zone success, create transfer command end in isThroughParkZone vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
-                            VehicleID: vh.VEHICLE_ID,
-                            CarrierID: vh.CST_ID);
-
-                            findParkOfvh = getVehicleByID(ThroughParkZoneDetailOfNearest.CAR_ID);
-                            if (!SCUtility.isEmpty(findParkOfvh.OHTC_CMD))
-                            {
-                                return;
-                            }
-                            //isSuccess = scApp.CMDBLL.doSendTransferCommand(ThroughParkZoneOfNearest.CAR_ID
-                            //   , string.Empty
-                            //   , string.Empty
-                            //   , E_CMD_TYPE.Move_Pack
-                            //   , vh.CUR_ADR_ID
-                            //   , bestPackDetail.ADR_ID, 0, 0);
+                            return;
                         }
-                        else
+                        //isSuccess = scApp.CMDBLL.doSendTransferCommand(ThroughParkZoneOfNearest.CAR_ID
+                        //   , string.Empty
+                        //   , string.Empty
+                        //   , E_CMD_TYPE.Move_Pack
+                        //   , vh.CUR_ADR_ID
+                        //   , bestPackDetail.ADR_ID, 0, 0);
+                    }
+                    else
+                    {
+
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"find park zone success, create transfer command start. vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
+                        VehicleID: vh.VEHICLE_ID,
+                        CarrierID: vh.CST_ID);
+
+                        isSuccess &= scApp.CMDBLL.doCreatTransferCommand(findParkOfvh.VEHICLE_ID
+                                                       , string.Empty
+                                                       , string.Empty
+                                                       , E_CMD_TYPE.Move_Park
+                                                       , vh.CUR_ADR_ID
+                                                       , bestParkDetail.ADR_ID, 0, 0);
+
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"find park zone success, create transfer command end. vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
+                        VehicleID: vh.VEHICLE_ID,
+                        CarrierID: vh.CST_ID);
+
+                        if (isSuccess)
                         {
-
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                            Data: $"find park zone success, create transfer command start. vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
-                            VehicleID: vh.VEHICLE_ID,
-                            CarrierID: vh.CST_ID);
-
-                            isSuccess &= scApp.CMDBLL.doCreatTransferCommand(findParkOfvh.VEHICLE_ID
-                                                           , string.Empty
-                                                           , string.Empty
-                                                           , E_CMD_TYPE.Move_Park
-                                                           , vh.CUR_ADR_ID
-                                                           , bestParkDetail.ADR_ID, 0, 0);
-
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                            Data: $"find park zone success, create transfer command end. vh id:{vh.VEHICLE_ID} park result:{parkResult} ",
-                            VehicleID: vh.VEHICLE_ID,
-                            CarrierID: vh.CST_ID);
-
-                            if (isSuccess)
-                            {
-                                scApp.ParkBLL.tryAdjustTheVhParkingPositionByParkZoneAndPrio(bestParkDetail);
-                            }
+                            scApp.ParkBLL.tryAdjustTheVhParkingPositionByParkZoneAndPrio(bestParkDetail);
                         }
                     }
-                    while (isThroughParkZone &&
-                           search_through_count++ < MAX_SEARCH_THROUGH_PARK_ZONE_TIMES);
                 }
-                else
+                while (isThroughParkZone &&
+                       search_through_count++ < MAX_SEARCH_THROUGH_PARK_ZONE_TIMES);
+            }
+            else
+            {
+                if (parkResult == ParkBLL.FindParkResult.HasParkZoneNoFindRoute)
                 {
-                    if (parkResult == ParkBLL.FindParkResult.HasParkZoneNoFindRoute)
-                    {
-                        bcf.App.BCFApplication.onWarningMsg($"{vh.VEHICLE_ID} try find the park zone. but not route can pass.");
-                    }
-                    //ACYCLEZONEMASTER bestCycleZone = null;
-                    //if (scApp.CycleBLL.tryFindCycleZone(vh, out bestCycleZone))
-                    //{
-                    //    isSuccess = scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID
-                    //                                    , string.Empty
-                    //                                    , string.Empty
-                    //                                    , E_CMD_TYPE.Round
-                    //                                    , vh.CUR_ADR_ID
-                    //                                    , bestCycleZone.ENTRY_ADR_ID, 0, 0);
-                    //}
+                    bcf.App.BCFApplication.onWarningMsg($"{vh.VEHICLE_ID} try find the park zone. but not route can pass.");
                 }
-            });
-            return isSuccess;
+                //ACYCLEZONEMASTER bestCycleZone = null;
+                //if (scApp.CycleBLL.tryFindCycleZone(vh, out bestCycleZone))
+                //{
+                //    isSuccess = scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID
+                //                                    , string.Empty
+                //                                    , string.Empty
+                //                                    , E_CMD_TYPE.Round
+                //                                    , vh.CUR_ADR_ID
+                //                                    , bestCycleZone.ENTRY_ADR_ID, 0, 0);
+                //}
+            }
+            //});
         }
 
         public bool callVehicleToMove(AVEHICLE vh, string to_adr)
@@ -2202,7 +2221,12 @@ namespace com.mirle.ibg3k0.sc.BLL
             whenVhObstacle(obstacleVhID, "");
         }
 
-
+        public enum FindTheParkZoneTheWay
+        {
+            IsOnParkZone,
+            NotOnParkZone
+        }
+        const string BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE = "FIND_THE_PARK_ZONE";
         public void whenVhObstacle(string obstacleVhID, string blockedVhID)
         {
             AVEHICLE obstacleVh = scApp.VehicleBLL.getVehicleByID(obstacleVhID);
@@ -2221,28 +2245,39 @@ namespace com.mirle.ibg3k0.sc.BLL
                     int finial_index = bloccked_vh.WillPassSectionID.Count + 1;
                     if (index > 0 && (finial_index - index) > 3)
                     {
-                        FindParkZoneOrCycleRunZoneNew(obstacleVh);
+                        //FindParkZoneOrCycleRunZoneNew(obstacleVh);
+                        var workItem1 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, obstacleVh, FindTheParkZoneTheWay.NotOnParkZone);
+                        scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem1);
                         return;
                     }
                 }
                 if (obstacleVh.IS_PARKING &&
                     !SCUtility.isEmpty(obstacleVh.PARK_ADR_ID))
                 {
-                    List<ACMD_OHTC> aCMD_OHTCs = new List<ACMD_OHTC>();
-                    //scApp.VehicleBLL.FindParkZoneOrCycleRunZoneForDriveAway(obstacleVh, ref aCMD_OHTCs);
-                    FindParkZoneOrCycleRunZoneForDriveAway(obstacleVh, ref aCMD_OHTCs);
-                    aCMD_OHTCs.Reverse();
-                    foreach (var cmd in aCMD_OHTCs)
-                    {
-                        scApp.CMDBLL.doCreatTransferCommand
-                            (cmd.VH_ID, cmd.CMD_ID_MCS, cmd.CARRIER_ID, cmd.CMD_TPYE, cmd.SOURCE, cmd.DESTINATION, cmd.PRIORITY, cmd.ESTIMATED_TIME);
-                    }
+                    //ExcuteAndFindParkZoneForDriveAway(obstacleVh);
+                    var workItem2 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, obstacleVh, FindTheParkZoneTheWay.IsOnParkZone);
+                    scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem2);
                 }
                 else
                 {
-                    FindParkZoneOrCycleRunZoneNew(obstacleVh);
-
+                    //FindParkZoneOrCycleRunZoneNew(obstacleVh);
+                    var workItem3 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, obstacleVh, FindTheParkZoneTheWay.NotOnParkZone);
+                    scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem3);
                 }
+            }
+        }
+
+        public void ExcuteAndFindParkZoneForDriveAway(AVEHICLE obstacleVh)
+        {
+            List<ACMD_OHTC> aCMD_OHTCs = new List<ACMD_OHTC>();
+            //scApp.VehicleBLL.FindParkZoneOrCycleRunZoneForDriveAway(obstacleVh, ref aCMD_OHTCs);
+            int count = 0;
+            FindParkZoneOrCycleRunZoneForDriveAway(obstacleVh, ref aCMD_OHTCs, ref count);
+            aCMD_OHTCs.Reverse();
+            foreach (var cmd in aCMD_OHTCs)
+            {
+                scApp.CMDBLL.doCreatTransferCommand
+                    (cmd.VH_ID, cmd.CMD_ID_MCS, cmd.CARRIER_ID, cmd.CMD_TPYE, cmd.SOURCE, cmd.DESTINATION, cmd.PRIORITY, cmd.ESTIMATED_TIME);
             }
         }
 

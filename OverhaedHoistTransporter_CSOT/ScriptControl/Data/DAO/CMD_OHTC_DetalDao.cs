@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-
+using Z.EntityFramework.Plus;
 namespace com.mirle.ibg3k0.sc.Data.DAO
 {
     public class CMD_OHTC_DetailDao
@@ -15,8 +15,9 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
         }
         public void AddByBatch(DBConnection_EF con, List<ACMD_OHTC_DETAIL> cmd_ohtcs)
         {
-            con.ACMD_OHTC_DETAIL.AddRange(cmd_ohtcs);
-            con.SaveChanges();
+            //con.ACMD_OHTC_DETAIL.AddRange(cmd_ohtcs);
+            //con.SaveChanges();
+            con.BulkInsert(cmd_ohtcs);
         }
 
 

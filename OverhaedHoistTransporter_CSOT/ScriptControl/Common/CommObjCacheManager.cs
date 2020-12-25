@@ -79,6 +79,8 @@ namespace com.mirle.ibg3k0.sc.Common
             BlockZoneMasters = scApp.MapBLL.loadAllBlockZoneMaster();
             ParkZoneDetails = scApp.ParkBLL.LoadAllParkZoneDetails();
             ParkZoneMasters = scApp.ParkBLL.LoadAllParkZoneMaster();
+            ParkZoneDetails.ForEach(detail => SCUtility.TrimAllParameter(detail));
+            ParkZoneMasters.ForEach(master => SCUtility.TrimAllParameter(master));
             foreach (ASEGMENT segment in Segments)
             {
                 segment.SetSectionList(scApp.SectionBLL);
@@ -87,6 +89,10 @@ namespace com.mirle.ibg3k0.sc.Common
             foreach (ABLOCKZONEMASTER block_zone_master in BlockZoneMasters)
             {
                 block_zone_master.SetBlockDetailList(scApp.MapBLL);
+            }
+            foreach (var park_zone_master in ParkZoneMasters)
+            {
+                park_zone_master.setParkDetails(ParkZoneDetails);
             }
             CommonInfo = new CommonInfo();
 

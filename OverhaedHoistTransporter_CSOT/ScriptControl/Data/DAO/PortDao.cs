@@ -20,6 +20,7 @@ using com.mirle.ibg3k0.bcf.Common;
 using com.mirle.ibg3k0.bcf.Data;
 using com.mirle.ibg3k0.sc.Data.VO;
 using NLog;
+using Z.EntityFramework.Plus;
 
 namespace com.mirle.ibg3k0.sc.Data.DAO
 {
@@ -136,7 +137,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
             var query = from port in con.APORTSTATION
                         where port.PORT_ID == port_id.Trim()
                         select port;
-            return query.SingleOrDefault();
+            return query.FromCache(DateTime.Now.AddMinutes(1)).SingleOrDefault();
         }
 
         public APORTSTATION getByAdrID(DBConnection_EF con, String adr_id)

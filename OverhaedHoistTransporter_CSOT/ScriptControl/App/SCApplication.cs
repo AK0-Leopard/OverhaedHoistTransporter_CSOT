@@ -629,6 +629,7 @@ namespace com.mirle.ibg3k0.sc.App
         public BackgroundWorkDriver BackgroundWorkSample { get; private set; }              //A0.03
         public BackgroundWorkDriver BackgroundWorkBlockQueue { get; private set; } //A0.01
         public BackgroundWorkDriver BackgroundWorkProcVehiclePosition { get; private set; }              //A0.03
+        public BackgroundWorkDriver BackgroundWorkProcFindTheParkZone { get; private set; }              //A0.03
 
         public IScheduler Scheduler { get; private set; }
 
@@ -802,7 +803,7 @@ namespace com.mirle.ibg3k0.sc.App
             //bool importMapFlag = routeGuideOld.ImportMap();
 
             routeGuide = new GuideNew();
-            routeGuide.start(this,1,1);
+            routeGuide.start(this, 1, 1);
 
             initBackgroundWork();               //A0.03
             initScheduler();
@@ -1118,6 +1119,7 @@ namespace com.mirle.ibg3k0.sc.App
             BackgroundWorkSample = new BackgroundWorkDriver(new BackgroundWorkSample());            //A0.03
             BackgroundWorkBlockQueue = new BackgroundWorkDriver(new BackgroundWorkBlockQueue());            //A0.01
             BackgroundWorkProcVehiclePosition = new BackgroundWorkDriver(new BackgroundWorkProcVehiclePosition());            //A0.01
+            BackgroundWorkProcFindTheParkZone = new BackgroundWorkDriver(new BackgroundWorkProcFindTheParkZone());            //A0.01
         }
         private void initScheduler()
         {
