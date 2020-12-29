@@ -1133,17 +1133,38 @@ namespace com.mirle.ibg3k0.sc.BLL
                                                     Where(vh => vh.ACT_STATUS == ProtocolFormat.OHTMessage.VHActionStatus.NoCommand).
                                                     Select(vh => SCUtility.Trim(vh.CUR_ADR_ID, true));
                 //2.取得目前準備前往目的地車子
-                var will_go_to_cmd = scApp.getEQObjCacheManager().getLine().CurrentExcuteOHTCCommands.
-                                          Where(cmd => cmd.CMD_TPYE == E_CMD_TYPE.Move || cmd.CMD_TPYE == E_CMD_TYPE.Move_Park).
-                                          Select(cmd => SCUtility.Trim(cmd.DESTINATION, true));
+                //var will_go_to_cmd = scApp.getEQObjCacheManager().getLine().CurrentExcuteOHTCCommands.
+                //                          Where(cmd => cmd.CMD_TPYE == E_CMD_TYPE.Move || cmd.CMD_TPYE == E_CMD_TYPE.Move_Park).
+                //                          Select(cmd => SCUtility.Trim(cmd.DESTINATION, true));
+                //2.取得目前準備前往目的地車子
+                var will_go_to_cmd = scApp.CMDBLL.loadUnfinishCMD_OHT().
+                                           Where(cmd => cmd.CMD_TPYE == E_CMD_TYPE.Move || cmd.CMD_TPYE == E_CMD_TYPE.Move_Park).
+                                           Select(cmd => SCUtility.Trim(cmd.DESTINATION, true));
 
                 foreach (var master in park_masters.ToList())
                 {
-                    var can_park_adrs = master.loadParkAddresses();
-                    can_park_adrs = can_park_adrs.Except(idle_vhs_adr);
-                    can_park_adrs = can_park_adrs.Except(will_go_to_cmd);
-                    if (can_park_adrs.Count() == 0)
+                    int total_parking_adr_count = master.ParkingSpaceCount;
+                    var parking_addresses = master.loadParkAddresses();
+
+                    int has_parked_adr_count = parking_addresses.Intersect(idle_vhs_adr).Count();
+
+
+                    int wiil_go_this_parking_zone_cmd_count = 0;
+                    foreach (string adr in parking_addresses)
+                    {
+                        wiil_go_this_parking_zone_cmd_count += will_go_to_cmd.Where(a => SCUtility.isMatche(adr, a)).Count();
+                    }
+
+                    int can_parking_adr = total_parking_adr_count - has_parked_adr_count - wiil_go_this_parking_zone_cmd_count;
+
+                    if (can_parking_adr <= 0)
                         park_masters.Remove(master);
+
+                    //var can_park_adrs = master.loadParkAddresses();
+                    //can_park_adrs = can_park_adrs.Except(idle_vhs_adr);
+                    //can_park_adrs = can_park_adrs.Except(will_go_to_cmd);
+                    //if (can_park_adrs.Count() == 0)
+                    //    park_masters.Remove(master);
                 }
 
                 return park_masters;
@@ -1251,9 +1272,12 @@ namespace com.mirle.ibg3k0.sc.BLL
                                                           FirstOrDefault();
                 var park_detail_addresses = park_master.loadParkAddresses();
                 //2.取得目前準備前往目的地車子
-                var will_go_to_cmd = scApp.getEQObjCacheManager().getLine().CurrentExcuteOHTCCommands.
-                                          Where(cmd => park_detail_addresses.Contains(SCUtility.Trim(cmd.SOURCE, true)) ||
-                                                       park_detail_addresses.Contains(SCUtility.Trim(cmd.DESTINATION, true)));
+                //var will_go_to_cmd = scApp.getEQObjCacheManager().getLine().CurrentExcuteOHTCCommands.
+                //                          Where(cmd => park_detail_addresses.Contains(SCUtility.Trim(cmd.SOURCE, true)) ||
+                //                                       park_detail_addresses.Contains(SCUtility.Trim(cmd.DESTINATION, true)));
+                var will_go_to_cmd = scApp.CMDBLL.loadUnfinishCMD_OHT().
+                                                  Where(cmd => park_detail_addresses.Contains(SCUtility.Trim(cmd.SOURCE, true)) ||
+                                                  park_detail_addresses.Contains(SCUtility.Trim(cmd.DESTINATION, true)));
                 return (will_go_to_cmd.Count() > 0);
             }
 

@@ -57,16 +57,16 @@ namespace RouteKit
 
         }
 
-        private void Build(List<ASECTION> sections,List<ASEGMENT> segments, double moveCostForward, double moveCostReverse)
+        private void Build(List<ASECTION> sections, List<ASEGMENT> segments, double moveCostForward, double moveCostReverse)
         {
             sectionList = readDataForSectionList(sections, moveCostForward, moveCostReverse);
             initialIndexDic(sectionList);
             n = addressIndexDic.Count;
             createInterCostList(sectionList);
 
-            foreach(ASEGMENT seg in segments)
+            foreach (ASEGMENT seg in segments)
             {
-                if(seg.STATUS != E_SEG_STATUS.Active)
+                if (seg.STATUS != E_SEG_STATUS.Active)
                 {
                     foreach (mySection sec in sectionList)
                     {
@@ -82,7 +82,7 @@ namespace RouteKit
             initGraph();
         }
 
-        public void start(SCApplication scApp, 
+        public void start(SCApplication scApp,
             double moveCostForward, double moveCostReverse)
         {
             this.scApp = scApp;
@@ -147,7 +147,7 @@ namespace RouteKit
                 mySection section = new mySection(section_id, address_1, address_2, moveCost_1, moveCost_2,
                     string.Empty, 0, string.Empty, 0, string.Empty, 0,
                     string.Empty, 0, string.Empty, 0, string.Empty, 0,
-                    isBanEnd_From2To, isBanEnd_To2From, direct,sec.SEG_NUM);
+                    isBanEnd_From2To, isBanEnd_To2From, direct, sec.SEG_NUM);
                 sectionList.Add(section);
 
             }
@@ -185,23 +185,23 @@ namespace RouteKit
                 endAdr = endAdr.ToUpper();
                 int iStartAdr = 0;
                 int iEndAdr = 0;
-                if (!int.TryParse(startAdr, out iStartAdr)|| !int.TryParse(endAdr, out iEndAdr)) 
+                if (!int.TryParse(startAdr, out iStartAdr) || !int.TryParse(endAdr, out iEndAdr))
                 {
                     return returnArray;
                 }
-                
+
                 StringBuilder sb = scApp.stringBuilder.GetObject();
                 try
                 {
                     //List<RouteInfo> routeInfos = getFromToRoutesAddrToAddr(iStartAdr, iEndAdr, isIgnoreStatus);
                     List<RouteInfo> routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus);
-                    
+
                     #region buildMinRoute
                     if (routeInfos.Count > 0 && routeInfos[0].sections[0] != null)
                     {
                         for (int i = 0; i < routeInfos[0].sections.Count; i++)
                         {
-                            if (i != routeInfos[0].sections.Count -1)
+                            if (i != routeInfos[0].sections.Count - 1)
                             {
                                 sb.Append(routeInfos[0].sections[i].section_id);
                                 sb.Append(",");
@@ -231,7 +231,7 @@ namespace RouteKit
                         {
                             for (int i = 0; i < ri.sections.Count; i++)
                             {
-                                if (i != ri.sections.Count-1)
+                                if (i != ri.sections.Count - 1)
                                 {
                                     sb.Append(ri.sections[i].section_id);
                                     sb.Append(",");
@@ -320,7 +320,7 @@ namespace RouteKit
                         }
                         else
                         {
-                            for (int i = 0; i < routeInfos[0].sections.Count-1; i++)
+                            for (int i = 0; i < routeInfos[0].sections.Count - 1; i++)
                             {
                                 if (i != routeInfos[0].sections.Count - 2)
                                 {
@@ -374,7 +374,7 @@ namespace RouteKit
                             }
                             else
                             {
-                                for (int i = 0; i < ri.sections.Count-1; i++)
+                                for (int i = 0; i < ri.sections.Count - 1; i++)
                                 {
                                     if (i != ri.sections.Count - 2)
                                     {
@@ -443,7 +443,7 @@ namespace RouteKit
                 if (needFirstSec)
                 {
                     ASEGMENT seg = scApp.SegmentBLL.cache.GetSegment(fromSection.SEG_NUM);
-                     if(seg.STATUS!= E_SEG_STATUS.Active)
+                    if (seg.STATUS != E_SEG_STATUS.Active)
                     {
                         return returnArray;
                     }
@@ -466,7 +466,7 @@ namespace RouteKit
                     }
                     else if (needFirstSec)
                     {
-                        
+
                         //routeInfos = getFromToRoutesAddrToAddr(iStartAdr, iEndAdr, isIgnoreStatus);
                         routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus);
                         foreach (RouteInfo ri in routeInfos)
@@ -835,9 +835,9 @@ namespace RouteKit
             }
         }
 
-        public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr,bool isIgnoreStatus)//M0.06
+        public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, bool isIgnoreStatus)//M0.06
         {
-            
+
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
@@ -1092,7 +1092,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
         //        }
         //        return routeList;
         //        #endregion Dijkstra
-            
+
         //}
         public void dijkstra(int[,] graph, int index_from, int index_to, out int[] dist, out int[] previous)
         {
@@ -1171,7 +1171,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
             {
                 seg_do = scApp.MapBLL.EnableSegment(strSegCode);
 
-                foreach(mySection sec in sectionList)
+                foreach (mySection sec in sectionList)
                 {
                     if (sec.seg_num == strSegCode)
                     {
@@ -1707,7 +1707,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
             }
         }
 
-    
+
 
 
 
@@ -1936,7 +1936,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
             string changeSec_1, int interCost_1, string changeSec_2, int interCost_2,
             string changeSec_3, int interCost_3, string changeSec_4, int interCost_4,
             string changeSec_5, int interCost_5, string changeSec_6, int interCost_6,
-            bool _isBanEnd_From2To, bool _isBanEnd_To2From, int direct,string seg_num)
+            bool _isBanEnd_From2To, bool _isBanEnd_To2From, int direct, string seg_num)
         {
             this.section_id = section_id;
             int.TryParse(this.section_id, out isection_id);

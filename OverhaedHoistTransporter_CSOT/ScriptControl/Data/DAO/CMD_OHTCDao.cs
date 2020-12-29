@@ -3,30 +3,38 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using Z.EntityFramework.Plus;
 
 namespace com.mirle.ibg3k0.sc.Data.DAO
 {
     public class CMD_OHTCDao
     {
+        public const string EXPIRE_TAG_NON_FINISH_OHTC_CMD = "EXPIRE_TAG_NON_FINISH_OHTC_CMD";
         public void add(DBConnection_EF con, ACMD_OHTC blockObj)
         {
             con.ACMD_OHTC.Add(blockObj);
             con.SaveChanges();
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
+
         }
         public void RemoteByBatch(DBConnection_EF con, List<ACMD_OHTC> cmd_mcss)
         {
             cmd_mcss.ForEach(entity => con.Entry(entity).State = EntityState.Deleted);
             con.ACMD_OHTC.RemoveRange(cmd_mcss);
             con.SaveChanges();
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
+
         }
 
         public void Update(DBConnection_EF con, ACMD_OHTC cmd)
         {
             con.SaveChanges();
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
         }
         public void Update(DBConnection_EF con, List<ACMD_OHTC> cmds)
         {
             con.SaveChanges();
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
         }
 
         public IQueryable getQueryAllSQL(DBConnection_EF con)
@@ -86,7 +94,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
             var query = from cmd in con.ACMD_OHTC
                         where cmd.CMD_STAUS < E_CMD_STATUS.NormalEnd
                         select cmd;
-            return query.ToList();
+            return query.FromCache(EXPIRE_TAG_NON_FINISH_OHTC_CMD).ToList();
         }
 
 

@@ -1904,12 +1904,12 @@ namespace com.mirle.ibg3k0.sc.BLL
                     if (scApp.getEQObjCacheManager().getLine().ServiceMode
                         != SCAppConstants.AppServiceMode.Active)
                         return;
-                    List<ACMD_OHTC> unfinish_ohtc_cmd = scApp.CMDBLL.loadUnfinishCMD_OHT();
-                    ALINE line = scApp.getEQObjCacheManager().getLine();
-                    line.CurrentExcuteOHTCCommands = unfinish_ohtc_cmd;
+                    //List<ACMD_OHTC> unfinish_ohtc_cmd = scApp.CMDBLL.loadUnfinishCMD_OHT();
+                    //ALINE line = scApp.getEQObjCacheManager().getLine();
+                    //line.CurrentExcuteOHTCCommands = unfinish_ohtc_cmd;
 
-                    //List<ACMD_OHTC> CMD_OHTC_Queues = scApp.CMDBLL.loadCMD_OHTCMDStatusIsQueue();
-                    List<ACMD_OHTC> CMD_OHTC_Queues = unfinish_ohtc_cmd.Where(cmd => cmd.CMD_STAUS == E_CMD_STATUS.Queue).ToList();
+                    List<ACMD_OHTC> CMD_OHTC_Queues = scApp.CMDBLL.loadCMD_OHTCMDStatusIsQueue();
+                    //List<ACMD_OHTC> CMD_OHTC_Queues = unfinish_ohtc_cmd.Where(cmd => cmd.CMD_STAUS == E_CMD_STATUS.Queue).ToList();
                     if (CMD_OHTC_Queues == null || CMD_OHTC_Queues.Count == 0)
                         return;
                     foreach (ACMD_OHTC cmd in CMD_OHTC_Queues)

@@ -37,5 +37,13 @@ namespace com.mirle.ibg3k0.sc
                 return new List<string>();
             return ParkDetails.Select(park_detail => SCUtility.Trim(park_detail.ADR_ID));
         }
+        public int ParkingSpaceCount
+        {
+            get
+            {
+                return ParkDetails == null ? 0 : ParkDetails.Count;
+            }
+        }
+
     }
 }
