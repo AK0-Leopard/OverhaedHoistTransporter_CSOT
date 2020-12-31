@@ -320,6 +320,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
 
         #region Proc
         string event_id = string.Empty;
+        bool positionUpdateFlag = false;
         private void registerEvent()
         {
             event_id = this.Name + Num;
@@ -338,6 +339,10 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
                                 , nameof(vh.VhPositionChangeEvent)
                                 , (s1, e1) =>
                                 {
+                                    positionUpdateFlag = !positionUpdateFlag;
+                                    if (!positionUpdateFlag)
+                                        return;
+
                                     updateVehiclePosition();
                                     //Task.Run(() => updateVehiclePositionNew());
                                     //updateVehiclePositionNew();

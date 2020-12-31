@@ -274,12 +274,15 @@ namespace com.mirle.ibg3k0.sc.BLL
 
 
                     //string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchRoute
-                    KeyValuePair<string[], double> route_distance;
+                    //KeyValuePair<string[], double> route_distance;
+                    double route_distance;
 
                     if (scApp.RouteGuide.checkRoadIsWalkable(vh_current_adr, park_zone_master.ENTRY_ADR_ID, out route_distance))
                     {
+                        //lstParkZoneMasterAndDis.Add
+                        //    (new KeyValuePair<APARKZONEMASTER, double>(park_zone_master, route_distance.Value));
                         lstParkZoneMasterAndDis.Add
-                            (new KeyValuePair<APARKZONEMASTER, double>(park_zone_master, route_distance.Value));
+                            (new KeyValuePair<APARKZONEMASTER, double>(park_zone_master, route_distance));
                     }
 
 
@@ -366,7 +369,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                     //List<KeyValuePair<APARKZONEMASTER, double>> lstParkZoneMasterAndDis = new List<KeyValuePair<APARKZONEMASTER, double>>();
                     foreach (APARKZONEDETAIL detail in details)
                     {
-                        KeyValuePair<string[], double> route_distance;
+                        //KeyValuePair<string[], double> route_distance;
+                        double route_distance;
 
                         if (SCUtility.isMatche(detail.ADR_ID, vh_current_adr))
                         {
@@ -378,8 +382,10 @@ namespace com.mirle.ibg3k0.sc.BLL
 
                         if (scApp.RouteGuide.checkRoadIsWalkable(vh_current_adr, detail.ADR_ID, out route_distance))
                         {
+                            //lstParkZoneDetailAndDis.Add
+                            //    (new KeyValuePair<APARKZONEDETAIL, double>(detail, route_distance.Value));
                             lstParkZoneDetailAndDis.Add
-                                (new KeyValuePair<APARKZONEDETAIL, double>(detail, route_distance.Value));
+                                (new KeyValuePair<APARKZONEDETAIL, double>(detail, route_distance));
                         }
                     }
 
@@ -906,11 +912,14 @@ namespace com.mirle.ibg3k0.sc.BLL
                             continue;
                         }
 
-                        KeyValuePair<string[], double> route_distance;
+                        //KeyValuePair<string[], double> route_distance;
+                        double route_distance;
                         if (scApp.RouteGuide.checkRoadIsWalkable(zoneMasterTemp.ENTRY_ADR_ID, not_enough_zone.ENTRY_ADR_ID, out route_distance))
                         {
+                            //lstParkDetailAndDis.Add
+                            //    (new KeyValuePair<List<APARKZONEDETAIL>, double>(lastDetail, route_distance.Value));
                             lstParkDetailAndDis.Add
-                                (new KeyValuePair<List<APARKZONEDETAIL>, double>(lastDetail, route_distance.Value));
+                                (new KeyValuePair<List<APARKZONEDETAIL>, double>(lastDetail, route_distance));
                         }
                         //string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
                         //    (zoneMasterTemp.ENTRY_ADR_ID, not_enough_zone.ENTRY_ADR_ID, 1);

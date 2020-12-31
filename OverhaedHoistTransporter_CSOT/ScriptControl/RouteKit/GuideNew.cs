@@ -16,6 +16,7 @@ using com.mirle.ibg3k0.sc.Common;
 using com.mirle.ibg3k0.sc.Data;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -630,10 +631,23 @@ namespace RouteKit
 
             }
 
-
         }
 
+        private ConcurrentDictionary<string, GuideQuickSearch> dicGuideQuickSearch =
+         new ConcurrentDictionary<string, GuideQuickSearch>();
+        private ConcurrentDictionary<string, GuideQuickSearch> dicGuideQuickSearchForMCS =
+         new ConcurrentDictionary<string, GuideQuickSearch>();
 
+        public class GuideQuickSearch
+        {
+            public bool isWalker;
+            public double totalCost;
+            public GuideQuickSearch(bool _isWalker, double _totalCost)
+            {
+                isWalker = _isWalker;
+                totalCost = _totalCost;
+            }
+        }
 
         public bool checkRoadIsWalkable(string from_adr, string to_adr)
         {
@@ -642,96 +656,117 @@ namespace RouteKit
 
         public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand)
         {
-            KeyValuePair<string[], double> route_distance;
+            //KeyValuePair<string[], double> route_distance;
+            double route_distance;
             return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out route_distance);
         }
-
-
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance)
+        //public bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance)
         {
             return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance);
         }
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        //public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
         {
-            route_distance = default(KeyValuePair<string[], double>);
-
-            string[] route = DownstreamSearchSection
-                                 (from_adr, to_adr, 1);
-            if (SCUtility.isEmpty(route[0]))
+            //route_distance = double.MaxValue;
+            string key = $"{SCUtility.Trim(from_adr, true)},{SCUtility.Trim(to_adr, true)}";
+            bool is_exist = dicGuideQuickSearch.TryGetValue(key, out GuideQuickSearch guideQuickSearch);
+            if (isMaintainDeviceCommand != true && is_exist)
             {
-                return false;
+                route_distance = guideQuickSearch.totalCost;
+                //DebugParameter.GuideQuickSearchTimes++;
+                return guideQuickSearch.isWalker;
             }
-            string[] AllRoute = route[1].Split(';');
-            List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
-            bool isWalkable = false;
-
-            //判斷找出來的路徑是否有經過MaintainDevice的，有的話要將他過濾掉
-            if (!isMaintainDeviceCommand)
+            else
             {
-                foreach (var routeDetial in routeDetailAndDistance.ToList())
+
+                string[] route = DownstreamSearchSection
+                                     (from_adr, to_adr, 1);
+                if (SCUtility.isEmpty(route[0]))
                 {
-                    List<string> maintain_device_ids = scApp.EquipmentBLL.cache.GetAllMaintainDeviceSegments();
-                    List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
-                    string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
-                    bool is_include_maintain_device_segment = secOfSegments.Where(seg => maintain_device_ids.Contains(seg)).Count() != 0;
-                    if (is_include_maintain_device_segment)
-                    {
-                        routeDetailAndDistance.Remove(routeDetial);
-                    }
+                    route_distance = double.MaxValue;
+                    return false;
                 }
-            }
+                string[] AllRoute = route[1].Split(';');
+                List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
+                bool isWalkable = false;
 
-            //判斷將要走過的路上是否有故障車 A0.02
-            foreach (var routeDetial in routeDetailAndDistance.ToList())
-            {
-                List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
-                List<AVEHICLE> vhs = scApp.VehicleBLL.loadAllErrorVehicle();
-                foreach (AVEHICLE vh in vhs)
+                //判斷找出來的路徑是否有經過MaintainDevice的，有的話要將他過濾掉
+                if (!isMaintainDeviceCommand)
                 {
-                    bool IsErrorVhOnPassSection = lstSec.Where(sec => sec.SEC_ID.Trim() == vh.CUR_SEC_ID.Trim()).Count() > 0;
-                    if (IsErrorVhOnPassSection)
+                    foreach (var routeDetial in routeDetailAndDistance.ToList())
                     {
-                        routeDetailAndDistance.Remove(routeDetial);
-                        if (routeDetailAndDistance.Count == 0)
+                        List<string> maintain_device_ids = scApp.EquipmentBLL.cache.GetAllMaintainDeviceSegments();
+                        List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
+                        string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
+                        bool is_include_maintain_device_segment = secOfSegments.Where(seg => maintain_device_ids.Contains(seg)).Count() != 0;
+                        if (is_include_maintain_device_segment)
                         {
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(GuideNew), Device: "OHT",
-                               Data: $"Can't find the way on check road is walkable.Because block by error vehicle [{vh.VEHICLE_ID}] on sec [{vh.CUR_SEC_ID}]");
+                            routeDetailAndDistance.Remove(routeDetial);
                         }
                     }
                 }
-            }
 
-            //判斷是否有路徑是被Disable或是Pre disable
-            if (scApp.getEQObjCacheManager().getLine().SegmentPreDisableExcuting)
-            {
-                List<string> nonActiveSeg = scApp.MapBLL.loadNonActiveSegmentNum();
-                //string[] AllRoute = route[1].Split(';');
-                //List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
+                //判斷將要走過的路上是否有故障車 A0.02
                 foreach (var routeDetial in routeDetailAndDistance.ToList())
                 {
                     List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
-                    string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
-                    bool isIncludePassSeg = secOfSegments.Where(seg => nonActiveSeg.Contains(seg)).Count() != 0;
-                    if (isIncludePassSeg)
+                    List<AVEHICLE> vhs = scApp.VehicleBLL.loadAllErrorVehicle();
+                    foreach (AVEHICLE vh in vhs)
                     {
-                        routeDetailAndDistance.Remove(routeDetial);
+                        bool IsErrorVhOnPassSection = lstSec.Where(sec => sec.SEC_ID.Trim() == vh.CUR_SEC_ID.Trim()).Count() > 0;
+                        if (IsErrorVhOnPassSection)
+                        {
+                            routeDetailAndDistance.Remove(routeDetial);
+                            if (routeDetailAndDistance.Count == 0)
+                            {
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(GuideNew), Device: "OHT",
+                                   Data: $"Can't find the way on check road is walkable.Because block by error vehicle [{vh.VEHICLE_ID}] on sec [{vh.CUR_SEC_ID}]");
+                            }
+                        }
                     }
                 }
+
+                //判斷是否有路徑是被Disable或是Pre disable
+                if (scApp.getEQObjCacheManager().getLine().SegmentPreDisableExcuting)
+                {
+                    List<string> nonActiveSeg = scApp.MapBLL.loadNonActiveSegmentNum();
+                    //string[] AllRoute = route[1].Split(';');
+                    //List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
+                    foreach (var routeDetial in routeDetailAndDistance.ToList())
+                    {
+                        List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
+                        string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
+                        bool isIncludePassSeg = secOfSegments.Where(seg => nonActiveSeg.Contains(seg)).Count() != 0;
+                        if (isIncludePassSeg)
+                        {
+                            routeDetailAndDistance.Remove(routeDetial);
+                        }
+                    }
+                }
+                if (routeDetailAndDistance.Count > 0)
+                {
+                    //route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                    route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
+                    isWalkable = true;
+                    dicGuideQuickSearch.TryAdd(key, new GuideQuickSearch(isWalkable, route_distance));
+                }
+                else
+                {
+                    route_distance = double.MaxValue;
+                    isWalkable = false;
+                }
+                //else
+                //{
+                //    string[] routeSection;
+                //    double idistance;
+                //    RouteInfo2KeyValue(route[0], out routeSection, out idistance);
+                //    route_distance = new KeyValuePair<string[], double>(routeSection, idistance);
+                //    isWalkable = true;
+                //}
+
+                return isWalkable;
             }
-            if (routeDetailAndDistance.Count > 0)
-            {
-                route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
-                isWalkable = true;
-            }
-            //else
-            //{
-            //    string[] routeSection;
-            //    double idistance;
-            //    RouteInfo2KeyValue(route[0], out routeSection, out idistance);
-            //    route_distance = new KeyValuePair<string[], double>(routeSection, idistance);
-            //    isWalkable = true;
-            //}
-            return isWalkable;
         }
 
 
@@ -743,73 +778,97 @@ namespace RouteKit
 
         public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand)
         {
-            KeyValuePair<string[], double> route_distance;
+            //KeyValuePair<string[], double> route_distance;
+            double route_distance;
             return checkRoadIsWalkableForMCSCommand(from_adr, to_adr, isMaintainDeviceCommand, out route_distance);
         }
 
-        public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        //public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
         {
-            route_distance = default(KeyValuePair<string[], double>);
+            //route_distance = default(KeyValuePair<string[], double>);
+            string key = $"{SCUtility.Trim(from_adr, true)},{SCUtility.Trim(to_adr, true)}";
+            bool is_exist = dicGuideQuickSearchForMCS.TryGetValue(key, out GuideQuickSearch guideQuickSearch);
+            if (isMaintainDeviceCommand != true && is_exist)
+            {
+                route_distance = guideQuickSearch.totalCost;
+                return guideQuickSearch.isWalker;
+            }
+            else
+            {
 
-            string[] route = DownstreamSearchSection
+                string[] route = DownstreamSearchSection
                                  (from_adr, to_adr, 1);
-            if (SCUtility.isEmpty(route[0]))
-            {
-                return false;
-            }
-            string[] AllRoute = route[1].Split(';');
-            List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
-            bool isWalkable = false;
-
-            //判斷找出來的路徑是否有經過MaintainDevice的，有的話要將他過濾掉
-            if (!isMaintainDeviceCommand)
-            {
-                foreach (var routeDetial in routeDetailAndDistance.ToList())
+                if (SCUtility.isEmpty(route[0]))
                 {
-                    List<string> maintain_device_ids = scApp.EquipmentBLL.cache.GetAllMaintainDeviceSegments();
-                    List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
-                    string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
-                    bool is_include_maintain_device_segment = secOfSegments.Where(seg => maintain_device_ids.Contains(seg)).Count() != 0;
-                    if (is_include_maintain_device_segment)
+                    route_distance = double.MaxValue;
+                    return false;
+                }
+                string[] AllRoute = route[1].Split(';');
+                List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
+                bool isWalkable = false;
+
+                //判斷找出來的路徑是否有經過MaintainDevice的，有的話要將他過濾掉
+                if (!isMaintainDeviceCommand)
+                {
+                    foreach (var routeDetial in routeDetailAndDistance.ToList())
                     {
-                        routeDetailAndDistance.Remove(routeDetial);
+                        List<string> maintain_device_ids = scApp.EquipmentBLL.cache.GetAllMaintainDeviceSegments();
+                        List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
+                        string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
+                        bool is_include_maintain_device_segment = secOfSegments.Where(seg => maintain_device_ids.Contains(seg)).Count() != 0;
+                        if (is_include_maintain_device_segment)
+                        {
+                            routeDetailAndDistance.Remove(routeDetial);
+                        }
                     }
                 }
-            }
 
-            //判斷是否有路徑是被Disable或是Pre disable
-            if (scApp.getEQObjCacheManager().getLine().SegmentPreDisableExcuting)
-            {
-                List<string> nonActiveSeg = scApp.MapBLL.loadNonActiveSegmentNum();
-                //string[] AllRoute = route[1].Split(';');
-                //List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
-                foreach (var routeDetial in routeDetailAndDistance.ToList())
+                //判斷是否有路徑是被Disable或是Pre disable
+                if (scApp.getEQObjCacheManager().getLine().SegmentPreDisableExcuting)
                 {
-                    List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
-                    string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
-                    bool isIncludePassSeg = secOfSegments.Where(seg => nonActiveSeg.Contains(seg)).Count() != 0;
-                    if (isIncludePassSeg)
+                    List<string> nonActiveSeg = scApp.MapBLL.loadNonActiveSegmentNum();
+                    //string[] AllRoute = route[1].Split(';');
+                    //List<KeyValuePair<string[], double>> routeDetailAndDistance = PaserRoute2SectionsAndDistance(AllRoute);
+                    foreach (var routeDetial in routeDetailAndDistance.ToList())
                     {
-                        routeDetailAndDistance.Remove(routeDetial);
+                        List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
+                        string[] secOfSegments = lstSec.Select(s => s.SEG_NUM).Distinct().ToArray();
+                        bool isIncludePassSeg = secOfSegments.Where(seg => nonActiveSeg.Contains(seg)).Count() != 0;
+                        if (isIncludePassSeg)
+                        {
+                            routeDetailAndDistance.Remove(routeDetial);
+                        }
                     }
                 }
+                if (routeDetailAndDistance.Count > 0)
+                {
+                    //route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                    route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
+                    isWalkable = true;
+                    dicGuideQuickSearchForMCS.TryAdd(key, new GuideQuickSearch(isWalkable, route_distance));
+                }
+                else
+                {
+                    route_distance = double.MaxValue;
+                    isWalkable = false;
+                }
+                //else
+                //{
+                //    string[] routeSection;
+                //    double idistance;
+                //    RouteInfo2KeyValue(route[0], out routeSection, out idistance);
+                //    route_distance = new KeyValuePair<string[], double>(routeSection, idistance);
+                //    isWalkable = true;
+                //}
+                return isWalkable;
             }
-            if (routeDetailAndDistance.Count > 0)
-            {
-                route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
-                isWalkable = true;
-            }
-            //else
-            //{
-            //    string[] routeSection;
-            //    double idistance;
-            //    RouteInfo2KeyValue(route[0], out routeSection, out idistance);
-            //    route_distance = new KeyValuePair<string[], double>(routeSection, idistance);
-            //    isWalkable = true;
-            //}
-            return isWalkable;
         }
-
+        public void clearAllDirGuideQuickSearchInfo()
+        {
+            dicGuideQuickSearch.Clear();
+            dicGuideQuickSearchForMCS.Clear();
+        }
         private List<KeyValuePair<string[], double>> PaserRoute2SectionsAndDistance(string[] AllRoute)
         {
             List<KeyValuePair<string[], double>> routeDetailAndDistance = new List<KeyValuePair<string[], double>>();
@@ -1178,6 +1237,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
                         unbanRouteTwoDirect(sec.section_id);
                     }
                 }
+                clearAllDirGuideQuickSearchInfo();
             }
             catch (Exception ex)
             {
@@ -1202,6 +1262,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
                             unbanRouteTwoDirect(sec.section_id);
                         }
                     }
+                    clearAllDirGuideQuickSearchInfo();
                 }
             }
             catch (Exception ex)
@@ -1225,6 +1286,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
                         banRouteTwoDirect(sec.section_id);
                     }
                 }
+                clearAllDirGuideQuickSearchInfo();
             }
             catch (Exception ex)
             {
@@ -1251,6 +1313,7 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
                             banRouteTwoDirect(sec.section_id);
                         }
                     }
+                    clearAllDirGuideQuickSearchInfo();
                 }
             }
             catch (Exception ex)

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-
+using Z.EntityFramework.Plus;
 namespace com.mirle.ibg3k0.sc.Data.DAO
 {
     public class BlockZoneMasterDao
@@ -20,14 +20,14 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
             var query = from block in con.ABLOCKZONEMASTER
                         orderby block.ENTRY_SEC_ID
                         select block;
-            return query.ToList();
+            return query.FromCache().ToList();
         }
         public ABLOCKZONEMASTER getByID(DBConnection_EF con, String vh_id)
         {
             var query = from block in con.ABLOCKZONEMASTER
                         where block.ENTRY_SEC_ID == vh_id
                         select block;
-            return query.FirstOrDefault();
+            return query.FromCache().FirstOrDefault();
         }
         public ABLOCKZONEMASTER getByAdrID(DBConnection_EF con, String adr_id)
         {
@@ -35,7 +35,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         where block.LEAVE_ADR_ID_1 == adr_id
                         || block.LEAVE_ADR_ID_2 == adr_id
                         select block;
-            return query.FirstOrDefault();
+            return query.FromCache().FirstOrDefault();
         }
         public ABLOCKZONEMASTER getByIDAndAdrID(DBConnection_EF con, String sec_id, string adr_id)
         {
@@ -43,7 +43,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         where block.ENTRY_SEC_ID == sec_id
                         && (block.LEAVE_ADR_ID_1 == adr_id || block.LEAVE_ADR_ID_2 == adr_id)
                         select block;
-            return query.FirstOrDefault();
+            return query.FromCache().FirstOrDefault();
         }
 
         public List<ABLOCKZONEMASTER> loadByIDsAndAdrID(DBConnection_EF con, List<String> sec_ids, string adr_id)
@@ -52,7 +52,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         where sec_ids.Contains(block.ENTRY_SEC_ID.Trim())
                         && (block.LEAVE_ADR_ID_1 == adr_id || block.LEAVE_ADR_ID_2 == adr_id)
                         select block;
-            return query.ToList();
+            return query.FromCache().ToList();
         }
 
         public List<ABLOCKZONEMASTER> loadBZMByAdrID(DBConnection_EF con, string adr_id)
@@ -61,7 +61,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         where block.LEAVE_ADR_ID_1 == adr_id
                         || block.LEAVE_ADR_ID_2 == adr_id
                         select block;
-            return query.ToList();
+            return query.FromCache().ToList();
         }
 
     }

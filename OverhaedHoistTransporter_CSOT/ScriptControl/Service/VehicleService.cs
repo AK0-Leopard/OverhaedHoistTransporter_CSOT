@@ -4921,7 +4921,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     using (DBConnection_EF con = DBConnection_EF.GetUContext())
                     {
                         isSuccess &= scApp.CMDBLL.updateCMD_OHxC_Status2ReadyToReWirte(need_change_path_vh.OHTC_CMD, out cmd_ohtc);
-                        isSuccess &= scApp.CMDBLL.update_CMD_Detail_2AbnormalFinsh(need_change_path_vh.OHTC_CMD, need_change_path_vh.WillPassSectionID);
+                        //isSuccess &= scApp.CMDBLL.update_CMD_Detail_2AbnormalFinsh(need_change_path_vh.OHTC_CMD, need_change_path_vh.WillPassSectionID);
                         if (isSuccess)
                             tx.Complete();
                     }

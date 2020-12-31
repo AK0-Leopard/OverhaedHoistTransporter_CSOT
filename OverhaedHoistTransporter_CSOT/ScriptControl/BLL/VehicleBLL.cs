@@ -13,6 +13,8 @@
 // 2020/07/28    Mark Chou      N/A            A0.02   filterVh 加入檢查車輛的ACT_STATUS是否為NoCommand。
 // 2020/11/03    Kevin Wei      N/A            A0.03   修改更新Vh位置的方式。原本會將位置資訊丟置Redis中，再通知回來更新Cache的資料，
 //                                                     修改直接更新Cache中的資料，並取消會再去Redis拉資料回來更新的動作。
+// 2020/07/28    Kevin Wei      N/A            A0.04   取消更新OHTC_CMD_Detail相關資訊。
+
 //**********************************************************************************
 using com.mirle.ibg3k0.sc.App;
 using com.mirle.ibg3k0.sc.Common;
@@ -983,13 +985,18 @@ namespace com.mirle.ibg3k0.sc.BLL
                     break;
                 }
 
-                KeyValuePair<string[], double> route_distance;
+                //KeyValuePair<string[], double> route_distance;
+                double route_distance;
                 if (scApp.RouteGuide.checkRoadIsWalkable(vh.CUR_ADR_ID, source, out route_distance))
                 {
+                    //lstCanCarryVhAndDis.Add
+                    //    (new KeyValuePair<AVEHICLE, double>(vh, route_distance.Value));
+                    //LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                    //   Data: $"From source adr:{source}, find vh:{vh.VEHICLE_ID} current adr:{vh.CUR_ADR_ID} of distance:{route_distance.Value}");
                     lstCanCarryVhAndDis.Add
-                        (new KeyValuePair<AVEHICLE, double>(vh, route_distance.Value));
+                        (new KeyValuePair<AVEHICLE, double>(vh, route_distance));
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                       Data: $"From source adr:{source}, find vh:{vh.VEHICLE_ID} current adr:{vh.CUR_ADR_ID} of distance:{route_distance.Value}");
+                       Data: $"From source adr:{source}, find vh:{vh.VEHICLE_ID} current adr:{vh.CUR_ADR_ID} of distance:{route_distance}");
                 }
                 else
                 {
@@ -1616,7 +1623,7 @@ namespace com.mirle.ibg3k0.sc.BLL
 
         public void doLoadArrivals(string eq_id, string current_adr_id, string current_sec_id)
         {
-            scApp.CMDBLL.update_CMD_Detail_LoadStartTime(eq_id, current_adr_id, current_sec_id);
+            //A0.04 scApp.CMDBLL.update_CMD_Detail_LoadStartTime(eq_id, current_adr_id, current_sec_id);
             //scApp.VIDBLL.upDateVIDPortID(eq_id, current_adr_id);
             //mcsDefaultMapAction.sendS6F11_common(SECSConst.CEID_Vehicle_Arrived, eq_id);
 
@@ -1636,7 +1643,7 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
         public void doLoadComplete(string eq_id, string current_adr_id, string current_sec_id, string cst_id)
         {
-            scApp.CMDBLL.update_CMD_Detail_LoadEndTime(eq_id, current_adr_id, current_sec_id);
+            //A0.04 scApp.CMDBLL.update_CMD_Detail_LoadEndTime(eq_id, current_adr_id, current_sec_id);
             //updataVehicleCSTID(eq_id, cst_id);
             AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(eq_id);
             //mcsDefaultMapAction.sendS6F11_common(SECSConst.CEID_Carrier_Installed, eq_id);
@@ -1661,7 +1668,7 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
         public void doUnloadArrivals(string eq_id, string current_adr_id, string current_sec_id)
         {
-            scApp.CMDBLL.update_CMD_Detail_UnloadStartTime(eq_id, current_adr_id, current_sec_id);
+            //A0.04 scApp.CMDBLL.update_CMD_Detail_UnloadStartTime(eq_id, current_adr_id, current_sec_id);
             //scApp.VIDBLL.upDateVIDPortID(eq_id, current_adr_id);
             //mcsDefaultMapAction.sendS6F11_common(SECSConst.CEID_Vehicle_Arrived, eq_id);
 

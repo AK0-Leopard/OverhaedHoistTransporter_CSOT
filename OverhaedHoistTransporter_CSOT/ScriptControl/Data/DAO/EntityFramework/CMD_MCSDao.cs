@@ -5,27 +5,32 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
 {
     public class CMD_MCSDao
     {
+        public const string EXPIRE_TAG_NON_FINISH_MCS_CMD = "EXPIRE_TAG_NON_FINISH_MCS_CMD";
         public void add(DBConnection_EF con, ACMD_MCS rail)
         {
             con.ACMD_MCS.Add(rail);
             con.SaveChanges();
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_MCS_CMD);
         }
         public void RemoteByBatch(DBConnection_EF con, List<ACMD_MCS> cmd_mcss)
         {
             cmd_mcss.ForEach(entity => con.Entry(entity).State = EntityState.Deleted);
             con.ACMD_MCS.RemoveRange(cmd_mcss);
             con.SaveChanges();
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_MCS_CMD);
         }
 
 
         public void update(DBConnection_EF con, ACMD_MCS cmd)
         {
             con.SaveChanges();
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_MCS_CMD);
         }
 
         public ACMD_MCS getByID(DBConnection_EF con, String cmd_id)
@@ -54,7 +59,8 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
                         orderby cmd.PRIORITY_SUM descending, cmd.CMD_INSER_TIME
                         select cmd;
 
-            return query.ToList();
+            //return query.ToList();
+            return query.FromCache(EXPIRE_TAG_NON_FINISH_MCS_CMD).ToList();
         }
 
         public List<ACMD_MCS> loadFinishCMD_MCS(DBConnection_EF con)

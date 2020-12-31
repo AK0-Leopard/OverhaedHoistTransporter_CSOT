@@ -211,7 +211,8 @@ namespace com.mirle.ibg3k0.sc.Service
             }
 
             //要判斷目前到車子所在位置到目的地(MTL/MTS)路徑是不是通的
-            KeyValuePair<string[], double> route_distance;
+            //KeyValuePair<string[], double> route_distance;
+            double route_distance;
             if (isSuccess && !scApp.RouteGuide.checkRoadIsWalkable(car_out_vh.CUR_ADR_ID, mtx.DeviceAddress, true, out route_distance))
             {
                 isSuccess = false;

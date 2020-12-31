@@ -1551,7 +1551,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
 
 
         public override bool sendS6F11_PortOutOfService(string port_id, List<AMCSREPORTQUEUE> reportQueues = null)
-        {
+            {
             try
             {
                 VIDCollection Vids = new VIDCollection();

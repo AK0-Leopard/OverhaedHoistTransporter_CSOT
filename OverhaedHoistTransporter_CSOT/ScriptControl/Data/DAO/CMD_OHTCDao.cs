@@ -10,11 +10,12 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
     public class CMD_OHTCDao
     {
         public const string EXPIRE_TAG_NON_FINISH_OHTC_CMD = "EXPIRE_TAG_NON_FINISH_OHTC_CMD";
+        public const string EXPIRE_TAG_QUEUE_OHTC_CMD = "EXPIRE_TAG_QUEUE_OHTC_CMD";
         public void add(DBConnection_EF con, ACMD_OHTC blockObj)
         {
             con.ACMD_OHTC.Add(blockObj);
             con.SaveChanges();
-            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD, EXPIRE_TAG_QUEUE_OHTC_CMD);
 
         }
         public void RemoteByBatch(DBConnection_EF con, List<ACMD_OHTC> cmd_mcss)
@@ -22,19 +23,19 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
             cmd_mcss.ForEach(entity => con.Entry(entity).State = EntityState.Deleted);
             con.ACMD_OHTC.RemoveRange(cmd_mcss);
             con.SaveChanges();
-            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD, EXPIRE_TAG_QUEUE_OHTC_CMD);
 
         }
 
         public void Update(DBConnection_EF con, ACMD_OHTC cmd)
         {
             con.SaveChanges();
-            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD, EXPIRE_TAG_QUEUE_OHTC_CMD);
         }
         public void Update(DBConnection_EF con, List<ACMD_OHTC> cmds)
         {
             con.SaveChanges();
-            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD);
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD, EXPIRE_TAG_QUEUE_OHTC_CMD);
         }
 
         public IQueryable getQueryAllSQL(DBConnection_EF con)
@@ -68,7 +69,8 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                               cmd.CMD_ID.StartsWith(sGen_type)
                         orderby cmd.CMD_START_TIME
                         select cmd;
-            return query.ToList();
+            //return query.ToList();
+            return query.FromCache(EXPIRE_TAG_QUEUE_OHTC_CMD).ToList();
         }
 
 
@@ -96,9 +98,6 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         select cmd;
             return query.FromCache(EXPIRE_TAG_NON_FINISH_OHTC_CMD).ToList();
         }
-
-
-
 
         public ACMD_OHTC getByID(DBConnection_EF con, String cmd_id)
         {

@@ -14,11 +14,14 @@ namespace RouteKit
         string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false);
         bool checkRoadIsWalkable(string from_adr, string to_adr);
         bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand);
-        bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance);
-        bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance);
+        //bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance);
+        bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance);
+        //bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance);
+        bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance);
         bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr);
         bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand);
-        bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance);
+        //bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance);
+        bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance);
 
         ASEGMENT CloseSegment(string strSegCode);
         ASEGMENT CloseSegment(string strSegCode, ASEGMENT.DisableType disableType);

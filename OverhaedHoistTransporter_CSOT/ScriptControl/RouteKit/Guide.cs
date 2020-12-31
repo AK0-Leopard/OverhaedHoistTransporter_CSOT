@@ -1587,7 +1587,8 @@ namespace RouteKit
 
         public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand)
         {
-            KeyValuePair<string[], double> route_distance;
+            //KeyValuePair<string[], double> route_distance;
+            double route_distance;
             return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out route_distance);
         }
 
@@ -1598,7 +1599,8 @@ namespace RouteKit
 
         public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand)
         {
-            KeyValuePair<string[], double> route_distance;
+            //KeyValuePair<string[], double> route_distance;
+            double route_distance;
             return checkRoadIsWalkableForMCSCommand(from_adr, to_adr, isMaintainDeviceCommand, out route_distance);
         }
 
@@ -1644,13 +1646,16 @@ namespace RouteKit
         //    }
         //    return isWalkable;
         //}
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance)
+        //public bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance)
         {
             return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance);
         }
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        //public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
         {
-            route_distance = default(KeyValuePair<string[], double>);
+            //route_distance = default(KeyValuePair<string[], double>);
+            route_distance = double.MaxValue;
 
             string[] route = DownstreamSearchSection
                                  (from_adr, to_adr, 1);
@@ -1717,7 +1722,7 @@ namespace RouteKit
             }
             if (routeDetailAndDistance.Count > 0)
             {
-                route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
                 isWalkable = true;
             }
             //else
@@ -1806,9 +1811,11 @@ namespace RouteKit
         }
 
 
-        public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        //public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
+        public bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
         {
-            route_distance = default(KeyValuePair<string[], double>);
+            //route_distance = default(KeyValuePair<string[], double>);
+            route_distance = double.MaxValue;
 
             string[] route = DownstreamSearchSection
                                  (from_adr, to_adr, 1);
@@ -1855,7 +1862,8 @@ namespace RouteKit
             }
             if (routeDetailAndDistance.Count > 0)
             {
-                route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                //route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
                 isWalkable = true;
             }
             //else
