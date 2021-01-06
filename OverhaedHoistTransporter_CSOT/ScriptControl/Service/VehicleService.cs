@@ -745,12 +745,25 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 //A0.04 scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
                 //A0.04 scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
+                bool is_error_happend = false;
+                if (vh.ERROR != errorStat)
+                {
+                    if (errorStat == VhStopSingle.StopSingleOn)
+                        is_error_happend = true;
+                }
+
                 if (!scApp.VehicleBLL.doUpdateVehicleStatus(vh, cstID,
                                        modeStat, actionStat,
                                        blockingStat, pauseStat, obstacleStat, hidStat, errorStat, loadCSTStatus))
                 {
                     isSuccess = false;
                 }
+
+                if (is_error_happend)
+                {
+                    scApp.RouteGuide.clearAllDirGuideQuickSearchInfo();
+                }
+
             }
             vhCommandExcuteStatusCheck(vh.VEHICLE_ID);
             return isSuccess;
@@ -3773,8 +3786,11 @@ namespace com.mirle.ibg3k0.sc.Service
                         eqpt.ERROR != errorStat ||
                         eqpt.HAS_CST != (int)loadCSTStatus;
 
+                bool is_error_happend = false;
                 if (eqpt.ERROR != errorStat)
                 {
+                    if (errorStat == VhStopSingle.StopSingleOn)
+                        is_error_happend = true;
                     //todo 在error flag 有變化時，上報S5F1 alarm set/celar
                     //string alarm_desc = string.Format(VEHICLE_ERROR_REPORT_DESCRIPTION, eqpt.Real_ID);
                     //string alarm_code = $"000{eqpt.Num}";
@@ -3899,25 +3915,12 @@ namespace com.mirle.ibg3k0.sc.Service
                                                     }
                                                 }
                                             }
-
-
-
                                         }
 
 
                                     }
 
                                 }
-
-
-
-
-
-
-
-
-
-
                             }
                         }
 
@@ -3937,6 +3940,13 @@ namespace com.mirle.ibg3k0.sc.Service
                        CarrierID: eqpt.CST_ID);
                     return;
                 }
+                //當有異常剛發生的時候，車子會占用到原本的路段，因此會導致原本可行走路段變成無法行走
+                //所以要將快速查詢路徑通不通的資料清除讓他重新計算
+                if (is_error_happend)
+                {
+                    scApp.RouteGuide.clearAllDirGuideQuickSearchInfo();
+                }
+
             }
             vhCommandExcuteStatusCheck(eqpt.VEHICLE_ID);
 
