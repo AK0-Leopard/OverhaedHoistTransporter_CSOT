@@ -9,9 +9,9 @@ namespace RouteKit
 {
     public interface IGuide
     {
-        string[] DownstreamSearchSection(string startAdr, string endAdr, int flag, bool isIgnoreStatus = false);
-        string[] DownstreamSearchSection_FromSecToSec(string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false);
-        string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false);
+        string[] DownstreamSearchSection(string startAdr, string endAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null);
+        string[] DownstreamSearchSection_FromSecToSec(string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false, List<string> banSegmentIDList = null);
+        string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null);
         bool checkRoadIsWalkable(string from_adr, string to_adr);
         bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand);
         //bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance);

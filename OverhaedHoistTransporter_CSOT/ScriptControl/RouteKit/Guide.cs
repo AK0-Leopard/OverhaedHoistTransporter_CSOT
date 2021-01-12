@@ -839,7 +839,7 @@ namespace RouteKit
         string returnMinRoute_Sec;
         string returnAllRoute_Sec;
         //public string[] DownstreamSearchSection(string startAdr, string endAdr, int flag)
-        public string[] DownstreamSearchSection(string startAdr, string endAdr, int flag, bool isIgnoreStatus = false)//A0.01
+        public string[] DownstreamSearchSection(string startAdr, string endAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
             {
@@ -958,7 +958,7 @@ namespace RouteKit
         }
 
         //A0.01 public string[] DownstreamSearchSection_FromSecToSec(string fromSec, string toSec, int flag, bool isIncludeLastSec)
-        public string[] DownstreamSearchSection_FromSecToSec(string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false)//A0.01
+        public string[] DownstreamSearchSection_FromSecToSec(string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
             {
@@ -1020,7 +1020,7 @@ namespace RouteKit
         }
 
         //A0.01 public string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag)
-        public string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false)//A0.01
+        public string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
             {

@@ -173,7 +173,7 @@ namespace RouteKit
 
         object searchSafe_lockObj = new object();
 
-        public string[] DownstreamSearchSection(string startAdr, string endAdr, int flag, bool isIgnoreStatus = false)//A0.01
+        public string[] DownstreamSearchSection(string startAdr, string endAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
             {
@@ -195,7 +195,7 @@ namespace RouteKit
                 try
                 {
                     //List<RouteInfo> routeInfos = getFromToRoutesAddrToAddr(iStartAdr, iEndAdr, isIgnoreStatus);
-                    List<RouteInfo> routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus);
+                    List<RouteInfo> routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus, banSegmentIDList);
 
                     #region buildMinRoute
                     if (routeInfos.Count > 0 && routeInfos[0].sections[0] != null)
@@ -274,7 +274,7 @@ namespace RouteKit
 
         }
 
-        public string[] DownstreamSearchSection_FromSecToSec(string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false)//A0.01
+        public string[] DownstreamSearchSection_FromSecToSec(string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
             {
@@ -300,7 +300,7 @@ namespace RouteKit
                 try
                 {
                     //List<RouteInfo> routeInfos = getFromToRoutesAddrToAddr(iStartAdr, iEndAdr, isIgnoreStatus);
-                    List<RouteInfo> routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus);
+                    List<RouteInfo> routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus, banSegmentIDList);
                     #region buildMinRoute
                     if (routeInfos.Count > 0 && routeInfos[0].sections[0] != null)
                     {
@@ -421,7 +421,7 @@ namespace RouteKit
 
         }
 
-        public string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false)//A0.01
+        public string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
             {
@@ -469,7 +469,7 @@ namespace RouteKit
                     {
 
                         //routeInfos = getFromToRoutesAddrToAddr(iStartAdr, iEndAdr, isIgnoreStatus);
-                        routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus);
+                        routeInfos = findPathAdrToAdr(iStartAdr, iEndAdr, isIgnoreStatus, banSegmentIDList);
                         foreach (RouteInfo ri in routeInfos)
                         {
                             mySection s = getSectionByTwoNode(int.Parse(fromSection.FROM_ADR_ID), int.Parse(fromSection.TO_ADR_ID));
@@ -555,13 +555,13 @@ namespace RouteKit
             }
         }
 
-        public List<RouteInfo> findPathAdrToAdr(int from_addr, int to_addr, bool isIgnoreStatus)
+        public List<RouteInfo> findPathAdrToAdr(int from_addr, int to_addr, bool isIgnoreStatus , List<string> banSegmentIDList = null)
         {
             try
             {
                 if (from_addr != to_addr)//如果沒有From To Address相同的情況，就直接呼叫路徑查找。
                 {
-                    return getFromToRoutesAddrToAddr(from_addr, to_addr, isIgnoreStatus);
+                    return getFromToRoutesAddrToAddr(from_addr, to_addr, isIgnoreStatus, banSegmentIDList);
                 }
                 else
                 {
@@ -591,7 +591,7 @@ namespace RouteKit
                             }
 
                             string newFrom_adr = s.TO_ADR_ID;
-                            List<RouteInfo> routeInfos_temp = getFromToRoutesAddrToAddr(int.Parse(newFrom_adr), to_addr, isIgnoreStatus);
+                            List<RouteInfo> routeInfos_temp = getFromToRoutesAddrToAddr(int.Parse(newFrom_adr), to_addr, isIgnoreStatus,banSegmentIDList);
                             if (routeInfos_temp != null && routeInfos_temp.Count != 0)
                             {
                                 routeInfos_temp[0].addresses.Insert(0, from_addr);
@@ -894,7 +894,133 @@ namespace RouteKit
             }
         }
 
-        public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, bool isIgnoreStatus)//M0.06
+//        public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, bool isIgnoreStatus)//M0.06
+//        {
+
+//            Stopwatch stopWatch = new Stopwatch();
+//            stopWatch.Start();
+
+//            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+//            Data: $"Start Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}]");
+//            if (from_addr == to_addr)
+//            {
+//                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+//Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] is the same ，return empty result");
+//                return new List<RouteInfo>();
+//            }
+
+//            int pathAddCount = 0;
+//            PathInfo pathInfo = new PathInfo();
+//            try
+//            {
+//                #region Dijkstra
+//                int[,] localGraph = new int[n, n];
+//                for (int i = 0; i < n; i++)//複製一個Cost圖出來
+//                {
+//                    for (int j = 0; j < n; j++)
+//                    {
+//                        localGraph[i, j] = graph[i, j];
+//                    }
+//                }
+//                if (!isIgnoreStatus)
+//                {
+//                    foreach (List<int> banPattern in banPatternList)//Ban掉的路徑輸入進計算Cost的圖
+//                    {
+//                        int ban_index_from = addressIndexDic[banPattern[0]];
+//                        int ban_index_to = addressIndexDic[banPattern[1]];
+//                        localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
+//                    }
+//                }
+
+//                //Cost圖準備完成
+
+//                bool isFirstTime = true;
+//                do
+//                {
+//                    if (!isFirstTime)
+//                    {
+//                        int ban_index_from = addressIndexDic[pathInfo.path[pathInfo.path.Count - 2]];
+//                        int ban_index_to = addressIndexDic[pathInfo.path[pathInfo.path.Count - 1]];
+//                        localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
+//                        pathInfo = new PathInfo();
+//                    }
+//                    else
+//                    {
+//                        isFirstTime = false;
+//                    }
+//                    int[] dist;
+//                    int[] previous;
+//                    int index_from = addressIndexDic[from_addr];
+//                    int index_to = addressIndexDic[to_addr];
+//                    dijkstra(localGraph, index_from, index_to, out dist, out previous);
+//                    //Dijkstra演算結束
+//                    if (dist[index_to] == int.MaxValue)//表示無法到達
+//                    {
+//                        break;
+//                    }
+//                    pathInfo.total_cost = dist[index_to];
+
+//                    int index = index_to;
+//                    while (previous[index] != index_from)
+//                    {
+//                        pathInfo.path.Add(IndexAddressDic[index]);
+//                        index = previous[index];
+//                        pathAddCount++;
+//                    }
+//                    pathInfo.path.Add(IndexAddressDic[index]);
+//                    pathInfo.path.Add(IndexAddressDic[previous[index]]);
+//                    pathInfo.path.Reverse();
+//                }
+//                while (false);
+
+//                List<RouteInfo> routeList = new List<RouteInfo>();
+//                if (pathInfo.path.Count != 0)
+//                {
+//                    List<mySection> route = new List<mySection>();
+//                    for (int i = 0; i < pathInfo.path.Count - 1; i++)
+//                    {
+//                        mySection section = getSectionByTwoNode(pathInfo.path[i], pathInfo.path[i + 1]);
+//                        route.Add(section);
+//                    }
+//                    routeList.Add(new RouteInfo(route, pathInfo.path, pathInfo.total_cost));
+//                }
+//                else
+//                {
+//                    //do nothing
+//                }
+//                stopWatch.Stop();
+//                // Get the elapsed time as a TimeSpan value.
+//                TimeSpan ts = stopWatch.Elapsed;
+
+//                // Format and display the TimeSpan value.
+//                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+//                    ts.Hours, ts.Minutes, ts.Seconds,
+//                    ts.Milliseconds / 10);
+//                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+//                Data: $"End Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] Using Time:[{elapsedTime}]");
+//                //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Error, Class: nameof(GuideNew), Device: "OHT",
+//                //Data: $"Find Path using Dijkstra have exception happen. From Adr: [{from_addr}] To Adr: [{to_addr}] Path Add Count: [{pathAddCount}] PathInfo:[{pathInfo.path}]");
+//                return routeList;
+//                #endregion Dijkstra
+//            }
+//            catch (Exception ex)
+//            {
+//                stopWatch.Stop();
+//                // Get the elapsed time as a TimeSpan value.
+//                TimeSpan ts = stopWatch.Elapsed;
+
+//                // Format and display the TimeSpan value.
+//                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+//                    ts.Hours, ts.Minutes, ts.Seconds,
+//                    ts.Milliseconds / 10);
+//                LogHelper.Log(logger: logger, LogLevel: LogLevel.Error, Class: nameof(GuideNew), Device: "OHT",
+//                Data: $"Find Path using Dijkstra have exception happen.Exception:[{ex.ToString()}] From Adr: [{from_addr}] To Adr: [{to_addr}] Path Add Count: [{pathAddCount}] Using Time:[{elapsedTime}]");
+//                return new List<RouteInfo>();
+//            }
+
+
+//        }
+        public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, bool isIgnoreStatus, List<string> banSegmentIDList = null)//M0.06
         {
 
             Stopwatch stopWatch = new Stopwatch();
@@ -924,12 +1050,79 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
                 }
                 if (!isIgnoreStatus)
                 {
-                    foreach (List<int> banPattern in banPatternList)//Ban掉的路徑輸入進計算Cost的圖
+                    if (banSegmentIDList != null)
                     {
-                        int ban_index_from = addressIndexDic[banPattern[0]];
-                        int ban_index_to = addressIndexDic[banPattern[1]];
-                        localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
+                        #region 建立新的banPatternList
+                        List<List<int>> _banPatternList = new List<List<int>>(banPatternList);
+                        foreach (string segmentID in banSegmentIDList)
+                        {
+                            if (!int.TryParse(segmentID, out int sec_id)) continue;
+                            mySection section = getSectionByID(sec_id);
+                            if (section != null)
+                            {
+                                List<int> banPattern_1 = new List<int>();
+                                banPattern_1.Add(section.address_1);
+                                banPattern_1.Add(section.address_2);
+
+                                List<int> banPattern_2 = new List<int>();
+                                banPattern_2.Add(section.address_2);
+                                banPattern_2.Add(section.address_1);
+                                bool isExist_1 = false;
+                                foreach (List<int> p in _banPatternList)
+                                {
+                                    if (p[0] == banPattern_1[0] && p[1] == banPattern_1[1])
+                                    {
+                                        isExist_1 = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+                                }
+                                if (!isExist_1)
+                                {
+                                    _banPatternList.Add(banPattern_1);
+                                }
+
+                                bool isExist_2 = false;
+                                foreach (List<int> p in _banPatternList)
+                                {
+                                    if (p[0] == banPattern_2[0] && p[1] == banPattern_2[1])
+                                    {
+                                        isExist_2 = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+                                }
+                                if (!isExist_2)
+                                {
+                                    _banPatternList.Add(banPattern_2);
+                                }
+                            }
+                        }
+                        #endregion 建立新的banPatternList
+                        foreach (List<int> banPattern in _banPatternList)//Ban掉的路徑輸入進計算Cost的圖
+                        {
+                            int ban_index_from = addressIndexDic[banPattern[0]];
+                            int ban_index_to = addressIndexDic[banPattern[1]];
+                            localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
+                        }
                     }
+                    else
+                    {
+
+                        foreach (List<int> banPattern in banPatternList)//Ban掉的路徑輸入進計算Cost的圖
+                        {
+                            int ban_index_from = addressIndexDic[banPattern[0]];
+                            int ban_index_to = addressIndexDic[banPattern[1]];
+                            localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
+                        }
+                    }
+
                 }
 
                 //Cost圖準備完成
@@ -1022,137 +1215,6 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
         }
 
 
-        //public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, List<string> banSegmentIDList)//M0.07
-        //{
-        //        #region Dijkstra
-        //        int[,] localGraph = new int[n, n];
-        //        for (int i = 0; i < n; i++)//複製一個Cost圖出來
-        //        {
-        //            for (int j = 0; j < n; j++)
-        //            {
-        //                localGraph[i, j] = graph[i, j];
-        //            }
-        //        }
-        //        #region 建立新的banPatternList
-        //        List<List<int>> _banPatternList = new List<List<int>>(banPatternList);
-        //        foreach (string segmentID in banSegmentIDList)
-        //        {
-        //            if (!int.TryParse(segmentID, out int sec_id)) continue;
-        //            mySection section = getSectionByID(sec_id);
-        //            if (section != null)
-        //            {
-        //                List<int> banPattern_1 = new List<int>();
-        //                banPattern_1.Add(section.address_1);
-        //                banPattern_1.Add(section.address_2);
-
-        //                List<int> banPattern_2 = new List<int>();
-        //                banPattern_2.Add(section.address_2);
-        //                banPattern_2.Add(section.address_1);
-        //                bool isExist_1 = false;
-        //                foreach (List<int> p in _banPatternList)
-        //                {
-        //                    if (p[0] == banPattern_1[0] && p[1] == banPattern_1[1])
-        //                    {
-        //                        isExist_1 = true;
-        //                        break;
-        //                    }
-        //                    else
-        //                    {
-        //                        continue;
-        //                    }
-        //                }
-        //                if (!isExist_1)
-        //                {
-        //                    _banPatternList.Add(banPattern_1);
-        //                }
-
-        //                bool isExist_2 = false;
-        //                foreach (List<int> p in _banPatternList)
-        //                {
-        //                    if (p[0] == banPattern_2[0] && p[1] == banPattern_2[1])
-        //                    {
-        //                        isExist_2 = true;
-        //                        break;
-        //                    }
-        //                    else
-        //                    {
-        //                        continue;
-        //                    }
-        //                }
-        //                if (!isExist_2)
-        //                {
-        //                    _banPatternList.Add(banPattern_2);
-        //                }
-        //            }
-        //        }
-        //        #endregion 建立新的banPatternList
-
-        //        foreach (List<int> banPattern in _banPatternList)//Ban掉的路徑輸入進計算Cost的圖
-        //        {
-        //            int ban_index_from = addressIndexDic[banPattern[0]];
-        //            int ban_index_to = addressIndexDic[banPattern[1]];
-        //            localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
-        //        }
-        //        //Cost圖準備完成
-
-        //        PathInfo pathInfo = new PathInfo();
-        //        bool isFirstTime = true;
-        //        do
-        //        {
-        //            if (!isFirstTime)
-        //            {
-        //                int ban_index_from = addressIndexDic[pathInfo.path[pathInfo.path.Count - 2]];
-        //                int ban_index_to = addressIndexDic[pathInfo.path[pathInfo.path.Count - 1]];
-        //                localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
-        //                pathInfo = new PathInfo();
-        //            }
-        //            else
-        //            {
-        //                isFirstTime = false;
-        //            }
-        //            int[] dist;
-        //            int[] previous;
-        //            int index_from = addressIndexDic[from_addr];
-        //            int index_to = addressIndexDic[to_addr];
-        //            dijkstra(localGraph, index_from, index_to, out dist, out previous);
-        //            //Dijkstra演算結束
-        //            if (dist[index_to] == int.MaxValue)//表示無法到達
-        //            {
-        //                break;
-        //            }
-        //            pathInfo.total_cost = dist[index_to];
-
-        //            int index = index_to;
-        //            while (previous[index] != index_from)
-        //            {
-        //                pathInfo.path.Add(IndexAddressDic[index]);
-        //                index = previous[index];
-        //            }
-        //            pathInfo.path.Add(IndexAddressDic[index]);
-        //            pathInfo.path.Add(IndexAddressDic[previous[index]]);
-        //            pathInfo.path.Reverse();
-        //        }
-        //        while (false);
-
-        //        List<RouteInfo> routeList = new List<RouteInfo>();
-        //        if (pathInfo.path.Count != 0)
-        //        {
-        //            List<mySection> route = new List<mySection>();
-        //            for (int i = 0; i < pathInfo.path.Count - 1; i++)
-        //            {
-        //                mySection section = getSectionByTwoNode(pathInfo.path[i], pathInfo.path[i + 1]);
-        //                route.Add(section);
-        //            }
-        //            routeList.Add(new RouteInfo(route, pathInfo.path, pathInfo.total_cost));
-        //        }
-        //        else
-        //        {
-        //            //do nothing
-        //        }
-        //        return routeList;
-        //        #endregion Dijkstra
-
-        //}
         public void dijkstra(int[,] graph, int index_from, int index_to, out int[] dist, out int[] previous)
         {
             dist = new int[n];
