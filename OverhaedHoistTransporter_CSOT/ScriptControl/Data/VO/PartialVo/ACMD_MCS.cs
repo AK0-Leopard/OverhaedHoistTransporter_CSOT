@@ -48,6 +48,35 @@ namespace com.mirle.ibg3k0.sc
             return "";
         }
 
+        const string KEY_WORD_STK = "STK";
+        public bool IsCVPort_LoadPort()
+        {
+            return HOSTSOURCE.Contains(KEY_WORD_STK);
+        }
+        public string getLoadPortSegment(BLL.PortStationBLL portStationBLL, BLL.SectionBLL sectionBLL)
+        {
+            APORTSTATION port_station = portStationBLL.OperateCatch.getPortStation(HOSTSOURCE);
+            if (port_station == null) return "";
+            var sections = sectionBLL.cache.GetSectionsByAddress(port_station.ADR_ID);
+            if (sections == null || sections.Count == 0) return "";
+            var one_part_section = sections[0];
+            return one_part_section.SEG_NUM;
+        }
+
+        public bool IsCVPort_UnloadPort()
+        {
+            return HOSTDESTINATION.Contains(KEY_WORD_STK);
+        }
+        public string getUnloadPortSegment(BLL.PortStationBLL portStationBLL, BLL.SectionBLL sectionBLL)
+        {
+            APORTSTATION port_station = portStationBLL.OperateCatch.getPortStation(HOSTDESTINATION);
+            if (port_station == null) return "";
+            var sections = sectionBLL.cache.GetSectionsByAddress(port_station.ADR_ID);
+            if (sections == null || sections.Count == 0) return "";
+            var one_part_section = sections[0];
+            return one_part_section.SEG_NUM;
+        }
+
 
         public HCMD_MCS ToHCMD_MCS()
         {

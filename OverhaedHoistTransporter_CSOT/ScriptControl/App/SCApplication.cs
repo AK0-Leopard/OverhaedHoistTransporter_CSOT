@@ -2185,6 +2185,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool AutoTeching = false;
 
         public static bool IsEnableIDReadFailScenario { private set; get; } = false;
+        public static int ChangePathCommandCount { private set; get; } = 3;
 
 
         /// <summary>
@@ -2231,7 +2232,10 @@ namespace com.mirle.ibg3k0.sc.App
         {
             IsEnableIDReadFailScenario = isEnable;
         }
-
+        public static void setChangePathCommandCount(int count)
+        {
+            ChangePathCommandCount = count;
+        }
     }
 
     public class HAProxyConnectionTest

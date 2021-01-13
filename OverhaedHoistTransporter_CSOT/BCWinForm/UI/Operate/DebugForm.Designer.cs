@@ -297,6 +297,7 @@
             this.MTLMTS_cb_box = new System.Windows.Forms.ComboBox();
             this.plc_link_btn = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.btn_SlientControl = new System.Windows.Forms.Button();
             this.comboBox_HID = new System.Windows.Forms.ComboBox();
             this.btn_hid_datetime_sync = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
@@ -371,7 +372,8 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_SlientControl = new System.Windows.Forms.Button();
+            this.label80 = new System.Windows.Forms.Label();
+            this.num_ChangePathCommandPath = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -411,6 +413,7 @@
             this.tabPage8.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             this.tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).BeginInit();
             this.SuspendLayout();
             // 
             // cb_FroceBlockPass
@@ -2581,7 +2584,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 5);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 8);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -3628,6 +3631,16 @@
             this.tabPage5.Text = "HID Test";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
+            // btn_SlientControl
+            // 
+            this.btn_SlientControl.Location = new System.Drawing.Point(38, 119);
+            this.btn_SlientControl.Name = "btn_SlientControl";
+            this.btn_SlientControl.Size = new System.Drawing.Size(218, 26);
+            this.btn_SlientControl.TabIndex = 24;
+            this.btn_SlientControl.Text = "Send Silent Control";
+            this.btn_SlientControl.UseVisualStyleBackColor = true;
+            this.btn_SlientControl.Click += new System.EventHandler(this.btn_SlientControl_Click);
+            // 
             // comboBox_HID
             // 
             this.comboBox_HID.FormattingEnabled = true;
@@ -4418,6 +4431,8 @@
             // 
             // tabPage9
             // 
+            this.tabPage9.Controls.Add(this.num_ChangePathCommandPath);
+            this.tabPage9.Controls.Add(this.label80);
             this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Current_txb);
             this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Min_txb);
             this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Max_txb);
@@ -4489,9 +4504,9 @@
             this.label79.AutoSize = true;
             this.label79.Location = new System.Drawing.Point(28, 28);
             this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(290, 22);
+            this.label79.Size = new System.Drawing.Size(300, 22);
             this.label79.TabIndex = 53;
-            this.label79.Text = "Max Allow Action Time Second";
+            this.label79.Text = "Max Allow Action Time Second:";
             // 
             // MaxAllowActionTimeSecond_Set_btn
             // 
@@ -4504,15 +4519,22 @@
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
-            // btn_SlientControl
+            // label80
             // 
-            this.btn_SlientControl.Location = new System.Drawing.Point(38, 119);
-            this.btn_SlientControl.Name = "btn_SlientControl";
-            this.btn_SlientControl.Size = new System.Drawing.Size(218, 26);
-            this.btn_SlientControl.TabIndex = 24;
-            this.btn_SlientControl.Text = "Send Silent Control";
-            this.btn_SlientControl.UseVisualStyleBackColor = true;
-            this.btn_SlientControl.Click += new System.EventHandler(this.btn_SlientControl_Click);
+            this.label80.AutoSize = true;
+            this.label80.Location = new System.Drawing.Point(58, 78);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(270, 22);
+            this.label80.TabIndex = 64;
+            this.label80.Text = "Change Path Command Count:";
+            // 
+            // num_ChangePathCommandPath
+            // 
+            this.num_ChangePathCommandPath.Location = new System.Drawing.Point(358, 76);
+            this.num_ChangePathCommandPath.Name = "num_ChangePathCommandPath";
+            this.num_ChangePathCommandPath.Size = new System.Drawing.Size(120, 30);
+            this.num_ChangePathCommandPath.TabIndex = 65;
+            this.num_ChangePathCommandPath.ValueChanged += new System.EventHandler(this.num_ChangePathCommandPath_ValueChanged);
             // 
             // DebugForm
             // 
@@ -4598,6 +4620,7 @@
             this.tableLayoutPanel6.PerformLayout();
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -4948,5 +4971,7 @@
         private System.Windows.Forms.Button btn_hid_datetime_sync;
         private System.Windows.Forms.ComboBox comboBox_HID;
         private System.Windows.Forms.Button btn_SlientControl;
+        private System.Windows.Forms.NumericUpDown num_ChangePathCommandPath;
+        private System.Windows.Forms.Label label80;
     }
 }

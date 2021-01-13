@@ -205,7 +205,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 if (SCUtility.isEmpty(id)) return null;
                 return CommObjCacheManager.getSegments().
                     Where(seg => seg.SEG_NUM.Trim() == id.Trim()).
-                    SingleOrDefault();
+                    FirstOrDefault();
             }
 
             public bool IsSegmentActive(string seg_num)

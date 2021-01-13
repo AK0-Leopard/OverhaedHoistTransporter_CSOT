@@ -1291,6 +1291,8 @@ namespace com.mirle.ibg3k0.sc
                     try
                     {
                         if (!vh.isTcpIpConnect) return;
+                        //如果車子沒有installed就也不用幫忙檢查是否有通訊
+                        if (!vh.IS_INSTALLED) return;
                         //1.檢查是否已經大於一定時間沒有進行通訊
                         double from_last_comm_time = vh.getFromTheLastCommTime(scApp.getBCFApplication());
                         if (from_last_comm_time > AVEHICLE.MAX_ALLOW_NO_COMMUNICATION_TIME_SECOND)

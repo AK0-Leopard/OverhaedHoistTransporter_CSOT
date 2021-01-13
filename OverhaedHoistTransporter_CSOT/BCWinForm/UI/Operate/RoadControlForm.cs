@@ -82,6 +82,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             foreach (DataGridViewRow row in dgv_segment.SelectedRows)
             {
                 ASEGMENT selectSeg = segment_List[row.Index];
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(RoadControlForm), Device: "OHTC",
+                  Data: $"Start disable segment:{selectSeg.SEG_NUM}...");
                 if (!selectSeg.DISABLE_FLAG_USER
                     && !selectSeg.PRE_DISABLE_FLAG)
                 {
@@ -91,6 +93,13 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                     //    (selectSeg.SEG_NUM.Trim(), E_PORT_STATUS.OutOfService, ASEGMENT.DisableType.User, laneCutTypeg);
                     bcApp.SCApplication.RoadControlService.doEnableDisableSegment
                         (selectSeg.SEG_NUM.Trim(), E_PORT_STATUS.OutOfService, ASEGMENT.DisableType.User, laneCutTypeg);
+                    Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(RoadControlForm), Device: "OHTC",
+                      Data: $"Segment:{selectSeg.SEG_NUM} disable success.");
+                }
+                else
+                {
+                    Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(RoadControlForm), Device: "OHTC",
+                      Data: $"Segment:{selectSeg.SEG_NUM} is disable already.");
                 }
             }
         }
@@ -125,6 +134,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             foreach (DataGridViewRow row in dgv_segment.SelectedRows)
             {
                 ASEGMENT selectSeg = segment_List[row.Index];
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(RoadControlForm), Device: "OHTC",
+                  Data: $"Start enable segment:{selectSeg.SEG_NUM}...");
+
                 if (selectSeg.DISABLE_FLAG_USER)
                 {
                     //  segment_List[row.Index] = bcApp.SCApplication.RouteGuide.OpenSegment(selectSeg.SEG_NUM.Trim());
@@ -134,6 +146,13 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                                                   (selectSeg.SEG_NUM.Trim(),
                                                   E_PORT_STATUS.InService, ASEGMENT.DisableType.User,
                                                   sc.Data.SECS.CSOT.SECSConst.LANECUTTYPE_LaneCutOnHMI);
+                    Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(RoadControlForm), Device: "OHTC",
+                      Data: $"Segment:{selectSeg.SEG_NUM} enable success.");
+                }
+                else
+                {
+                    Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(RoadControlForm), Device: "OHTC",
+                      Data: $"Segment:{selectSeg.SEG_NUM} is enable already");
                 }
             }
         }

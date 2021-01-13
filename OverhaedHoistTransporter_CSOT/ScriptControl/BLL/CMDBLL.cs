@@ -51,6 +51,10 @@ namespace com.mirle.ibg3k0.sc.BLL
         private string[] ByPassSegment = null;
         ParkZoneTypeDao parkZoneTypeDao = null;
         private SCApplication scApp = null;
+
+        public Cache cache { get; private set; }
+
+
         public CMDBLL()
         {
 
@@ -67,6 +71,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             hcmd_mcsDao = scApp.HCMD_MCSDao;
             hcmd_ohtcDao = scApp.HCMD_OHTCDao;
             initialByPassSegment();
+            cache = new Cache(scApp);
         }
 
         private void initialByPassSegment()
@@ -2615,7 +2620,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                     //if (!SCUtility.isMatche(acmd_ohtc.SOURCE, vehicle.CUR_ADR_ID) ||
                     //    (!SCUtility.isEmpty(acmd_ohtc.SOURCE) && vehicle.HAS_CST == 0))
                     {
-                        ReutrnVh2FromAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                        //ReutrnVh2FromAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                        //(vehicle.CUR_SEC_ID, from_adr.ADR_ID, 1, isIgnoreSegStatus);
+                        ReutrnVh2FromAdr = tryGetDownstreamSearchSection_FromSecToAdr
                         (vehicle.CUR_SEC_ID, from_adr.ADR_ID, 1, isIgnoreSegStatus);
                     }
                     if (to_adr != null)
@@ -2626,14 +2633,18 @@ namespace com.mirle.ibg3k0.sc.BLL
                             case E_ADR_TYPE.Port:
                                 if (acmd_ohtc.CMD_TPYE == E_CMD_TYPE.Move)
                                 {
-                                    ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                                    //ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                                    //(vehicle.CUR_SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                    ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection_FromSecToAdr
                                     (vehicle.CUR_SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
                                 }
                                 else
                                 {
                                     if (!SCUtility.isMatche(from_adr.ADR_ID, to_adr.ADR_ID))
                                     {
-                                        ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
+                                        //ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
+                                        //(from_adr.ADR_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                        ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection
                                         (from_adr.ADR_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
                                     }
                                 }
@@ -2650,7 +2661,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                                 break;
                             case E_ADR_TYPE.Control:
                                 ASECTION to_sec = scApp.MapBLL.getSectiontByID(to_adr.SEC_ID);
-                                ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
+                                //ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
+                                //    (from_adr.ADR_ID, to_sec.TO_ADR_ID, 1, isIgnoreSegStatus);
+                                ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection
                                     (from_adr.ADR_ID, to_sec.TO_ADR_ID, 1, isIgnoreSegStatus);
                                 break;
                         }
@@ -2661,7 +2674,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                     //if (!SCUtility.isMatche(acmd_ohtc.SOURCE, vehicle.CUR_ADR_ID) ||
                     //    (!SCUtility.isEmpty(acmd_ohtc.SOURCE) && vehicle.HAS_CST == 0))
                     {
-                        ReutrnVh2FromAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
+                        //ReutrnVh2FromAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
+                        //    (vehicle.CUR_SEC_ID, from_adr.SEC_ID, 1, false, isIgnoreSegStatus);
+                        ReutrnVh2FromAdr = tryGetDownstreamSearchSection_FromSecToSec
                             (vehicle.CUR_SEC_ID, from_adr.SEC_ID, 1, false, isIgnoreSegStatus);
                     }
                     if (to_adr != null)
@@ -2670,11 +2685,15 @@ namespace com.mirle.ibg3k0.sc.BLL
                         {
                             case E_ADR_TYPE.Address:
                             case E_ADR_TYPE.Port:
-                                ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                                //ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                                //    (from_adr.SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection_FromSecToAdr
                                     (from_adr.SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
                                 break;
                             case E_ADR_TYPE.Control:
-                                ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
+                                //ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
+                                //    (from_adr.SEC_ID, to_adr.SEC_ID, 1, false, isIgnoreSegStatus);
+                                ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection_FromSecToSec
                                     (from_adr.SEC_ID, to_adr.SEC_ID, 1, false, isIgnoreSegStatus);
                                 break;
                         }
@@ -2695,6 +2714,47 @@ namespace com.mirle.ibg3k0.sc.BLL
                 , svh2FromAdr
                 , sFromAdr2ToAdr));
 
+        }
+        private string[] tryGetDownstreamSearchSection_FromSecToAdr
+            (string fromSec, string toAdr, int flag, bool isIgnoreStatus = false)
+        {
+            List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            string[] route = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                             (fromSec, toAdr, flag, isIgnoreStatus, busy_segment);
+            if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
+            {
+                route = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
+                             (fromSec, toAdr, flag, isIgnoreStatus);
+            }
+            return route;
+        }
+        private string[] tryGetDownstreamSearchSection
+           (string startAdr, string endAdr, int flag, bool isIgnoreStatus = false)
+        {
+            List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            string[] route = scApp.RouteGuide.DownstreamSearchSection
+                             (startAdr, endAdr, flag, isIgnoreStatus, busy_segment);
+
+            if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
+            {
+                route = scApp.RouteGuide.DownstreamSearchSection
+                             (startAdr, endAdr, flag, isIgnoreStatus);
+            }
+            return route;
+        }
+        private string[] tryGetDownstreamSearchSection_FromSecToSec
+           (string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false)
+        {
+            List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            string[] route = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
+                             (fromSec, toSec, flag, false, isIgnoreStatus, busy_segment);
+
+            if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
+            {
+                route = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
+                             (fromSec, toSec, flag, false, isIgnoreStatus);
+            }
+            return route;
         }
 
         private bool needVh2FromAddressOfGuide(ACMD_OHTC acmd_ohtc, AVEHICLE vehicle)
@@ -3152,5 +3212,65 @@ namespace com.mirle.ibg3k0.sc.BLL
         #endregion HCMD_OHTC
 
 
+        public class Cache
+        {
+            SCApplication app;
+            public Cache(SCApplication _app)
+            {
+                app = _app;
+            }
+            const int CAN_PASS_VH_LIMIT_COUNT = 3;
+            public List<string> loadBusySection()
+            {
+                SegmentBLL segmentBLL = app.SegmentBLL;
+                PortStationBLL portStationBLL = app.PortStationBLL;
+                SectionBLL sectionBLL = app.SectionBLL;
+                List<string> busy_segment = new List<string>();
+                if (sc.App.SystemParameter.ChangePathCommandCount == 0) return busy_segment;
+                var current_acmd_mcs = app.getEQObjCacheManager().getLine().CurrentExcuteMCSCommands;
+
+                //1.先找出準備要去Load的 vh 路段
+                var will_to_load_mcs_cmd =
+                    current_acmd_mcs.Where(cmd => !cmd.IsCVPort_LoadPort() &&
+                                                  cmd.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE &&
+                                                  cmd.COMMANDSTATE < ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE);
+                List<string> will_to_segments =
+                    will_to_load_mcs_cmd.Select(cmd => cmd.getLoadPortSegment(portStationBLL, sectionBLL)).
+                                      ToList();
+                //2.找出準備前往unload的
+                var will_to_unload_mcs_cmd =
+                    current_acmd_mcs.Where(cmd => !cmd.IsCVPort_UnloadPort() &&
+                                                  cmd.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE &&
+                                                  cmd.COMMANDSTATE < ACMD_MCS.COMMAND_STATUS_BIT_INDEX_UNLOAD_COMPLETE);
+                List<string> will_to_unload_segments =
+                    will_to_unload_mcs_cmd.Select(cmd => cmd.getUnloadPortSegment(portStationBLL, sectionBLL)).
+                                      ToList();
+                will_to_segments.AddRange(will_to_unload_segments);
+                var group_cmd_mcs = will_to_segments.GroupBy(cmd => cmd).ToList();
+
+                foreach (var group in group_cmd_mcs.ToList())
+                {
+                    //if (group.Count() < CAN_PASS_VH_LIMIT_COUNT)
+                    if (group.Count() < sc.App.SystemParameter.ChangePathCommandCount)
+                    {
+                        group_cmd_mcs.Remove(group);
+                    }
+                }
+                busy_segment = group_cmd_mcs.Select(g => g.Key).ToList();
+                List<string> busy_section = busy_segment.Select(seg_id =>
+                {
+                    ASEGMENT seg = segmentBLL.cache.GetSegment(seg_id);
+                    if (seg == null) return "";
+                    if (seg.Sections == null || seg.Sections.Count == 0) return "";
+                    return seg.Sections[0].SEC_ID;
+                }).ToList();
+                return busy_section;
+            }
+
+        }
+
     }
+
+
+
 }

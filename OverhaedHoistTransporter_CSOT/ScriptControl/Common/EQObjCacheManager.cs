@@ -50,10 +50,32 @@ namespace com.mirle.ibg3k0.sc.Common
             new VEHICLEMAP(){  ID ="OHx12",REAL_ID="M112"},
             new VEHICLEMAP(){  ID ="OHx13",REAL_ID="M113"},
             new VEHICLEMAP(){  ID ="OHx14",REAL_ID="M114"},
+            new VEHICLEMAP(){  ID ="OHx15",REAL_ID="M115"},
+            new VEHICLEMAP(){  ID ="OHx16",REAL_ID="M116"},
+            new VEHICLEMAP(){  ID ="OHx17",REAL_ID="M117"},
+            new VEHICLEMAP(){  ID ="OHx18",REAL_ID="M118"},
+            new VEHICLEMAP(){  ID ="OHx19",REAL_ID="M119"},
+            new VEHICLEMAP(){  ID ="OHx20",REAL_ID="M120"},
+            new VEHICLEMAP(){  ID ="OHx21",REAL_ID="M121"},
+            new VEHICLEMAP(){  ID ="OHx22",REAL_ID="M122"},
+            new VEHICLEMAP(){  ID ="OHx23",REAL_ID="M123"},
+            new VEHICLEMAP(){  ID ="OHx24",REAL_ID="M124"},
+            new VEHICLEMAP(){  ID ="OHx25",REAL_ID="M125"},
+            new VEHICLEMAP(){  ID ="OHx26",REAL_ID="M126"},
+            new VEHICLEMAP(){  ID ="OHx27",REAL_ID="M127"},
+            new VEHICLEMAP(){  ID ="OHx28",REAL_ID="M128"},
+            new VEHICLEMAP(){  ID ="OHx29",REAL_ID="M129"},
+            new VEHICLEMAP(){  ID ="OHx30",REAL_ID="M130"},
+            new VEHICLEMAP(){  ID ="OHx31",REAL_ID="M131"},
+            new VEHICLEMAP(){  ID ="OHx32",REAL_ID="M132"},
+            new VEHICLEMAP(){  ID ="OHx33",REAL_ID="M133"},
+            new VEHICLEMAP(){  ID ="OHx34",REAL_ID="M134"},
+            new VEHICLEMAP(){  ID ="OHx35",REAL_ID="M135"},
+            new VEHICLEMAP(){  ID ="OHx36",REAL_ID="M136"},
         };
         private List<MTSSetting> MTSSettings = new List<MTSSetting>()
         {
-            
+
             new MTSSetting(){ID = "MTS",MTSSegment="013", MTSAddress ="20292", SystemInAddress ="20199" },
             new MTSSetting(){ID = "MTS2",MTSSegment="019", MTSAddress ="20296", SystemInAddress ="20037" },
             new MTSSetting(){ID = "MTS3",MTSSegment="163", MTSAddress ="10480", SystemInAddress ="20011" }
@@ -631,7 +653,7 @@ namespace com.mirle.ibg3k0.sc.Common
 
             return setting;
         }
-        
+
 
         /// <summary>
         /// 如果要以MPLC目前資料為主，則需先清除DB內舊有資料，再重新rebuild，並透過腳本更新

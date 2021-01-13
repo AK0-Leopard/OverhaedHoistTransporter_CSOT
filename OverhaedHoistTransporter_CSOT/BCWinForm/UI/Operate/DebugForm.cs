@@ -39,7 +39,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_FroceBlockPass.Checked = DebugParameter.isForcedPassBlockControl;
             cb_FroceBlockPass.Checked = DebugParameter.isForcedRejectBlockControl;
             ch_force_pass_red_light_with_buzzer.Checked = DebugParameter.isForcePassFourColorLightRedWithBuzzerSignal;
-
+            num_ChangePathCommandPath.Value = sc.App.SystemParameter.ChangePathCommandCount;
             List<string> lstVh = new List<string>();
             lstVh.Add(string.Empty);
             lstVh.AddRange(bcApp.SCApplication.getEQObjCacheManager().getAllVehicle().Select(vh => vh.VEHICLE_ID).ToList());
@@ -867,7 +867,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void btn_hid_info_Click(object sender, EventArgs e)
         {
             AEQPT eqpt_HID = bcApp.SCApplication.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
-            if(eqpt_HID != null)
+            if (eqpt_HID != null)
             {
                 var hid_info = eqpt_HID.HID_Info;
                 if (hid_info == null) return;
@@ -1500,6 +1500,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             {
                 MessageBox.Show("Please Select HID.");
             }
+        }
+
+        private void num_ChangePathCommandPath_ValueChanged(object sender, EventArgs e)
+        {
+            sc.App.SystemParameter.setChangePathCommandCount((int)num_ChangePathCommandPath.Value);
         }
     }
 }
