@@ -364,6 +364,8 @@
             this.label77 = new System.Windows.Forms.Label();
             this.label78 = new System.Windows.Forms.Label();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.num_ChangePathCommandPath = new System.Windows.Forms.NumericUpDown();
+            this.label80 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Current_txb = new System.Windows.Forms.TextBox();
             this.MaxAllowActionTimeSecond_Min_txb = new System.Windows.Forms.TextBox();
             this.MaxAllowActionTimeSecond_Max_txb = new System.Windows.Forms.TextBox();
@@ -372,8 +374,6 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.label80 = new System.Windows.Forms.Label();
-            this.num_ChangePathCommandPath = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -1124,6 +1124,7 @@
             this.btn_ForceReleaseBlock.TabIndex = 22;
             this.btn_ForceReleaseBlock.Text = "Force Release Block";
             this.btn_ForceReleaseBlock.UseVisualStyleBackColor = true;
+            this.btn_ForceReleaseBlock.Visible = false;
             this.btn_ForceReleaseBlock.Click += new System.EventHandler(this.btn_ForceReleaseBlock_Click);
             // 
             // uctl_SendFun1
@@ -1395,6 +1396,7 @@
             this.groupBox6.TabIndex = 24;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Block Manager";
+            this.groupBox6.Visible = false;
             // 
             // btn_blocked_sec_refresh
             // 
@@ -2584,7 +2586,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 8);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -3678,6 +3680,7 @@
             this.button10.TabIndex = 21;
             this.button10.Text = "Log Test (Temp)";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Visible = false;
             this.button10.Click += new System.EventHandler(this.button10_Click_1);
             // 
             // button7
@@ -3688,6 +3691,7 @@
             this.button7.TabIndex = 20;
             this.button7.Text = "Log Test (Power)";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Visible = false;
             this.button7.Click += new System.EventHandler(this.button7_Click_2);
             // 
             // lbl_sigma_w_value
@@ -4449,6 +4453,23 @@
             this.tabPage9.Text = "Setting";
             this.tabPage9.UseVisualStyleBackColor = true;
             // 
+            // num_ChangePathCommandPath
+            // 
+            this.num_ChangePathCommandPath.Location = new System.Drawing.Point(358, 76);
+            this.num_ChangePathCommandPath.Name = "num_ChangePathCommandPath";
+            this.num_ChangePathCommandPath.Size = new System.Drawing.Size(120, 30);
+            this.num_ChangePathCommandPath.TabIndex = 65;
+            this.num_ChangePathCommandPath.ValueChanged += new System.EventHandler(this.num_ChangePathCommandPath_ValueChanged);
+            // 
+            // label80
+            // 
+            this.label80.AutoSize = true;
+            this.label80.Location = new System.Drawing.Point(58, 78);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(270, 22);
+            this.label80.TabIndex = 64;
+            this.label80.Text = "Change Path Command Count:";
+            // 
             // MaxAllowActionTimeSecond_Current_txb
             // 
             this.MaxAllowActionTimeSecond_Current_txb.Location = new System.Drawing.Point(936, 20);
@@ -4518,23 +4539,6 @@
             this.MaxAllowActionTimeSecond_Set_btn.Text = "Set";
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
-            // 
-            // label80
-            // 
-            this.label80.AutoSize = true;
-            this.label80.Location = new System.Drawing.Point(58, 78);
-            this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(270, 22);
-            this.label80.TabIndex = 64;
-            this.label80.Text = "Change Path Command Count:";
-            // 
-            // num_ChangePathCommandPath
-            // 
-            this.num_ChangePathCommandPath.Location = new System.Drawing.Point(358, 76);
-            this.num_ChangePathCommandPath.Name = "num_ChangePathCommandPath";
-            this.num_ChangePathCommandPath.Size = new System.Drawing.Size(120, 30);
-            this.num_ChangePathCommandPath.TabIndex = 65;
-            this.num_ChangePathCommandPath.ValueChanged += new System.EventHandler(this.num_ChangePathCommandPath_ValueChanged);
             // 
             // DebugForm
             // 

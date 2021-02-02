@@ -26,11 +26,16 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             dgv_TransferCommand.DataSource = cmsMCS_bindingSource;
         }
 
-        private void updateTransferCommand()
+        private async void updateTransferCommandAsync()
         {
             try
             {
-                var ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
+                List<ACMD_MCS> ACMD_MCSs = null;
+                await Task.Run(() =>
+                {
+                    ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
+                    System.Threading.Thread.Sleep(5000);
+                });
                 cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
                 cmsMCS_bindingSource.DataSource = cmdMCSList;
                 dgv_TransferCommand.Refresh();
@@ -43,10 +48,32 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         }
 
-        private void btn_refresh_Click(object sender, EventArgs e)
+        private async void btn_refresh_Click(object sender, EventArgs e)
         {
             selection_index = -1;
-            updateTransferCommand();
+            try
+            {
+                btn_refresh.Enabled = false;
+                //updateTransferCommandAsync();
+                List<ACMD_MCS> ACMD_MCSs = null;
+                await Task.Run(() =>
+                {
+                    ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
+                });
+                cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+                cmsMCS_bindingSource.DataSource = cmdMCSList;
+                dgv_TransferCommand.Refresh();
+
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(TransferCommandQureyListForm), Device: "OHTC",
+                Data: $"btn_refresh_Click Failed, Exception:{ex.Message}");
+            }
+            finally
+            {
+                btn_refresh.Enabled = true;
+            }
         }
 
 
@@ -85,7 +112,16 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(TransferCommandQureyListForm), Device: "OHTC",
                   Data: $"Fource mcs command finish success, vh id:{SCUtility.Trim(excute_cmd_of_vh?.VEHICLE_ID, true)}, cst id:{SCUtility.Trim(excute_cmd_of_vh?.CST_ID, true)}, " +
                         $"mcs command id:{SCUtility.Trim(mcs_cmd.CMD_ID, true)},source:{SCUtility.Trim(mcs_cmd.HOSTSOURCE, true)},dest:{SCUtility.Trim(mcs_cmd.HOSTDESTINATION, true)}");
-                updateTransferCommand();
+                //updateTransferCommandAsync();
+
+                List<ACMD_MCS> ACMD_MCSs = null;
+                await Task.Run(() =>
+                {
+                    ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
+                });
+                cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+                cmsMCS_bindingSource.DataSource = cmdMCSList;
+                dgv_TransferCommand.Refresh();
             }
             catch { }
             finally

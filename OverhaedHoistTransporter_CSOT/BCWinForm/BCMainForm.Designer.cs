@@ -298,6 +298,7 @@ namespace com.mirle.ibg3k0.bc.winform
             // 
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             resources.ApplyResources(this.debugToolStripMenuItem, "debugToolStripMenuItem");
+            this.debugToolStripMenuItem.Click += new System.EventHandler(this.debugToolStripMenuItem_Click);
             // 
             // roadControlToolStripMenuItem
             // 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using Z.EntityFramework.Plus;
 
 namespace com.mirle.ibg3k0.sc.Data.DAO
 {
@@ -18,14 +19,18 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
         {
             //bool isDetached = con.Entry(rail).State == EntityState.Detached;
             //if (isDetached)
-                con.AADDRESS.Attach(rail);
+            con.AADDRESS.Attach(rail);
             con.SaveChanges();
         }
 
         public List<AADDRESS> loadAll(DBConnection_EF con)
         {
+            //return con.AADDRESS
+            //          .OrderBy(adr => adr.ADR_ID)
+            //          .ToList();
             return con.AADDRESS
                       .OrderBy(adr => adr.ADR_ID)
+                      .FromCache()
                       .ToList();
         }
         public AADDRESS getByID(DBConnection_EF con, String adr_id)

@@ -251,23 +251,49 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             asyExecuteAction(bcApp.SCApplication.VehicleService.AlarmResetRequest);
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private async void button6_Click(object sender, EventArgs e)
         {
             Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(DebugForm), Device: "OHTC",
               Data: $"Excute force command finish for vh:{vh_id}");
-            Task.Run(() =>
+            try
             {
-                bcApp.SCApplication.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
-            });
+                button6.Enabled = false;
+                await Task.Run(() =>
+                {
+                    bcApp.SCApplication.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
+                });
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(DebugForm), Device: "OHTC",
+                Data: $"force finish command Failed, Exception:{ex.Message}");
+            }
+            finally
+            {
+                button6.Enabled = true;
+            }
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            Task.Run(() =>
+            try
             {
-                //bcApp.SCApplication.VehicleService.forceResetVHStatus(vh_id);
-                bcApp.SCApplication.VehicleService.VehicleStatusRequest(vh_id, true);
-            });
+                button7.Enabled = false;
+                Task.Run(() =>
+                {
+                    //bcApp.SCApplication.VehicleService.forceResetVHStatus(vh_id);
+                    bcApp.SCApplication.VehicleService.VehicleStatusRequest(vh_id, true);
+                });
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(DebugForm), Device: "OHTC",
+                Data: $"refresh vh:{vh_id} status failed, Exception:{ex.Message}");
+            }
+            finally
+            {
+                button7.Enabled = true;
+            }
         }
 
         private void cb_StartGenAntoCmd_CheckedChanged(object sender, EventArgs e)
@@ -314,12 +340,23 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
             Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(DebugForm), Device: "OHTC",
               Data: $"Send pause command(ID:39) to vh:{vh_id}, pause event:{pauseEvent}, pause type:{pauseType}");
-
-            Task.Run(() =>
+            try
             {
-                bcApp.SCApplication.VehicleService.PauseRequest(vh_id, pauseEvent, pauseType);
-            });
-
+                btn_pause.Enabled = false;
+                Task.Run(() =>
+                {
+                    bcApp.SCApplication.VehicleService.PauseRequest(vh_id, pauseEvent, pauseType);
+                });
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(DebugForm), Device: "OHTC",
+                Data: $"pause vh:{vh_id} failed, Exception:{ex.Message}");
+            }
+            finally
+            {
+                btn_pause.Enabled = true;
+            }
         }
 
 
@@ -744,30 +781,38 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             btn_mtl_m2o_d2u_interlock.Checked = car_in_interlock;
         }
 
-        private void btn_SendHIDControl_Click(object sender, EventArgs e)
+        private async void btn_SendHIDControl_Click(object sender, EventArgs e)
         {
-            SCApplication scApp = SCApplication.getInstance();
-            AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
-            if (eqpt_HID != null)
+            try
             {
-                HIDValueDefMapAction mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapAction") as HIDValueDefMapAction);
-                if (mapAction != null)
+                btn_SendHIDControl.Enabled = false;
+                SCApplication scApp = SCApplication.getInstance();
+                AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
+                if (eqpt_HID != null)
                 {
-                    bool signal = comboBox_HID_control.SelectedIndex == 0 ? true : false;
-                    mapAction.HID_Control(signal);
+                    HIDValueDefMapAction mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapAction") as HIDValueDefMapAction);
+                    if (mapAction != null)
+                    {
+                        bool signal = comboBox_HID_control.SelectedIndex == 0 ? true : false;
+                        await Task.Run(() => mapAction.HID_Control(signal));
+                    }
+                    else
+                    {
+                        HIDValueDefMapActionPH2 mapActionPH2 = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
+
+                        bool signal = comboBox_HID_control.SelectedIndex == 0 ? true : false;
+                        await Task.Run(() => mapActionPH2.HID_Control(signal));
+                    }
+
                 }
                 else
                 {
-                    HIDValueDefMapActionPH2 mapActionPH2 = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
-
-                    bool signal = comboBox_HID_control.SelectedIndex == 0 ? true : false;
-                    mapActionPH2.HID_Control(signal);
+                    MessageBox.Show("Please Select HID.");
                 }
-
             }
-            else
+            finally
             {
-                MessageBox.Show("Please Select HID.");
+                btn_SendHIDControl.Enabled = true;
             }
         }
 
@@ -846,21 +891,74 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         }
 
-        private void btn_changeToAutoRemote_Click(object sender, EventArgs e)
+        private async void btn_changeToAutoRemote_Click(object sender, EventArgs e)
         {
-            bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoRemote);
+            try
+            {
+                btn_changeToAutoRemote.Enabled = false;
+                await Task.Run(() => bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoRemote));
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(DebugForm), Device: "OHTC",
+                Data: $"change to auto remote failed, Exception:{ex.Message}");
+            }
+            finally
+            {
+                btn_changeToAutoRemote.Enabled = true;
+            }
         }
-        private void btn_changeToAutoLocal_Click(object sender, EventArgs e)
+        private async void btn_changeToAutoLocal_Click(object sender, EventArgs e)
         {
-            bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoMts);
+            try
+            {
+                btn_changeToAutoMTS.Enabled = false;
+                await Task.Run(() => bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoMts));
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(DebugForm), Device: "OHTC",
+                Data: $"change to auto mts failed, Exception:{ex.Message}");
+
+            }
+            finally
+            {
+                btn_changeToAutoMTS.Enabled = true;
+            }
         }
-        private void btn_changeToAutoMTL_Click(object sender, EventArgs e)
+        private async void btn_changeToAutoMTL_Click(object sender, EventArgs e)
         {
-            bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoMtl);
+            try
+            {
+                btn_changeToAutoMTL.Enabled = false;
+                await Task.Run(() => bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoMtl));
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(DebugForm), Device: "OHTC",
+                Data: $"change to auto mtl failed, Exception:{ex.Message}");
+            }
+            finally
+            {
+                btn_changeToAutoMTL.Enabled = true;
+            }
         }
-        private void btn_changeToAutoLocal_Click_1(object sender, EventArgs e)
+        private async void btn_changeToAutoLocal_Click_1(object sender, EventArgs e)
         {
-            bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoLocal);
+            try
+            {
+                btn_changeToAutoLocal.Enabled = false;
+                await Task.Run(() => bcApp.SCApplication.VehicleService.VehicleAutoModeCahnge(vh_id, sc.ProtocolFormat.OHTMessage.VHModeStatus.AutoLocal));
+            }
+            catch (Exception ex)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(DebugForm), Device: "OHTC",
+                Data: $"change to auto local failed, Exception:{ex.Message}");
+            }
+            finally
+            {
+                btn_changeToAutoLocal.Enabled = true;
+            }
         }
 
 
@@ -1343,40 +1441,51 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             MessageBox.Show(is_success.ToString());
         }
 
-        private void btnLighthouse_Click(object sender, EventArgs e)
+        private async void btnLighthouse_Click(object sender, EventArgs e)
         {
-            var Lighthouse = bcApp.SCApplication.EquipmentBLL.cache.getFourColorLighthouse();
-            if (sender == btn_lighthouse_red_set)
+            try
             {
-                Lighthouse.setFourColorLightRedWithBuzzer(true, true);
+                tableLayoutPanel6.Enabled = false;
+                await Task.Run(() =>
+                {
+                    var Lighthouse = bcApp.SCApplication.EquipmentBLL.cache.getFourColorLighthouse();
+                    if (sender == btn_lighthouse_red_set)
+                    {
+                        Lighthouse.setFourColorLightRedWithBuzzer(true, true);
+                    }
+                    else if (sender == btn_lighthouse_green_set)
+                    {
+                        Lighthouse.setFourColorLightGreen(true);
+                    }
+                    else if (sender == btn_lighthouse_blue_set)
+                    {
+                        Lighthouse.setFourColorLightBlue(true);
+                    }
+                    else if (sender == btn_lighthouse_orange_set)
+                    {
+                        Lighthouse.setFourColorLightOrange(true);
+                    }
+                    else if (sender == btn_lighthouse_red_reset)
+                    {
+                        Lighthouse.setFourColorLightRedWithBuzzer(false, false);
+                    }
+                    else if (sender == btn_lighthouse_green_reset)
+                    {
+                        Lighthouse.setFourColorLightGreen(false);
+                    }
+                    else if (sender == btn_lighthouse_blue_reset)
+                    {
+                        Lighthouse.setFourColorLightBlue(false);
+                    }
+                    else if (sender == btn_lighthouse_orange_reset)
+                    {
+                        Lighthouse.setFourColorLightOrange(false);
+                    }
+                });
             }
-            else if (sender == btn_lighthouse_green_set)
+            finally
             {
-                Lighthouse.setFourColorLightGreen(true);
-            }
-            else if (sender == btn_lighthouse_blue_set)
-            {
-                Lighthouse.setFourColorLightBlue(true);
-            }
-            else if (sender == btn_lighthouse_orange_set)
-            {
-                Lighthouse.setFourColorLightOrange(true);
-            }
-            else if (sender == btn_lighthouse_red_reset)
-            {
-                Lighthouse.setFourColorLightRedWithBuzzer(false, false);
-            }
-            else if (sender == btn_lighthouse_green_reset)
-            {
-                Lighthouse.setFourColorLightGreen(false);
-            }
-            else if (sender == btn_lighthouse_blue_reset)
-            {
-                Lighthouse.setFourColorLightBlue(false);
-            }
-            else if (sender == btn_lighthouse_orange_reset)
-            {
-                Lighthouse.setFourColorLightOrange(false);
+                tableLayoutPanel6.Enabled = true;
             }
         }
 
@@ -1390,21 +1499,29 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         }
 
-        private void MaxAllowActionTimeSecond_Set_btn_Click(object sender, EventArgs e)
+        private async void MaxAllowActionTimeSecond_Set_btn_Click(object sender, EventArgs e)
         {
-            List<AECDATAMAP> aECDATAMAPs = new List<AECDATAMAP>();
-            if (!int.TryParse(MaxAllowActionTimeSecond_Current_txb.Text, out int test))
+            try
             {
-                MessageBox.Show("Please enter number.");
-                return;
+                MaxAllowActionTimeSecond_Set_btn.Enabled = false;
+                List<AECDATAMAP> aECDATAMAPs = new List<AECDATAMAP>();
+                if (!int.TryParse(MaxAllowActionTimeSecond_Current_txb.Text, out int test))
+                {
+                    MessageBox.Show("Please enter number.");
+                    return;
+                }
+                maxAllowActionTimeECData.ECV = MaxAllowActionTimeSecond_Current_txb.Text;
+                aECDATAMAPs.Add(maxAllowActionTimeECData);
+                string returnMsg = string.Empty;
+                await Task.Run(() => bcApp.SCApplication.LineBLL.updateECData(aECDATAMAPs, out returnMsg, false));
+                if (!string.IsNullOrWhiteSpace(returnMsg))
+                {
+                    MessageBox.Show(returnMsg);
+                }
             }
-            maxAllowActionTimeECData.ECV = MaxAllowActionTimeSecond_Current_txb.Text;
-            aECDATAMAPs.Add(maxAllowActionTimeECData);
-            string returnMsg = string.Empty;
-            bcApp.SCApplication.LineBLL.updateECData(aECDATAMAPs, out returnMsg, false);
-            if (!string.IsNullOrWhiteSpace(returnMsg))
+            finally
             {
-                MessageBox.Show(returnMsg);
+                MaxAllowActionTimeSecond_Set_btn.Enabled = true;
             }
         }
 
@@ -1457,34 +1574,39 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void btn_hid_datetime_sync_Click(object sender, EventArgs e)
         {
-            SCApplication scApp = SCApplication.getInstance();
-            AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
-            if (eqpt_HID != null)
+            try
             {
-                HIDValueDefMapAction mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapAction") as HIDValueDefMapAction);
-                if (mapAction != null)
+                btn_hid_datetime_sync.Enabled = false;
+                SCApplication scApp = SCApplication.getInstance();
+                AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
+                if (eqpt_HID != null)
                 {
-                    mapAction.DateTimeSyncCommand(DateTime.Now);
+                    HIDValueDefMapAction mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapAction") as HIDValueDefMapAction);
+                    if (mapAction != null)
+                    {
+                        mapAction.DateTimeSyncCommand(DateTime.Now);
+                    }
+                    else
+                    {
+                        HIDValueDefMapActionPH2 mapActionPh2 = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
+                        if (mapActionPh2 != null)
+                        {
+                            mapActionPh2.DateTimeSyncCommand(DateTime.Now);
+                        }
+                    }
                 }
                 else
                 {
-                    HIDValueDefMapActionPH2 mapActionPh2 = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
-                    if (mapActionPh2 != null)
-                    {
-                        mapActionPh2.DateTimeSyncCommand(DateTime.Now);
-                    }
+                    MessageBox.Show("Please Select HID.");
                 }
-
-
             }
-            else
+            finally
             {
-                MessageBox.Show("Please Select HID.");
+                btn_hid_datetime_sync.Enabled = true;
             }
-
         }
 
-        private void btn_SlientControl_Click(object sender, EventArgs e)
+        private async void btn_SlientControl_Click(object sender, EventArgs e)
         {
             SCApplication scApp = SCApplication.getInstance();
             AEQPT eqpt_HID = scApp.getEQObjCacheManager().getEquipmentByEQPTID(comboBox_HID.Text);
@@ -1493,7 +1615,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 HIDValueDefMapActionPH2 mapAction = (eqpt_HID.getMapActionByIdentityKey("HIDValueDefMapActionPH2") as HIDValueDefMapActionPH2);
                 if (mapAction != null)
                 {
-                    mapAction.SilentCommand();
+                    await Task.Run(() => mapAction.SilentCommand());
                 }
             }
             else

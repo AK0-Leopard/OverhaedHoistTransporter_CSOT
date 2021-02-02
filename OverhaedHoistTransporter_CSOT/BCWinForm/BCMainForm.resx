@@ -127,6 +127,31 @@
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>326, 17</value>
   </metadata>
+  <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 709</value>
+  </data>
+  <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1362, 32</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="statusStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="statusStrip1.Text" xml:space="preserve">
+    <value>statusStrip1</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.Name" xml:space="preserve">
+    <value>statusStrip1</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.StatusStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="toolStripStatusLabel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>671, 27</value>
   </data>
@@ -136,7 +161,6 @@
   <data name="tssl_Version_Name.Text" xml:space="preserve">
     <value>Version：</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="tssl_Version_Value.AutoSize" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
@@ -179,33 +203,18 @@
   <data name="tssl_LoginUser_Value.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleLeft</value>
   </data>
-  <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 709</value>
-  </data>
-  <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1362, 32</value>
-  </data>
-  <data name="statusStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
-  </data>
-  <data name="statusStrip1.Text" xml:space="preserve">
-    <value>statusStrip1</value>
-  </data>
-  <data name="&gt;&gt;statusStrip1.Name" xml:space="preserve">
-    <value>statusStrip1</value>
-  </data>
-  <data name="&gt;&gt;statusStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.StatusStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;statusStrip1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;statusStrip1.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <metadata name="CMS_OnLineMode.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>450, 17</value>
   </metadata>
+  <data name="CMS_OnLineMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 70</value>
+  </data>
+  <data name="&gt;&gt;CMS_OnLineMode.Name" xml:space="preserve">
+    <value>CMS_OnLineMode</value>
+  </data>
+  <data name="&gt;&gt;CMS_OnLineMode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="onLineReToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>167, 22</value>
   </data>
@@ -224,26 +233,17 @@
   <data name="offLineToolStripMenuItem.Text" xml:space="preserve">
     <value>Off-Line</value>
   </data>
-  <data name="CMS_OnLineMode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>168, 70</value>
+  <data name="testToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 20</value>
   </data>
-  <data name="&gt;&gt;CMS_OnLineMode.Name" xml:space="preserve">
-    <value>CMS_OnLineMode</value>
-  </data>
-  <data name="&gt;&gt;CMS_OnLineMode.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="testToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Test</value>
   </data>
   <data name="sendS2F31ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>140, 22</value>
   </data>
   <data name="sendS2F31ToolStripMenuItem.Text" xml:space="preserve">
     <value>Send S2F31</value>
-  </data>
-  <data name="testToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>43, 20</value>
-  </data>
-  <data name="testToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Test</value>
   </data>
   <metadata name="Tip_CtrlSTAT.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>610, 17</value>
@@ -253,39 +253,6 @@
   </metadata>
   <data name="menuStrip1.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 14.25pt</value>
-  </data>
-  <data name="startConnectionToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>214, 26</value>
-  </data>
-  <data name="startConnectionToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Start Driver</value>
-  </data>
-  <data name="stopConnectionToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>214, 26</value>
-  </data>
-  <data name="stopConnectionToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Stop Driver</value>
-  </data>
-  <data name="stopConnectionToolStripMenuItem1.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="sEToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>214, 26</value>
-  </data>
-  <data name="sEToolStripMenuItem.Text" xml:space="preserve">
-    <value>SECS Debug</value>
-  </data>
-  <data name="sEToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="dToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>214, 26</value>
-  </data>
-  <data name="dToolStripMenuItem.Text" xml:space="preserve">
-    <value>Date Time Sync</value>
-  </data>
-  <data name="dToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
   </data>
   <data name="systemToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>86, 26</value>
@@ -333,29 +300,11 @@
   <data name="engineerToolStripMenuItem.Text" xml:space="preserve">
     <value>Engineer</value>
   </data>
-  <data name="zhTwToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>136, 26</value>
-  </data>
-  <data name="zhTwToolStripMenuItem.Text" xml:space="preserve">
-    <value>zh-TW</value>
-  </data>
-  <data name="enUSToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>136, 26</value>
-  </data>
-  <data name="enUSToolStripMenuItem.Text" xml:space="preserve">
-    <value>en-US</value>
-  </data>
   <data name="languageChangeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>235, 26</value>
   </data>
   <data name="languageChangeToolStripMenuItem.Text" xml:space="preserve">
     <value>Language Change</value>
-  </data>
-  <data name="sectionDataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>188, 26</value>
-  </data>
-  <data name="sectionDataToolStripMenuItem.Text" xml:space="preserve">
-    <value>Section Data</value>
   </data>
   <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>235, 26</value>
@@ -380,6 +329,114 @@
   </data>
   <data name="operatorToolStripMenuItem.Text" xml:space="preserve">
     <value>Operator</value>
+  </data>
+  <data name="mataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 26</value>
+  </data>
+  <data name="mataToolStripMenuItem.Text" xml:space="preserve">
+    <value>Maintenance</value>
+  </data>
+  <data name="languageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>106, 26</value>
+  </data>
+  <data name="languageToolStripMenuItem.Text" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="tipMessageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>131, 26</value>
+  </data>
+  <data name="tipMessageToolStripMenuItem.Text" xml:space="preserve">
+    <value>Tip Message</value>
+  </data>
+  <data name="monitorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 26</value>
+  </data>
+  <data name="monitorToolStripMenuItem.Text" xml:space="preserve">
+    <value>Monitor</value>
+  </data>
+  <data name="engineerToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>98, 26</value>
+  </data>
+  <data name="engineerToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Engineer</value>
+  </data>
+  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="menuStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>7, 2, 0, 2</value>
+  </data>
+  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1362, 30</value>
+  </data>
+  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="menuStrip1.Text" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="startConnectionToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 26</value>
+  </data>
+  <data name="startConnectionToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Start Driver</value>
+  </data>
+  <data name="stopConnectionToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 26</value>
+  </data>
+  <data name="stopConnectionToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Stop Driver</value>
+  </data>
+  <data name="stopConnectionToolStripMenuItem1.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="sEToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 26</value>
+  </data>
+  <data name="sEToolStripMenuItem.Text" xml:space="preserve">
+    <value>SECS Debug</value>
+  </data>
+  <data name="sEToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="dToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 26</value>
+  </data>
+  <data name="dToolStripMenuItem.Text" xml:space="preserve">
+    <value>Date Time Sync</value>
+  </data>
+  <data name="dToolStripMenuItem.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="zhTwToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 26</value>
+  </data>
+  <data name="zhTwToolStripMenuItem.Text" xml:space="preserve">
+    <value>zh-TW</value>
+  </data>
+  <data name="enUSToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 26</value>
+  </data>
+  <data name="enUSToolStripMenuItem.Text" xml:space="preserve">
+    <value>en-US</value>
+  </data>
+  <data name="sectionDataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>188, 26</value>
+  </data>
+  <data name="sectionDataToolStripMenuItem.Text" xml:space="preserve">
+    <value>Section Data</value>
   </data>
   <data name="changePasswordToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>300, 26</value>
@@ -414,12 +471,6 @@
   <data name="reserveInfoToolStripMenuItem.Text" xml:space="preserve">
     <value>Reserve Info</value>
   </data>
-  <data name="mataToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 26</value>
-  </data>
-  <data name="mataToolStripMenuItem.Text" xml:space="preserve">
-    <value>Maintenance</value>
-  </data>
   <data name="englishToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>160, 26</value>
   </data>
@@ -438,29 +489,11 @@
   <data name="zh_chToolStripMenuItem.Text" xml:space="preserve">
     <value>简体中文</value>
   </data>
-  <data name="languageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 26</value>
-  </data>
-  <data name="languageToolStripMenuItem.Text" xml:space="preserve">
-    <value>Language</value>
-  </data>
-  <data name="tipMessageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>131, 26</value>
-  </data>
-  <data name="tipMessageToolStripMenuItem.Text" xml:space="preserve">
-    <value>Tip Message</value>
-  </data>
   <data name="communectionStatusToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>255, 26</value>
   </data>
   <data name="communectionStatusToolStripMenuItem.Text" xml:space="preserve">
     <value>Communction Status</value>
-  </data>
-  <data name="monitorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 26</value>
-  </data>
-  <data name="monitorToolStripMenuItem.Text" xml:space="preserve">
-    <value>Monitor</value>
   </data>
   <data name="debugToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
     <value>235, 26</value>
@@ -473,39 +506,6 @@
   </data>
   <data name="engineeringModeToolStripMenuItem.Text" xml:space="preserve">
     <value>Engineering mode</value>
-  </data>
-  <data name="engineerToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>98, 26</value>
-  </data>
-  <data name="engineerToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Engineer</value>
-  </data>
-  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="menuStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>7, 2, 0, 2</value>
-  </data>
-  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1362, 30</value>
-  </data>
-  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="menuStrip1.Text" xml:space="preserve">
-    <value>Language</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
-    <value>menuStrip1</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
