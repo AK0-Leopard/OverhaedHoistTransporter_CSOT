@@ -67,15 +67,18 @@ namespace com.mirle.ibg3k0.sc.Data
             try
             {
                 App.SCApplication scapp = item.Param[0] as App.SCApplication;
-                AVEHICLE vh = item.Param[1] as AVEHICLE;
-                BLL.VehicleBLL.FindTheParkZoneTheWay find_the_way = (BLL.VehicleBLL.FindTheParkZoneTheWay)item.Param[2];
+                BLL.VehicleBLL.FindTheParkZoneTheWay find_the_way = (BLL.VehicleBLL.FindTheParkZoneTheWay)item.Param[1];
+                AVEHICLE obstacleVh = item.Param[2] as AVEHICLE;
                 switch (find_the_way)
                 {
                     case BLL.VehicleBLL.FindTheParkZoneTheWay.IsOnParkZone:
-                        scapp.VehicleBLL.ExcuteAndFindParkZoneForDriveAway(vh);
+                        //scapp.VehicleBLL.ExcuteAndFindParkZoneForDriveAway(obstacleVh);
+                        AVEHICLE blockedVh = item.Param[3] as AVEHICLE;
+
+                        scapp.VehicleBLL.ExcuteAndFindParkZoneForDriveAway(obstacleVh, blockedVh);
                         break;
                     case BLL.VehicleBLL.FindTheParkZoneTheWay.NotOnParkZone:
-                        scapp.VehicleBLL.FindParkZoneOrCycleRunZoneNew(vh);
+                        scapp.VehicleBLL.FindParkZoneOrCycleRunZoneNew(obstacleVh);
                         break;
                 }
             }

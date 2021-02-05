@@ -252,7 +252,10 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                             {
                                 bool isCreatScuess = true;
                                 if (!SCUtility.isMatche(SECSConst.HCACK_Rejected_Already_Requested, s2f50.HCACK))
-                                    isCreatScuess &= scApp.CMDBLL.doCreatMCSCommand(cmdID, priority, replace, cstID, source, dest, s2f50.HCACK);
+                                {
+                                    //isCreatScuess &= scApp.CMDBLL.doCreatMCSCommand(cmdID, priority, replace, cstID, source, dest, s2f50.HCACK);
+                                    isCreatScuess &= scApp.CMDBLL.doCreatMCSCommandRetryHelp(cmdID, priority, replace, cstID, source, dest, s2f50.HCACK);
+                                }
                                 if (!isCreatScuess)
                                 {
                                     s2f50.HCACK = SECSConst.HCACK_Current_Not_Able_Execute;
@@ -1551,7 +1554,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
 
 
         public override bool sendS6F11_PortOutOfService(string port_id, List<AMCSREPORTQUEUE> reportQueues = null)
-            {
+        {
             try
             {
                 VIDCollection Vids = new VIDCollection();

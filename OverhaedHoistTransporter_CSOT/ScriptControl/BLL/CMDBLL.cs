@@ -277,6 +277,58 @@ namespace com.mirle.ibg3k0.sc.BLL
             return isSuccess;
 
         }
+        int MAX_RETYIES = 2;
+        public bool doCreatMCSCommandRetryHelp(string command_id, string Priority, string replace, string carrier_id, string HostSource, string HostDestination, string checkcode)
+        {
+            bool isSuccess = true;
+            int ipriority = 0;
+            int retry_count = 0;
+            while (retry_count < MAX_RETYIES)
+            {
+                try
+                {
+                    retry_count++;
+                    if (!int.TryParse(Priority, out ipriority))
+                    {
+                        logger.Warn("command id :{0} of priority parse fail. priority valus:{1}"
+                                    , command_id
+                                    , Priority);
+                    }
+                    int ireplace = 0;
+                    if (!int.TryParse(replace, out ireplace))
+                    {
+                        logger.Warn("command id :{0} of priority parse fail. priority valus:{1}"
+                                    , command_id
+                                    , replace);
+                    }
+                    creatCommand_MCS(command_id, ipriority, ireplace, carrier_id, HostSource, HostDestination, checkcode);
+                    isSuccess = true;
+                    break;
+                }
+                catch (System.Data.SqlClient.SqlException ex)
+                {
+                    logger.Error(ex, "Exection:");
+                    if (ex.Number == DBConnection_EF.SQL_SERVER_ERROR_CODE_DEAD_LOCK)
+                    {
+                        //Not thing...
+                        logger.Warn($"creat command id :{command_id} dead lock happend. retry count:{retry_count}");
+                        isSuccess = false;
+                    }
+                    else
+                    {
+                        isSuccess = false;
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Exection:");
+                    isSuccess = false;
+                    break;
+                }
+            }
+            return isSuccess;
+        }
 
         public ACMD_MCS creatCommand_MCS(string command_id, int Priority, int replace, string carrier_id, string HostSource, string HostDestination, string checkcode)
         {

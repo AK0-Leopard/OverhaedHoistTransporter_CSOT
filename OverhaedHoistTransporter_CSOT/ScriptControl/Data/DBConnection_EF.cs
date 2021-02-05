@@ -19,6 +19,8 @@ namespace com.mirle.ibg3k0.sc.Data
 {
     public class DBConnection_EF : OHTC_DevEntities, IDisposable
     {
+        public const int SQL_SERVER_ERROR_CODE_DEAD_LOCK = 1205;
+
         //private stackalloc string 
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private static Logger logger_EFSql = LogManager.GetLogger("EFSqlObserver");
