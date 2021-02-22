@@ -445,6 +445,12 @@
     <Compile Include="UI\Operate\VehicleDataSettingForm.Designer.cs">
       <DependentUpon>VehicleDataSettingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Query\HistoryAlarmsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Query\HistoryAlarmsForm.Designer.cs">
+      <DependentUpon>HistoryAlarmsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Query\TransferCommandQureyListForm.cs">
       <SubType>Form</SubType>
     </Compile>

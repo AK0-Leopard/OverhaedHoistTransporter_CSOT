@@ -104,6 +104,9 @@ namespace com.mirle.ibg3k0.bc.winform
             this.engineerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.engineeringModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.queryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.transferCommandHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alarmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.CMS_OnLineMode.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -218,7 +221,8 @@ namespace com.mirle.ibg3k0.bc.winform
             this.languageToolStripMenuItem,
             this.tipMessageToolStripMenuItem,
             this.monitorToolStripMenuItem,
-            this.engineerToolStripMenuItem1});
+            this.engineerToolStripMenuItem1,
+            this.queryToolStripMenuItem});
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.menuStrip1_MouseDoubleClick);
             // 
@@ -464,6 +468,25 @@ namespace com.mirle.ibg3k0.bc.winform
             resources.ApplyResources(this.engineeringModeToolStripMenuItem, "engineeringModeToolStripMenuItem");
             this.engineeringModeToolStripMenuItem.Click += new System.EventHandler(this.engineeringModeToolStripMenuItem_Click);
             // 
+            // queryToolStripMenuItem
+            // 
+            this.queryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.transferCommandHistoryToolStripMenuItem,
+            this.alarmToolStripMenuItem});
+            this.queryToolStripMenuItem.Name = "queryToolStripMenuItem";
+            resources.ApplyResources(this.queryToolStripMenuItem, "queryToolStripMenuItem");
+            // 
+            // transferCommandHistoryToolStripMenuItem
+            // 
+            this.transferCommandHistoryToolStripMenuItem.Name = "transferCommandHistoryToolStripMenuItem";
+            resources.ApplyResources(this.transferCommandHistoryToolStripMenuItem, "transferCommandHistoryToolStripMenuItem");
+            // 
+            // alarmToolStripMenuItem
+            // 
+            this.alarmToolStripMenuItem.Name = "alarmToolStripMenuItem";
+            resources.ApplyResources(this.alarmToolStripMenuItem, "alarmToolStripMenuItem");
+            this.alarmToolStripMenuItem.Click += new System.EventHandler(this.alarmToolStripMenuItem_Click);
+            // 
             // BCMainForm
             // 
             resources.ApplyResources(this, "$this");
@@ -628,6 +651,9 @@ namespace com.mirle.ibg3k0.bc.winform
         [AuthorityCheck(FUNCode = BCAppConstants.Maintenance_Function.FUNC_ADVANCED_SETTINGS)]
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem reserveInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem queryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem transferCommandHistoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem alarmToolStripMenuItem;
     }
 
     /// <summary>

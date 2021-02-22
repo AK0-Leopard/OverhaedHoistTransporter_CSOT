@@ -134,7 +134,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             else if (BCFUtility.isMatche(mainForm.BCApp.SCApplication.BC_ID, SCAppConstants.WorkVersion.VERSION_NAME_CSOT_T4_PH1PH2))
             {
                 space_Height_m = 40000; //CSOT-T4_PH1PH2地圖大小
-                space_Width_m = 200000;
+                space_Width_m = 150000;
                 zoon_Factor = 160;
                 defaultMaxScale = 10;
                 trackBar_scale.SmallChange = 2;

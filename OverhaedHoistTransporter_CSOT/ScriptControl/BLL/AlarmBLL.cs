@@ -107,7 +107,15 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
         #endregion Alarm Map
 
-
+        public List<ALARM> GetAlarms(DateTime startTime, DateTime endTime)
+        {
+            List<ALARM> alarm = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                alarm = alarmDao.getAlarms(con, startTime, endTime);
+            }
+            return alarm;
+        }
 
         object lock_obj_alarm = new object();
         public ALARM setAlarmReport(string node_id, string eq_id, string error_code, string currentAdrID)
