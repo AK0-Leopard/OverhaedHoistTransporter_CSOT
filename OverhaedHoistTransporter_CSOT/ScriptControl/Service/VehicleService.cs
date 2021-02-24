@@ -82,6 +82,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 vh.StatusRequestFailOverTimes += Vh_StatusRequestFailOverTimes;
                 vh.LongTimeNoCommuncation += Vh_LongTimeNoCommuncation;
                 vh.LongTimeInaction += Vh_LongTimeInaction;
+                vh.NonLongTimeInaction += Vh_NonLongTimeInaction;
                 vh.TimerActionStart();
             }
         }
@@ -140,6 +141,30 @@ namespace com.mirle.ibg3k0.sc.Service
                     vh.NODE_ID, vh.VEHICLE_ID, vh.Real_ID, "",
                     SCAppConstants.SystemAlarmCode.OHT_Issue.OHTLongInaction,
                     ProtocolFormat.OHTMessage.ErrorStatus.ErrSet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: ex,
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
+            }
+        }
+        private void Vh_NonLongTimeInaction(object sender, EventArgs e)
+        {
+            AVEHICLE vh = sender as AVEHICLE;
+            if (vh == null) return;
+            try
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"Process vehicle non long time inaction",
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
+                //上報Alamr Rerport給MCS
+                scApp.LineService.ProcessAlarmReport(
+                    vh.NODE_ID, vh.VEHICLE_ID, vh.Real_ID, "",
+                    SCAppConstants.SystemAlarmCode.OHT_Issue.OHTLongInaction,
+                    ProtocolFormat.OHTMessage.ErrorStatus.ErrReset);
             }
             catch (Exception ex)
             {
@@ -1660,47 +1685,47 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             try
             {
-                lock (vh.PositionRefresh_Sync)
+                //lock (vh.PositionRefresh_Sync)
+                //{
+                ALINE line = scApp.getEQObjCacheManager().getLine();
+                scApp.VehicleBLL.updateVheiclePosition_CacheManager(vh, current_adr_id, current_sec_id, current_seg_id, sec_dis);
+                var update_result = scApp.VehicleBLL.updateVheiclePositionToReserveControlModule
+                    (scApp.ReserveBLL, vh, current_sec_id, current_adr_id, sec_dis, 0, 0, 1,
+                     HltDirection.Forward, HltDirection.Forward);
+
+                if (line.ServiceMode == SCAppConstants.AppServiceMode.Active)
                 {
-                    ALINE line = scApp.getEQObjCacheManager().getLine();
-                    scApp.VehicleBLL.updateVheiclePosition_CacheManager(vh, current_adr_id, current_sec_id, current_seg_id, sec_dis);
-                    var update_result = scApp.VehicleBLL.updateVheiclePositionToReserveControlModule
-                        (scApp.ReserveBLL, vh, current_sec_id, current_adr_id, sec_dis, 0, 0, 1,
-                         HltDirection.Forward, HltDirection.Forward);
-
-                    if (line.ServiceMode == SCAppConstants.AppServiceMode.Active)
+                    if (!SCUtility.isMatche(current_seg_id, last_seg_id))
                     {
-                        if (!SCUtility.isMatche(current_seg_id, last_seg_id))
-                        {
-                            vh.onSegmentChange(current_seg_id, last_seg_id);
-                        }
-
-                        if (!SCUtility.isMatche(last_sec_id, current_sec_id))
-                        {
-                            vh.onLocationChange(current_sec_id, last_sec_id);
-                            //TODO 要改成查一次CMD出來然後直接帶入CMD ID
-                            if (!SCUtility.isEmpty(vh.OHTC_CMD))
-                            {
-
-                                //A0.09 scApp.CMDBLL.update_CMD_DetailEntryTime(vh.OHTC_CMD, current_adr_id, current_sec_id);
-                                //A0.09 scApp.CMDBLL.update_CMD_DetailLeaveTime(vh.OHTC_CMD, last_adr_id, last_sec_id);
-                                //A0.09 List<string> willPassSecID = null;
-                                //A0.09 vh.procProgress_Percen = scApp.CMDBLL.getAndUpdateVhCMDProgress(vh.VEHICLE_ID, out willPassSecID);
-                                //A0.09 var will_pass_tmp = willPassSecID.Select(route => SCUtility.Trim(route, true));
-                                //A0.09 vh.WillPassSectionID = will_pass_tmp.ToList();
-
-                                //scApp.VehicleBLL.NetworkQualityTest(vh.VEHICLE_ID, current_adr_id, current_sec_id, 0);
-                            }
-                            //vh.onLocationChange(current_sec_id, last_sec_id);
-                        }
-                        //if (!SCUtility.isMatche(current_seg_id, last_seg_id))
-                        //{
-                        //    vh.onSegmentChange(current_seg_id, last_seg_id);
-                        //}
-                        //if (!SCUtility.isMatche(current_adr_id, last_adr_id) || !SCUtility.isMatche(current_sec_id, last_sec_id))
-                        //    scApp.VehicleBLL.updateVheiclePosition(vh.VEHICLE_ID, current_adr_id, current_sec_id, sec_dis, vhPassEvent);
+                        vh.onSegmentChange(current_seg_id, last_seg_id);
                     }
+
+                    if (!SCUtility.isMatche(last_sec_id, current_sec_id))
+                    {
+                        vh.onLocationChange(current_sec_id, last_sec_id);
+                        //TODO 要改成查一次CMD出來然後直接帶入CMD ID
+                        if (!SCUtility.isEmpty(vh.OHTC_CMD))
+                        {
+
+                            //A0.09 scApp.CMDBLL.update_CMD_DetailEntryTime(vh.OHTC_CMD, current_adr_id, current_sec_id);
+                            //A0.09 scApp.CMDBLL.update_CMD_DetailLeaveTime(vh.OHTC_CMD, last_adr_id, last_sec_id);
+                            //A0.09 List<string> willPassSecID = null;
+                            //A0.09 vh.procProgress_Percen = scApp.CMDBLL.getAndUpdateVhCMDProgress(vh.VEHICLE_ID, out willPassSecID);
+                            //A0.09 var will_pass_tmp = willPassSecID.Select(route => SCUtility.Trim(route, true));
+                            //A0.09 vh.WillPassSectionID = will_pass_tmp.ToList();
+
+                            //scApp.VehicleBLL.NetworkQualityTest(vh.VEHICLE_ID, current_adr_id, current_sec_id, 0);
+                        }
+                        //vh.onLocationChange(current_sec_id, last_sec_id);
+                    }
+                    //if (!SCUtility.isMatche(current_seg_id, last_seg_id))
+                    //{
+                    //    vh.onSegmentChange(current_seg_id, last_seg_id);
+                    //}
+                    //if (!SCUtility.isMatche(current_adr_id, last_adr_id) || !SCUtility.isMatche(current_sec_id, last_sec_id))
+                    //    scApp.VehicleBLL.updateVheiclePosition(vh.VEHICLE_ID, current_adr_id, current_sec_id, sec_dis, vhPassEvent);
                 }
+                //}
             }
             catch (Exception ex)
             {

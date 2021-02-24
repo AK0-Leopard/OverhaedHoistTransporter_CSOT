@@ -265,15 +265,36 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, 0, recive_str);
             if (recive_str.SecDistance > IGNORE_SECTION_DISTANCE)
             {
-                if(recive_str.CurrentSecID != eqpt.PRE_SEC_ID)
+                if (recive_str.CurrentSecID != eqpt.PRE_SEC_ID)
                 {
+                    bool need_process_position = true;
+                    int pre_position_seq_num = 0;
+                    int current_seq_num = 0;
+                    lock (eqpt.PositionRefresh_Sync)
+                    {
+                        current_seq_num = e.iSeqNum;
+                        pre_position_seq_num = eqpt.PrePositionSeqNum;
+                        //bool need_process_position = true;
+                        //lock (eqpt.PositionRefresh_Sync)
+                        //{
+                        need_process_position = checkPositionSeqNum(current_seq_num, pre_position_seq_num);
+                        eqpt.PrePositionSeqNum = current_seq_num;
+                    }
+                    if (!need_process_position)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(EQTcpIpMapAction), Device: Service.VehicleService.DEVICE_NAME_OHx,
+                           Data: $"The vehicles updata position report of seq num is old,by pass this one.old seq num;{pre_position_seq_num},current seq num:{current_seq_num}",
+                           VehicleID: eqpt.VEHICLE_ID,
+                           CarrierID: eqpt.CST_ID);
+                        return;
+                    }
                     scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(eqpt.VEHICLE_ID, recive_str);
                 }
                 else
                 {
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(EQTcpIpMapAction), Device: "OHxC",
-         Data: $"ignore vh:{eqpt.VEHICLE_ID} of position report,because current section {recive_str.CurrentSecID} is the same with privious section id.",
-         VehicleID: eqpt.VEHICLE_ID);
+                    Data: $"ignore vh:{eqpt.VEHICLE_ID} of position report,because current section {recive_str.CurrentSecID} is the same with privious section id.",
+                    VehicleID: eqpt.VEHICLE_ID);
                 }
             }
             else
@@ -289,6 +310,39 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             //dynamic service = scApp.VehicleService;
             //ID_134_TRANS_EVENT_REP recive_str = (ID_134_TRANS_EVENT_REP)e.objPacket;
             //service.PositionReport(bcfApp, eqpt, recive_str, e.iSeqNum);
+        }
+        const int TOLERANCE_SCOPE = 50;
+        private const ushort SEQNUM_MAX = 999;
+        private bool checkPositionSeqNum(int currnetNum, int preNum)
+        {
+            try
+            {
+                int lower_limit = preNum - TOLERANCE_SCOPE;
+                if (lower_limit >= 0)
+                {
+                    //如果該次的Num介於上次的值減去容錯值(TOLERANCE_SCOPE = 50) 至 上次的值
+                    //就代表是舊的資料
+                    if (currnetNum > (lower_limit) && currnetNum < preNum)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    //如果上次的值減去容錯值變成負的，代表要再由SENDSEQNUM_MAX往回推
+                    lower_limit = SEQNUM_MAX + lower_limit;
+                    if (currnetNum > (lower_limit) && currnetNum < preNum)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "(checkPositionSeqNum) Exception");
+                return true;
+            }
         }
 
 

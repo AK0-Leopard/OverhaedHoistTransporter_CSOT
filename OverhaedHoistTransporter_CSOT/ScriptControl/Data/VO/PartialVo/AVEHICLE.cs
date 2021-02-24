@@ -65,7 +65,7 @@ namespace com.mirle.ibg3k0.sc
         /// <summary>
         /// 單筆命令，最大允許的搬送時間
         /// </summary>
-        public static UInt16 MAX_ALLOW_ACTION_TIME_SECOND { get; private set; } = 1200; //20分鐘
+        public static UInt32 MAX_ALLOW_ACTION_TIME_MILLISECOND { get; private set; } = 1200000; //20分鐘
 
         public event EventHandler<LocationChangeEventArgs> LocationChange;
         public event EventHandler<SegmentChangeEventArgs> SegmentChange;
@@ -74,6 +74,7 @@ namespace com.mirle.ibg3k0.sc
         public event EventHandler<int> StatusRequestFailOverTimes;
         public event EventHandler LongTimeNoCommuncation;
         public event EventHandler<string> LongTimeInaction;
+        public event EventHandler NonLongTimeInaction;
 
 
         VehicleTimerAction vehicleTimer = null;
@@ -98,6 +99,11 @@ namespace com.mirle.ibg3k0.sc
         public void onLongTimeInaction(string cmdID)
         {
             LongTimeInaction?.Invoke(this, cmdID);
+        }
+
+        public void onNonLongTimeInaction()
+        {
+            NonLongTimeInaction?.Invoke(this, EventArgs.Empty);
         }
 
         public AVEHICLE()
@@ -186,13 +192,15 @@ namespace com.mirle.ibg3k0.sc
 
         [JsonIgnore]
         public virtual string PRE_SEC_ID { get; set; }
+        [JsonIgnore]
+        public int PrePositionSeqNum = 0;
 
         [JsonIgnore]
         public virtual E_CMD_TYPE CmdType { get; set; } = default(E_CMD_TYPE);
 
         [JsonIgnore]
         public virtual E_CMD_STATUS vh_CMD_Status { get; set; }
-
+        public virtual bool isLongTimeInaction { get; private set; }
         /// <summary>
         /// 用來預防在更新Mode Status的時候，會有多執行續的問題，導致最後狀態不正確。
         /// </summary>
@@ -1299,11 +1307,27 @@ namespace com.mirle.ibg3k0.sc
                         {
                             vh.onLongTimeNoCommuncation();
                         }
-                        double action_time = vh.CurrentCommandExcuteTime.Elapsed.TotalSeconds;
-                        //if (action_time > AVEHICLE.MAX_ALLOW_ACTION_TIME_SECOND)
-                        if (action_time > SystemParameter.MaxAllowActionTimeSec)
+                        //double action_time = vh.CurrentCommandExcuteTime.Elapsed.TotalSeconds;
+                        ////if (action_time > AVEHICLE.MAX_ALLOW_ACTION_TIME_SECOND)
+                        //if (action_time > SystemParameter.MaxAllowActionTimeSec)
+                        //{
+                        //    vh.onLongTimeInaction(vh.OHTC_CMD);
+                        //}
+                        var cmds = scApp.CMDBLL.loadUnfinishCMD_OHT();
+                        CommandActionTimeCheck(cmds);
+                        if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > AVEHICLE.MAX_ALLOW_ACTION_TIME_MILLISECOND)
                         {
-                            vh.onLongTimeInaction(vh.OHTC_CMD);
+                            var currnet_excute_ids = getVhCurrentExcuteCommandID(cmds);
+                            vh.onLongTimeInaction(currnet_excute_ids);
+                            vh.isLongTimeInaction = true;
+                        }
+                        else
+                        {
+                            if (vh.isLongTimeInaction)
+                            {
+                                vh.onNonLongTimeInaction();
+                            }
+                            vh.isLongTimeInaction = false;
                         }
                     }
                     catch (Exception ex)
@@ -1321,6 +1345,37 @@ namespace com.mirle.ibg3k0.sc
                 }
             }
 
+            private void CommandActionTimeCheck(List<ACMD_OHTC> cmds)
+            {
+                if (cmds == null) return;
+                bool has_command_excute = getVhCurrentExcuteCommandCount(cmds);
+                if (has_command_excute)
+                {
+                    if (!vh.CurrentCommandExcuteTime.IsRunning)
+                    {
+                        vh.CurrentCommandExcuteTime.Restart();
+                    }
+                }
+                else
+                {
+                    if (vh.CurrentCommandExcuteTime.IsRunning)
+                    {
+                        vh.CurrentCommandExcuteTime.Reset();
+                    }
+                }
+            }
+
+            private bool getVhCurrentExcuteCommandCount(List<ACMD_OHTC> cmds)
+            {
+                return cmds.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vh.VEHICLE_ID))
+                           .Count() > 0;
+            }
+            private string getVhCurrentExcuteCommandID(List<ACMD_OHTC> cmds)
+            {
+                return cmds.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vh.VEHICLE_ID))
+                           .Select(cmd => SCUtility.Trim(cmd.CMD_ID, true))
+                           .FirstOrDefault();
+            }
         }
 
     }
