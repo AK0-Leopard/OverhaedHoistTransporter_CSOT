@@ -5,16 +5,15 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Z.EntityFramework.Plus;
 namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
 {
     public class HCMD_MCSDao
     {
         public void AddByBatch(DBConnection_EF con, List<HCMD_MCS> cmd_mcss)
         {
-            //con.HCMD_MCS.AddRange(cmd_mcss);
-            //con.SaveChanges();
-            con.BulkInsert(cmd_mcss);
+            con.HCMD_MCS.AddRange(cmd_mcss);
+            con.SaveChanges();
+            //con.BulkInsert(cmd_mcss);
 
         }
         public List<HCMD_MCS> loadBefore6Months(DBConnection_EF con)
