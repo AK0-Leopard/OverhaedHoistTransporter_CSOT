@@ -426,6 +426,7 @@
             this.cb_FroceBlockPass.TabIndex = 7;
             this.cb_FroceBlockPass.Text = "Force Block Pass";
             this.cb_FroceBlockPass.UseVisualStyleBackColor = true;
+            this.cb_FroceBlockPass.Visible = false;
             this.cb_FroceBlockPass.CheckedChanged += new System.EventHandler(this.cb_FroceBlockPass_CheckedChanged);
             // 
             // cmb_tcpipctr_Vehicle
@@ -446,6 +447,7 @@
             this.cmb_teach_from_adr.Name = "cmb_teach_from_adr";
             this.cmb_teach_from_adr.Size = new System.Drawing.Size(199, 30);
             this.cmb_teach_from_adr.TabIndex = 14;
+            this.cmb_teach_from_adr.Visible = false;
             // 
             // cmb_teach_to_adr
             // 
@@ -455,6 +457,7 @@
             this.cmb_teach_to_adr.Name = "cmb_teach_to_adr";
             this.cmb_teach_to_adr.Size = new System.Drawing.Size(199, 30);
             this.cmb_teach_to_adr.TabIndex = 14;
+            this.cmb_teach_to_adr.Visible = false;
             // 
             // groupBox1
             // 
@@ -471,6 +474,7 @@
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Fun 71";
+            this.groupBox1.Visible = false;
             // 
             // label2
             // 
@@ -501,6 +505,7 @@
             this.uctl_Send_Fun_71.TabIndex = 13;
             this.uctl_Send_Fun_71.Text = "Send Func 71";
             this.uctl_Send_Fun_71.UseVisualStyleBackColor = true;
+            this.uctl_Send_Fun_71.Visible = false;
             this.uctl_Send_Fun_71.Click += new System.EventHandler(this.uctl_Send_Fun_71_Click);
             // 
             // button1
@@ -512,6 +517,7 @@
             this.button1.TabIndex = 16;
             this.button1.Text = "Send Func:61";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
@@ -523,6 +529,7 @@
             this.button2.TabIndex = 16;
             this.button2.Text = "Send Func:63";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
@@ -534,6 +541,7 @@
             this.button3.TabIndex = 16;
             this.button3.Text = "Send Func:41";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
@@ -545,6 +553,7 @@
             this.button4.TabIndex = 16;
             this.button4.Text = "Send Func:45";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Visible = false;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
@@ -554,7 +563,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(214, 42);
             this.button5.TabIndex = 16;
-            this.button5.Text = "Send Func:91";
+            this.button5.Text = "Send Alarm Clear";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -566,6 +575,7 @@
             this.cb_OperMode.Name = "cb_OperMode";
             this.cb_OperMode.Size = new System.Drawing.Size(199, 30);
             this.cb_OperMode.TabIndex = 14;
+            this.cb_OperMode.Visible = false;
             // 
             // label3
             // 
@@ -585,6 +595,7 @@
             this.cb_PwrMode.Name = "cb_PwrMode";
             this.cb_PwrMode.Size = new System.Drawing.Size(199, 30);
             this.cb_PwrMode.TabIndex = 14;
+            this.cb_PwrMode.Visible = false;
             // 
             // label4
             // 
@@ -639,6 +650,7 @@
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Fun 41";
+            this.groupBox2.Visible = false;
             // 
             // groupBox3
             // 
@@ -651,6 +663,7 @@
             this.groupBox3.TabIndex = 20;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Fun 45";
+            this.groupBox3.Visible = false;
             // 
             // groupBox4
             // 
@@ -728,6 +741,7 @@
             this.num_test_dis.Name = "num_test_dis";
             this.num_test_dis.Size = new System.Drawing.Size(149, 30);
             this.num_test_dis.TabIndex = 56;
+            this.num_test_dis.Visible = false;
             this.num_test_dis.ValueChanged += new System.EventHandler(this.num_test_dis_ValueChanged);
             // 
             // txt_sec_id
@@ -736,6 +750,7 @@
             this.txt_sec_id.Name = "txt_sec_id";
             this.txt_sec_id.Size = new System.Drawing.Size(149, 30);
             this.txt_sec_id.TabIndex = 55;
+            this.txt_sec_id.Visible = false;
             // 
             // groupBox14
             // 
@@ -747,6 +762,7 @@
             this.groupBox14.TabIndex = 54;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Block Test";
+            this.groupBox14.Visible = false;
             // 
             // txt_req_block_id_test
             // 
@@ -754,6 +770,7 @@
             this.txt_req_block_id_test.Name = "txt_req_block_id_test";
             this.txt_req_block_id_test.Size = new System.Drawing.Size(130, 30);
             this.txt_req_block_id_test.TabIndex = 1;
+            this.txt_req_block_id_test.Visible = false;
             // 
             // button11
             // 
@@ -763,6 +780,7 @@
             this.button11.TabIndex = 0;
             this.button11.Text = "Request";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Visible = false;
             this.button11.Click += new System.EventHandler(this.button11_Click_1);
             // 
             // lbl_listening_status
@@ -836,6 +854,7 @@
             this.cb_test_duplicate.TabIndex = 47;
             this.cb_test_duplicate.Text = "Test Duplicate";
             this.cb_test_duplicate.UseVisualStyleBackColor = true;
+            this.cb_test_duplicate.Visible = false;
             this.cb_test_duplicate.CheckedChanged += new System.EventHandler(this.cb_test_duplicate_CheckedChanged);
             // 
             // btn_changeToRemove
@@ -918,6 +937,7 @@
             this.cb_pauseFirst.TabIndex = 30;
             this.cb_pauseFirst.Text = "Pause First";
             this.cb_pauseFirst.UseVisualStyleBackColor = true;
+            this.cb_pauseFirst.Visible = false;
             // 
             // groupBox9
             // 
@@ -930,6 +950,7 @@
             this.groupBox9.TabIndex = 20;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Fun 35";
+            this.groupBox9.Visible = false;
             // 
             // txt_rename_cst_id
             // 
@@ -937,6 +958,7 @@
             this.txt_rename_cst_id.Name = "txt_rename_cst_id";
             this.txt_rename_cst_id.Size = new System.Drawing.Size(200, 30);
             this.txt_rename_cst_id.TabIndex = 17;
+            this.txt_rename_cst_id.Visible = false;
             // 
             // label40
             // 
@@ -957,6 +979,7 @@
             this.btn_rename_cst_id.TabIndex = 16;
             this.btn_rename_cst_id.Text = "Send Func:35";
             this.btn_rename_cst_id.UseVisualStyleBackColor = true;
+            this.btn_rename_cst_id.Visible = false;
             this.btn_rename_cst_id.Click += new System.EventHandler(this.btn_rename_cst_id_Click);
             // 
             // uctl_SendFun2
@@ -968,6 +991,7 @@
             this.uctl_SendFun2.TabIndex = 29;
             this.uctl_SendFun2.Text = "Send Func:2";
             this.uctl_SendFun2.UseVisualStyleBackColor = true;
+            this.uctl_SendFun2.Visible = false;
             this.uctl_SendFun2.Click += new System.EventHandler(this.uctl_SendFun2_Click);
             // 
             // btn_cmd_override_test
@@ -978,6 +1002,7 @@
             this.btn_cmd_override_test.TabIndex = 28;
             this.btn_cmd_override_test.Text = "Command Override Test";
             this.btn_cmd_override_test.UseVisualStyleBackColor = true;
+            this.btn_cmd_override_test.Visible = false;
             this.btn_cmd_override_test.Click += new System.EventHandler(this.btn_cmd_override_test_Click);
             // 
             // btn_reset_teach_result
@@ -988,6 +1013,7 @@
             this.btn_reset_teach_result.TabIndex = 27;
             this.btn_reset_teach_result.Text = "Reset Teach Result";
             this.btn_reset_teach_result.UseVisualStyleBackColor = true;
+            this.btn_reset_teach_result.Visible = false;
             this.btn_reset_teach_result.Click += new System.EventHandler(this.btn_reset_teach_result_Click);
             // 
             // ck_autoTech
@@ -999,6 +1025,7 @@
             this.ck_autoTech.TabIndex = 26;
             this.ck_autoTech.Text = "Auto Tech";
             this.ck_autoTech.UseVisualStyleBackColor = true;
+            this.ck_autoTech.Visible = false;
             this.ck_autoTech.Click += new System.EventHandler(this.ck_autoTech_Click);
             // 
             // groupBox8
@@ -1049,7 +1076,7 @@
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(214, 42);
             this.button9.TabIndex = 24;
-            this.button9.Text = "Send Func:37";
+            this.button9.Text = "Send CMD Cancel";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
@@ -1136,6 +1163,7 @@
             this.uctl_SendFun1.TabIndex = 8;
             this.uctl_SendFun1.Text = "Send Func:1";
             this.uctl_SendFun1.UseVisualStyleBackColor = true;
+            this.uctl_SendFun1.Visible = false;
             this.uctl_SendFun1.Click += new System.EventHandler(this.uctl_Btn1_Click);
             // 
             // uctl_SendFun15
@@ -1147,6 +1175,7 @@
             this.uctl_SendFun15.TabIndex = 8;
             this.uctl_SendFun15.Text = "Send Func:15";
             this.uctl_SendFun15.UseVisualStyleBackColor = true;
+            this.uctl_SendFun15.Visible = false;
             this.uctl_SendFun15.Click += new System.EventHandler(this.uctl_SendFun15_Click);
             // 
             // uctl_SendFun13
@@ -1158,6 +1187,7 @@
             this.uctl_SendFun13.TabIndex = 10;
             this.uctl_SendFun13.Text = "Send Func:13";
             this.uctl_SendFun13.UseVisualStyleBackColor = true;
+            this.uctl_SendFun13.Visible = false;
             this.uctl_SendFun13.Click += new System.EventHandler(this.uctl_SendFun13_Click);
             // 
             // uctl_SendFun11
@@ -1169,6 +1199,7 @@
             this.uctl_SendFun11.TabIndex = 10;
             this.uctl_SendFun11.Text = "Send Func:11";
             this.uctl_SendFun11.UseVisualStyleBackColor = true;
+            this.uctl_SendFun11.Visible = false;
             this.uctl_SendFun11.Click += new System.EventHandler(this.uctl_SendFun11_Click);
             // 
             // uctl_SendFun17
@@ -1180,6 +1211,7 @@
             this.uctl_SendFun17.TabIndex = 11;
             this.uctl_SendFun17.Text = "Send Func:17";
             this.uctl_SendFun17.UseVisualStyleBackColor = true;
+            this.uctl_SendFun17.Visible = false;
             this.uctl_SendFun17.Click += new System.EventHandler(this.uctl_SendFun17_Click);
             // 
             // uctl_SendFun19
@@ -1191,6 +1223,7 @@
             this.uctl_SendFun19.TabIndex = 12;
             this.uctl_SendFun19.Text = "Send Func:19";
             this.uctl_SendFun19.UseVisualStyleBackColor = true;
+            this.uctl_SendFun19.Visible = false;
             this.uctl_SendFun19.Click += new System.EventHandler(this.uctl_SendFun19_Click);
             // 
             // uctl_SendFun21
@@ -1202,6 +1235,7 @@
             this.uctl_SendFun21.TabIndex = 12;
             this.uctl_SendFun21.Text = "Send Func:21";
             this.uctl_SendFun21.UseVisualStyleBackColor = true;
+            this.uctl_SendFun21.Visible = false;
             this.uctl_SendFun21.Click += new System.EventHandler(this.uctl_SendFun21_Click);
             // 
             // uctl_SendFun23
@@ -1213,6 +1247,7 @@
             this.uctl_SendFun23.TabIndex = 12;
             this.uctl_SendFun23.Text = "Send Func:23";
             this.uctl_SendFun23.UseVisualStyleBackColor = true;
+            this.uctl_SendFun23.Visible = false;
             this.uctl_SendFun23.Click += new System.EventHandler(this.uctl_SendFun23_Click);
             // 
             // uctl_SendAllFun
@@ -1224,6 +1259,7 @@
             this.uctl_SendAllFun.TabIndex = 12;
             this.uctl_SendAllFun.Text = "Send ALL";
             this.uctl_SendAllFun.UseVisualStyleBackColor = true;
+            this.uctl_SendAllFun.Visible = false;
             this.uctl_SendAllFun.Click += new System.EventHandler(this.uctl_SendAllFun_Click);
             // 
             // btn_forceReleaseAllBlock
@@ -1234,6 +1270,7 @@
             this.btn_forceReleaseAllBlock.TabIndex = 22;
             this.btn_forceReleaseAllBlock.Text = "Force Release All Block";
             this.btn_forceReleaseAllBlock.UseVisualStyleBackColor = true;
+            this.btn_forceReleaseAllBlock.Visible = false;
             this.btn_forceReleaseAllBlock.Click += new System.EventHandler(this.btn_forceReleaseALLBlock_Click);
             // 
             // tabControl1
@@ -1252,7 +1289,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1463, 865);
+            this.tabControl1.Size = new System.Drawing.Size(1370, 749);
             this.tabControl1.TabIndex = 23;
             // 
             // tabPage1
@@ -1268,7 +1305,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 31);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1455, 830);
+            this.tabPage1.Size = new System.Drawing.Size(1362, 714);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1286,6 +1323,7 @@
             this.groupBox12.TabIndex = 26;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Refresh Vh Order In Segment";
+            this.groupBox12.Visible = false;
             // 
             // txt_vh_order_in_segment
             // 
@@ -1294,6 +1332,7 @@
             this.txt_vh_order_in_segment.ReadOnly = true;
             this.txt_vh_order_in_segment.Size = new System.Drawing.Size(286, 30);
             this.txt_vh_order_in_segment.TabIndex = 52;
+            this.txt_vh_order_in_segment.Visible = false;
             // 
             // label72
             // 
@@ -1312,6 +1351,7 @@
             this.btn_refresh_vh_order_in_seg.TabIndex = 50;
             this.btn_refresh_vh_order_in_seg.Text = "Force Refersh";
             this.btn_refresh_vh_order_in_seg.UseVisualStyleBackColor = true;
+            this.btn_refresh_vh_order_in_seg.Visible = false;
             this.btn_refresh_vh_order_in_seg.Click += new System.EventHandler(this.btn_refresh_vh_order_in_seg_Click);
             // 
             // label71
@@ -1330,6 +1370,7 @@
             this.cmb_refresh_vh_order_in_seg_id.Name = "cmb_refresh_vh_order_in_seg_id";
             this.cmb_refresh_vh_order_in_seg_id.Size = new System.Drawing.Size(121, 30);
             this.cmb_refresh_vh_order_in_seg_id.TabIndex = 48;
+            this.cmb_refresh_vh_order_in_seg_id.Visible = false;
             this.cmb_refresh_vh_order_in_seg_id.SelectedIndexChanged += new System.EventHandler(this.cmb_refresh_vh_order_in_seg_id_SelectedIndexChanged);
             // 
             // groupBox7
@@ -1407,6 +1448,7 @@
             this.btn_blocked_sec_refresh.TabIndex = 4;
             this.btn_blocked_sec_refresh.Text = "Refresh";
             this.btn_blocked_sec_refresh.UseVisualStyleBackColor = true;
+            this.btn_blocked_sec_refresh.Visible = false;
             this.btn_blocked_sec_refresh.Click += new System.EventHandler(this.btn_blocked_sec_refresh_Click);
             // 
             // btn_release_block
@@ -1417,6 +1459,7 @@
             this.btn_release_block.TabIndex = 4;
             this.btn_release_block.Text = "Retry Release";
             this.btn_release_block.UseVisualStyleBackColor = true;
+            this.btn_release_block.Visible = false;
             this.btn_release_block.Click += new System.EventHandler(this.btn_release_block_Click);
             // 
             // lbl_BlockedVh
@@ -1428,6 +1471,7 @@
             this.lbl_BlockedVh.Size = new System.Drawing.Size(122, 24);
             this.lbl_BlockedVh.TabIndex = 3;
             this.lbl_BlockedVh.Text = "           ";
+            this.lbl_BlockedVh.Visible = false;
             // 
             // label16
             // 
@@ -1454,6 +1498,7 @@
             this.cb_block_section.Name = "cb_block_section";
             this.cb_block_section.Size = new System.Drawing.Size(251, 30);
             this.cb_block_section.TabIndex = 0;
+            this.cb_block_section.Visible = false;
             this.cb_block_section.SelectedIndexChanged += new System.EventHandler(this.cb_block_section_SelectedIndexChanged);
             // 
             // gb_blockControl
@@ -1466,6 +1511,7 @@
             this.gb_blockControl.TabIndex = 23;
             this.gb_blockControl.TabStop = false;
             this.gb_blockControl.Text = "Block Control";
+            this.gb_blockControl.Visible = false;
             // 
             // cb_FroceBlockReject
             // 
@@ -1477,6 +1523,7 @@
             this.cb_FroceBlockReject.TabIndex = 8;
             this.cb_FroceBlockReject.Text = "Force Block Reject";
             this.cb_FroceBlockReject.UseVisualStyleBackColor = true;
+            this.cb_FroceBlockReject.Visible = false;
             this.cb_FroceBlockReject.CheckedChanged += new System.EventHandler(this.cb_FroceBlockReject_CheckedChanged);
             // 
             // tabPage2
@@ -2586,7 +2633,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 3);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(178, 8);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4544,7 +4591,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1463, 865);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
