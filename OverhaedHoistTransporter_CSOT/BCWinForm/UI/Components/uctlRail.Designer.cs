@@ -57,5 +57,5 @@
         private System.Windows.Forms.ToolTip ToolTip;
 
 
-	}
+    }
 }
