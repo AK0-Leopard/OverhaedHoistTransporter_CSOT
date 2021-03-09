@@ -9,6 +9,8 @@ namespace com.mirle.ibg3k0.sc
     public partial class ACMD_MCS
     {
 
+        public const string COMMAND_PAUSE_FLAG_EMPTY = "";
+        public const string COMMAND_PAUSE_FLAG_COMMAND_SHIFT = "S";
         /// <summary>
         /// 1 2 4 8 16 32 64 128
         /// 1 1 1 1 1  1  1  1
@@ -75,6 +77,17 @@ namespace com.mirle.ibg3k0.sc
             if (sections == null || sections.Count == 0) return "";
             var one_part_section = sections[0];
             return one_part_section.SEG_NUM;
+        }
+
+        public string getSourceAdrID(BLL.PortStationBLL portStationBLL)
+        {
+            string adr_id = portStationBLL.OperateCatch.getPortStationAdr(HOSTSOURCE);
+            return adr_id;
+        }
+        public ACMD_OHTC getExcuteCMD_OHTC(BLL.CMDBLL cmdBLL)
+        {
+            var excuting_ohtc_cmd = cmdBLL.getCMD_OHTCByMCSID(CMD_ID);
+            return excuting_ohtc_cmd;
         }
 
 

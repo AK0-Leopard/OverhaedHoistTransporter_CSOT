@@ -428,13 +428,32 @@ namespace com.mirle.ibg3k0.sc.BLL
         public bool updateCMD_MCS_TranStatus2PreInitial(string cmd_id)
         {
             bool isSuccess = true;
-            //using (DBConnection_EF con = new DBConnection_EF())
             try
             {
                 using (DBConnection_EF con = DBConnection_EF.GetUContext())
                 {
                     ACMD_MCS cmd = cmd_mcsDao.getByID(con, cmd_id);
                     cmd.TRANSFERSTATE = E_TRAN_STATUS.PreInitial;
+                    cmd_mcsDao.update(con, cmd);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
+        public bool updateCMD_MCS_PauseFlag(string cmd_id, string pauseFlag)
+        {
+            bool isSuccess = true;
+            //using (DBConnection_EF con = new DBConnection_EF())
+            try
+            {
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    ACMD_MCS cmd = cmd_mcsDao.getByID(con, cmd_id);
+                    cmd.PAUSEFLAG = pauseFlag;
                     cmd_mcsDao.update(con, cmd);
                 }
             }
@@ -779,6 +798,30 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return cmd_mcsDao.getCMD_MCSIsUnfinishedCountByPortID(con, portID);
             }
         }
+        public ACMD_MCS getACMD_MCSUnfinishedByCmdID(string cmdID)
+        {
+            List<ACMD_MCS> cmds_mcs = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                cmds_mcs = cmd_mcsDao.loadACMD_MCSIsUnfinished(con);
+            }
+            return cmds_mcs.Where(cmd => SCUtility.isMatche(cmd.CMD_ID, cmdID)).
+                            FirstOrDefault();
+        }
+        public bool isTransferStatusReady(string cmdID, int status)
+        {
+            List<ACMD_MCS> cmds_mcs = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                cmds_mcs = cmd_mcsDao.loadACMD_MCSIsUnfinished(con);
+            }
+            var cmd = cmds_mcs.Where(c => SCUtility.isMatche(c.CMD_ID, cmdID)).
+                               FirstOrDefault();
+            if (cmd == null) return false;
+            int check_value = cmd.COMMANDSTATE & status;
+            bool is_status_ready = check_value == status;
+            return is_status_ready;
+        }
         public List<ACMD_MCS> loadACMD_MCSIsUnfinished()
         {
             //using (DBConnection_EF con = new DBConnection_EF())
@@ -838,6 +881,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return cmd_mcsDao.getCMD_MCSFinishCountLastHours(con, hours);
             }
         }
+
 
         private long syncTranCmdPoint = 0;
         public void checkMCS_TransferCommand()
@@ -988,6 +1032,43 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
 
 
+        public bool assignCommnadToVehicleByCommandShift(string vh_id, ACMD_MCS cmdMCS)
+        {
+            string cmd_mcs_id = SCUtility.Trim(cmdMCS.CMD_ID, true);
+            int rpiority_sum = cmdMCS.PRIORITY_SUM;
+            string carrier_id = cmdMCS.CARRIER_ID;
+            string hostsource = cmdMCS.HOSTSOURCE;
+            string hostdest = cmdMCS.HOSTDESTINATION;
+            scApp.MapBLL.getAddressID(hostsource, out string from_adr);
+            scApp.MapBLL.getAddressID(hostdest, out string to_adr);
+
+            bool isSuccess = true;
+            using (TransactionScope tx = SCUtility.getTransactionScope())
+            {
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+
+                    isSuccess &= scApp.CMDBLL.doCreatTransferCommand(vh_id, cmd_mcs_id, carrier_id,
+                                        E_CMD_TYPE.LoadUnload,
+                                        from_adr,
+                                        to_adr,
+                                        rpiority_sum, 0);
+                    //在找到車子後先把它改成PreInitial，防止Timer再找到該筆命令
+                    if (isSuccess)
+                    {
+                        isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2PreInitial(cmd_mcs_id);
+                    }
+                    if (isSuccess)
+                    {
+                        tx.Complete();
+                    }
+                }
+            }
+            //如果最後Assign沒有成功的話，就要將他改回queue的狀態
+            if (!isSuccess)
+                scApp.CMDBLL.updateCMD_MCS_TranStatus2Queue(cmd_mcs_id);
+            return isSuccess;
+        }
         public bool assignCommnadToVehicleForCmdShift(string mcs_id, string vh_id, out string result)
         {
             try
@@ -1933,6 +2014,31 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return cmd_ohtc != null &&
                    cmd_ohtc.CMD_STAUS >= E_CMD_STATUS.NormalEnd;
+        }
+        public bool isCMCD_OHTCFinishFromCache(string cmdID)
+        {
+            List<ACMD_OHTC> cmd_ohtcs = null;
+            using (DBConnection_EF con = new DBConnection_EF())
+            {
+                cmd_ohtcs = cmd_ohtcDAO.loadUnfinishCMD_OHT(con);
+            }
+            ACMD_OHTC cmd_ohtc = cmd_ohtcs.Where(cmd => SCUtility.isMatche(cmd.CMD_ID, cmdID)).FirstOrDefault();
+            return cmd_ohtc == null ||
+                   cmd_ohtc.CMD_STAUS >= E_CMD_STATUS.NormalEnd;
+        }
+        public ACMD_OHTC getCMD_OHTCByMCSID(string cmdMCSID)
+        {
+            List<ACMD_OHTC> cmd_ohtcs = null;
+            using (DBConnection_EF con = new DBConnection_EF())
+            {
+                cmd_ohtcs = cmd_ohtcDAO.loadUnfinishCMD_OHT(con);
+            }
+            if (cmd_ohtcs == null) return null;
+
+            var cmd_ohtc = cmd_ohtcs.
+                           Where(cmd => SCUtility.isMatche(cmd.CMD_ID_MCS, cmdMCSID)).
+                           FirstOrDefault();
+            return cmd_ohtc;
         }
 
         //public bool FourceResetVhCmd()
@@ -3318,6 +3424,23 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }).ToList();
                 return busy_section;
             }
+
+
+            public List<ACMD_MCS> loadExcuteAndNonLoaded()
+            {
+                var current_mcs_cmds_temp = app.getEQObjCacheManager().getLine().CurrentExcuteMCSCommands;
+                if (current_mcs_cmds_temp == null) return new List<ACMD_MCS>();
+                //1.找出目前所有的Transfer command且尚未載到貨的
+                //2.如果準備去執行的OHT已經在Load Port的Segment就不執行
+                List<ACMD_MCS> mcs_cmds =
+                    current_mcs_cmds_temp.Where(cmd =>
+                    cmd.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE && cmd.COMMANDSTATE <= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE).
+                    ToList();
+
+                return mcs_cmds;
+            }
+
+
 
         }
 

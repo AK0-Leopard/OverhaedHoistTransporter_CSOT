@@ -1089,6 +1089,19 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
             }
             //A0.02 End
+            foreach (AVEHICLE vh in vhs.ToList())
+            {
+                if (vh.IsProcessingCommandFinish)
+                {
+                    vhs.Remove(vh);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                       Data: $"vh id:{vh.VEHICLE_ID} current is processing command finish,flag:{vh.IsProcessingCommandFinish}," +
+                             $"so filter it out",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                }
+            }
+
             if (vh_type != E_VH_TYPE.None)
             {
                 foreach (AVEHICLE vh in vhs.ToList())
@@ -1711,7 +1724,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
         }
         //public void doTransferCommandFinish(Equipment eqpt)
-        public bool doTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus)
+        public bool doTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus, bool isCommandCompleteByCmdShift = false)
         {
             bool isSuccess = true;
             //1.
@@ -1743,7 +1756,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 //isSuccess &= scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(cmd_id, E_CMD_STATUS.NormalEnd);
                 isSuccess &= scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(cmd_id, ohtc_cmd_status);
 
-                if (!SCUtility.isEmpty(mcs_cmd_id))
+                if (!SCUtility.isEmpty(mcs_cmd_id) && !isCommandCompleteByCmdShift)
                 {
                     E_TRAN_STATUS mcs_cmd_tran_status = CompleteStatusToETransferStatus(completeStatus);
                     //isSuccess &= scApp.SysExcuteQualityBLL.updateSysExecQity_CmdFinish(vh.MCS_CMD);

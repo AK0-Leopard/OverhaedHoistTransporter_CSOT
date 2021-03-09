@@ -1112,8 +1112,13 @@ namespace com.mirle.ibg3k0.sc.Service
                         //在設備確定接收該筆命令，把它從PreInitial改成Initial狀態並上報給MCS
                         if (!SCUtility.isEmpty(cmd.CMD_ID_MCS))
                         {
-                            isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
-                            isSuccess &= scApp.ReportBLL.newReportTransferInitial(cmd.CMD_ID_MCS, null);
+                            bool is_transfer_initial_ready =
+                                scApp.CMDBLL.isTransferStatusReady(cmd.CMD_ID_MCS, ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE);
+                            if (!is_transfer_initial_ready)
+                            {
+                                isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
+                                isSuccess &= scApp.ReportBLL.newReportTransferInitial(cmd.CMD_ID_MCS, null);
+                            }
                         }
                     }
                     else
@@ -4132,338 +4137,461 @@ namespace com.mirle.ibg3k0.sc.Service
         [ClassAOPAspect]
         public void CommandCompleteReport(string tcpipAgentName, BCFApplication bcfApp, AVEHICLE eqpt, ID_132_TRANS_COMPLETE_REPORT recive_str, int seq_num)
         {
-            if (scApp.getEQObjCacheManager().getLine().ServerPreStop)
-                return;
-            SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, seq_num, recive_str);
-            string finish_ohxc_cmd = eqpt.OHTC_CMD;
-            string finish_mcs_cmd = eqpt.MCS_CMD;
-            string cmd_id = recive_str.CmdID;
-            int travel_dis = recive_str.CmdDistance;
-            CompleteStatus completeStatus = recive_str.CmpStatus;
-            string cur_sec_id = recive_str.CurrentSecID;
-            string cur_adr_id = recive_str.CurrentAdrID;
-            string cst_id = SCUtility.Trim(recive_str.CSTID, true);
-            VhLoadCSTStatus vhLoadCSTStatus = recive_str.HasCST;
-            string car_cst_id = recive_str.CarCSTID;
-            string vh_id = eqpt.VEHICLE_ID;
-            bool isSuccess = true;
-
-            if (scApp.CMDBLL.isCMCD_OHTCFinish(cmd_id))
+            try
             {
-                replyCommandComplete(eqpt, seq_num, finish_ohxc_cmd, finish_mcs_cmd);
+                if (scApp.getEQObjCacheManager().getLine().ServerPreStop)
+                    return;
+                eqpt.IsProcessingCommandFinish = true;
+                SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, seq_num, recive_str);
+                string finish_ohxc_cmd = eqpt.OHTC_CMD;
+                string finish_mcs_cmd = eqpt.MCS_CMD;
+                string cmd_id = recive_str.CmdID;
+                int travel_dis = recive_str.CmdDistance;
+                CompleteStatus completeStatus = recive_str.CmpStatus;
+                string cur_sec_id = recive_str.CurrentSecID;
+                string cur_adr_id = recive_str.CurrentAdrID;
+                string cst_id = SCUtility.Trim(recive_str.CSTID, true);
+                VhLoadCSTStatus vhLoadCSTStatus = recive_str.HasCST;
+                string car_cst_id = recive_str.CarCSTID;
+                string vh_id = eqpt.VEHICLE_ID;
+                bool isSuccess = true;
 
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                   Data: $"commnad id:{cmd_id} has already process. well pass this report.",
-                   VehicleID: eqpt.VEHICLE_ID,
-                   CarrierID: eqpt.CST_ID);
-                return;
-            }
+                if (scApp.CMDBLL.isCMCD_OHTCFinish(cmd_id))
+                {
+                    replyCommandComplete(eqpt, seq_num, finish_ohxc_cmd, finish_mcs_cmd);
 
-            string mcs_cmd_result = SECSConst.convert2MCS(completeStatus);
-            scApp.VIDBLL.upDateVIDResultCode(eqpt.VEHICLE_ID, mcs_cmd_result);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"commnad id:{cmd_id} has already process. well pass this report.",
+                       VehicleID: eqpt.VEHICLE_ID,
+                       CarrierID: eqpt.CST_ID);
+                    return;
+                }
 
-            //switch (completeStatus)
-            //{
-            //    case CompleteStatus.CmpStatusIdmisMatch:
-            //    case CompleteStatus.CmpStatusIdreadFailed:
-            //    case CompleteStatus.CmpStatusIdreadDuplicate:
-            //        scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, "");
-            //        break;
-            //}
+                string mcs_cmd_result = SECSConst.convert2MCS(completeStatus);
+                scApp.VIDBLL.upDateVIDResultCode(eqpt.VEHICLE_ID, mcs_cmd_result);
 
+                //switch (completeStatus)
+                //{
+                //    case CompleteStatus.CmpStatusIdmisMatch:
+                //    case CompleteStatus.CmpStatusIdreadFailed:
+                //    case CompleteStatus.CmpStatusIdreadDuplicate:
+                //        scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, "");
+                //        break;
+                //}
 
-            List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
-            if (!SCUtility.isEmpty(finish_mcs_cmd))
-            {
+                bool is_command_complete_by_command_shift = checkIsCommandCompleteByCommandShift(finish_mcs_cmd, completeStatus);
+                List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
+                if (!SCUtility.isEmpty(finish_mcs_cmd))
+                {
+                    using (TransactionScope tx = SCUtility.getTransactionScope())
+                    {
+                        using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                        {
+                            switch (completeStatus)
+                            {
+                                case CompleteStatus.CmpStatusCancel:
+                                    //isSuccess = scApp.ReportBLL.newReportTransferCommandCancelFinish(eqpt.VEHICLE_ID, reportqueues);
+                                    isSuccess = scApp.ReportBLL.newReportTransferCommandCancelFinish
+                                        (eqpt.VEHICLE_ID, reportqueues, is_command_complete_by_command_shift);
+                                    break;
+                                case CompleteStatus.CmpStatusAbort:
+                                    isSuccess = scApp.ReportBLL.newReportTransferCommandAbortFinish(eqpt.VEHICLE_ID, reportqueues);
+                                    break;
+                                case CompleteStatus.CmpStatusLoad:
+                                case CompleteStatus.CmpStatusUnload:
+                                case CompleteStatus.CmpStatusLoadunload:
+                                case CompleteStatus.CmpStatusInterlockError:
+                                case CompleteStatus.CmpStatusVehicleAbort:
+                                    isSuccess = scApp.ReportBLL.newReportTransferCommandNormalFinish(eqpt.VEHICLE_ID, reportqueues);
+                                    break;
+                                case CompleteStatus.CmpStatusIdmisMatch:
+                                case CompleteStatus.CmpStatusIdreadFailed:
+                                case CompleteStatus.CmpStatusIdreadDuplicate:
+                                    isSuccess = scApp.ReportBLL.newReportTransferCommandIDReadErrorFinish(eqpt.VEHICLE_ID, reportqueues);
+                                    break;
+                                case CompleteStatus.CmpStatusMove:
+                                case CompleteStatus.CmpStatusHome:
+                                case CompleteStatus.CmpStatusOverride:
+                                case CompleteStatus.CmpStatusCstIdrenmae:
+                                case CompleteStatus.CmpStatusMtlhome:
+                                case CompleteStatus.CmpStatusMoveToMtl:
+                                case CompleteStatus.CmpStatusSystemOut:
+                                case CompleteStatus.CmpStatusSystemIn:
+                                    //Nothing...
+                                    break;
+                                //當TechingMove Complete的時候，OHxC將會進行Auto Teching的動作
+                                case CompleteStatus.CmpStatusTechingMove:
+                                    AutoTeaching(eqpt.VEHICLE_ID);
+                                    break;
+                                default:
+                                    logger.Info($"Proc func:CommandCompleteReport, but completeStatus:{completeStatus} notimplemented ");
+                                    break;
+                            }
+                            if (isSuccess)
+                            {
+                                tx.Complete();
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        scApp.ReportBLL.newSendMCSMessage(reportqueues);
+                    }
+                }
                 using (TransactionScope tx = SCUtility.getTransactionScope())
                 {
                     using (DBConnection_EF con = DBConnection_EF.GetUContext())
                     {
-                        switch (completeStatus)
+                        //isSuccess = scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id);
+                        //isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus);
+                        isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus, is_command_complete_by_command_shift);
+                        isSuccess &= scApp.VIDBLL.initialVIDCommandInfo(eqpt.VEHICLE_ID);
+
+                        //釋放尚未Release的Block
+                        //releaseBlockControl(eqpt.VEHICLE_ID);
+                        List<BLOCKZONEQUEUE> queueList = scApp.MapBLL.loadNonReleaseBlockQueueByCarID(eqpt.VEHICLE_ID);
+                        if (queueList != null && queueList.Count > 0)
                         {
-                            case CompleteStatus.CmpStatusCancel:
-                                isSuccess = scApp.ReportBLL.newReportTransferCommandCancelFinish(eqpt.VEHICLE_ID, reportqueues);
-                                break;
-                            case CompleteStatus.CmpStatusAbort:
-                                isSuccess = scApp.ReportBLL.newReportTransferCommandAbortFinish(eqpt.VEHICLE_ID, reportqueues);
-                                break;
-                            case CompleteStatus.CmpStatusLoad:
-                            case CompleteStatus.CmpStatusUnload:
-                            case CompleteStatus.CmpStatusLoadunload:
-                            case CompleteStatus.CmpStatusInterlockError:
-                            case CompleteStatus.CmpStatusVehicleAbort:
-                                isSuccess = scApp.ReportBLL.newReportTransferCommandNormalFinish(eqpt.VEHICLE_ID, reportqueues);
-                                break;
-                            case CompleteStatus.CmpStatusIdmisMatch:
-                            case CompleteStatus.CmpStatusIdreadFailed:
-                            case CompleteStatus.CmpStatusIdreadDuplicate:
-                                isSuccess = scApp.ReportBLL.newReportTransferCommandIDReadErrorFinish(eqpt.VEHICLE_ID, reportqueues);
-                                break;
-                            case CompleteStatus.CmpStatusMove:
-                            case CompleteStatus.CmpStatusHome:
-                            case CompleteStatus.CmpStatusOverride:
-                            case CompleteStatus.CmpStatusCstIdrenmae:
-                            case CompleteStatus.CmpStatusMtlhome:
-                            case CompleteStatus.CmpStatusMoveToMtl:
-                            case CompleteStatus.CmpStatusSystemOut:
-                            case CompleteStatus.CmpStatusSystemIn:
-                                //Nothing...
-                                break;
-                            //當TechingMove Complete的時候，OHxC將會進行Auto Teching的動作
-                            case CompleteStatus.CmpStatusTechingMove:
-                                AutoTeaching(eqpt.VEHICLE_ID);
-                                break;
-                            default:
-                                logger.Info($"Proc func:CommandCompleteReport, but completeStatus:{completeStatus} notimplemented ");
-                                break;
+                            foreach (BLOCKZONEQUEUE queue in queueList)
+                            {
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                Data: $"command finish relase block ,block info: {queue.ToString()}");
+                                scApp.MapBLL.updateBlockZoneQueue_AbnormalEnd(queue, SCAppConstants.BlockQueueState.Abnormal_Command_Finish_Release);
+                                scApp.MapBLL.DeleteBlockControlKeyWordToRedisAsync(queue.CAR_ID, queue.ENTRY_SEC_ID);
+                            }
                         }
+
+                        //當發生Vehicle Abort的時候要確認是否有預下給該Vh的命令，
+                        //有的話要將他取消，並把原本的MCS命令切回Queue
+                        if (completeStatus == CompleteStatus.CmpStatusVehicleAbort)
+                        {
+                            var check_result = scApp.CMDBLL.hasCMD_OHTCInQueue(eqpt.VEHICLE_ID);
+                            if (check_result.has)
+                            {
+                                ACMD_OHTC queue_cmd = check_result.cmd_ohtc;
+                                scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(queue_cmd.CMD_ID, E_CMD_STATUS.AbnormalEndByOHTC);
+                                if (!SCUtility.isEmpty(queue_cmd.CMD_ID_MCS))
+                                {
+                                    ACMD_MCS pre_initial_cmd_mcs = scApp.CMDBLL.getCMD_MCSByID(queue_cmd.CMD_ID_MCS);
+                                    if (pre_initial_cmd_mcs != null &&
+                                        pre_initial_cmd_mcs.TRANSFERSTATE == E_TRAN_STATUS.PreInitial)
+                                    {
+                                        scApp.CMDBLL.updateCMD_MCS_TranStatus2Queue(pre_initial_cmd_mcs.CMD_ID);
+                                    }
+                                }
+                            }
+                        }
+
                         if (isSuccess)
                         {
                             tx.Complete();
                         }
                         else
                         {
+                            //scApp.getEQObjCacheManager().restoreVhDataFromDB(eqpt);
                             return;
                         }
                     }
-                    scApp.ReportBLL.newSendMCSMessage(reportqueues);
                 }
-            }
 
-            using (TransactionScope tx = SCUtility.getTransactionScope())
-            {
-                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                replyCommandComplete(eqpt, seq_num, finish_ohxc_cmd, finish_mcs_cmd);
+
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"remove all reserved section on command complete,vh id:{vh_id}.",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+                scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
+
+                //回復結束後，若該筆命令是Mismatch、IDReadFail結束的話則要把原本車上的那顆CST Installed回來。
+                if (vhLoadCSTStatus == VhLoadCSTStatus.Exist)
                 {
-                    //isSuccess = scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id);
-                    isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus);
-                    isSuccess &= scApp.VIDBLL.initialVIDCommandInfo(eqpt.VEHICLE_ID);
-
-                    //釋放尚未Release的Block
-                    //releaseBlockControl(eqpt.VEHICLE_ID);
-                    List<BLOCKZONEQUEUE> queueList = scApp.MapBLL.loadNonReleaseBlockQueueByCarID(eqpt.VEHICLE_ID);
-                    if (queueList != null && queueList.Count > 0)
-                    {
-                        foreach (BLOCKZONEQUEUE queue in queueList)
-                        {
-                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                            Data: $"command finish relase block ,block info: {queue.ToString()}");
-                            scApp.MapBLL.updateBlockZoneQueue_AbnormalEnd(queue, SCAppConstants.BlockQueueState.Abnormal_Command_Finish_Release);
-                            scApp.MapBLL.DeleteBlockControlKeyWordToRedisAsync(queue.CAR_ID, queue.ENTRY_SEC_ID);
-                        }
-                    }
-
-                    //當發生Vehicle Abort的時候要確認是否有預下給該Vh的命令，
-                    //有的話要將他取消，並把原本的MCS命令切回Queue
-                    if (completeStatus == CompleteStatus.CmpStatusVehicleAbort)
-                    {
-                        var check_result = scApp.CMDBLL.hasCMD_OHTCInQueue(eqpt.VEHICLE_ID);
-                        if (check_result.has)
-                        {
-                            ACMD_OHTC queue_cmd = check_result.cmd_ohtc;
-                            scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(queue_cmd.CMD_ID, E_CMD_STATUS.AbnormalEndByOHTC);
-                            if (!SCUtility.isEmpty(queue_cmd.CMD_ID_MCS))
-                            {
-                                ACMD_MCS pre_initial_cmd_mcs = scApp.CMDBLL.getCMD_MCSByID(queue_cmd.CMD_ID_MCS);
-                                if (pre_initial_cmd_mcs != null &&
-                                    pre_initial_cmd_mcs.TRANSFERSTATE == E_TRAN_STATUS.PreInitial)
-                                {
-                                    scApp.CMDBLL.updateCMD_MCS_TranStatus2Queue(pre_initial_cmd_mcs.CMD_ID);
-                                }
-                            }
-                        }
-                    }
-
-                    if (isSuccess)
-                    {
-                        tx.Complete();
-                    }
-                    else
-                    {
-                        //scApp.getEQObjCacheManager().restoreVhDataFromDB(eqpt);
-                        return;
-                    }
+                    scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, car_cst_id);
+                    scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, eqpt.Real_ID);
                 }
-            }
 
-            replyCommandComplete(eqpt, seq_num, finish_ohxc_cmd, finish_mcs_cmd);
-
-            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-               Data: $"remove all reserved section on command complete,vh id:{vh_id}.",
-               VehicleID: eqpt.VEHICLE_ID,
-               CarrierID: eqpt.CST_ID);
-            scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
-
-            //回復結束後，若該筆命令是Mismatch、IDReadFail結束的話則要把原本車上的那顆CST Installed回來。
-            if (vhLoadCSTStatus == VhLoadCSTStatus.Exist)
-            {
-                scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, car_cst_id);
-                scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, eqpt.Real_ID);
-            }
-
-            switch (completeStatus)
-            {
-                case CompleteStatus.CmpStatusIdmisMatch:
-                case CompleteStatus.CmpStatusIdreadFailed:
-                case CompleteStatus.CmpStatusIdreadDuplicate:
-                    //scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, eqpt.CST_ID);
-                    //scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, car_cst_id);
-                    //scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, eqpt.Real_ID);
-                    if (!SCUtility.isEmpty(finish_mcs_cmd))
-                    {
-                        reportqueues.Clear();
-                        scApp.ReportBLL.newReportCarrierIDReadReport(eqpt.VEHICLE_ID, reportqueues);
-                        scApp.ReportBLL.insertMCSReport(reportqueues);
-                        scApp.ReportBLL.newSendMCSMessage(reportqueues);
-                    }
-                    break;
-                case CompleteStatus.CmpStatusUnload:
-                case CompleteStatus.CmpStatusLoadunload:
-                    scApp.PortBLL.OperateCatch.updatePortStationCSTExistStatus(eqpt.CUR_ADR_ID, cst_id);
-                    break;
-                    //case CompleteStatus.CmpStatusVehicleAbort:
-                    //case CompleteStatus.CmpStatusInterlockError:
-                    //    if (vhLoadCSTStatus == VhLoadCSTStatus.Exist)
-                    //    {
-                    //        scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, car_cst_id);
-                    //        scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, eqpt.Real_ID);
-                    //    }
-                    //    break;
-            }
-
-            //TODO 要改抓命令的Table來更新
-            //switch (recive_str.ActType)
-            //{
-            //    case ActiveType.Unload:
-            //    case ActiveType.Loadunload:
-            //        scApp.CMDBLL.update_CMD_Detail_UnloadEndTime(eqpt.VEHICLE_ID);
-            //        break;
-            //}
-            if (DebugParameter.IsDebugMode && DebugParameter.IsCycleRun)
-            {
-                SpinWait.SpinUntil(() => false, 3000);
-                TestCycleRun(eqpt, cmd_id);
-            }
-            else
-            {
-                MaintainLift maintainLift = null;
-                MaintainSpace maintainSpace = null;
                 switch (completeStatus)
                 {
-                    case CompleteStatus.CmpStatusSystemOut:
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"Process vh:{eqpt.VEHICLE_ID} system out complete, current address:{cur_adr_id},current mode:{eqpt.MODE_STATUS}",
-                           VehicleID: eqpt.VEHICLE_ID,
-                           CarrierID: eqpt.CST_ID);
-                        if (eqpt.MODE_STATUS == VHModeStatus.AutoMtl)
+                    case CompleteStatus.CmpStatusIdmisMatch:
+                    case CompleteStatus.CmpStatusIdreadFailed:
+                    case CompleteStatus.CmpStatusIdreadDuplicate:
+                        //scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, eqpt.CST_ID);
+                        //scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, car_cst_id);
+                        //scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, eqpt.Real_ID);
+                        if (!SCUtility.isEmpty(finish_mcs_cmd))
                         {
-                            //在收到OHT的ID:132-SystemOut完成後，創建一個Transfer command，讓Vh移至移動至MTL上
-                            //doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, MTLService.MTL_ADDRESS);
-                            maintainLift = scApp.EquipmentBLL.cache.GetMaintainLiftBySystemOutAdr(cur_adr_id);
-                            if (maintainLift != null && maintainLift.CarOutSafetyCheck)
-                                doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, maintainLift.MTL_ADDRESS);
+                            reportqueues.Clear();
+                            scApp.ReportBLL.newReportCarrierIDReadReport(eqpt.VEHICLE_ID, reportqueues);
+                            scApp.ReportBLL.insertMCSReport(reportqueues);
+                            scApp.ReportBLL.newSendMCSMessage(reportqueues);
                         }
-                        else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts)
-                        {
-                            maintainSpace = scApp.EquipmentBLL.cache.GetMaintainSpaceBySystemOutAdr(cur_adr_id);
-                            if (maintainSpace != null)
-                            {
-                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                                   Data: $"Process vh:{eqpt.VEHICLE_ID} system out complete, notify mtx:{maintainSpace.DeviceID} is complete",
-                                   VehicleID: eqpt.VEHICLE_ID,
-                                   CarrierID: eqpt.CST_ID);
-                                scApp.MTLService.carOutComplete(maintainSpace);
-                            }
-                        }
-                        scApp.ReportBLL.newReportVehicleRemoved(eqpt.VEHICLE_ID, null);
                         break;
-                    case CompleteStatus.CmpStatusMoveToMtl:
-                        maintainLift = scApp.EquipmentBLL.cache.GetMaintainLiftByMTLAdr(cur_adr_id);
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"Process vh:{eqpt.VEHICLE_ID} move to mtl complete, current address:{cur_adr_id},current mode:{eqpt.MODE_STATUS}",
-                           VehicleID: eqpt.VEHICLE_ID,
-                           CarrierID: eqpt.CST_ID);
-                        if (maintainLift != null)
-                        {
+                    case CompleteStatus.CmpStatusUnload:
+                    case CompleteStatus.CmpStatusLoadunload:
+                        scApp.PortBLL.OperateCatch.updatePortStationCSTExistStatus(eqpt.CUR_ADR_ID, cst_id);
+                        break;
+                        //case CompleteStatus.CmpStatusVehicleAbort:
+                        //case CompleteStatus.CmpStatusInterlockError:
+                        //    if (vhLoadCSTStatus == VhLoadCSTStatus.Exist)
+                        //    {
+                        //        scApp.VIDBLL.upDateVIDCarrierID(eqpt.VEHICLE_ID, car_cst_id);
+                        //        scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, eqpt.Real_ID);
+                        //    }
+                        //    break;
+                }
+
+                //TODO 要改抓命令的Table來更新
+                //switch (recive_str.ActType)
+                //{
+                //    case ActiveType.Unload:
+                //    case ActiveType.Loadunload:
+                //        scApp.CMDBLL.update_CMD_Detail_UnloadEndTime(eqpt.VEHICLE_ID);
+                //        break;
+                //}
+                if (DebugParameter.IsDebugMode && DebugParameter.IsCycleRun)
+                {
+                    SpinWait.SpinUntil(() => false, 3000);
+                    TestCycleRun(eqpt, cmd_id);
+                }
+                else
+                {
+                    MaintainLift maintainLift = null;
+                    MaintainSpace maintainSpace = null;
+                    switch (completeStatus)
+                    {
+                        case CompleteStatus.CmpStatusSystemOut:
                             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                               Data: $"Process vh:{eqpt.VEHICLE_ID} move to mtl complete, notify mtx:{maintainLift.DeviceID} is complete",
+                               Data: $"Process vh:{eqpt.VEHICLE_ID} system out complete, current address:{cur_adr_id},current mode:{eqpt.MODE_STATUS}",
                                VehicleID: eqpt.VEHICLE_ID,
                                CarrierID: eqpt.CST_ID);
-                            //1.通知MTL Car out完成
-                            scApp.MTLService.carOutComplete(maintainLift);
-                            //2.將該VH上報 Remove
-                            //Remove(eqpt.VEHICLE_ID);
-                            RemoveNew(eqpt.VEHICLE_ID);
-                        }
-                        break;
-                    case CompleteStatus.CmpStatusMtlhome:
-                        maintainLift = scApp.EquipmentBLL.cache.GetMaintainLiftByMTLHomeAdr(cur_adr_id);
-                        if (maintainLift != null)
-                            doAskVhToSystemInAddress(eqpt.VEHICLE_ID, maintainLift.MTL_SYSTEM_IN_ADDRESS);
-                        //doAskVhToSystemInAddress(eqpt.VEHICLE_ID, MTLService.MTL_SYSTEM_IN_ADDRESS);
-                        break;
-                    case CompleteStatus.CmpStatusSystemIn:
-                        var maintain_device = scApp.EquipmentBLL.cache.GetMaintainDeviceBySystemInAdr(cur_adr_id);
-                        if (maintain_device != null)
-                        {
-                            scApp.MTLService.carInComplete(maintain_device, eqpt.VEHICLE_ID);
-                            if (maintain_device is MaintainLift)
+                            if (eqpt.MODE_STATUS == VHModeStatus.AutoMtl)
                             {
-                                //Install(eqpt.VEHICLE_ID);
-                                InstallNew(eqpt.VEHICLE_ID);
+                                //在收到OHT的ID:132-SystemOut完成後，創建一個Transfer command，讓Vh移至移動至MTL上
+                                //doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, MTLService.MTL_ADDRESS);
+                                maintainLift = scApp.EquipmentBLL.cache.GetMaintainLiftBySystemOutAdr(cur_adr_id);
+                                if (maintainLift != null && maintainLift.CarOutSafetyCheck)
+                                    doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, maintainLift.MTL_ADDRESS);
                             }
-                        }
-                        break;
-                    default:
-                        if (eqpt.MODE_STATUS == VHModeStatus.AutoMtl && eqpt.HAS_CST == 0)
-                        {
-                            maintainLift = scApp.EquipmentBLL.cache.GetExcuteCarOutMTL(eqpt.VEHICLE_ID);
+                            else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts)
+                            {
+                                maintainSpace = scApp.EquipmentBLL.cache.GetMaintainSpaceBySystemOutAdr(cur_adr_id);
+                                if (maintainSpace != null)
+                                {
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"Process vh:{eqpt.VEHICLE_ID} system out complete, notify mtx:{maintainSpace.DeviceID} is complete",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
+                                    scApp.MTLService.carOutComplete(maintainSpace);
+                                }
+                            }
+                            scApp.ReportBLL.newReportVehicleRemoved(eqpt.VEHICLE_ID, null);
+                            break;
+                        case CompleteStatus.CmpStatusMoveToMtl:
+                            maintainLift = scApp.EquipmentBLL.cache.GetMaintainLiftByMTLAdr(cur_adr_id);
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"Process vh:{eqpt.VEHICLE_ID} move to mtl complete, current address:{cur_adr_id},current mode:{eqpt.MODE_STATUS}",
+                               VehicleID: eqpt.VEHICLE_ID,
+                               CarrierID: eqpt.CST_ID);
                             if (maintainLift != null)
                             {
-                                if (maintainLift.DokingMaintainDevice != null && maintainLift.DokingMaintainDevice.CarOutSafetyCheck)
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                   Data: $"Process vh:{eqpt.VEHICLE_ID} move to mtl complete, notify mtx:{maintainLift.DeviceID} is complete",
+                                   VehicleID: eqpt.VEHICLE_ID,
+                                   CarrierID: eqpt.CST_ID);
+                                //1.通知MTL Car out完成
+                                scApp.MTLService.carOutComplete(maintainLift);
+                                //2.將該VH上報 Remove
+                                //Remove(eqpt.VEHICLE_ID);
+                                RemoveNew(eqpt.VEHICLE_ID);
+                            }
+                            break;
+                        case CompleteStatus.CmpStatusMtlhome:
+                            maintainLift = scApp.EquipmentBLL.cache.GetMaintainLiftByMTLHomeAdr(cur_adr_id);
+                            if (maintainLift != null)
+                                doAskVhToSystemInAddress(eqpt.VEHICLE_ID, maintainLift.MTL_SYSTEM_IN_ADDRESS);
+                            //doAskVhToSystemInAddress(eqpt.VEHICLE_ID, MTLService.MTL_SYSTEM_IN_ADDRESS);
+                            break;
+                        case CompleteStatus.CmpStatusSystemIn:
+                            var maintain_device = scApp.EquipmentBLL.cache.GetMaintainDeviceBySystemInAdr(cur_adr_id);
+                            if (maintain_device != null)
+                            {
+                                scApp.MTLService.carInComplete(maintain_device, eqpt.VEHICLE_ID);
+                                if (maintain_device is MaintainLift)
                                 {
-                                    if (maintainLift.DokingMaintainDevice.CarOutSafetyCheck)//如果SafetyCheck已經解除則不能進行出車
+                                    //Install(eqpt.VEHICLE_ID);
+                                    InstallNew(eqpt.VEHICLE_ID);
+                                }
+                            }
+                            break;
+                        default:
+                            if (eqpt.MODE_STATUS == VHModeStatus.AutoMtl && eqpt.HAS_CST == 0)
+                            {
+                                maintainLift = scApp.EquipmentBLL.cache.GetExcuteCarOutMTL(eqpt.VEHICLE_ID);
+                                if (maintainLift != null)
+                                {
+                                    if (maintainLift.DokingMaintainDevice != null && maintainLift.DokingMaintainDevice.CarOutSafetyCheck)
                                     {
-                                        doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainLift.MTL_SYSTEM_OUT_ADDRESS);
+                                        if (maintainLift.DokingMaintainDevice.CarOutSafetyCheck)//如果SafetyCheck已經解除則不能進行出車
+                                        {
+                                            doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainLift.MTL_SYSTEM_OUT_ADDRESS);
+                                        }
                                     }
+                                    else
+                                    {
+                                        if (maintainLift.CarOutSafetyCheck)//如果SafetyCheck已經解除則不能進行出車
+                                        {
+                                            doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, maintainLift.MTL_ADDRESS);
+                                        }
+                                    }
+
+                                }
+
+                            }
+                            else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts && eqpt.HAS_CST == 0)
+                            {
+                                maintainSpace = scApp.EquipmentBLL.cache.GetExcuteCarOutMTS(eqpt.VEHICLE_ID);
+                                if (maintainSpace != null && maintainSpace.CarOutSafetyCheck)
+                                    doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainSpace.MTS_ADDRESS);
+                            }
+                            else if ((eqpt.MODE_STATUS == VHModeStatus.AutoRemote) && eqpt.HAS_CST == 0)
+                            {
+                                bool has_excute_command_shift = tryToExcuteTransferShift(eqpt);
+                                eqpt.IsProcessingCommandFinish = false;
+                                if (has_excute_command_shift)
+                                {
+                                    //not thing...
                                 }
                                 else
                                 {
-                                    if (maintainLift.CarOutSafetyCheck)//如果SafetyCheck已經解除則不能進行出車
-                                    {
-                                        doAskVhToMaintainsAddress(eqpt.VEHICLE_ID, maintainLift.MTL_ADDRESS);
-                                    }
+                                    scApp.CMDBLL.checkMCS_TransferCommand();
+                                    scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(eqpt.VEHICLE_ID);
                                 }
-
                             }
-
-                        }
-                        else if (eqpt.MODE_STATUS == VHModeStatus.AutoMts && eqpt.HAS_CST == 0)
-                        {
-                            maintainSpace = scApp.EquipmentBLL.cache.GetExcuteCarOutMTS(eqpt.VEHICLE_ID);
-                            if (maintainSpace != null && maintainSpace.CarOutSafetyCheck)
-                                doAskVhToSystemOutAddress(eqpt.VEHICLE_ID, maintainSpace.MTS_ADDRESS);
-                        }
-                        else if ((eqpt.MODE_STATUS == VHModeStatus.AutoRemote) && eqpt.HAS_CST == 0)
-                        {
-                            scApp.CMDBLL.checkMCS_TransferCommand();
-                            scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(eqpt.VEHICLE_ID);
-                        }
-                        break;
+                            break;
+                    }
                 }
-            }
 
 
-            if (scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSING)
-            {
-                List<ACMD_MCS> cmd_mcs_lst = scApp.CMDBLL.loadACMD_MCSIsUnfinished();
-                if (cmd_mcs_lst.Count == 0)
+                if (scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSING)
                 {
-                    scApp.LineService.TSCStateToPause("");
+                    List<ACMD_MCS> cmd_mcs_lst = scApp.CMDBLL.loadACMD_MCSIsUnfinished();
+                    if (cmd_mcs_lst.Count == 0)
+                    {
+                        scApp.LineService.TSCStateToPause("");
+                    }
+                }
+                eqpt.onCommandComplete(completeStatus);
+                scApp.VehicleBLL.updateVehicleActionStatus(eqpt, EventType.AdrPass);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                eqpt.IsProcessingCommandFinish = false;
+            }
+        }
+
+        private bool checkIsCommandCompleteByCommandShift(string finish_mcs_cmd, CompleteStatus completeStatus)
+        {
+            try
+            {
+                if (SCUtility.isEmpty(finish_mcs_cmd))
+                    return false;
+                if (completeStatus != CompleteStatus.CmpStatusCancel)
+                    return false;
+                var cmd_mcs = scApp.CMDBLL.getCMD_MCSByID(finish_mcs_cmd);
+                if (cmd_mcs == null)
+                    return false;
+                if (!SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT))
+                    return false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return false;
+            }
+        }
+
+        private bool tryToExcuteTransferShift(AVEHICLE commandFinishVh)
+        {
+            //1.找出目前所有的Transfer command且尚未載到貨的
+            //2.如果準備去執行的OHT已經在Load Port的Segment就不執行
+            List<ACMD_MCS> can_cmd_shift_mcs_cmds = scApp.CMDBLL.cache.loadExcuteAndNonLoaded();
+            if (can_cmd_shift_mcs_cmds == null || can_cmd_shift_mcs_cmds.Count == 0)
+                return false;
+            string vh_cur_adr_id = SCUtility.Trim(commandFinishVh.CUR_ADR_ID, true);
+            foreach (var can_cmd_shift_mcs_cmd in can_cmd_shift_mcs_cmds)
+            {
+                ACMD_OHTC excuting_cmd_ohtc = can_cmd_shift_mcs_cmd.getExcuteCMD_OHTC(scApp.CMDBLL);
+                if (excuting_cmd_ohtc == null) continue;
+                string excuting_cmd_id = SCUtility.Trim(excuting_cmd_ohtc.CMD_ID, true);
+                string excuting_vh_id = SCUtility.Trim(excuting_cmd_ohtc.VH_ID, true);
+                AVEHICLE excuting_vh = scApp.VehicleBLL.cache.getVhByID(excuting_vh_id);
+                string excuting_current_adr = excuting_vh.CUR_ADR_ID;
+                string cmd_source_adr = can_cmd_shift_mcs_cmd.getSourceAdrID(scApp.PortStationBLL);
+                double waitting_shift_vh_distance = double.MaxValue;
+                double excuting_vh_distance = double.MinValue;
+
+                bool is_walkable = scApp.RouteGuide.checkRoadIsWalkable
+                    (vh_cur_adr_id, cmd_source_adr, out waitting_shift_vh_distance);
+                if (!is_walkable) continue;
+                scApp.RouteGuide.checkRoadIsWalkable
+                    (excuting_current_adr, cmd_source_adr, out excuting_vh_distance);
+                if (excuting_vh_distance > waitting_shift_vh_distance)
+                {
+                    try
+                    {
+                        scApp.CMDBLL.updateCMD_MCS_PauseFlag(can_cmd_shift_mcs_cmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT);
+                        //下達 command cancel，若回復OK，則將產生一筆queue的命令給waitting_cmd_shift_vh
+                        //並將原本執行的MCS cmd改回pre initial
+                        bool is_cnacel_success = doAbortCommand(excuting_vh, excuting_cmd_id, CMDCancelType.CmdCancel);
+                        if (!is_cnacel_success)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            //當下達成功以後，便開始等待被cancel的車子是否已經確實結束了命令
+                            bool is_cancel_finish = SpinWait.SpinUntil(() => IsCMD_OHTCFinish(excuting_cmd_id), 60000);
+                            if (is_cancel_finish)
+                            {
+                                bool is_success = false;
+                                is_success = scApp.CMDBLL.assignCommnadToVehicleByCommandShift(commandFinishVh.VEHICLE_ID, can_cmd_shift_mcs_cmd);
+                                return is_success;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "Exception:");
+                        return false;
+                    }
+                    finally
+                    {
+                        scApp.CMDBLL.updateCMD_MCS_PauseFlag(can_cmd_shift_mcs_cmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_EMPTY);
+                    }
                 }
             }
-            eqpt.onCommandComplete(completeStatus);
-            scApp.VehicleBLL.updateVehicleActionStatus(eqpt, EventType.AdrPass);
+            return false;
         }
+        private bool IsCMD_OHTCFinish(string excutingCmdID)
+        {
+            bool is_finish = scApp.CMDBLL.isCMCD_OHTCFinishFromCache(excutingCmdID);
+            if (is_finish) return true;
+            else
+            {
+                SpinWait.SpinUntil(() => false, 1000);
+                return false;
+            }
+        }
+
 
         private bool replyCommandComplete(AVEHICLE eqpt, int seq_num, string finish_ohxc_cmd, string finish_mcs_cmd)
         {

@@ -555,7 +555,7 @@ namespace RouteKit
             }
         }
 
-        public List<RouteInfo> findPathAdrToAdr(int from_addr, int to_addr, bool isIgnoreStatus , List<string> banSegmentIDList = null)
+        public List<RouteInfo> findPathAdrToAdr(int from_addr, int to_addr, bool isIgnoreStatus, List<string> banSegmentIDList = null)
         {
             try
             {
@@ -591,7 +591,7 @@ namespace RouteKit
                             }
 
                             string newFrom_adr = s.TO_ADR_ID;
-                            List<RouteInfo> routeInfos_temp = getFromToRoutesAddrToAddr(int.Parse(newFrom_adr), to_addr, isIgnoreStatus,banSegmentIDList);
+                            List<RouteInfo> routeInfos_temp = getFromToRoutesAddrToAddr(int.Parse(newFrom_adr), to_addr, isIgnoreStatus, banSegmentIDList);
                             if (routeInfos_temp != null && routeInfos_temp.Count != 0)
                             {
                                 routeInfos_temp[0].addresses.Insert(0, from_addr);
@@ -894,132 +894,132 @@ namespace RouteKit
             }
         }
 
-//        public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, bool isIgnoreStatus)//M0.06
-//        {
+        //        public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, bool isIgnoreStatus)//M0.06
+        //        {
 
-//            Stopwatch stopWatch = new Stopwatch();
-//            stopWatch.Start();
+        //            Stopwatch stopWatch = new Stopwatch();
+        //            stopWatch.Start();
 
-//            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
-//            Data: $"Start Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}]");
-//            if (from_addr == to_addr)
-//            {
-//                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
-//Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] is the same ，return empty result");
-//                return new List<RouteInfo>();
-//            }
+        //            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+        //            Data: $"Start Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}]");
+        //            if (from_addr == to_addr)
+        //            {
+        //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+        //Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] is the same ，return empty result");
+        //                return new List<RouteInfo>();
+        //            }
 
-//            int pathAddCount = 0;
-//            PathInfo pathInfo = new PathInfo();
-//            try
-//            {
-//                #region Dijkstra
-//                int[,] localGraph = new int[n, n];
-//                for (int i = 0; i < n; i++)//複製一個Cost圖出來
-//                {
-//                    for (int j = 0; j < n; j++)
-//                    {
-//                        localGraph[i, j] = graph[i, j];
-//                    }
-//                }
-//                if (!isIgnoreStatus)
-//                {
-//                    foreach (List<int> banPattern in banPatternList)//Ban掉的路徑輸入進計算Cost的圖
-//                    {
-//                        int ban_index_from = addressIndexDic[banPattern[0]];
-//                        int ban_index_to = addressIndexDic[banPattern[1]];
-//                        localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
-//                    }
-//                }
+        //            int pathAddCount = 0;
+        //            PathInfo pathInfo = new PathInfo();
+        //            try
+        //            {
+        //                #region Dijkstra
+        //                int[,] localGraph = new int[n, n];
+        //                for (int i = 0; i < n; i++)//複製一個Cost圖出來
+        //                {
+        //                    for (int j = 0; j < n; j++)
+        //                    {
+        //                        localGraph[i, j] = graph[i, j];
+        //                    }
+        //                }
+        //                if (!isIgnoreStatus)
+        //                {
+        //                    foreach (List<int> banPattern in banPatternList)//Ban掉的路徑輸入進計算Cost的圖
+        //                    {
+        //                        int ban_index_from = addressIndexDic[banPattern[0]];
+        //                        int ban_index_to = addressIndexDic[banPattern[1]];
+        //                        localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
+        //                    }
+        //                }
 
-//                //Cost圖準備完成
+        //                //Cost圖準備完成
 
-//                bool isFirstTime = true;
-//                do
-//                {
-//                    if (!isFirstTime)
-//                    {
-//                        int ban_index_from = addressIndexDic[pathInfo.path[pathInfo.path.Count - 2]];
-//                        int ban_index_to = addressIndexDic[pathInfo.path[pathInfo.path.Count - 1]];
-//                        localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
-//                        pathInfo = new PathInfo();
-//                    }
-//                    else
-//                    {
-//                        isFirstTime = false;
-//                    }
-//                    int[] dist;
-//                    int[] previous;
-//                    int index_from = addressIndexDic[from_addr];
-//                    int index_to = addressIndexDic[to_addr];
-//                    dijkstra(localGraph, index_from, index_to, out dist, out previous);
-//                    //Dijkstra演算結束
-//                    if (dist[index_to] == int.MaxValue)//表示無法到達
-//                    {
-//                        break;
-//                    }
-//                    pathInfo.total_cost = dist[index_to];
+        //                bool isFirstTime = true;
+        //                do
+        //                {
+        //                    if (!isFirstTime)
+        //                    {
+        //                        int ban_index_from = addressIndexDic[pathInfo.path[pathInfo.path.Count - 2]];
+        //                        int ban_index_to = addressIndexDic[pathInfo.path[pathInfo.path.Count - 1]];
+        //                        localGraph[ban_index_from, ban_index_to] = 0;//Cost 0代表無法到達
+        //                        pathInfo = new PathInfo();
+        //                    }
+        //                    else
+        //                    {
+        //                        isFirstTime = false;
+        //                    }
+        //                    int[] dist;
+        //                    int[] previous;
+        //                    int index_from = addressIndexDic[from_addr];
+        //                    int index_to = addressIndexDic[to_addr];
+        //                    dijkstra(localGraph, index_from, index_to, out dist, out previous);
+        //                    //Dijkstra演算結束
+        //                    if (dist[index_to] == int.MaxValue)//表示無法到達
+        //                    {
+        //                        break;
+        //                    }
+        //                    pathInfo.total_cost = dist[index_to];
 
-//                    int index = index_to;
-//                    while (previous[index] != index_from)
-//                    {
-//                        pathInfo.path.Add(IndexAddressDic[index]);
-//                        index = previous[index];
-//                        pathAddCount++;
-//                    }
-//                    pathInfo.path.Add(IndexAddressDic[index]);
-//                    pathInfo.path.Add(IndexAddressDic[previous[index]]);
-//                    pathInfo.path.Reverse();
-//                }
-//                while (false);
+        //                    int index = index_to;
+        //                    while (previous[index] != index_from)
+        //                    {
+        //                        pathInfo.path.Add(IndexAddressDic[index]);
+        //                        index = previous[index];
+        //                        pathAddCount++;
+        //                    }
+        //                    pathInfo.path.Add(IndexAddressDic[index]);
+        //                    pathInfo.path.Add(IndexAddressDic[previous[index]]);
+        //                    pathInfo.path.Reverse();
+        //                }
+        //                while (false);
 
-//                List<RouteInfo> routeList = new List<RouteInfo>();
-//                if (pathInfo.path.Count != 0)
-//                {
-//                    List<mySection> route = new List<mySection>();
-//                    for (int i = 0; i < pathInfo.path.Count - 1; i++)
-//                    {
-//                        mySection section = getSectionByTwoNode(pathInfo.path[i], pathInfo.path[i + 1]);
-//                        route.Add(section);
-//                    }
-//                    routeList.Add(new RouteInfo(route, pathInfo.path, pathInfo.total_cost));
-//                }
-//                else
-//                {
-//                    //do nothing
-//                }
-//                stopWatch.Stop();
-//                // Get the elapsed time as a TimeSpan value.
-//                TimeSpan ts = stopWatch.Elapsed;
+        //                List<RouteInfo> routeList = new List<RouteInfo>();
+        //                if (pathInfo.path.Count != 0)
+        //                {
+        //                    List<mySection> route = new List<mySection>();
+        //                    for (int i = 0; i < pathInfo.path.Count - 1; i++)
+        //                    {
+        //                        mySection section = getSectionByTwoNode(pathInfo.path[i], pathInfo.path[i + 1]);
+        //                        route.Add(section);
+        //                    }
+        //                    routeList.Add(new RouteInfo(route, pathInfo.path, pathInfo.total_cost));
+        //                }
+        //                else
+        //                {
+        //                    //do nothing
+        //                }
+        //                stopWatch.Stop();
+        //                // Get the elapsed time as a TimeSpan value.
+        //                TimeSpan ts = stopWatch.Elapsed;
 
-//                // Format and display the TimeSpan value.
-//                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-//                    ts.Hours, ts.Minutes, ts.Seconds,
-//                    ts.Milliseconds / 10);
-//                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
-//                Data: $"End Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] Using Time:[{elapsedTime}]");
-//                //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Error, Class: nameof(GuideNew), Device: "OHT",
-//                //Data: $"Find Path using Dijkstra have exception happen. From Adr: [{from_addr}] To Adr: [{to_addr}] Path Add Count: [{pathAddCount}] PathInfo:[{pathInfo.path}]");
-//                return routeList;
-//                #endregion Dijkstra
-//            }
-//            catch (Exception ex)
-//            {
-//                stopWatch.Stop();
-//                // Get the elapsed time as a TimeSpan value.
-//                TimeSpan ts = stopWatch.Elapsed;
+        //                // Format and display the TimeSpan value.
+        //                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+        //                    ts.Hours, ts.Minutes, ts.Seconds,
+        //                    ts.Milliseconds / 10);
+        //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+        //                Data: $"End Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] Using Time:[{elapsedTime}]");
+        //                //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Error, Class: nameof(GuideNew), Device: "OHT",
+        //                //Data: $"Find Path using Dijkstra have exception happen. From Adr: [{from_addr}] To Adr: [{to_addr}] Path Add Count: [{pathAddCount}] PathInfo:[{pathInfo.path}]");
+        //                return routeList;
+        //                #endregion Dijkstra
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                stopWatch.Stop();
+        //                // Get the elapsed time as a TimeSpan value.
+        //                TimeSpan ts = stopWatch.Elapsed;
 
-//                // Format and display the TimeSpan value.
-//                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-//                    ts.Hours, ts.Minutes, ts.Seconds,
-//                    ts.Milliseconds / 10);
-//                LogHelper.Log(logger: logger, LogLevel: LogLevel.Error, Class: nameof(GuideNew), Device: "OHT",
-//                Data: $"Find Path using Dijkstra have exception happen.Exception:[{ex.ToString()}] From Adr: [{from_addr}] To Adr: [{to_addr}] Path Add Count: [{pathAddCount}] Using Time:[{elapsedTime}]");
-//                return new List<RouteInfo>();
-//            }
+        //                // Format and display the TimeSpan value.
+        //                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+        //                    ts.Hours, ts.Minutes, ts.Seconds,
+        //                    ts.Milliseconds / 10);
+        //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Error, Class: nameof(GuideNew), Device: "OHT",
+        //                Data: $"Find Path using Dijkstra have exception happen.Exception:[{ex.ToString()}] From Adr: [{from_addr}] To Adr: [{to_addr}] Path Add Count: [{pathAddCount}] Using Time:[{elapsedTime}]");
+        //                return new List<RouteInfo>();
+        //            }
 
 
-//        }
+        //        }
         public List<RouteInfo> getFromToRoutesAddrToAddr(int from_addr, int to_addr, bool isIgnoreStatus, List<string> banSegmentIDList = null)//M0.06
         {
 

@@ -181,6 +181,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                 APORTSTATION portTemp = CacheManager.getPortStation(port_id);
                 return portTemp;
             }
+            public string getPortStationAdr(string portID)
+            {
+                APORTSTATION portTemp = CacheManager.getPortStation(portID);
+                if (portTemp == null) return "";
+                return SCUtility.Trim(portTemp.ADR_ID);
+            }
+
             public APORTSTATION getPortStationByID(string adr_id)
             {
                 APORTSTATION portTemp = CacheManager.getALLPortStation().
@@ -256,7 +263,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return port_station != null;
             }
 
-            public bool IsPortInSpecifiedSegment( BLL.SectionBLL sectionBLL, string portID, string segmentID)
+            public bool IsPortInSpecifiedSegment(BLL.SectionBLL sectionBLL, string portID, string segmentID)
             {
                 APORTSTATION aPORTSTATION = getPortStation(portID);
                 ASECTION aSECTION = sectionBLL.cache.GetSectionsByAddress(aPORTSTATION.ADR_ID.Trim()).First();

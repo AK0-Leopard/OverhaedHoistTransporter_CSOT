@@ -150,6 +150,7 @@ namespace com.mirle.ibg3k0.sc
         public virtual double X_Axis { get; set; }
         [JsonIgnore]
         public virtual double Y_Axis { get; set; }
+        public virtual bool IsProcessingCommandFinish { get; set; }
 
         [JsonIgnore]
         public virtual int CMD_Priority { get; set; } = 0;
