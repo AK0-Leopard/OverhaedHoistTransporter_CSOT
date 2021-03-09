@@ -231,6 +231,8 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
         public const string CMD_Result_IDReadFailed = "6";
         public const string CMD_Result_TransferCanceled = "8";
         public const string CMD_Result_TransferAborted = "9";
+        public const string CMD_Result_TransferDoubleStorage = "21";
+        public const string CMD_Result_TransferEmptyRetrieval = "22";
         //public const string CMD_Result_InterlockError = "64";
         public static string convert2MCS(ProtocolFormat.OHTMessage.CompleteStatus tran_cmp_status)
         {
@@ -254,13 +256,17 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
                 case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusVehicleAbort:
                 case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusInterlockError:
                     return CMD_Result_Unsuccessful;
-                //return CMD_Result_InterlockError;
+                //return CMD_Result_InterlockError;                                                                                                                                                                                                    
                 case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusIdmisMatch:
                     return CMD_Result_IDMismatch;
                 case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusIdreadFailed:
                     return CMD_Result_IDReadFailed;
                 case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusIdreadDuplicate:
                     return CMD_Result_IDDuplicate;
+                case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusDoubleStore:
+                    return CMD_Result_TransferDoubleStorage;
+                case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusEmtryRetrieval:
+                    return CMD_Result_TransferEmptyRetrieval;
                 default:
                     throw new Exception("參數錯誤"); //TODO 要帶入正確的Exception。
             }

@@ -4192,6 +4192,8 @@ namespace com.mirle.ibg3k0.sc.Service
                             case CompleteStatus.CmpStatusLoadunload:
                             case CompleteStatus.CmpStatusInterlockError:
                             case CompleteStatus.CmpStatusVehicleAbort:
+                            case CompleteStatus.CmpStatusDoubleStore:
+                            case CompleteStatus.CmpStatusEmtryRetrieval:
                                 isSuccess = scApp.ReportBLL.newReportTransferCommandNormalFinish(eqpt.VEHICLE_ID, reportqueues);
                                 break;
                             case CompleteStatus.CmpStatusIdmisMatch:
