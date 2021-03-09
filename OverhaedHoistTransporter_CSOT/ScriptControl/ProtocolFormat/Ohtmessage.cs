@@ -647,6 +647,8 @@ namespace com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage {
     [pbr::OriginalName("CmpStatusIDMisMatch")] CmpStatusIdmisMatch = 23,
     [pbr::OriginalName("CmpStatusIDReadFailed")] CmpStatusIdreadFailed = 24,
     [pbr::OriginalName("CmpStatusIDReadDuplicate")] CmpStatusIdreadDuplicate = 25,
+    [pbr::OriginalName("CmpStatusDoubleStore")] CmpStatusDoubleStore = 26,
+    [pbr::OriginalName("CmpStatusEmtryRetrieval")] CmpStatusEmtryRetrieval = 27,
     [pbr::OriginalName("CmpStatusInterlockError")] CmpStatusInterlockError = 64,
     [pbr::OriginalName("CmpStatusLongTimeInaction")] CmpStatusLongTimeInaction = 98,
     [pbr::OriginalName("CmpStatusForceFinishByOp")] CmpStatusForceFinishByOp = 99,
