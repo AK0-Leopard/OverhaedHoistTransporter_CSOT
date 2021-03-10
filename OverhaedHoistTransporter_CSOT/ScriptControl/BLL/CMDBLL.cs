@@ -830,6 +830,26 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return cmd_mcsDao.loadACMD_MCSIsUnfinished(con);
             }
         }
+        public List<ACMD_MCS> loadExcuteAndNonLoaded()
+        {
+            List<ACMD_MCS> cmds_mcs = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                cmds_mcs = cmd_mcsDao.loadACMD_MCSIsUnfinished(con);
+            }
+            //1.找出目前所有的Transfer command且尚未載到貨的
+            //2.如果準備去執行的OHT已經在Load Port的Segment就不執行
+            //3.要過濾掉已經在執行command shift的命令(Pause flag = S)
+            cmds_mcs =
+                cmds_mcs.Where(cmd =>
+                cmd.TRANSFERSTATE >= E_TRAN_STATUS.Initial &&
+                cmd.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE &&
+                cmd.COMMANDSTATE <= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE &&
+                !SCUtility.isMatche(cmd.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT)).
+                ToList();
+            return cmds_mcs;
+        }
+
         public List<ACMD_MCS> loadFinishCMD_MCS()
         {
             using (DBConnection_EF con = DBConnection_EF.GetUContext())

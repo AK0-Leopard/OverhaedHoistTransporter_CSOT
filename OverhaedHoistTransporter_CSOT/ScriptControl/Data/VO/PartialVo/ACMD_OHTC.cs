@@ -9,7 +9,20 @@ namespace com.mirle.ibg3k0.sc
     public partial class ACMD_OHTC
     {
 
-
+        public string getSourcePortSegment(BLL.SectionBLL sectionBLL)
+        {
+            var sections = sectionBLL.cache.GetSectionsByAddress(SOURCE);
+            if (sections == null || sections.Count == 0)
+            {
+                return "";
+            }
+            var section = sections[0];
+            if (section == null)
+            {
+                return "";
+            }
+            return sections[0].SEG_NUM;
+        }
         public HCMD_OHTC ToHCMD_OHTC()
         {
             return new HCMD_OHTC()
@@ -35,7 +48,7 @@ namespace com.mirle.ibg3k0.sc
 
         public override string ToString()
         {
-            return $"command id:{Common.SCUtility.Trim(CMD_ID, true)}, mcs cmd id:{Common.SCUtility.Trim(CMD_ID_MCS,true)}, cmd type:{CMD_TPYE}, source:{Common.SCUtility.Trim(SOURCE,true)}, dest:{Common.SCUtility.Trim(DESTINATION,true)}, status:{CMD_STAUS}," +
+            return $"command id:{Common.SCUtility.Trim(CMD_ID, true)}, mcs cmd id:{Common.SCUtility.Trim(CMD_ID_MCS, true)}, cmd type:{CMD_TPYE}, source:{Common.SCUtility.Trim(SOURCE, true)}, dest:{Common.SCUtility.Trim(DESTINATION, true)}, status:{CMD_STAUS}," +
                    $" start time:{CMD_START_TIME?.ToString(App.SCAppConstants.DateTimeFormat_19)}, end time:{CMD_END_TIME?.ToString(App.SCAppConstants.DateTimeFormat_19)}";
         }
     }

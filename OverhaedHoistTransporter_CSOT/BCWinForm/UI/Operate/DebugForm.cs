@@ -38,6 +38,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_StartGenAntoCmd.Checked = DebugParameter.CanAutoRandomGeneratesCommand;
             cb_FroceBlockPass.Checked = DebugParameter.isForcedPassBlockControl;
             cb_FroceBlockPass.Checked = DebugParameter.isForcedRejectBlockControl;
+            ck_is_open_command_shift.Checked = DebugParameter.isOpenCommandShift;
+
             ch_force_pass_red_light_with_buzzer.Checked = DebugParameter.isForcePassFourColorLightRedWithBuzzerSignal;
             num_ChangePathCommandPath.Value = sc.App.SystemParameter.ChangePathCommandCount;
             List<string> lstVh = new List<string>();
@@ -1627,6 +1629,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void num_ChangePathCommandPath_ValueChanged(object sender, EventArgs e)
         {
             sc.App.SystemParameter.setChangePathCommandCount((int)num_ChangePathCommandPath.Value);
+        }
+
+        private void ck_is_open_command_shift_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.isOpenCommandShift = ck_is_open_command_shift.Checked;
         }
     }
 }
