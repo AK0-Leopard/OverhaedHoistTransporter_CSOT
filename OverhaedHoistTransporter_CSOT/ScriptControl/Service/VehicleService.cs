@@ -4470,7 +4470,15 @@ namespace com.mirle.ibg3k0.sc.Service
                                     completeStatus == CompleteStatus.CmpStatusUnload)
                                 {
                                     //has_excute_command_shift = tryToExcuteTransferShift(eqpt);
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"vh:{eqpt.VEHICLE_ID}命令結束,確認是否需要進行command shift...",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
                                     has_excute_command_shift = tryToExcuteCommandShiftNew(eqpt);
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"vh:{eqpt.VEHICLE_ID}命令結束,確認是否需要進行command shift,result:{has_excute_command_shift}",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
                                 }
                                 eqpt.IsProcessingCommandFinish = false;
                                 if (has_excute_command_shift)
@@ -4672,21 +4680,20 @@ namespace com.mirle.ibg3k0.sc.Service
                 return false;
             }
         }
-        object cmdShift_lock = new object();
         private bool tryToExcuteCommandShiftNew(AVEHICLE commandFinishVh)
         {
             bool is_command_shift_success = false;
             (bool isFind, ACMD_MCS suitableCmdShiftCmd) find_result = default;
             try
             {
-                lock (cmdShift_lock)
+                if (!DebugParameter.isOpenCommandShift)
                 {
-                    find_result = findSuitableExcuteCommandShiftOfCommand(commandFinishVh);
-                    if (find_result.isFind)
-                    {
-                        scApp.CMDBLL.updateCMD_MCS_PauseFlag(find_result.suitableCmdShiftCmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT);
-                    }
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"vh:{commandFinishVh.VEHICLE_ID} 命令結束，isOpenCommandShift:{DebugParameter.isOpenCommandShift}",
+                       VehicleID: commandFinishVh.VEHICLE_ID,
+                       CarrierID: commandFinishVh.CST_ID);
                 }
+                find_result = findSuitableExcuteCommandShiftOfCommand(commandFinishVh);
                 if (find_result.isFind)
                 {
                     is_command_shift_success = startExcuteCommandShift(commandFinishVh, find_result.suitableCmdShiftCmd);
@@ -4712,58 +4719,84 @@ namespace com.mirle.ibg3k0.sc.Service
             }
             return is_command_shift_success;
         }
+        private long cmdShiftSyncPoint = 0;
         private (bool isFind, ACMD_MCS suitableCmdShiftCmd) findSuitableExcuteCommandShiftOfCommand(AVEHICLE commandFinishVh)
         {
-            List<ACMD_MCS> can_cmd_shift_mcs_cmds = scApp.CMDBLL.loadExcuteAndNonLoaded();
-            if (can_cmd_shift_mcs_cmds == null || can_cmd_shift_mcs_cmds.Count == 0)
-                return (false, null);
-            string cmdFinishVh_cur_adr_id = SCUtility.Trim(commandFinishVh.CUR_ADR_ID, true);
-            foreach (var can_cmd_shift_mcs_cmd in can_cmd_shift_mcs_cmds)
+            //如果在該次進入時，已經有其他然在查詢，則直接離開放棄該次的搜尋
+            if (System.Threading.Interlocked.Exchange(ref cmdShiftSyncPoint, 1) == 0)
             {
-                ACMD_OHTC excuting_cmd_ohtc = can_cmd_shift_mcs_cmd.getExcuteCMD_OHTC(scApp.CMDBLL);
-                if (excuting_cmd_ohtc == null)
+                try
                 {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"搬送命令 ID:{can_cmd_shift_mcs_cmd.CMD_ID} 無對應的 CMD_OHTC，繼續下一筆的檢查",
-                       VehicleID: commandFinishVh.VEHICLE_ID,
-                       CarrierID: commandFinishVh.CST_ID);
-                    continue;
-                }
-                string excuting_cmd_id = SCUtility.Trim(excuting_cmd_ohtc.CMD_ID, true);
-                string excuting_vh_id = SCUtility.Trim(excuting_cmd_ohtc.VH_ID, true);
-                AVEHICLE excuting_vh = scApp.VehicleBLL.cache.getVhByID(excuting_vh_id);
-                string excuting_current_adr = excuting_vh.CUR_ADR_ID;
-                string excuting_current_seg = excuting_vh.CUR_SEG_ID;
-                if (SCUtility.isMatche(excuting_cmd_ohtc.getSourcePortSegment(scApp.SectionBLL), excuting_current_seg))
-                {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"搬送命令 ID:{can_cmd_shift_mcs_cmd.CMD_ID} excuting vh 已到達Source Port的Segment，不進行command shift，繼續下一筆的檢查",
-                       VehicleID: commandFinishVh.VEHICLE_ID,
-                       CarrierID: commandFinishVh.CST_ID);
-                    continue;
-                }
+                    List<ACMD_MCS> can_cmd_shift_mcs_cmds = scApp.CMDBLL.loadExcuteAndNonLoaded();
+                    if (can_cmd_shift_mcs_cmds == null || can_cmd_shift_mcs_cmds.Count == 0)
+                        return (false, null);
+                    string cmdFinishVh_cur_adr_id = SCUtility.Trim(commandFinishVh.CUR_ADR_ID, true);
+                    foreach (var can_cmd_shift_mcs_cmd in can_cmd_shift_mcs_cmds)
+                    {
+                        ACMD_OHTC excuting_cmd_ohtc = can_cmd_shift_mcs_cmd.getExcuteCMD_OHTC(scApp.CMDBLL);
+                        if (excuting_cmd_ohtc == null)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"搬送命令 ID:{can_cmd_shift_mcs_cmd.CMD_ID} 無對應的 CMD_OHTC，繼續下一筆的檢查",
+                               VehicleID: commandFinishVh.VEHICLE_ID,
+                               CarrierID: commandFinishVh.CST_ID);
+                            continue;
+                        }
+                        string excuting_cmd_id = SCUtility.Trim(excuting_cmd_ohtc.CMD_ID, true);
+                        string excuting_vh_id = SCUtility.Trim(excuting_cmd_ohtc.VH_ID, true);
+                        AVEHICLE excuting_vh = scApp.VehicleBLL.cache.getVhByID(excuting_vh_id);
+                        string excuting_current_adr = excuting_vh.CUR_ADR_ID;
+                        string excuting_current_seg = excuting_vh.CUR_SEG_ID;
+                        if (SCUtility.isMatche(excuting_cmd_ohtc.getSourcePortSegment(scApp.SectionBLL), excuting_current_seg))
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"搬送命令 ID:{can_cmd_shift_mcs_cmd.CMD_ID} excuting vh 已到達Source Port的Segment，不進行command shift，繼續下一筆的檢查",
+                               VehicleID: commandFinishVh.VEHICLE_ID,
+                               CarrierID: commandFinishVh.CST_ID);
+                            continue;
+                        }
 
-                string cmd_source_adr = can_cmd_shift_mcs_cmd.getSourceAdrID(scApp.PortStationBLL);
-                double waitting_shift_vh_distance = double.MaxValue;
-                double excuting_vh_distance = double.MinValue;
-                bool is_walkable = scApp.RouteGuide.checkRoadIsWalkable
-                    (cmdFinishVh_cur_adr_id, cmd_source_adr, out waitting_shift_vh_distance);
-                if (!is_walkable)
-                {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"搬送命令 ID:{can_cmd_shift_mcs_cmd.CMD_ID} 該車輛無法到達，繼續下一筆的檢查",
-                       VehicleID: commandFinishVh.VEHICLE_ID,
-                       CarrierID: commandFinishVh.CST_ID);
-                    continue;
+                        string cmd_source_adr = can_cmd_shift_mcs_cmd.getSourceAdrID(scApp.PortStationBLL);
+                        double waitting_shift_vh_distance = double.MaxValue;
+                        double excuting_vh_distance = double.MinValue;
+                        bool is_walkable = scApp.RouteGuide.checkRoadIsWalkable
+                            (cmdFinishVh_cur_adr_id, cmd_source_adr, out waitting_shift_vh_distance);
+                        if (!is_walkable)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"搬送命令 ID:{can_cmd_shift_mcs_cmd.CMD_ID} 該車輛無法到達，繼續下一筆的檢查",
+                               VehicleID: commandFinishVh.VEHICLE_ID,
+                               CarrierID: commandFinishVh.CST_ID);
+                            continue;
+                        }
+                        scApp.RouteGuide.checkRoadIsWalkable
+                            (excuting_current_adr, cmd_source_adr, out excuting_vh_distance);
+                        if (excuting_vh_distance > waitting_shift_vh_distance)
+                        {
+                            scApp.CMDBLL.updateCMD_MCS_PauseFlag(can_cmd_shift_mcs_cmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT);
+                            return (true, can_cmd_shift_mcs_cmd);
+                        }
+                    }
+                    return (false, null);
                 }
-                scApp.RouteGuide.checkRoadIsWalkable
-                    (excuting_current_adr, cmd_source_adr, out excuting_vh_distance);
-                if (excuting_vh_distance > waitting_shift_vh_distance)
+                catch (Exception ex)
                 {
-                    return (true, can_cmd_shift_mcs_cmd);
+                    logger.Error(ex, "Exception:");
+                    return (false, null);
+                }
+                finally
+                {
+                    System.Threading.Interlocked.Exchange(ref cmdShiftSyncPoint, 0);
                 }
             }
-            return (false, null);
+            else
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"vh ID:{commandFinishVh.VEHICLE_ID} 命令結束，但不由於有其輛正在執行command shift的命令搜尋,跳過該次的查詢",
+                   VehicleID: commandFinishVh.VEHICLE_ID,
+                   CarrierID: commandFinishVh.CST_ID);
+                return (false, null);
+            }
         }
         private bool startExcuteCommandShift(AVEHICLE commandFinishVh, ACMD_MCS can_cmd_shift_mcs_cmd)
         {
