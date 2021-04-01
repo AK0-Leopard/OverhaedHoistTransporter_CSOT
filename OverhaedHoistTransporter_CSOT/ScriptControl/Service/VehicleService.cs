@@ -347,8 +347,8 @@ namespace com.mirle.ibg3k0.sc.Service
                 //                                               vh.MODE_STATUS, vh.ACT_STATUS, vh.OBS_PAUSE, vh.BLOCK_PAUSE, vh.CMD_PAUSE,
                 //                                               vh.HID_PAUSE, vh.ERROR, vh.EARTHQUAKE_PAUSE, vh.SAFETY_DOOR_PAUSE));
 
-                scApp.getNatsManager().PublishAsync
-                    (string.Format(SCAppConstants.NATS_SUBJECT_VH_INFO_0, vh.VEHICLE_ID.Trim()), vh_Serialize);
+                //scApp.getNatsManager().PublishAsync
+                //    (string.Format(SCAppConstants.NATS_SUBJECT_VH_INFO_0, vh.VEHICLE_ID.Trim()), vh_Serialize);
 
                 scApp.getRedisCacheManager().ListSetByIndexAsync
                     (SCAppConstants.REDIS_LIST_KEY_VEHICLES, vh.VEHICLE_ID, vh.ToString());
@@ -798,105 +798,119 @@ namespace com.mirle.ibg3k0.sc.Service
         public bool VehicleStatusRequestInit(string vh_id, bool isSync = false)
         {
             bool isSuccess = false;
-            string reason = string.Empty;
-            AVEHICLE vh = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
-            ID_143_STATUS_RESPONSE receive_gpp;
-            ID_43_STATUS_REQUEST send_gpp = new ID_43_STATUS_REQUEST()
+            try
             {
-                SystemTime = DateTime.Now.ToString(SCAppConstants.TimestampFormat_16)
-            };
-            SCUtility.RecodeReportInfo(vh.VEHICLE_ID, 0, send_gpp);
-            isSuccess = vh.send_S43(send_gpp, out receive_gpp);
-            SCUtility.RecodeReportInfo(vh.VEHICLE_ID, 0, receive_gpp, isSuccess.ToString());
-            //A0.04 if (isSync && isSuccess)
-            if (isSuccess) //A0.04
-            {
-                string current_adr_id = receive_gpp.CurrentAdrID;
-                VHModeStatus modeStat = DecideVhModeStatus(vh.VEHICLE_ID, current_adr_id, receive_gpp.ModeStatus);
-                VHActionStatus actionStat = receive_gpp.ActionStatus;
-                VhPowerStatus powerStat = receive_gpp.PowerStatus;
-                string cstID = receive_gpp.CSTID;
-                VhStopSingle obstacleStat = receive_gpp.ObstacleStatus;
-                VhStopSingle blockingStat = receive_gpp.BlockingStatus;
-                VhStopSingle pauseStat = receive_gpp.PauseStatus;
-                VhStopSingle hidStat = receive_gpp.HIDStatus;
-                VhStopSingle errorStat = receive_gpp.ErrorStatus;
-                VhLoadCSTStatus loadCSTStatus = receive_gpp.HasCST;
-                //VhGuideStatus leftGuideStat = recive_str.LeftGuideLockStatus;
-                //VhGuideStatus rightGuideStat = recive_str.RightGuideLockStatus;
-
-
-                int obstacleDIST = receive_gpp.ObstDistance;
-                string obstacleVhID = receive_gpp.ObstVehicleID;
-
-                if (isSync) //A0.04
+                string reason = string.Empty;
+                AVEHICLE vh = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
+                ID_143_STATUS_RESPONSE receive_gpp;
+                ID_43_STATUS_REQUEST send_gpp = new ID_43_STATUS_REQUEST()
                 {
-                    scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
-                    scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
-                }
-                //A0.04 scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
-                //A0.04 scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
-                if (!scApp.VehicleBLL.doUpdateVehicleStatus(vh, cstID,
-                                       modeStat, actionStat,
-                                       blockingStat, pauseStat, obstacleStat, hidStat, errorStat, loadCSTStatus))
+                    SystemTime = DateTime.Now.ToString(SCAppConstants.TimestampFormat_16)
+                };
+                SCUtility.RecodeReportInfo(vh.VEHICLE_ID, 0, send_gpp);
+                isSuccess = vh.send_S43(send_gpp, out receive_gpp);
+                SCUtility.RecodeReportInfo(vh.VEHICLE_ID, 0, receive_gpp, isSuccess.ToString());
+                //A0.04 if (isSync && isSuccess)
+                if (isSuccess) //A0.04
                 {
-                    isSuccess = false;
-                }
-                if (actionStat == VHActionStatus.NoCommand)
-                {
-                    string mcs_cmd_id = vh.MCS_CMD;
-                    //AVEHICLE excute_cmd_of_vh = scApp.VehicleBLL.cache.getVehicleByMCSCmdID(vh.MCS_CMD);
-                    ACMD_MCS mcs_cmd = scApp.CMDBLL.getCMD_MCSByID(vh.MCS_CMD);
+                    string current_adr_id = receive_gpp.CurrentAdrID;
+                    string current_sec_id = receive_gpp.CurrentSecID;
+                    VHModeStatus modeStat = DecideVhModeStatus(vh.VEHICLE_ID, current_adr_id, receive_gpp.ModeStatus);
+                    VHActionStatus actionStat = receive_gpp.ActionStatus;
+                    VhPowerStatus powerStat = receive_gpp.PowerStatus;
+                    string cstID = receive_gpp.CSTID;
+                    VhStopSingle obstacleStat = receive_gpp.ObstacleStatus;
+                    VhStopSingle blockingStat = receive_gpp.BlockingStatus;
+                    VhStopSingle pauseStat = receive_gpp.PauseStatus;
+                    VhStopSingle hidStat = receive_gpp.HIDStatus;
+                    VhStopSingle errorStat = receive_gpp.ErrorStatus;
+                    VhLoadCSTStatus loadCSTStatus = receive_gpp.HasCST;
+                    //VhGuideStatus leftGuideStat = recive_str.LeftGuideLockStatus;
+                    //VhGuideStatus rightGuideStat = recive_str.RightGuideLockStatus;
 
-                    if (mcs_cmd != null)
+
+                    int obstacleDIST = receive_gpp.ObstDistance;
+                    string obstacleVhID = receive_gpp.ObstVehicleID;
+
+                    if (isSync) //A0.04
                     {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                        Data: $"Excute force mcs command finish for vh:[{vh_id}] , MCS_CMD:[{SCUtility.Trim(mcs_cmd.CMD_ID, true)}] ",
-                        VehicleID: vh?.VEHICLE_ID,
-                        CarrierID: vh?.CST_ID);
-                        Task.Run(() =>
-                        {
-                            try
-                            {
-                                scApp.VehicleBLL.doTransferCommandFinish(vh.VEHICLE_ID, vh.OHTC_CMD, CompleteStatus.CmpStatusVehicleAbort);
-                                scApp.VIDBLL.initialVIDCommandInfo(vh.VEHICLE_ID);
-                                scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd_id, E_TRAN_STATUS.Aborted);
-                                scApp.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd, vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
-                                scApp.SysExcuteQualityBLL.doCommandFinish(mcs_cmd.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
-                            }
-                            catch { }
-                        }
-                        );
+                        scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
+                        scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
                     }
-                    else
+                    //A0.04 scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
+                    //A0.04 scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
+                    if (!scApp.VehicleBLL.doUpdateVehicleStatus(vh, cstID,
+                                           modeStat, actionStat,
+                                           blockingStat, pauseStat, obstacleStat, hidStat, errorStat, loadCSTStatus))
                     {
-                        ACMD_OHTC executed_cmd = scApp.CMDBLL.geExecutedCMD_OHTCByVehicleID(vh.VEHICLE_ID);
-                        if (executed_cmd != null)
+                        isSuccess = false;
+                    }
+                    if (actionStat == VHActionStatus.NoCommand)
+                    {
+                        string mcs_cmd_id = vh.MCS_CMD;
+                        //AVEHICLE excute_cmd_of_vh = scApp.VehicleBLL.cache.getVehicleByMCSCmdID(vh.MCS_CMD);
+                        ACMD_MCS mcs_cmd = scApp.CMDBLL.getCMD_MCSByID(vh.MCS_CMD);
+
+                        if (mcs_cmd != null)
                         {
                             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                            Data: $"Excute force command finish for vh:[{vh_id}] , OHTC_CMD:[{SCUtility.Trim(executed_cmd.CMD_ID, true)}] ",
+                            Data: $"Excute force mcs command finish for vh:[{vh_id}] , MCS_CMD:[{SCUtility.Trim(mcs_cmd.CMD_ID, true)}] ",
                             VehicleID: vh?.VEHICLE_ID,
                             CarrierID: vh?.CST_ID);
                             Task.Run(() =>
                             {
-                                scApp.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
-                            });
+                                try
+                                {
+                                    scApp.VehicleBLL.doTransferCommandFinish(vh.VEHICLE_ID, vh.OHTC_CMD, CompleteStatus.CmpStatusVehicleAbort);
+                                    scApp.VIDBLL.initialVIDCommandInfo(vh.VEHICLE_ID);
+                                    scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd_id, E_TRAN_STATUS.Aborted);
+                                    scApp.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd, vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
+                                    scApp.SysExcuteQualityBLL.doCommandFinish(mcs_cmd.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
+                                }
+                                catch { }
+                            }
+                            );
+                        }
+                        else
+                        {
+                            ACMD_OHTC executed_cmd = scApp.CMDBLL.geExecutedCMD_OHTCByVehicleID(vh.VEHICLE_ID);
+                            if (executed_cmd != null)
+                            {
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                Data: $"Excute force command finish for vh:[{vh_id}] , OHTC_CMD:[{SCUtility.Trim(executed_cmd.CMD_ID, true)}] ",
+                                VehicleID: vh?.VEHICLE_ID,
+                                CarrierID: vh?.CST_ID);
+                                Task.Run(() =>
+                                {
+                                    scApp.CMDBLL.forceUpdataCmdStatus2FnishByVhID(vh_id);
+                                });
+                            }
+                        }
+                        bool is_in_bolck = scApp.BlockControlBLL.cache.IsBlockZoneCheckBySecionID(current_sec_id);
+                        if (is_in_bolck)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"Can't remove all reserved section when vh initial and no command because is in the block,vh id:{vh_id}.",
+                               VehicleID: vh?.VEHICLE_ID,
+                               CarrierID: vh?.CST_ID);
+                        }
+                        else
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"remove all reserved section when vh initial and no command,vh id:{vh_id}.",
+                               VehicleID: vh?.VEHICLE_ID,
+                               CarrierID: vh?.CST_ID);
+                            scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
                         }
                     }
-
-
-
-
-
-
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"remove all reserved section when vh initial and no command,vh id:{vh_id}.",
-                       VehicleID: vh?.VEHICLE_ID,
-                       CarrierID: vh?.CST_ID);
-                    scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
                 }
+                vhCommandExcuteStatusCheck(vh.VEHICLE_ID);
             }
-            vhCommandExcuteStatusCheck(vh.VEHICLE_ID);
+            catch (Exception ex)
+            {
+                isSuccess = false;
+                logger.Error(ex, "Exception:");
+            }
             return isSuccess;
         }
         /// <summary>
@@ -1626,15 +1640,15 @@ namespace com.mirle.ibg3k0.sc.Service
             string current_adr_id = SCUtility.isEmpty(recive_str.CurrentAdrID) ? string.Empty : recive_str.CurrentAdrID;
             string current_sec_id = SCUtility.isEmpty(recive_str.CurrentSecID) ? string.Empty : recive_str.CurrentSecID;
             ASECTION current_sec = scApp.SectionBLL.cache.GetSection(current_sec_id);
-            string current_seg_id = current_sec == null ? string.Empty : current_sec.SEG_NUM;
-
+            string current_seg_id = current_sec == null ? string.Empty : SCUtility.Trim(current_sec.SEG_NUM, true);
+            string back_ground_work_key = $"PositionWorkItemSeg_{current_seg_id}";
             string last_adr_id = eqpt.CUR_ADR_ID;
             string last_sec_id = eqpt.CUR_SEC_ID;
             ASECTION lase_sec = scApp.SectionBLL.cache.GetSection(last_sec_id);
             string last_seg_id = lase_sec == null ? string.Empty : lase_sec.SEG_NUM;
             uint sec_dis = recive_str.SecDistance;
 
-            //doUpdateVheiclePositionAndCmdSchedule(eqpt, current_adr_id, current_sec_id, current_seg_id, last_adr_id, last_sec_id, last_seg_id, sec_dis, eventType);
+            doUpdateVheiclePositionAndCmdSchedule(eqpt, current_adr_id, current_sec_id, current_seg_id, last_adr_id, last_sec_id, last_seg_id, sec_dis, eventType);
 
             //switch (eventType)
             //{
@@ -1645,10 +1659,9 @@ namespace com.mirle.ibg3k0.sc.Service
             //}
 
 
-            var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, eqpt, recive_str);
-            scApp.BackgroundWorkProcVehiclePosition.triggerBackgroundWork(eqpt.VEHICLE_ID, workItem);
-
-
+            //var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, eqpt, recive_str);
+            //scApp.BackgroundWorkProcVehiclePosition.triggerBackgroundWork(eqpt.VEHICLE_ID, workItem);
+            //scApp.BackgroundWorkProcVehiclePosition.triggerBackgroundWork(back_ground_work_key, workItem);
         }
         [ClassAOPAspect]
         public void PositionReport_100(BCFApplication bcfApp, AVEHICLE eqpt, ID_134_TRANS_EVENT_REP recive_str, int seq_num)
@@ -4306,11 +4319,21 @@ namespace com.mirle.ibg3k0.sc.Service
 
                 replyCommandComplete(eqpt, seq_num, finish_ohxc_cmd, finish_mcs_cmd);
 
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                   Data: $"remove all reserved section on command complete,vh id:{vh_id}.",
-                   VehicleID: eqpt.VEHICLE_ID,
-                   CarrierID: eqpt.CST_ID);
-                scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
+                if (completeStatus == CompleteStatus.CmpStatusVehicleAbort)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"vh id:{vh_id} vehicle abort happned,not excute remove all reserved section on command complete.",
+                       VehicleID: eqpt.VEHICLE_ID,
+                       CarrierID: eqpt.CST_ID);
+                }
+                else
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"remove all reserved section on command complete,vh id:{vh_id}.",
+                       VehicleID: eqpt.VEHICLE_ID,
+                       CarrierID: eqpt.CST_ID);
+                    scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_id);
+                }
 
                 //回復結束後，若該筆命令是Mismatch、IDReadFail結束的話則要把原本車上的那顆CST Installed回來。
                 if (vhLoadCSTStatus == VhLoadCSTStatus.Exist)
@@ -4692,6 +4715,7 @@ namespace com.mirle.ibg3k0.sc.Service
                        Data: $"vh:{commandFinishVh.VEHICLE_ID} 命令結束，isOpenCommandShift:{DebugParameter.isOpenCommandShift}",
                        VehicleID: commandFinishVh.VEHICLE_ID,
                        CarrierID: commandFinishVh.CST_ID);
+                    return false;
                 }
                 find_result = findSuitableExcuteCommandShiftOfCommand(commandFinishVh);
                 if (find_result.isFind)

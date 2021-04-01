@@ -335,18 +335,18 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
                                         pic_VhStatus.Refresh();
                                     }, null);
                                 });
-            vh.addEventHandler(event_id
-                                , nameof(vh.VhPositionChangeEvent)
-                                , (s1, e1) =>
-                                {
-                                    positionUpdateFlag = !positionUpdateFlag;
-                                    if (!positionUpdateFlag)
-                                        return;
+            //vh.addEventHandler(event_id
+            //                    , nameof(vh.VhPositionChangeEvent)
+            //                    , (s1, e1) =>
+            //                    {
+            //                        positionUpdateFlag = !positionUpdateFlag;
+            //                        if (!positionUpdateFlag)
+            //                            return;
 
-                                    updateVehiclePosition();
-                                    //Task.Run(() => updateVehiclePositionNew());
-                                    //updateVehiclePositionNew();
-                                });
+            //                        updateVehiclePosition();
+            //                        //Task.Run(() => updateVehiclePositionNew());
+            //                        //updateVehiclePositionNew();
+            //                    });
             vh.addEventHandler(event_id
                                 , nameof(vh.VhStatusChangeEvent)
                                 , (s1, e1) =>
@@ -579,7 +579,25 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             }, null);
 
         }
-
+        public void updateVehiclePositionByTimer()
+        {
+            try
+            {
+                GroupRails groupRails = Uctl_Map.getGroupRailBySecID(vh.CUR_SEC_ID);
+                if (groupRails != null)
+                {
+                    groupRails.VehicleEnterSection(this, vh.CUR_ADR_ID, vh.ACC_SEC_DIST);
+                }
+                else
+                {
+                    PrcSetLocation(20 + this.Width / 2, 20 + this.Height / 2);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+        }
         private void updateVehiclePosition()
         {
             try

@@ -11,7 +11,7 @@ namespace com.mirle.ibg3k0.sc
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class ACMD_MCS
     {
         public string CMD_ID { get; set; }

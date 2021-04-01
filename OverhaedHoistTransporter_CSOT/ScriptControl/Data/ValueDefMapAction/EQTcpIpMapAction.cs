@@ -258,6 +258,11 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
         const int IGNORE_SECTION_DISTANCE = 60;
         protected void str134_ReceiveProcess(object sender, TcpIpEventArgs e)
         {
+            var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, eqpt, e);
+            scApp.BackgroundWorkProcVehiclePosition.triggerBackgroundWork(eqpt.VEHICLE_ID, workItem);
+        }
+        protected void str134_ReceiveProcessOld(object sender, TcpIpEventArgs e)
+        {
             ID_134_TRANS_EVENT_REP recive_str = (ID_134_TRANS_EVENT_REP)e.objPacket;
             //TODO 需比較是否有位置重複的問題 => OK
             //if (!SCUtility.isMatche(eqpt.CUR_SEC_ID, recive_str.CurrentAdrID) || !SCUtility.isMatche(eqpt.CUR_SEC_ID, recive_str.CurrentSecID))

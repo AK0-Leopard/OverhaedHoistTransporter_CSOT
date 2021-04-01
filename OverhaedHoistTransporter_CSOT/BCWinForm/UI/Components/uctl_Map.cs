@@ -693,28 +693,39 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
         Boolean change_flag = false;
         private void tmrRefresh_Tick(object sender, EventArgs e)
         {
-            change_flag = !change_flag;
-            if (!BCFUtility.isEmpty(current_SelectSegment))
+            try
             {
-                List<GroupRails> lstGroupRails = m_DicSegmentGroupRails[current_SelectSegment];
-                foreach (GroupRails groupRails in lstGroupRails)
+                foreach (var vh in m_objItemNewVhcl)
                 {
-                    groupRails.GroupColorChange(change_flag ? RailOriginalColor : Color.Yellow);
+                    vh.updateVehiclePositionByTimer();
                 }
             }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+            //change_flag = !change_flag;
+            //if (!BCFUtility.isEmpty(current_SelectSegment))
+            //{
+            //    List<GroupRails> lstGroupRails = m_DicSegmentGroupRails[current_SelectSegment];
+            //    foreach (GroupRails groupRails in lstGroupRails)
+            //    {
+            //        groupRails.GroupColorChange(change_flag ? RailOriginalColor : Color.Yellow);
+            //    }
+            //}
 
-            if (current_FlashingSectionGroup != null
-                && current_FlashingSectionGroup.Count() > 0)
-            {
-                foreach (string[] section_ids in current_FlashingSectionGroup)
-                {
-                    foreach (string section_id in section_ids)
-                    {
-                        m_DicSectionGroupRails[section_id]
-                            .GroupColorChange(change_flag ? RailOriginalColor : Color.Yellow);
-                    }
-                }
-            }
+            //if (current_FlashingSectionGroup != null
+            //    && current_FlashingSectionGroup.Count() > 0)
+            //{
+            //    foreach (string[] section_ids in current_FlashingSectionGroup)
+            //    {
+            //        foreach (string section_id in section_ids)
+            //        {
+            //            m_DicSectionGroupRails[section_id]
+            //                .GroupColorChange(change_flag ? RailOriginalColor : Color.Yellow);
+            //        }
+            //    }
+            //}
         }
 
         private void cmb_selectSeg_SelectedIndexChanged(object sender, EventArgs e)

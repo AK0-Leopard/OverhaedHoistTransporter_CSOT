@@ -2329,7 +2329,7 @@ namespace com.mirle.ibg3k0.sc.App
 
         public static Boolean isForcePassFourColorLightRedWithBuzzerSignal = false;
 
-        public static bool isOpenCommandShift = true;
+        public static bool isOpenCommandShift = false;
 
     }
 }

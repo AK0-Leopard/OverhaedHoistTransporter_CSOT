@@ -91,9 +91,9 @@ namespace com.mirle.ibg3k0.sc
         public DbSet<ALARMRPTCOND> ALARMRPTCOND { get; set; }
         public DbSet<ALARMMAP> ALARMMAP { get; set; }
         public DbSet<HCMD_MCS> HCMD_MCS { get; set; }
-        public DbSet<HCMD_OHTC> HCMD_OHTC { get; set; }
         public DbSet<ALARM> ALARM { get; set; }
         public DbSet<VACMD_MCS> VACMD_MCS { get; set; }
         public DbSet<VSECTION_100> VSECTION_100 { get; set; }
+        public DbSet<HCMD_OHTC> HCMD_OHTC { get; set; }
     }
 }

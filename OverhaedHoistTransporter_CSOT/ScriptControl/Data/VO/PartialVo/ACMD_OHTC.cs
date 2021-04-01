@@ -36,7 +36,7 @@ namespace com.mirle.ibg3k0.sc
                 DESTINATION = this.DESTINATION,
                 PRIORITY = this.PRIORITY,
                 CMD_START_TIME = this.CMD_START_TIME,
-                CMD_END_TIME = this.CMD_END_TIME,
+                CMD_END_TIME = this.CMD_END_TIME.HasValue ? this.CMD_END_TIME.Value : DateTime.Now,
                 CMD_STAUS = this.CMD_STAUS,
                 CMD_PROGRESS = this.CMD_PROGRESS,
                 INTERRUPTED_REASON = this.INTERRUPTED_REASON,

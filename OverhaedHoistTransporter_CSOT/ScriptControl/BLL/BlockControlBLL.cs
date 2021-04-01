@@ -720,7 +720,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                 var block_zone_masters = commObjCache.getBlockMasterZone();
                 return block_zone_masters;
             }
-
+            public bool IsBlockZoneCheckBySecionID(string secID)
+            {
+                var block_zone_masters = commObjCache.getBlockMasterZone().
+                    Where(block_master => block_master.GetBlockZoneDetailSectionIDs().Contains(secID)).
+                    ToList();
+                return (block_zone_masters != null && block_zone_masters.Count > 0);
+            }
         }
 
     }

@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 12/31/2019 08:54:22
--- Generated from EDMX file: D:\C#_ExaminationArea\OverhaedHoistTransporter\OverhaedHoistTransporter_SANWA_1.3.0\ScriptControl\OHTCContext.edmx
+-- Date Created: 03/14/2021 21:32:59
+-- Generated from EDMX file: C:\Git\AK0-Leopard\OverhaedHoistTransporter_CSOT\OverhaedHoistTransporter_CSOT\ScriptControl\OHTCContext.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [OHTC_CSOT_T4];
+USE [OHTC_CSOT_T4_PH1PH2];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -252,7 +252,7 @@ GO
 
 -- Creating table 'ABLOCKZONEDETAIL'
 CREATE TABLE [dbo].[ABLOCKZONEDETAIL] (
-    [ENTRY_SEC_ID] nchar(5)  NOT NULL,
+    [ENTRY_SEC_ID] nchar(6)  NOT NULL,
     [SEC_ID] nchar(5)  NOT NULL
 );
 GO
@@ -355,7 +355,7 @@ GO
 
 -- Creating table 'ABLOCKZONEMASTER'
 CREATE TABLE [dbo].[ABLOCKZONEMASTER] (
-    [ENTRY_SEC_ID] char(5)  NOT NULL,
+    [ENTRY_SEC_ID] char(6)  NOT NULL,
     [BLOCK_ZONE_TYPE] int  NOT NULL,
     [LEAVE_ADR_ID_1] char(5)  NOT NULL,
     [LEAVE_ADR_ID_2] char(5)  NOT NULL

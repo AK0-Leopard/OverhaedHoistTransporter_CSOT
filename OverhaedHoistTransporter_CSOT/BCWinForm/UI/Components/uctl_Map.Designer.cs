@@ -736,7 +736,7 @@
             // 
             // tmrRefresh
             // 
-            this.tmrRefresh.Interval = 300;
+            this.tmrRefresh.Interval = 1000;
             this.tmrRefresh.Tick += new System.EventHandler(this.tmrRefresh_Tick);
             // 
             // uctl_Map
