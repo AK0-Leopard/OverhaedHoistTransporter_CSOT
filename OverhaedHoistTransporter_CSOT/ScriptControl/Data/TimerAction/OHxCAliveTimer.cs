@@ -97,8 +97,6 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
 
         //    }
         //}
-        private long syncMTSPoint = 0;
-        private bool switchFlag = true;
         private void AliveToDevice(int syncIndex, string eqID, string writeName)
         {
             if (System.Threading.Interlocked.Exchange(ref syncPoint[syncIndex], 1) == 0)
@@ -114,25 +112,12 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
                     int x = isAliveIndex + 1;
                     if (x > 9999) { x = 1; }
                     isAliveIndexVW.setWriteValue((UInt16)x);
-                    ISMControl.writeDeviceBlock(scApp.getBCFApplication(), isAliveIndexVW);
+                    isWriteSucess = ISMControl.writeDeviceBlock(scApp.getBCFApplication(), isAliveIndexVW);
 
-                    if (isWriteSucess || switchFlag)
-                    {
-                        isWriteSucess = false;
-                        switchFlag = false;
-                        isWriteSucess = ISMControl.writeDeviceBlock(scApp.getBCFApplication(), isAliveIndexVW);
-                        switchFlag = true;
-                    }
-                    else
-                    {
-                        switchFlag = false;
-                        isWriteSucess = false;
-                    }
-
+                    logger.Debug($"eq:{eqID} Alive index:{x},write result:{isWriteSucess}");
                 }
                 catch (Exception e)
                 {
-                    switchFlag = true;
                     isWriteSucess = false;
                 }
                 finally
