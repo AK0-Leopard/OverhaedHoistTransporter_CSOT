@@ -263,9 +263,9 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
                     return CMD_Result_IDReadFailed;
                 case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusIdreadDuplicate:
                     return CMD_Result_IDDuplicate;
-                case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusDoubleStore:
+                case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusDoubleStorage:
                     return CMD_Result_TransferDoubleStorage;
-                case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusEmtryRetrieval:
+                case ProtocolFormat.OHTMessage.CompleteStatus.CmpStatusEmptyRetrieval:
                     return CMD_Result_TransferEmptyRetrieval;
                 default:
                     throw new Exception("參數錯誤"); //TODO 要帶入正確的Exception。
