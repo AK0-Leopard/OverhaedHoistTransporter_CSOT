@@ -39,6 +39,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_FroceBlockPass.Checked = DebugParameter.isForcedPassBlockControl;
             cb_FroceBlockPass.Checked = DebugParameter.isForcedRejectBlockControl;
             ck_is_open_command_shift.Checked = DebugParameter.isOpenCommandShift;
+            cb_isOpenAdjustmentParkingZone.Checked = DebugParameter.isOpenAdjustmentParkingZone;
+
 
             ch_force_pass_red_light_with_buzzer.Checked = DebugParameter.isForcePassFourColorLightRedWithBuzzerSignal;
             num_ChangePathCommandPath.Value = sc.App.SystemParameter.ChangePathCommandCount;
@@ -1634,6 +1636,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void ck_is_open_command_shift_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.isOpenCommandShift = ck_is_open_command_shift.Checked;
+        }
+
+        private void cb_isOpenAdjustmentParkingZone_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.isOpenAdjustmentParkingZone = cb_isOpenAdjustmentParkingZone.Checked;
         }
     }
 }

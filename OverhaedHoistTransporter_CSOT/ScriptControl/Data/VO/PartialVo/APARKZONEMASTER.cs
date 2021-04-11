@@ -22,9 +22,31 @@ namespace com.mirle.ibg3k0.sc
         public void setParkDetails(List<APARKZONEDETAIL> allParkZoneDetail)
         {
             ParkDetails = allParkZoneDetail.Where(detail => SCUtility.isMatche(detail.PARK_ZONE_ID, PARK_ZONE_ID)).
+                                            OrderBy(detail => detail.PRIO).
                                             ToList();
         }
-
+        public (bool hasFind, APARKZONEDETAIL detail) tryGetFirstHasParkedDetail(BLL.VehicleBLL vehicleBLL)
+        {
+            foreach (var detail in ParkDetails)
+            {
+                if (detail.HasVh(vehicleBLL))
+                {
+                    return (true, detail);
+                }
+            }
+            return (false, null);
+        }
+        public APARKZONEDETAIL getEntryParkDetail()
+        {
+            return ParkDetails.Last();
+        }
+        public int currentParkedCount(BLL.VehicleBLL vehicleBLL)
+        {
+            var vhs = vehicleBLL.cache.loadIdleVhs();
+            var park_adr = loadParkAddresses();
+            int parked_count = vhs.Where(vh => park_adr.Contains(SCUtility.Trim(vh.CUR_ADR_ID, true))).Count();
+            return parked_count;
+        }
         public List<APARKZONEDETAIL> loadParkDetails()
         {
             if (ParkDetails == null)

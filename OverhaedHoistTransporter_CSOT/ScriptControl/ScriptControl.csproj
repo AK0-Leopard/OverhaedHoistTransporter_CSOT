@@ -719,6 +719,7 @@
     <Compile Include="Data\SECS\SECSDriver\IBSEMDriver.cs" />
     <Compile Include="Data\SECS\SECSDriver\SEMDriver.cs" />
     <Compile Include="Data\TcpIp\MsgStructure.cs" />
+    <Compile Include="Data\TimerAction\IdleVehicleTimerAction_v2.cs" />
     <Compile Include="Data\TimerAction\OHCVAliveTimer.cs" />
     <Compile Include="Data\TimerAction\OHxCDateTimeSyncTimer.cs" />
     <Compile Include="Data\TimerAction\OHxCAliveTimer.cs" />
@@ -764,6 +765,7 @@
     <Compile Include="Data\VO\MaintainLift.cs" />
     <Compile Include="Data\VO\PartialVo\AADDRESS.cs" />
     <Compile Include="Data\VO\PartialVo\ACMD_OHTC.cs" />
+    <Compile Include="Data\VO\PartialVo\APARKZONEDETAIL.cs" />
     <Compile Include="Data\VO\PartialVo\ASECTION.cs" />
     <Compile Include="Data\VO\PartialVo\ASEGMENT.cs" />
     <Compile Include="Data\VO\PartialVo\APORTSTATION.cs" />
