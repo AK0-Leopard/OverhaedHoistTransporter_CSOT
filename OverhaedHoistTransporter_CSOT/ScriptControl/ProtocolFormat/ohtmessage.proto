@@ -92,8 +92,8 @@ message Timestamp {
 	CmpStatusIDMisMatch = 23;
 	CmpStatusIDReadFailed = 24;
 	CmpStatusIDReadDuplicate = 25;
-	CmpStatusEmptyRetrieval = 26;
-	CmpStatusDoubleStorage = 27;
+	CmpStatusEmptyRetrieval = 27;
+	CmpStatusDoubleStorage = 28;
 	CmpStatusInterlockError = 64;
 
 	CmpStatusLongTimeInaction = 98;

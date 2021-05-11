@@ -104,6 +104,7 @@
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.cb_isOpenAdjustmentParkingZone = new System.Windows.Forms.CheckBox();
             this.ck_is_open_command_shift = new System.Windows.Forms.CheckBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.txt_vh_order_in_segment = new System.Windows.Forms.TextBox();
@@ -375,7 +376,6 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.cb_isOpenAdjustmentParkingZone = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -1313,6 +1313,18 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // cb_isOpenAdjustmentParkingZone
+            // 
+            this.cb_isOpenAdjustmentParkingZone.AutoSize = true;
+            this.cb_isOpenAdjustmentParkingZone.Location = new System.Drawing.Point(1100, 48);
+            this.cb_isOpenAdjustmentParkingZone.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_isOpenAdjustmentParkingZone.Name = "cb_isOpenAdjustmentParkingZone";
+            this.cb_isOpenAdjustmentParkingZone.Size = new System.Drawing.Size(339, 26);
+            this.cb_isOpenAdjustmentParkingZone.TabIndex = 27;
+            this.cb_isOpenAdjustmentParkingZone.Text = "Is Open Adjustment Parking Zone";
+            this.cb_isOpenAdjustmentParkingZone.UseVisualStyleBackColor = true;
+            this.cb_isOpenAdjustmentParkingZone.CheckedChanged += new System.EventHandler(this.cb_isOpenAdjustmentParkingZone_CheckedChanged);
             // 
             // ck_is_open_command_shift
             // 
@@ -2649,7 +2661,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(85, 6);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(85, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4602,18 +4614,6 @@
             this.MaxAllowActionTimeSecond_Set_btn.Text = "Set";
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
-            // 
-            // cb_isOpenAdjustmentParkingZone
-            // 
-            this.cb_isOpenAdjustmentParkingZone.AutoSize = true;
-            this.cb_isOpenAdjustmentParkingZone.Location = new System.Drawing.Point(1100, 48);
-            this.cb_isOpenAdjustmentParkingZone.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cb_isOpenAdjustmentParkingZone.Name = "cb_isOpenAdjustmentParkingZone";
-            this.cb_isOpenAdjustmentParkingZone.Size = new System.Drawing.Size(339, 26);
-            this.cb_isOpenAdjustmentParkingZone.TabIndex = 27;
-            this.cb_isOpenAdjustmentParkingZone.Text = "Is Open Adjustment Parking Zone";
-            this.cb_isOpenAdjustmentParkingZone.UseVisualStyleBackColor = true;
-            this.cb_isOpenAdjustmentParkingZone.CheckedChanged += new System.EventHandler(this.cb_isOpenAdjustmentParkingZone_CheckedChanged);
             // 
             // DebugForm
             // 

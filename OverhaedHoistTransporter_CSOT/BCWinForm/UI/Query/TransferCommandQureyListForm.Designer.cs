@@ -45,6 +45,7 @@
             this.pel_button = new System.Windows.Forms.Panel();
             this.btn_force_finish = new System.Windows.Forms.Button();
             this.btn_refresh = new System.Windows.Forms.Button();
+            this.btn_returnToQueue = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.cMDMCSObjToShowBindingSource)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_TransferCommand)).BeginInit();
@@ -182,6 +183,7 @@
             // 
             // pel_button
             // 
+            this.pel_button.Controls.Add(this.btn_returnToQueue);
             this.pel_button.Controls.Add(this.btn_force_finish);
             this.pel_button.Controls.Add(this.btn_refresh);
             this.pel_button.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -193,7 +195,7 @@
             // 
             // btn_force_finish
             // 
-            this.btn_force_finish.Location = new System.Drawing.Point(132, 12);
+            this.btn_force_finish.Location = new System.Drawing.Point(310, 12);
             this.btn_force_finish.Name = "btn_force_finish";
             this.btn_force_finish.Size = new System.Drawing.Size(140, 42);
             this.btn_force_finish.TabIndex = 5;
@@ -211,6 +213,16 @@
             this.btn_refresh.Text = "Refresh";
             this.btn_refresh.UseVisualStyleBackColor = true;
             this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
+            // 
+            // btn_returnToQueue
+            // 
+            this.btn_returnToQueue.Location = new System.Drawing.Point(132, 12);
+            this.btn_returnToQueue.Name = "btn_returnToQueue";
+            this.btn_returnToQueue.Size = new System.Drawing.Size(172, 42);
+            this.btn_returnToQueue.TabIndex = 6;
+            this.btn_returnToQueue.Text = "Return To Queue";
+            this.btn_returnToQueue.UseVisualStyleBackColor = true;
+            this.btn_returnToQueue.Click += new System.EventHandler(this.btn_returnToQueue_Click);
             // 
             // TransferCommandQureyListForm
             // 
@@ -248,5 +260,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn cMDINSERTIMEDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn cMDSTARTTIMEDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rEPLACEDataGridViewTextBoxColumn;
+        private System.Windows.Forms.Button btn_returnToQueue;
     }
 }

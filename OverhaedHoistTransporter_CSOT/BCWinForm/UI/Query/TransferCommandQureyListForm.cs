@@ -134,5 +134,55 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         {
             mainform.removeForm(this.Name);
         }
+
+        private async void btn_returnToQueue_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (selection_index == -1) return;
+                btn_returnToQueue.Enabled = false;
+                var mcs_cmd = cmdMCSList[selection_index];
+                string mcs_cmd_id = mcs_cmd.CMD_ID;
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(TransferCommandQureyListForm), Device: "OHTC",
+                  Data: $" Start fource change mcs command to queue, mcs cmd id:{SCUtility.Trim(mcs_cmd_id, true)}");
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        var new_mcs_cmd = mainform.BCApp.SCApplication.CMDBLL.getCMD_MCSByID(mcs_cmd_id);
+                        if (new_mcs_cmd == null)
+                        {
+                            return;
+                        }
+                        if (new_mcs_cmd.TRANSFERSTATE != E_TRAN_STATUS.PreInitial)
+                        {
+
+                            return;
+                        }
+                        mainform.BCApp.SCApplication.CMDBLL.updateCMD_MCS_TranStatus2Queue(mcs_cmd_id);
+                        Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(TransferCommandQureyListForm), Device: "OHTC",
+                          Data: $" Success fource change mcs command to queue, mcs cmd id:{SCUtility.Trim(mcs_cmd_id, true)}");
+                    }
+                    catch { }
+                }
+                );
+
+
+                List<ACMD_MCS> ACMD_MCSs = null;
+                await Task.Run(() =>
+                {
+                    ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
+                });
+                
+                cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+                cmsMCS_bindingSource.DataSource = cmdMCSList;
+                dgv_TransferCommand.Refresh();
+            }
+            catch { }
+            finally
+            {
+                btn_force_finish.Enabled = true;
+            }
+        }
     }
 }
