@@ -23,6 +23,6 @@ namespace com.mirle.ibg3k0.sc
         public int PORT_TYPE { get; set; }
         public E_PORT_STATUS PORT_STATUS { get; set; }
         public int PORT_DIR { get; set; }
-        public Nullable<int> PORT_SERVICE_STATUS { get; set; }
+        public Nullable<com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage.PortStationServiceStatus> PORT_SERVICE_STATUS { get; set; }
     }
 }

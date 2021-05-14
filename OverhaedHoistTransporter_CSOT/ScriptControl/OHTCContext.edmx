@@ -2042,7 +2042,7 @@ FROM [dbo].[VSECTION_100] AS [VSECTION_100]</DefiningQuery>
           <Property Name="PORT_TYPE" Type="Int32" Nullable="false" />
           <Property Name="PORT_STATUS" Type="OHTC_DevModel.E_PORT_STATUS" Nullable="false" />
           <Property Name="PORT_DIR" Type="Int32" Nullable="false" />
-          <Property Name="PORT_SERVICE_STATUS" Type="Int32" />
+          <Property Name="PORT_SERVICE_STATUS" Type="OHTC_DevModel.PortStationServiceStatus" />
         </EntityType>
         <EntityType Name="APORT">
           <Key>
@@ -2652,6 +2652,7 @@ FROM [dbo].[VSECTION_100] AS [VSECTION_100]</DefiningQuery>
           <Property Name="ESTIMATED_EXCESS_TIME" Type="Int32" Nullable="false" />
           <Property Name="REAL_CMP_TIME" Type="Int32" />
         </EntityType>
+        <EnumType Name="PortStationServiceStatus" a:ExternalTypeName="com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage.PortStationServiceStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

@@ -74,7 +74,7 @@ namespace com.mirle.ibg3k0.sc.WebAPI
                     isSuccess = Enum.TryParse(status, out service_status);
                     if (isSuccess)
                     {
-                        isSuccess = scApp.PortStationService.doUpdatePortStationServiceStatus(port_id, (int)service_status);
+                        isSuccess = scApp.PortStationService.doUpdatePortStationServiceStatus(port_id, service_status);
                     }
                 }
                 catch (Exception ex)

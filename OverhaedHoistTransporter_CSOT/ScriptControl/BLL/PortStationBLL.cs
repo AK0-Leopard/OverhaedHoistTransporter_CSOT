@@ -83,7 +83,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
 
 
-            public bool updateServiceStatus(string portID, int status)
+            public bool updateServiceStatus(string portID, ProtocolFormat.OHTMessage.PortStationServiceStatus status)
             {
                 try
                 {
@@ -195,8 +195,15 @@ namespace com.mirle.ibg3k0.sc.BLL
                                                      SingleOrDefault();
                 return portTemp;
             }
+            public List<APORTSTATION> getPortStationByEqID(string eqID)
+            {
+                var portTemps = CacheManager.getALLPortStation().
+                                                     Where(p => SCUtility.isMatche(p.EQPT_ID, eqID)).
+                                                     ToList();
+                return portTemps;
+            }
 
-            public bool updateServiceStatus(string portID, int status)
+            public bool updateServiceStatus(string portID, ProtocolFormat.OHTMessage.PortStationServiceStatus status)
             {
                 try
                 {

@@ -997,5 +997,10 @@ namespace com.mirle.ibg3k0.bc.winform
         {
             openForm(typeof(HistoryAlarmsForm).Name);
         }
+
+        private void bufferPortToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openForm(typeof(BufferPortMaintenanceForm).Name, true, false);
+        }
     }
 }

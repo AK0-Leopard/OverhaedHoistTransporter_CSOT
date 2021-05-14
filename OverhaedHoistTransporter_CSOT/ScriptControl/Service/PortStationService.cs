@@ -88,27 +88,44 @@ namespace com.mirle.ibg3k0.sc.Service
             }
             return isSuccess;
         }
-        public bool doUpdatePortStationServiceStatus(string portID, int status)
+
+        public bool doUpdatePortStationServiceStatus(string portID, com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage.PortStationServiceStatus status)
         {
             bool isSuccess = true;
             string result = string.Empty;
             try
             {
-                if (isSuccess)
+
+                var caceh_obj = scApp.PortStationBLL.OperateCatch.getPortStation(portID);
+                bool before_is_service = caceh_obj.PORT_STATUS == E_PORT_STATUS.InService &&
+                                         caceh_obj.PORT_SERVICE_STATUS == ProtocolFormat.OHTMessage.PortStationServiceStatus.InService;
+                using (TransactionScope tx = SCUtility.getTransactionScope())
                 {
-                    using (TransactionScope tx = SCUtility.getTransactionScope())
+                    using (DBConnection_EF con = DBConnection_EF.GetUContext())
                     {
-                        using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                        isSuccess = scApp.PortStationBLL.OperateDB.updateServiceStatus(portID, status);
+                        if (isSuccess)
                         {
-                            isSuccess = scApp.PortStationBLL.OperateDB.updateServiceStatus(portID, status);
-                            if (isSuccess)
-                            {
-                                tx.Complete();
-                                scApp.PortStationBLL.OperateCatch.updateServiceStatus(portID, status);
-                            }
+                            tx.Complete();
+                            scApp.PortStationBLL.OperateCatch.updateServiceStatus(portID, status);
                         }
                     }
                 }
+                caceh_obj = scApp.PortStationBLL.OperateCatch.getPortStation(portID);
+                bool after_is_service = caceh_obj.PORT_STATUS == E_PORT_STATUS.InService &&
+                                        caceh_obj.PORT_SERVICE_STATUS == ProtocolFormat.OHTMessage.PortStationServiceStatus.InService;
+                if (before_is_service != after_is_service)
+                {
+                    if (after_is_service)
+                    {
+                        scApp.ReportBLL.newReportPortInServeice(portID, null);
+                    }
+                    else
+                    {
+                        scApp.ReportBLL.newReportPortOutOfService(portID, null);
+                    }
+                }
+
             }
             catch (Exception ex)
             {

@@ -379,6 +379,12 @@
     <Compile Include="UI\Components\WPFComponents\uctlReserveSectionView.xaml.cs">
       <DependentUpon>uctlReserveSectionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Maintenance\BufferPortMaintenanceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Maintenance\BufferPortMaintenanceForm.Designer.cs">
+      <DependentUpon>BufferPortMaintenanceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Maintenance\CarrierMaintenanceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1212,6 +1218,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Components\VhOfPLCInfo.resx">
       <DependentUpon>VhOfPLCInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Maintenance\BufferPortMaintenanceForm.resx">
+      <DependentUpon>BufferPortMaintenanceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Maintenance\CarrierMaintenanceForm.resx">
       <DependentUpon>CarrierMaintenanceForm.cs</DependentUpon>

@@ -760,6 +760,7 @@
     <Compile Include="Data\VO\Interface\IConnectionStatusChange.cs" />
     <Compile Include="Data\VO\Interface\IMaintainDevice.cs" />
     <Compile Include="Data\VO\MTLSetting.cs" />
+    <Compile Include="Data\VO\BufferDevice.cs" />
     <Compile Include="Data\VO\OHCV.cs" />
     <Compile Include="Data\VO\MaintainSpace.cs" />
     <Compile Include="Data\VO\MaintainLift.cs" />

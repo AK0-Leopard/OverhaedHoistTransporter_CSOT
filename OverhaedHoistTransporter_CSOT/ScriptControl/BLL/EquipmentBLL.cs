@@ -258,6 +258,24 @@ namespace com.mirle.ibg3k0.sc.BLL
                             SingleOrDefault();
                 return eqpt;
             }
+
+            public List<BufferDevice> loadBufferDevices()
+            {
+                var eqpts = eqObjCacheManager.getAllEquipment().
+                            Where(eq => eq is BufferDevice).
+                            Select(eq => eq as BufferDevice).
+                            ToList();
+                return eqpts;
+            }
+            public AEQPT getEQ(string eqID)
+            {
+                var eqpt = eqObjCacheManager.getAllEquipment().
+                            Where(eq => SCUtility.isMatche(eq.EQPT_ID, eqID)).
+                            FirstOrDefault();
+                return eqpt;
+            }
+
+
         }
     }
 }

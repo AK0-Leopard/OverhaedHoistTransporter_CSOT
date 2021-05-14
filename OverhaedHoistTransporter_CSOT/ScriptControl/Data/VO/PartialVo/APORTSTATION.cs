@@ -20,6 +20,28 @@ namespace com.mirle.ibg3k0.sc
             return $"{PORT_ID} ({ADR_ID})";
         }
 
+        public bool IsBufferPort(BLL.EquipmentBLL equipmentBLL)
+        {
+            var eq = equipmentBLL.cache.getEQ(this.EQPT_ID);
+            if (eq != null && eq.Type == App.SCAppConstants.EqptType.Buffer)
+                return true;
+            else
+                return false;
+        }
+        public bool IsService(BLL.EquipmentBLL equipmentBLL)
+        {
+            var eq = equipmentBLL.cache.getEQ(this.EQPT_ID);
+            if (eq != null && eq.Type == App.SCAppConstants.EqptType.Buffer)
+            {
+                return PORT_STATUS == E_PORT_STATUS.InService && 
+                       PORT_SERVICE_STATUS == ProtocolFormat.OHTMessage.PortStationServiceStatus.InService;
+            }
+            else
+            {
+                return PORT_STATUS == E_PORT_STATUS.InService;
+            }
+
+        }
     }
 
 }

@@ -107,6 +107,7 @@ namespace com.mirle.ibg3k0.bc.winform
             this.queryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferCommandHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alarmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bufferPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.CMS_OnLineMode.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -363,7 +364,8 @@ namespace com.mirle.ibg3k0.bc.winform
             this.toolStripSeparator1,
             this.transferCommandToolStripMenuItem,
             this.toolStripMenuItem1,
-            this.reserveInfoToolStripMenuItem});
+            this.reserveInfoToolStripMenuItem,
+            this.bufferPortToolStripMenuItem});
             this.mataToolStripMenuItem.Name = "mataToolStripMenuItem";
             resources.ApplyResources(this.mataToolStripMenuItem, "mataToolStripMenuItem");
             // 
@@ -486,6 +488,12 @@ namespace com.mirle.ibg3k0.bc.winform
             this.alarmToolStripMenuItem.Name = "alarmToolStripMenuItem";
             resources.ApplyResources(this.alarmToolStripMenuItem, "alarmToolStripMenuItem");
             this.alarmToolStripMenuItem.Click += new System.EventHandler(this.alarmToolStripMenuItem_Click);
+            // 
+            // bufferPortToolStripMenuItem
+            // 
+            this.bufferPortToolStripMenuItem.Name = "bufferPortToolStripMenuItem";
+            resources.ApplyResources(this.bufferPortToolStripMenuItem, "bufferPortToolStripMenuItem");
+            this.bufferPortToolStripMenuItem.Click += new System.EventHandler(this.bufferPortToolStripMenuItem_Click);
             // 
             // BCMainForm
             // 
@@ -654,6 +662,8 @@ namespace com.mirle.ibg3k0.bc.winform
         private System.Windows.Forms.ToolStripMenuItem queryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem transferCommandHistoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem alarmToolStripMenuItem;
+        [AuthorityCheck(FUNCode = BCAppConstants.Maintenance_Function.FUNC_ADVANCED_SETTINGS)]
+        private System.Windows.Forms.ToolStripMenuItem bufferPortToolStripMenuItem;
     }
 
     /// <summary>

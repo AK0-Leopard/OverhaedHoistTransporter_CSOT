@@ -148,6 +148,7 @@ namespace com.mirle.ibg3k0.sc.Service
 
                 bool is_status_change = false;
                 ASEGMENT seg_vo = SegmentBLL.cache.GetSegment(segment_id);
+                List<APORTSTATION> diff_status_port_stations = new List<APORTSTATION>();
                 lock (seg_vo)
                 {
                     List<APORTSTATION> port_stations = PortStationBLL.OperateCatch.loadAllPortBySegmentID(segment_id, SectionBLL);
@@ -169,8 +170,31 @@ namespace com.mirle.ibg3k0.sc.Service
                             {
                                 foreach (APORTSTATION port_station in port_stations)
                                 {
+                                    bool before_is_service = port_station.IsService(app.EquipmentBLL);
                                     PortStationBLL.OperateDB.updatePortStationStatus(port_station.PORT_ID, status);
                                     PortStationBLL.OperateCatch.updatePortStationStatus(port_station.PORT_ID, status);
+                                    if (port_station.IsBufferPort(app.EquipmentBLL))
+                                    {
+                                        bool after_is_service = port_station.IsService(app.EquipmentBLL);
+                                        if (before_is_service != after_is_service)
+                                        {
+                                            switch (seg_do.STATUS)
+                                            {
+                                                case E_SEG_STATUS.Active:
+                                                    if (after_is_service)
+                                                        diff_status_port_stations.Add(port_station);
+                                                    break;
+                                                case E_SEG_STATUS.Closed:
+                                                    if (!after_is_service)
+                                                        diff_status_port_stations.Add(port_station);
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        diff_status_port_stations.Add(port_station);
+                                    }
                                 }
                             }
                             tx.Complete();
@@ -199,7 +223,8 @@ namespace com.mirle.ibg3k0.sc.Service
                                 ReportBLL.newReportLaneOutOfService(segment_start_adr, segment_end_adr, laneCutType, reportqueues);
                                 break;
                         }
-                        foreach (APORTSTATION port_station in port_stations)
+                        //foreach (APORTSTATION port_station in port_stations)
+                        foreach (APORTSTATION port_station in diff_status_port_stations)
                         {
                             switch (seg_vo.STATUS)
                             {

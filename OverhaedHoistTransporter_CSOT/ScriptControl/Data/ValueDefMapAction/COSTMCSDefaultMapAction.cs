@@ -697,13 +697,24 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             int port_count = port_station.Count;
 
             string control_state = SCAppConstants.LineHostControlState.convert2MES(line.Host_Control_State);
+
             S6F11.RPTINFO.RPTITEM.VIDITEM_118_DVVAL viditem_118 = new S6F11.RPTINFO.RPTITEM.VIDITEM_118_DVVAL();
             viditem_118.PORT_INFO = new S6F11.RPTINFO.RPTITEM.VIDITEM_PORT_INFO[port_count];
             for (int j = 0; j < port_count; j++)
             {
+                E_PORT_STATUS transfer_state = port_station[j].PORT_STATUS;
+                if (port_station[j].IsBufferPort(scApp.EquipmentBLL))
+                {
+                    if (transfer_state == E_PORT_STATUS.InService)
+                    {
+                        if (port_station[j].PORT_SERVICE_STATUS != ProtocolFormat.OHTMessage.PortStationServiceStatus.InService)
+                            transfer_state = E_PORT_STATUS.OutOfService;
+                    }
+                }
                 viditem_118.PORT_INFO[j] = new S6F11.RPTINFO.RPTITEM.VIDITEM_PORT_INFO();
                 viditem_118.PORT_INFO[j].PORT_ID = port_station[j].PORT_ID;
-                viditem_118.PORT_INFO[j].PORT_TRANSFER_STATE = ((int)port_station[j].PORT_STATUS).ToString();
+                //viditem_118.PORT_INFO[j].PORT_TRANSFER_STATE = ((int)port_station[j].PORT_STATUS).ToString();
+                viditem_118.PORT_INFO[j].PORT_TRANSFER_STATE = ((int)transfer_state).ToString();
             }
             return viditem_118;
         }
@@ -1562,7 +1573,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 Vids.VIDITEM_115_DVVAL_PortID.PORT_ID = port_id;
 
                 AMCSREPORTQUEUE mcs_queue = S6F11BulibMessage(SECSConst.CEID_Port_Out_Of_Service, Vids);
-                if (mcs_queue == null)
+                if (reportQueues == null)
                 {
                     S6F11SendMessage(mcs_queue);
                 }
@@ -1591,7 +1602,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 Vids.VIDITEM_115_DVVAL_PortID.PORT_ID = port_id;
 
                 AMCSREPORTQUEUE mcs_queue = S6F11BulibMessage(SECSConst.CEID_Port_In_Service, Vids);
-                if (mcs_queue == null)
+                if (reportQueues == null)
                 {
                     S6F11SendMessage(mcs_queue);
                 }

@@ -499,6 +499,10 @@ namespace com.mirle.ibg3k0.sc.Common
                             }
                             (eqTemp as OHCV).setSegmentLocation(segment_location);
                         }
+                        else if (eqptType == SCAppConstants.EqptType.Buffer)
+                        {
+                            eqTemp = new BufferDevice();
+                        }
                         else
                         {
                             eqTemp = new AEQPT();
@@ -578,8 +582,8 @@ namespace com.mirle.ibg3k0.sc.Common
                                 ADR_ID = adr_id,
                                 LD_VH_TYPE = load_vh_type,
                                 ULD_VH_TYPE = unload_vh_type,
-                                PORT_STATUS = E_PORT_STATUS.InService
-
+                                PORT_STATUS = E_PORT_STATUS.InService,
+                                PORT_SERVICE_STATUS = PortStationServiceStatus.InService
                             });
                         }
                     }
@@ -1639,14 +1643,15 @@ namespace com.mirle.ibg3k0.sc.Common
                 setValueToPropety<ABUFFER>(ref source_buff, ref buff);
             }
         }
-        public void put(APORTSTATION portStation)
+        public void put(APORTSTATION db_obj)
         {
-            if (portStation == null) { return; }
-            APORTSTATION port_station = getPortStation(portStation.PORT_ID);
-            if (port_station == null) { return; }
-            lock (_lockPorStationtDic[port_station.PORT_ID])
+            if (db_obj == null) { return; }
+            APORTSTATION caceh_obj = getPortStation(db_obj.PORT_ID);
+            if (caceh_obj == null) { return; }
+            lock (_lockPorStationtDic[caceh_obj.PORT_ID])
             {
-                setValueToPropety<APORTSTATION>(ref portStation, ref port_station);
+                caceh_obj.PORT_STATUS = db_obj.PORT_STATUS;
+                caceh_obj.PORT_SERVICE_STATUS = db_obj.PORT_SERVICE_STATUS;
             }
         }
 

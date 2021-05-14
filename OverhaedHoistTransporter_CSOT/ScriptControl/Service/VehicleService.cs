@@ -341,14 +341,17 @@ namespace com.mirle.ibg3k0.sc.Service
                 if (sender == null) return;
                 byte[] vh_Serialize = BLL.VehicleBLL.Convert2GPB_VehicleInfo(vh);
                 RecoderVehicleObjInfoLog(vh_id, vh_Serialize);
+
+                scApp.getNatsManager().PublishAsync
+                    (string.Format(SCAppConstants.NATS_SUBJECT_VH_INFO_0, vh.VEHICLE_ID.Trim()), vh_Serialize);
+
+
                 //var vh_Serialize = ZeroFormatter.ZeroFormatterSerializer.Serialize(vh);
                 //RecoderTESTLog(vh_Serialize, target_log_TEST_ZeroFormatter);
                 //Task.Run(() => scApp.FlexsimCommandDao.setVhStatusToFlexsimDB(vh_id, vh.CUR_ADR_ID, vh.ACC_SEC_DIST, vh.VhRecentTranEvent, vh.CST_ID,
                 //                                               vh.MODE_STATUS, vh.ACT_STATUS, vh.OBS_PAUSE, vh.BLOCK_PAUSE, vh.CMD_PAUSE,
                 //                                               vh.HID_PAUSE, vh.ERROR, vh.EARTHQUAKE_PAUSE, vh.SAFETY_DOOR_PAUSE));
 
-                //scApp.getNatsManager().PublishAsync
-                //    (string.Format(SCAppConstants.NATS_SUBJECT_VH_INFO_0, vh.VEHICLE_ID.Trim()), vh_Serialize);
 
                 scApp.getRedisCacheManager().ListSetByIndexAsync
                     (SCAppConstants.REDIS_LIST_KEY_VEHICLES, vh.VEHICLE_ID, vh.ToString());
