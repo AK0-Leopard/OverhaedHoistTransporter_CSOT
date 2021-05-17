@@ -3,12 +3,14 @@ using com.mirle.ibg3k0.bcf.Common;
 using com.mirle.ibg3k0.bcf.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.bcf.Data.VO;
 using com.mirle.ibg3k0.sc.App;
+using com.mirle.ibg3k0.sc.Common;
 using com.mirle.ibg3k0.sc.Data.SECS;
 using com.mirle.ibg3k0.sc.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.Data.VO.Interface;
 using com.mirle.ibg3k0.sc.ObjectRelay;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -281,6 +283,8 @@ namespace com.mirle.ibg3k0.sc
         object four_color_light_lock = new object();
         public void setFourColorLightRedWithBuzzer(bool buzzer_signal, bool light_signal)
         {
+            LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(AEQPT), Device: "OHTC",
+               Data: $"setFourColorLightRedWithBuzzer ,buzzer_signal:{buzzer_signal} light_signal:{light_signal}");
             lock (four_color_light_lock)
             {
                 FourColorLightValueDefMapAction mapAction =

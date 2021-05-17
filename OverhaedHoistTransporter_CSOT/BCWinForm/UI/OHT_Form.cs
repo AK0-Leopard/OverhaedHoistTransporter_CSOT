@@ -134,11 +134,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 }
                 );
             line.addEventHandler(this.Name
-            , BCFUtility.getPropertyName(() => line.IsEarthquakeHappend)
+            , BCFUtility.getPropertyName(() => line.HasSeriousAlarmHappend)
                 , (s1, e1) =>
                 {
-                    lbl_earthqualeHappend.BackColor =
-                    line.IsEarthquakeHappend ? Color.Red : Color.Gray;
+                    lbl_HasErrorHappend.BackColor =
+                    line.HasSeriousAlarmHappend ? Color.Red : Color.Gray;
                     //if (line.IsEarthquakeHappend)
                     //{
                     //    aLARMs[0].ALAM_CODE = "AE001";

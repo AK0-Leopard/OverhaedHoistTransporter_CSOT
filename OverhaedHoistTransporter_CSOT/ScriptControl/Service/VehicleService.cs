@@ -5140,6 +5140,12 @@ namespace com.mirle.ibg3k0.sc.Service
                 //在設備上報取消Alarm，如果已經沒有Alarm(Alarm都已經消除，則要上報S6F11 CEID=52 Alarm Clear)
                 bool processAfterHasErrorExist = scApp.AlarmBLL.hasAlarmErrorExist();
                 scApp.getEQObjCacheManager().getLine().HasSeriousAlarmHappend = processAfterHasErrorExist;
+
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"Is curent serious alarm happend:{processAfterHasErrorExist}",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+
                 if (status == ErrorStatus.ErrReset &&
                     //!scApp.AlarmBLL.hasAlarmErrorExist())
                     processBeferHasErrorExist &&

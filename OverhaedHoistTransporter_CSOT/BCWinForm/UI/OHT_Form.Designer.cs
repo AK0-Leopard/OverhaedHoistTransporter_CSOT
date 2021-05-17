@@ -39,7 +39,7 @@
             this.label11 = new System.Windows.Forms.Label();
             this.lbl_detectionSystemExist = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.lbl_earthqualeHappend = new System.Windows.Forms.Label();
+            this.lbl_HasErrorHappend = new System.Windows.Forms.Label();
             this.lbl_hostconn = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -220,7 +220,7 @@
             this.panel1.Controls.Add(this.label11);
             this.panel1.Controls.Add(this.lbl_detectionSystemExist);
             this.panel1.Controls.Add(this.label10);
-            this.panel1.Controls.Add(this.lbl_earthqualeHappend);
+            this.panel1.Controls.Add(this.lbl_HasErrorHappend);
             this.panel1.Controls.Add(this.lbl_hostconn);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label9);
@@ -280,15 +280,15 @@
             this.label10.TabIndex = 11;
             this.label10.Text = ":Detection System";
             // 
-            // lbl_earthqualeHappend
+            // lbl_HasErrorHappend
             // 
-            this.lbl_earthqualeHappend.AutoSize = true;
-            this.lbl_earthqualeHappend.BackColor = System.Drawing.Color.Gray;
-            this.lbl_earthqualeHappend.Location = new System.Drawing.Point(11, 6);
-            this.lbl_earthqualeHappend.Name = "lbl_earthqualeHappend";
-            this.lbl_earthqualeHappend.Size = new System.Drawing.Size(54, 19);
-            this.lbl_earthqualeHappend.TabIndex = 9;
-            this.lbl_earthqualeHappend.Text = "     ";
+            this.lbl_HasErrorHappend.AutoSize = true;
+            this.lbl_HasErrorHappend.BackColor = System.Drawing.Color.Gray;
+            this.lbl_HasErrorHappend.Location = new System.Drawing.Point(11, 6);
+            this.lbl_HasErrorHappend.Name = "lbl_HasErrorHappend";
+            this.lbl_HasErrorHappend.Size = new System.Drawing.Size(54, 19);
+            this.lbl_HasErrorHappend.TabIndex = 9;
+            this.lbl_HasErrorHappend.Text = "     ";
             // 
             // lbl_hostconn
             // 
@@ -316,9 +316,9 @@
             this.label9.ForeColor = System.Drawing.Color.White;
             this.label9.Location = new System.Drawing.Point(71, 6);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(180, 19);
+            this.label9.Size = new System.Drawing.Size(135, 19);
             this.label9.TabIndex = 8;
-            this.label9.Text = ":Earthquake Happend";
+            this.label9.Text = ":Error Happend";
             // 
             // lbl_RediStat
             // 
@@ -1281,7 +1281,7 @@
         private System.Windows.Forms.Button btn_parkZoneTypeChange;
         private System.Windows.Forms.Label lbl_RediStat;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label lbl_earthqualeHappend;
+        private System.Windows.Forms.Label lbl_HasErrorHappend;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.DataGridViewTextBoxColumn eqpt_id;
         private System.Windows.Forms.DataGridViewTextBoxColumn alarm_code;
