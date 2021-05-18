@@ -195,6 +195,7 @@ namespace com.mirle.ibg3k0.sc
         public virtual string PRE_SEC_ID { get; set; }
         [JsonIgnore]
         public int PrePositionSeqNum = 0;
+        public int PreStatusSeqNum = 0;
 
         [JsonIgnore]
         public virtual E_CMD_TYPE CmdType { get; set; } = default(E_CMD_TYPE);
@@ -216,6 +217,9 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         [BaseElement(NonChangeFromOtherVO = true)]
         public object PositionRefresh_Sync = new object();
+        [JsonIgnore]
+        [BaseElement(NonChangeFromOtherVO = true)]
+        public object StatusRefresh_Sync = new object();
 
         [JsonIgnore]
         [BaseElement(NonChangeFromOtherVO = true)]

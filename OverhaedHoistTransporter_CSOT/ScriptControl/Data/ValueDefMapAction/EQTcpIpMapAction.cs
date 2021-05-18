@@ -512,6 +512,25 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             }
         }
 
+        protected void str144_Receive_new(object sender, TcpIpEventArgs e)
+        {
+            if (scApp.getEQObjCacheManager().getLine().ServerPreStop)
+                return;
+            try
+            {
+                str144_ReceiveProcess_new(sender, e);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "(str134_Receive) Exception");
+            }
+        }
+        protected void str144_ReceiveProcess_new(object sender, TcpIpEventArgs e)
+        {
+            var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, eqpt, e);
+            scApp.BackgroundWorkProcVehicleStatus.triggerBackgroundWork(eqpt.VEHICLE_ID, workItem);
+        }
+
         protected void str144_ReceiveProcess(object sender, TcpIpEventArgs e)
         {
             dynamic service = scApp.VehicleService;
@@ -1094,7 +1113,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             ITcpIpControl.addTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_TRANS_COMPLETE_REPORT.ToString(), str132_Receive);
             ITcpIpControl.addTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_TRANS_PASS_EVENT_REPORT.ToString(), str134_Receive_new);
             ITcpIpControl.addTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_TRANS_EVENT_REPORT.ToString(), str136_Receive);
-            ITcpIpControl.addTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_STATUS_CHANGE_REPORT.ToString(), str144_Receive);
+            ITcpIpControl.addTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_STATUS_CHANGE_REPORT.ToString(), str144_Receive_new);
         }
         public override void UnRgisteredProcEvent()
         {
@@ -1104,7 +1123,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
 
             ITcpIpControl.removeTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_TRANS_COMPLETE_REPORT.ToString(), str132_Receive);
             ITcpIpControl.removeTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_TRANS_PASS_EVENT_REPORT.ToString(), str134_Receive_new);
-            ITcpIpControl.removeTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_STATUS_CHANGE_REPORT.ToString(), str144_Receive);
+            ITcpIpControl.removeTcpIpReceivedHandler(bcfApp, tcpipAgentName, VHMSGIF.ID_STATUS_CHANGE_REPORT.ToString(), str144_Receive_new);
         }
     }
 }
