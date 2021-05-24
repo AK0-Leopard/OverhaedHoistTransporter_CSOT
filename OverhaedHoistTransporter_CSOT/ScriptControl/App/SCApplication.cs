@@ -1844,6 +1844,7 @@ namespace com.mirle.ibg3k0.sc.App
             vehicleDao.start(eqObjCacheManager.getAllVehicle());
 
             commObjCacheManager.setContext();
+            commObjCacheManager.initialAdrEqType();
         }
         /// <summary>
         /// Gets the eq object cache manager.

@@ -54,5 +54,45 @@ namespace com.mirle.ibg3k0.sc
                 return AddressTypeFlags[BIT_INDEX_SEGMENT];
             }
         }
+        public App.SCAppConstants.EqptType EqptType;
+        public void setEqType(BLL.EquipmentBLL equipmentBLL, BLL.PortStationBLL portStationBLL)
+        {
+            var port_station = portStationBLL.OperateCatch.getPortStationByID(this.ADR_ID);
+            if (port_station != null)
+            {
+                if (port_station.IsBufferPort(equipmentBLL))
+                {
+                    EqptType = App.SCAppConstants.EqptType.Buffer;
+                }
+                else if (port_station.IsEQPort(equipmentBLL))
+                {
+                    EqptType = App.SCAppConstants.EqptType.Equipment;
+                }
+                else if (port_station.IsCVPort(equipmentBLL))
+                {
+                    EqptType = App.SCAppConstants.EqptType.OHCV;
+                }
+                else
+                {
+                    EqptType = App.SCAppConstants.EqptType.Orther;
+                }
+            }
+            else
+            {
+                if (equipmentBLL.cache.IsInMatainLift(this.ADR_ID))
+                {
+                    EqptType = App.SCAppConstants.EqptType.MTL;
+                }
+                else if (equipmentBLL.cache.IsInMatainSpace(this.ADR_ID))
+                {
+                    EqptType = App.SCAppConstants.EqptType.MTS;
+                }
+                else
+                {
+                    EqptType = App.SCAppConstants.EqptType.Orther;
+                }
+
+            }
+        }
     }
 }

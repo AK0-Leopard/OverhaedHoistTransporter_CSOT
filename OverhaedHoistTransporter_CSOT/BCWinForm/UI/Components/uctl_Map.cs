@@ -223,7 +223,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             int iAddrCount = 0;
             try
             {
-                IEnumerable<AADDRESS> enumerAdr = mainForm.BCApp.SCApplication.MapBLL.loadAllAddress();
+                //IEnumerable<AADDRESS> enumerAdr = mainForm.BCApp.SCApplication.MapBLL.loadAllAddress();
+                IEnumerable<AADDRESS> enumerAdr = mainForm.BCApp.SCApplication.getCommObjCacheManager().getAddresses();
 
                 iAddrCount = enumerAdr.Count();
 
@@ -250,7 +251,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
                         m_objItemAddr[index].p_LocY = point.LOCATIONY;
                         m_objItemAddr[index].p_SizeW = (int)point.WIDTH;
                         m_objItemAddr[index].p_SizeH = (int)point.HEIGHT;
-                        m_objItemAddr[index].p_Color = BCUtility.ConvStr2Color(point.COLOR);
+                        //m_objItemAddr[index].p_Color = BCUtility.ConvStr2Color(point.COLOR);
+                        Color initial_color = BCUtility.getPointColor(adr.EqptType, point.COLOR);
+                        m_objItemAddr[index].initialColor(initial_color);
                         m_objItemAddr[index].p_ZoomLV = adr.ZOOM_LV;
                         m_objItemAddr[index].Visible = adr.ZOOM_LV >= trackBar_scale.Value;
                         m_objItemAddr[index].Tag = m_objItemAddr[index].Top + "|" + m_objItemAddr[index].Left + "|"
@@ -887,6 +890,18 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             if (uctAdr != null)
             {
                 uctAdr.p_Color = change_color;
+            }
+        }
+        public void resetSpecifyAddressColor(string adr_id)
+        {
+            if (SCUtility.isEmpty(adr_id))
+                return;
+            uctlAddress uctAdr = m_objItemAddr.
+                Where(adr_obj => adr_obj.p_Address == adr_id.Trim()).
+                SingleOrDefault();
+            if (uctAdr != null)
+            {
+                uctAdr.resetColor();
             }
         }
         #endregion Address Color change

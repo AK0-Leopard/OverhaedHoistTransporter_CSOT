@@ -119,6 +119,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             }
         }
 
+        private Color OriginalColor = Color.Empty;
         public Color p_Color
         {
             get { return (m_clrColor); }
@@ -295,7 +296,16 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
         #endregion	/* Constructor／Destructor */
 
         #region "Publish Process"
+        public void initialColor(Color color)
+        {
+            OriginalColor = color;
+            p_Color = color;
+        }
 
+        public void resetColor()
+        {
+            p_Color = OriginalColor;
+        }
         #endregion	/* Publish Process */
 
         #region "Internal Process"

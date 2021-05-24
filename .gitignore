@@ -349,3 +349,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /OverhaedHoistTransporter_CSOT/BCWinForm/Config/CSOT_T4_PH1PH2.zip
+/OverhaedHoistTransporter_CSOT/BCWinForm/Config/CSOT_T4_PH1PH2_old

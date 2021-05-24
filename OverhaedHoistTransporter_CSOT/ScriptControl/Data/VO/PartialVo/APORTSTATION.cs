@@ -28,12 +28,29 @@ namespace com.mirle.ibg3k0.sc
             else
                 return false;
         }
+        public bool IsCVPort(BLL.EquipmentBLL equipmentBLL)
+        {
+            var eq = equipmentBLL.cache.getEQ(this.EQPT_ID);
+            if (eq != null && eq.Type == App.SCAppConstants.EqptType.OHCV)
+                return true;
+            else
+                return false;
+        }
+        public bool IsEQPort(BLL.EquipmentBLL equipmentBLL)
+        {
+            var eq = equipmentBLL.cache.getEQ(this.EQPT_ID);
+            if (eq != null && eq.Type == App.SCAppConstants.EqptType.Equipment)
+                return true;
+            else
+                return false;
+        }
+
         public bool IsService(BLL.EquipmentBLL equipmentBLL)
         {
             var eq = equipmentBLL.cache.getEQ(this.EQPT_ID);
             if (eq != null && eq.Type == App.SCAppConstants.EqptType.Buffer)
             {
-                return PORT_STATUS == E_PORT_STATUS.InService && 
+                return PORT_STATUS == E_PORT_STATUS.InService &&
                        PORT_SERVICE_STATUS == ProtocolFormat.OHTMessage.PortStationServiceStatus.InService;
             }
             else

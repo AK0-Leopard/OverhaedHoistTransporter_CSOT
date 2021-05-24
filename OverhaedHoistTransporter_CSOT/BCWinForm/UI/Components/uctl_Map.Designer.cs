@@ -45,24 +45,9 @@
             this.lbl_Through_Times_Lv9 = new System.Windows.Forms.Label();
             this.lbl_Through_Times_Lv10 = new System.Windows.Forms.Label();
             this.pnl_Status_desc = new System.Windows.Forms.Panel();
-            this.lblMapVhStsColor01 = new System.Windows.Forms.Label();
-            this.lblMapVhStsColor05 = new System.Windows.Forms.Label();
-            this.lblMapVhStsColor02 = new System.Windows.Forms.Label();
-            this.lblMapVhStsColor04 = new System.Windows.Forms.Label();
-            this.lblMapVhStsColor03 = new System.Windows.Forms.Label();
-            this.lblMapCstStsColor01 = new System.Windows.Forms.Label();
-            this.lblMapVhStsColor06 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.lblMapPortStsColor00 = new System.Windows.Forms.Label();
-            this.label52 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.lblMapCstStsColor00 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.lblMapPortStsColor01 = new System.Windows.Forms.Label();
-            this.lblMapPortStsColor02 = new System.Windows.Forms.Label();
-            this.label49 = new System.Windows.Forms.Label();
-            this.lblMapVhStsColor00 = new System.Windows.Forms.Label();
-            this.label37 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.cb_SecAdrMark = new System.Windows.Forms.CheckBox();
             this.cb_railDirection = new System.Windows.Forms.CheckBox();
@@ -82,6 +67,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.pnl_Map = new System.Windows.Forms.Panel();
             this.tmrRefresh = new System.Windows.Forms.Timer(this.components);
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnl_color_desc.SuspendLayout();
             this.tlp_Through_Times.SuspendLayout();
@@ -113,8 +100,8 @@
             // 
             this.pnl_color_desc.AutoScroll = true;
             this.pnl_color_desc.Controls.Add(this.btn_EMORecover);
-            this.pnl_color_desc.Controls.Add(this.btn_AllVhPause);
             this.pnl_color_desc.Controls.Add(this.tlp_Through_Times);
+            this.pnl_color_desc.Controls.Add(this.btn_AllVhPause);
             this.pnl_color_desc.Controls.Add(this.pnl_Status_desc);
             this.pnl_color_desc.Controls.Add(this.cb_SecAdrMark);
             this.pnl_color_desc.Controls.Add(this.cb_railDirection);
@@ -178,7 +165,7 @@
             this.tlp_Through_Times.Controls.Add(this.lbl_Through_Times_Lv8, 7, 0);
             this.tlp_Through_Times.Controls.Add(this.lbl_Through_Times_Lv9, 8, 0);
             this.tlp_Through_Times.Controls.Add(this.lbl_Through_Times_Lv10, 9, 0);
-            this.tlp_Through_Times.Location = new System.Drawing.Point(1, 8);
+            this.tlp_Through_Times.Location = new System.Drawing.Point(3, 9);
             this.tlp_Through_Times.Margin = new System.Windows.Forms.Padding(0);
             this.tlp_Through_Times.Name = "tlp_Through_Times";
             this.tlp_Through_Times.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
@@ -310,234 +297,51 @@
             // 
             // pnl_Status_desc
             // 
-            this.pnl_Status_desc.Controls.Add(this.lblMapVhStsColor01);
-            this.pnl_Status_desc.Controls.Add(this.lblMapVhStsColor05);
-            this.pnl_Status_desc.Controls.Add(this.lblMapVhStsColor02);
-            this.pnl_Status_desc.Controls.Add(this.lblMapVhStsColor04);
-            this.pnl_Status_desc.Controls.Add(this.lblMapVhStsColor03);
-            this.pnl_Status_desc.Controls.Add(this.lblMapCstStsColor01);
-            this.pnl_Status_desc.Controls.Add(this.lblMapVhStsColor06);
+            this.pnl_Status_desc.Controls.Add(this.label11);
+            this.pnl_Status_desc.Controls.Add(this.label10);
             this.pnl_Status_desc.Controls.Add(this.label9);
-            this.pnl_Status_desc.Controls.Add(this.lblMapPortStsColor00);
-            this.pnl_Status_desc.Controls.Add(this.label52);
             this.pnl_Status_desc.Controls.Add(this.label8);
-            this.pnl_Status_desc.Controls.Add(this.lblMapCstStsColor00);
             this.pnl_Status_desc.Controls.Add(this.label7);
-            this.pnl_Status_desc.Controls.Add(this.lblMapPortStsColor01);
-            this.pnl_Status_desc.Controls.Add(this.lblMapPortStsColor02);
-            this.pnl_Status_desc.Controls.Add(this.label49);
-            this.pnl_Status_desc.Controls.Add(this.lblMapVhStsColor00);
-            this.pnl_Status_desc.Controls.Add(this.label37);
             this.pnl_Status_desc.Controls.Add(this.label2);
             this.pnl_Status_desc.Location = new System.Drawing.Point(15, 8);
             this.pnl_Status_desc.Name = "pnl_Status_desc";
             this.pnl_Status_desc.Size = new System.Drawing.Size(682, 62);
             this.pnl_Status_desc.TabIndex = 96;
             // 
-            // lblMapVhStsColor01
-            // 
-            this.lblMapVhStsColor01.BackColor = System.Drawing.Color.Lime;
-            this.lblMapVhStsColor01.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapVhStsColor01.Location = new System.Drawing.Point(235, 1);
-            this.lblMapVhStsColor01.Name = "lblMapVhStsColor01";
-            this.lblMapVhStsColor01.Size = new System.Drawing.Size(71, 19);
-            this.lblMapVhStsColor01.TabIndex = 75;
-            this.lblMapVhStsColor01.Text = "Auto";
-            this.lblMapVhStsColor01.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapVhStsColor05
-            // 
-            this.lblMapVhStsColor05.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblMapVhStsColor05.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapVhStsColor05.Location = new System.Drawing.Point(527, 1);
-            this.lblMapVhStsColor05.Name = "lblMapVhStsColor05";
-            this.lblMapVhStsColor05.Size = new System.Drawing.Size(71, 19);
-            this.lblMapVhStsColor05.TabIndex = 86;
-            this.lblMapVhStsColor05.Text = "Obstacle";
-            this.lblMapVhStsColor05.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapVhStsColor02
-            // 
-            this.lblMapVhStsColor02.BackColor = System.Drawing.Color.Cyan;
-            this.lblMapVhStsColor02.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapVhStsColor02.Location = new System.Drawing.Point(308, 1);
-            this.lblMapVhStsColor02.Name = "lblMapVhStsColor02";
-            this.lblMapVhStsColor02.Size = new System.Drawing.Size(71, 19);
-            this.lblMapVhStsColor02.TabIndex = 76;
-            this.lblMapVhStsColor02.Text = "Moving";
-            this.lblMapVhStsColor02.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapVhStsColor04
-            // 
-            this.lblMapVhStsColor04.BackColor = System.Drawing.Color.Violet;
-            this.lblMapVhStsColor04.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapVhStsColor04.Location = new System.Drawing.Point(454, 1);
-            this.lblMapVhStsColor04.Name = "lblMapVhStsColor04";
-            this.lblMapVhStsColor04.Size = new System.Drawing.Size(71, 19);
-            this.lblMapVhStsColor04.TabIndex = 78;
-            this.lblMapVhStsColor04.Text = "Pause";
-            this.lblMapVhStsColor04.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapVhStsColor03
-            // 
-            this.lblMapVhStsColor03.BackColor = System.Drawing.Color.Yellow;
-            this.lblMapVhStsColor03.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapVhStsColor03.Location = new System.Drawing.Point(381, 1);
-            this.lblMapVhStsColor03.Name = "lblMapVhStsColor03";
-            this.lblMapVhStsColor03.Size = new System.Drawing.Size(71, 19);
-            this.lblMapVhStsColor03.TabIndex = 77;
-            this.lblMapVhStsColor03.Text = "Blocking";
-            this.lblMapVhStsColor03.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapCstStsColor01
-            // 
-            this.lblMapCstStsColor01.BackColor = System.Drawing.Color.Lime;
-            this.lblMapCstStsColor01.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapCstStsColor01.Location = new System.Drawing.Point(235, 22);
-            this.lblMapCstStsColor01.Name = "lblMapCstStsColor01";
-            this.lblMapCstStsColor01.Size = new System.Drawing.Size(71, 19);
-            this.lblMapCstStsColor01.TabIndex = 81;
-            this.lblMapCstStsColor01.Text = "Stock";
-            this.lblMapCstStsColor01.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapVhStsColor06
-            // 
-            this.lblMapVhStsColor06.BackColor = System.Drawing.Color.Red;
-            this.lblMapVhStsColor06.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapVhStsColor06.ForeColor = System.Drawing.Color.White;
-            this.lblMapVhStsColor06.Location = new System.Drawing.Point(600, 1);
-            this.lblMapVhStsColor06.Name = "lblMapVhStsColor06";
-            this.lblMapVhStsColor06.Size = new System.Drawing.Size(71, 19);
-            this.lblMapVhStsColor06.TabIndex = 87;
-            this.lblMapVhStsColor06.Text = "Error";
-            this.lblMapVhStsColor06.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // label9
             // 
-            this.label9.BackColor = System.Drawing.Color.Red;
+            this.label9.BackColor = System.Drawing.Color.Khaki;
             this.label9.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ForeColor = System.Drawing.Color.Transparent;
+            this.label9.ForeColor = System.Drawing.Color.Black;
             this.label9.Location = new System.Drawing.Point(308, 44);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(71, 19);
             this.label9.TabIndex = 81;
-            this.label9.Text = "To";
+            this.label9.Text = "Buffer";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapPortStsColor00
-            // 
-            this.lblMapPortStsColor00.BackColor = System.Drawing.Color.Silver;
-            this.lblMapPortStsColor00.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapPortStsColor00.Location = new System.Drawing.Point(454, 22);
-            this.lblMapPortStsColor00.Name = "lblMapPortStsColor00";
-            this.lblMapPortStsColor00.Size = new System.Drawing.Size(71, 19);
-            this.lblMapPortStsColor00.TabIndex = 85;
-            this.lblMapPortStsColor00.Text = "No Link";
-            this.lblMapPortStsColor00.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label52
-            // 
-            this.label52.BackColor = System.Drawing.Color.Black;
-            this.label52.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label52.ForeColor = System.Drawing.Color.White;
-            this.label52.Location = new System.Drawing.Point(318, 22);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(130, 19);
-            this.label52.TabIndex = 82;
-            this.label52.Text = "Port Status";
-            this.label52.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label8
             // 
-            this.label8.BackColor = System.Drawing.Color.Lime;
+            this.label8.BackColor = System.Drawing.Color.Plum;
             this.label8.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.Black;
             this.label8.Location = new System.Drawing.Point(235, 43);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(71, 19);
             this.label8.TabIndex = 87;
-            this.label8.Text = "From";
+            this.label8.Text = "CV";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapCstStsColor00
-            // 
-            this.lblMapCstStsColor00.BackColor = System.Drawing.Color.White;
-            this.lblMapCstStsColor00.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapCstStsColor00.Location = new System.Drawing.Point(162, 22);
-            this.lblMapCstStsColor00.Name = "lblMapCstStsColor00";
-            this.lblMapCstStsColor00.Size = new System.Drawing.Size(71, 19);
-            this.lblMapCstStsColor00.TabIndex = 80;
-            this.lblMapCstStsColor00.Text = "No Stock";
-            this.lblMapCstStsColor00.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label7
             // 
-            this.label7.BackColor = System.Drawing.Color.Violet;
+            this.label7.BackColor = System.Drawing.Color.SpringGreen;
             this.label7.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(162, 43);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(71, 19);
             this.label7.TabIndex = 78;
-            this.label7.Text = "Start";
+            this.label7.Text = "EQ";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapPortStsColor01
-            // 
-            this.lblMapPortStsColor01.BackColor = System.Drawing.Color.White;
-            this.lblMapPortStsColor01.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapPortStsColor01.Location = new System.Drawing.Point(527, 22);
-            this.lblMapPortStsColor01.Name = "lblMapPortStsColor01";
-            this.lblMapPortStsColor01.Size = new System.Drawing.Size(71, 19);
-            this.lblMapPortStsColor01.TabIndex = 83;
-            this.lblMapPortStsColor01.Text = "No Stock";
-            this.lblMapPortStsColor01.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblMapPortStsColor02
-            // 
-            this.lblMapPortStsColor02.BackColor = System.Drawing.Color.Lime;
-            this.lblMapPortStsColor02.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapPortStsColor02.Location = new System.Drawing.Point(600, 22);
-            this.lblMapPortStsColor02.Name = "lblMapPortStsColor02";
-            this.lblMapPortStsColor02.Size = new System.Drawing.Size(71, 19);
-            this.lblMapPortStsColor02.TabIndex = 84;
-            this.lblMapPortStsColor02.Text = "Stock";
-            this.lblMapPortStsColor02.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label49
-            // 
-            this.label49.BackColor = System.Drawing.Color.Black;
-            this.label49.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label49.ForeColor = System.Drawing.Color.White;
-            this.label49.Location = new System.Drawing.Point(27, 22);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(130, 19);
-            this.label49.TabIndex = 79;
-            this.label49.Text = "Vehicle Presence";
-            this.label49.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblMapVhStsColor00
-            // 
-            this.lblMapVhStsColor00.BackColor = System.Drawing.Color.Blue;
-            this.lblMapVhStsColor00.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMapVhStsColor00.ForeColor = System.Drawing.Color.White;
-            this.lblMapVhStsColor00.Location = new System.Drawing.Point(162, 1);
-            this.lblMapVhStsColor00.Name = "lblMapVhStsColor00";
-            this.lblMapVhStsColor00.Size = new System.Drawing.Size(71, 19);
-            this.lblMapVhStsColor00.TabIndex = 74;
-            this.lblMapVhStsColor00.Text = "Manual";
-            this.lblMapVhStsColor00.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label37
-            // 
-            this.label37.BackColor = System.Drawing.Color.Black;
-            this.label37.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label37.ForeColor = System.Drawing.Color.White;
-            this.label37.Location = new System.Drawing.Point(27, 1);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(130, 19);
-            this.label37.TabIndex = 73;
-            this.label37.Text = "Vehicle Status";
-            this.label37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label2
             // 
@@ -548,7 +352,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(154, 19);
             this.label2.TabIndex = 79;
-            this.label2.Text = "Address Instructions";
+            this.label2.Text = "Address Type";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cb_SecAdrMark
@@ -739,6 +543,30 @@
             this.tmrRefresh.Interval = 1000;
             this.tmrRefresh.Tick += new System.EventHandler(this.tmrRefresh_Tick);
             // 
+            // label10
+            // 
+            this.label10.BackColor = System.Drawing.Color.Red;
+            this.label10.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.Transparent;
+            this.label10.Location = new System.Drawing.Point(381, 44);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(71, 19);
+            this.label10.TabIndex = 88;
+            this.label10.Text = "MTL";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label11
+            // 
+            this.label11.BackColor = System.Drawing.Color.Yellow;
+            this.label11.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.Black;
+            this.label11.Location = new System.Drawing.Point(454, 43);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(71, 19);
+            this.label11.TabIndex = 89;
+            this.label11.Text = "MTS";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // uctl_Map
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
@@ -775,21 +603,6 @@
         private System.Windows.Forms.Label lbl_maxScale;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar trackBar_scale;
-        private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.Label lblMapVhStsColor00;
-        private System.Windows.Forms.Label lblMapVhStsColor01;
-        private System.Windows.Forms.Label lblMapVhStsColor06;
-        private System.Windows.Forms.Label lblMapVhStsColor02;
-        private System.Windows.Forms.Label lblMapVhStsColor05;
-        private System.Windows.Forms.Label lblMapVhStsColor03;
-        private System.Windows.Forms.Label lblMapPortStsColor00;
-        private System.Windows.Forms.Label lblMapVhStsColor04;
-        private System.Windows.Forms.Label lblMapPortStsColor02;
-        private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.Label lblMapPortStsColor01;
-        private System.Windows.Forms.Label lblMapCstStsColor00;
-        private System.Windows.Forms.Label label52;
-        private System.Windows.Forms.Label lblMapCstStsColor01;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Timer tmrRefresh;
         private System.Windows.Forms.Label label3;
@@ -822,5 +635,7 @@
         private System.Windows.Forms.Label lbl_Through_Times_Lv10;
         private System.Windows.Forms.Button btn_AllVhPause;
         private System.Windows.Forms.Button btn_EMORecover;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
     }
 }

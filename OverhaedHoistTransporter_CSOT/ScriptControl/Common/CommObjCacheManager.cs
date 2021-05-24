@@ -36,6 +36,8 @@ namespace com.mirle.ibg3k0.sc.Common
         private static Object _lock = new Object();
         private SCApplication scApp = null;
         //Cache Object
+        //Address
+        private List<AADDRESS> Addresses;
         //Section
         private List<ASECTION> Sections;
         //Segment
@@ -76,6 +78,7 @@ namespace com.mirle.ibg3k0.sc.Common
 
             Segments = scApp.MapBLL.loadAllSegments();
             Sections = scApp.MapBLL.loadAllSection();
+            Addresses = scApp.MapBLL.loadAllAddress();
             BlockZoneMasters = scApp.MapBLL.loadAllBlockZoneMaster();
             ParkZoneDetails = scApp.ParkBLL.LoadAllParkZoneDetails();
             ParkZoneMasters = scApp.ParkBLL.LoadAllParkZoneMaster();
@@ -97,7 +100,13 @@ namespace com.mirle.ibg3k0.sc.Common
             CommonInfo = new CommonInfo();
 
         }
-
+        public void initialAdrEqType()
+        {
+            foreach (var adr in Addresses)
+            {
+                adr.setEqType(scApp.EquipmentBLL, scApp.PortStationBLL);
+            }
+        }
 
 
         public void stop()
@@ -118,6 +127,11 @@ namespace com.mirle.ibg3k0.sc.Common
         }
 
         #region 取得各種EQ Object的方法
+        //Addresses
+        public List<AADDRESS> getAddresses()
+        {
+            return Addresses;
+        }
         //Section
         public ASECTION getSection(string sec_id)
         {

@@ -1088,21 +1088,27 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         {
             if (!BCFUtility.isEmpty(reqSelectionStartAdr))
             {
-                uctl_Map.changeSpecifyAddressColor
-                    (reqSelectionStartAdr, BCAppConstants.CLR_MAP_ADDRESS_DUFAULT);
+                //uctl_Map.changeSpecifyAddressColor
+                //    (reqSelectionStartAdr, BCAppConstants.CLR_MAP_ADDRESS_DUFAULT);
+                uctl_Map.resetSpecifyAddressColor
+                    (reqSelectionStartAdr);
                 reqSelectionStartAdr = string.Empty;
             }
             if (!BCFUtility.isEmpty(reqSelectionFromAdr))
             {
-                uctl_Map.changeSpecifyAddressColor
-                    (reqSelectionFromAdr, BCAppConstants.CLR_MAP_ADDRESS_DUFAULT);
+                //uctl_Map.changeSpecifyAddressColor
+                //    (reqSelectionFromAdr, BCAppConstants.CLR_MAP_ADDRESS_DUFAULT);
+                uctl_Map.resetSpecifyAddressColor
+                    (reqSelectionFromAdr);
                 reqSelectionFromAdr = string.Empty;
 
             }
             if (!BCFUtility.isEmpty(reqSelectionToAdr))
             {
-                uctl_Map.changeSpecifyAddressColor
-                    (reqSelectionToAdr, BCAppConstants.CLR_MAP_ADDRESS_DUFAULT);
+                //uctl_Map.changeSpecifyAddressColor
+                //    (reqSelectionToAdr, BCAppConstants.CLR_MAP_ADDRESS_DUFAULT);
+                uctl_Map.resetSpecifyAddressColor
+                    (reqSelectionToAdr);
                 reqSelectionToAdr = string.Empty;
             }
         }

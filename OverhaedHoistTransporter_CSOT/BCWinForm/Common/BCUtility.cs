@@ -282,6 +282,33 @@ namespace com.mirle.ibg3k0.bc.winform.Common
 
             return (clrData);
         }
+        public static Color getPointColor(sc.App.SCAppConstants.EqptType eqptType, string sText)
+        {
+            switch (eqptType)
+            {
+                case sc.App.SCAppConstants.EqptType.Buffer:
+                    return Color.Khaki;
+                case sc.App.SCAppConstants.EqptType.Equipment:
+                    return Color.SpringGreen;
+                case sc.App.SCAppConstants.EqptType.OHCV:
+                    return Color.Plum;
+                case sc.App.SCAppConstants.EqptType.MTL:
+                    return Color.Red;
+                case sc.App.SCAppConstants.EqptType.MTS:
+                    return Color.Yellow;
+                default:
+                    return Color.Black;
+                    Color clrData;
+                    sText = (sText != null) ? sText.Trim() : sText;
+                    clrData = Color.FromName(sText);
+                    if (!clrData.IsKnownColor)
+                    {
+                        clrData = Color.FromArgb(int.Parse(sText, NumberStyles.AllowHexSpecifier));
+                    }
+
+                    return (clrData);
+            }
+        }
 
         public static void setComboboxDataSource(ComboBox crl_comboBox, string[] data_Source)
         {
