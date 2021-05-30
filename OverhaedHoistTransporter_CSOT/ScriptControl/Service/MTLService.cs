@@ -218,7 +218,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 isSuccess = false;
                 result = $"vh id:{vh_id}, current address:{car_out_vh.CUR_ADR_ID} to device:{mtx.DeviceID} of address id:{mtx.DeviceAddress} not walkable.";
             }
-            
+
             //2.要判斷MTL的 Safety check是否有On且是否為Auto Mode
             if (isSuccess && !SCUtility.isEmpty(mtx.PreCarOutVhID))
             {
@@ -323,7 +323,7 @@ namespace com.mirle.ibg3k0.sc.Service
 
             CarOutStart(mtx);
             //接著要開始等待MTS的兩個門都放下來之後，才可以將OHT開過來
-            if (mtx.DokingMaintainDevice!=null && mtx.DokingMaintainDevice is MaintainSpace)
+            if (mtx.DokingMaintainDevice != null && mtx.DokingMaintainDevice is MaintainSpace)
             {
                 MaintainSpace dockingMaintainSpace = mtx.DokingMaintainDevice as MaintainSpace;
                 if (!SpinWait.SpinUntil(() => dockingMaintainSpace.MTSBackDoorStatus == MTSDoorStatus.Open &&
@@ -582,9 +582,9 @@ namespace com.mirle.ibg3k0.sc.Service
                 if (!SCUtility.isEmpty(pre_car_out_vh?.OHTC_CMD))
                 {
                     ACMD_OHTC cmd = scApp.CMDBLL.getCMD_OHTCByID(pre_car_out_vh.OHTC_CMD);
-                    if(cmd!=null)
+                    if (cmd != null)
                     {
-                        if(cmd.CMD_TPYE== E_CMD_TYPE.MoveToMTL|| cmd.CMD_TPYE == E_CMD_TYPE.SystemOut || 
+                        if (cmd.CMD_TPYE == E_CMD_TYPE.MoveToMTL || cmd.CMD_TPYE == E_CMD_TYPE.SystemOut ||
                             cmd.CMD_TPYE == E_CMD_TYPE.SystemIn || cmd.CMD_TPYE == E_CMD_TYPE.MTLHome)
                         {
                             //如果是強制被取消(Safety check突然關閉)的時候，要先下一次暫停給車子
@@ -616,7 +616,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 //如果OHT已經在MTS/MTL的Segment上時，
                 //就不能將他的對應訊號關閉
-                if(SCUtility.isMatche(mtx.DeviceSegment,pre_car_out_vh.CUR_SEG_ID))
+                if (SCUtility.isMatche(mtx.DeviceSegment, pre_car_out_vh.CUR_SEG_ID))
                 {
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
                              Data: $"Process car out cancel request. mtx:{mtx.DeviceID}, pre car out vh:{mtx.PreCarOutVhID}, is force finish:{isForceFinish}," +
@@ -662,14 +662,15 @@ namespace com.mirle.ibg3k0.sc.Service
                 if (car_in_vh.MODE_STATUS == ProtocolFormat.OHTMessage.VHModeStatus.Manual)
                 {
                     VehicleService.ModeChangeRequest(car_in_vh.VEHICLE_ID, OperatingVHMode.OperatingAuto);
-                    if (SpinWait.SpinUntil(() => car_in_vh.MODE_STATUS == VHModeStatus.AutoMtl, 10000))
+                    //if (SpinWait.SpinUntil(() => car_in_vh.MODE_STATUS == VHModeStatus.AutoMtl, 10000))
+                    if (SpinWait.SpinUntil(() => IsAutoMTLReady(car_in_vh), 10000))
                     {
                         //mtl.SetCarInMoving(true);
                         LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
                             Data: $"vh:{car_in_vh.VEHICLE_ID} request car in, OHTC Ready to create system in command.",
                              XID: mtl.DeviceID,
                             VehicleID: car_in_vh.VEHICLE_ID);
-                        bool create_result  = VehicleService.doAskVhToCarInBufferAddress(car_in_vh.VEHICLE_ID, mtl.MTL_CAR_IN_BUFFER_ADDRESS);
+                        bool create_result = VehicleService.doAskVhToCarInBufferAddress(car_in_vh.VEHICLE_ID, mtl.MTL_CAR_IN_BUFFER_ADDRESS);
                         if (create_result)
                         {
                             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
@@ -732,6 +733,21 @@ namespace com.mirle.ibg3k0.sc.Service
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(MTLService), Device: SCAppConstants.DeviceName.DEVICE_NAME_MTx,
                      Data: $"Request car in, but no vehicle at MTL or vehicle is not connected.",
                     XID: mtl.DeviceID);
+            }
+        }
+
+        private bool IsAutoMTLReady(AVEHICLE carInVh)
+        {
+            string vh_id = carInVh.VEHICLE_ID;
+            if (carInVh.MODE_STATUS == VHModeStatus.AutoMtl)
+            {
+                return true;
+            }
+            else
+            {
+                Task.Run(() => scApp.VehicleService.VehicleStatusRequest(vh_id, true));
+                SpinWait.SpinUntil(() => false, 1000);
+                return false;
             }
         }
 
