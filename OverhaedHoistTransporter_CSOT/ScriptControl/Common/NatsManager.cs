@@ -48,60 +48,60 @@ namespace com.mirle.ibg3k0.sc.Common
                     srevers_url[i] = $"nats://{nats_server_ip}:{servers_port[i]}";
                 }
                 Options natsOptions = null;
-//#if DEBUG
+                //#if DEBUG
                 cOpts.NatsURL = DefaultNatsURL;
                 clusterID = "test-cluster";
-//#else
-//                natsOptions = ConnectionFactory.GetDefaultOptions();
-//                natsOptions.MaxReconnect = Options.ReconnectForever;
-//                natsOptions.ReconnectWait = 1000;
-//                natsOptions.NoRandomize = true;
-//                natsOptions.Servers = srevers_url;
-//                natsOptions.Name = client_id;
-//                natsOptions.AllowReconnect = true;
-//                natsOptions.Timeout = 1000;
-//                natsOptions.PingInterval = 5000;
-//                natsOptions.Url = DefaultNatsURL;
-//                natsOptions.AsyncErrorEventHandler += (sender, args) =>
-//                {
-//                    logger.Error($"Server:{args.Conn.ConnectedUrl}{Environment.NewLine},Message:{args.Error}{Environment.NewLine},Subject:{args.Subscription.Subject}");
-//                    //Console.WriteLine("Error: ");
-//                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
-//                    //Console.WriteLine("   Message: " + args.Error);
-//                    //Console.WriteLine("   Subject: " + args.Subscription.Subject);
-//                };
+                //#else
+                //                natsOptions = ConnectionFactory.GetDefaultOptions();
+                //                natsOptions.MaxReconnect = Options.ReconnectForever;
+                //                natsOptions.ReconnectWait = 1000;
+                //                natsOptions.NoRandomize = true;
+                //                natsOptions.Servers = srevers_url;
+                //                natsOptions.Name = client_id;
+                //                natsOptions.AllowReconnect = true;
+                //                natsOptions.Timeout = 1000;
+                //                natsOptions.PingInterval = 5000;
+                //                natsOptions.Url = DefaultNatsURL;
+                //                natsOptions.AsyncErrorEventHandler += (sender, args) =>
+                //                {
+                //                    logger.Error($"Server:{args.Conn.ConnectedUrl}{Environment.NewLine},Message:{args.Error}{Environment.NewLine},Subject:{args.Subscription.Subject}");
+                //                    //Console.WriteLine("Error: ");
+                //                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
+                //                    //Console.WriteLine("   Message: " + args.Error);
+                //                    //Console.WriteLine("   Subject: " + args.Subscription.Subject);
+                //                };
 
-//                natsOptions.ServerDiscoveredEventHandler += (sender, args) =>
-//                {
-//                    logger.Info($"A new server has joined the cluster:{String.Join(", ", args.Conn.DiscoveredServers)}");
-//                    //Console.WriteLine("A new server has joined the cluster:");
-//                    //Console.WriteLine("    " + String.Join(", ", args.Conn.DiscoveredServers));
-//                };
+                //                natsOptions.ServerDiscoveredEventHandler += (sender, args) =>
+                //                {
+                //                    logger.Info($"A new server has joined the cluster:{String.Join(", ", args.Conn.DiscoveredServers)}");
+                //                    //Console.WriteLine("A new server has joined the cluster:");
+                //                    //Console.WriteLine("    " + String.Join(", ", args.Conn.DiscoveredServers));
+                //                };
 
-//                natsOptions.ClosedEventHandler += (sender, args) =>
-//                {
-//                    logger.Info($"Connection Closed:{Environment.NewLine}Server:{args.Conn.ConnectedUrl}");
-//                    //Console.WriteLine("Connection Closed: ");
-//                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
-//                };
+                //                natsOptions.ClosedEventHandler += (sender, args) =>
+                //                {
+                //                    logger.Info($"Connection Closed:{Environment.NewLine}Server:{args.Conn.ConnectedUrl}");
+                //                    //Console.WriteLine("Connection Closed: ");
+                //                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
+                //                };
 
-//                natsOptions.DisconnectedEventHandler += (sender, args) =>
-//                {
-//                    logger.Info($"Connection Disconnected:{Environment.NewLine}Server:{args.Conn.ConnectedUrl}");
-//                    //Console.WriteLine("Connection Disconnected: ");
-//                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
-//                };
-//                natsOptions.ReconnectedEventHandler += (sender, args) =>
-//                {
-//                    logger.Info($"Connection Reconnected:{Environment.NewLine}Server:{args.Conn.ConnectedUrl}");
-//                    //Console.WriteLine("Connection Disconnected: ");
-//                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
-//                };
-//                IConnection natsConn = null;
-//                natsConn = new ConnectionFactory().CreateConnection(natsOptions);
-//                cOpts.NatsConn = natsConn;
+                //                natsOptions.DisconnectedEventHandler += (sender, args) =>
+                //                {
+                //                    logger.Info($"Connection Disconnected:{Environment.NewLine}Server:{args.Conn.ConnectedUrl}");
+                //                    //Console.WriteLine("Connection Disconnected: ");
+                //                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
+                //                };
+                //                natsOptions.ReconnectedEventHandler += (sender, args) =>
+                //                {
+                //                    logger.Info($"Connection Reconnected:{Environment.NewLine}Server:{args.Conn.ConnectedUrl}");
+                //                    //Console.WriteLine("Connection Disconnected: ");
+                //                    //Console.WriteLine("   Server: " + args.Conn.ConnectedUrl);
+                //                };
+                //                IConnection natsConn = null;
+                //                natsConn = new ConnectionFactory().CreateConnection(natsOptions);
+                //                cOpts.NatsConn = natsConn;
 
-//#endif
+                //#endif
 
 
                 StanConnectionFactory = new StanConnectionFactory();
@@ -160,15 +160,37 @@ namespace com.mirle.ibg3k0.sc.Common
                 conn.Publish(subject, data);
             }
         }
+        //public void PublishAsync(string subject, byte[] data)
+        //{
+        //    if (conn != null &&
+        //        conn.NATSConnection.State == ConnState.CONNECTED &&
+        //        scApp.getEQObjCacheManager().getLine().ServiceMode == SCAppConstants.AppServiceMode.Active)
+        //    {
+        //        subject = $"{producID}_{subject}";
+        //        conn.PublishAsync(subject, data);
+        //    }
+        //}
         public void PublishAsync(string subject, byte[] data)
         {
-            if (conn != null &&
-                conn.NATSConnection.State == ConnState.CONNECTED &&
-                scApp.getEQObjCacheManager().getLine().ServiceMode == SCAppConstants.AppServiceMode.Active)
+            if (scApp.getEQObjCacheManager().getLine().ServiceMode != SCAppConstants.AppServiceMode.Active)
+                return;
+            if (conn == null)
             {
-                subject = $"{producID}_{subject}";
-                conn.PublishAsync(subject, data);
+                logger.Warn("want publish to nats,but conn is null");
+                return;
             }
+            if (conn.NATSConnection == null)
+            {
+                logger.Warn("want publish to nats,but nats conn is null");
+                return;
+            }
+            if (conn.NATSConnection.State != ConnState.CONNECTED)
+            {
+                logger.Warn($"want publish to nats,but nats conn state is:{conn.NATSConnection.State}");
+                return;
+            }
+            subject = $"{producID}_{subject}";
+            conn.PublishAsync(subject, data);
         }
 
         public void Subscriber(string subject, EventHandler<StanMsgHandlerArgs> handler, bool in_all = false, bool is_last = false, ulong since_seq_no = 0, DateTime? since_duration = null)

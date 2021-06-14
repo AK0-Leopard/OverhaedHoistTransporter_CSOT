@@ -251,9 +251,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
                         m_objItemAddr[index].p_LocY = point.LOCATIONY;
                         m_objItemAddr[index].p_SizeW = (int)point.WIDTH;
                         m_objItemAddr[index].p_SizeH = (int)point.HEIGHT;
-                        //m_objItemAddr[index].p_Color = BCUtility.ConvStr2Color(point.COLOR);
-                        Color initial_color = BCUtility.getPointColor(adr.EqptType, point.COLOR);
-                        m_objItemAddr[index].initialColor(initial_color);
+                        m_objItemAddr[index].p_Color = BCUtility.ConvStr2Color(point.COLOR);
+                        //Color initial_color = BCUtility.getPointColor(adr.EqptType, point.COLOR);
+                        //m_objItemAddr[index].initialColor(initial_color);
                         m_objItemAddr[index].p_ZoomLV = adr.ZOOM_LV;
                         m_objItemAddr[index].Visible = adr.ZOOM_LV >= trackBar_scale.Value;
                         m_objItemAddr[index].Tag = m_objItemAddr[index].Top + "|" + m_objItemAddr[index].Left + "|"

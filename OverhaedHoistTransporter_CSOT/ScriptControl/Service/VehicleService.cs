@@ -292,7 +292,7 @@ namespace com.mirle.ibg3k0.sc.Service
             }
 
 
-            if (vh.WillPassSectionID != null)
+            if (vh.WillPassSectionID != null && leave_section != null)
             {
                 vh.WillPassSectionID.Remove(SCUtility.Trim(leave_section.SEC_ID, true));
             }
@@ -1893,11 +1893,11 @@ namespace com.mirle.ibg3k0.sc.Service
             if (scApp.getEQObjCacheManager().getLine().ServerPreStop)
                 return;
 
-            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-               seq_num: seq_num,
-               Data: recive_str,
-               VehicleID: eqpt.VEHICLE_ID,
-               CarrierID: eqpt.CST_ID);
+            //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+            //   seq_num: seq_num,
+            //   Data: recive_str,
+            //   VehicleID: eqpt.VEHICLE_ID,
+            //   CarrierID: eqpt.CST_ID);
 
             SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, seq_num, recive_str);
             EventType eventType = recive_str.EventType;
@@ -2840,10 +2840,10 @@ namespace com.mirle.ibg3k0.sc.Service
             };
             //Boolean resp_cmp = ITcpIpControl.sendGoogleMsg(bcfApp, eqpt.TcpIpAgentName, wrapper, true);
 
-            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-              seq_num: seq_num, Data: send_str,
-              VehicleID: eqpt.VEHICLE_ID,
-              CarrierID: eqpt.CST_ID);
+            //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+            //  seq_num: seq_num, Data: send_str,
+            //  VehicleID: eqpt.VEHICLE_ID,
+            //  CarrierID: eqpt.CST_ID);
             Boolean resp_cmp = eqpt.sendMessage(wrapper, true);
             SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, seq_num, send_str, resp_cmp.ToString());
             return resp_cmp;
@@ -3529,11 +3529,14 @@ namespace com.mirle.ibg3k0.sc.Service
                             )
                         {
                             ASEGMENT seg = scApp.SegmentBLL.cache.GetSegment(vh.CUR_SEG_ID);
-                            AVEHICLE next_vh_on_seg = seg.GetNextVehicle(vh);
-                            if (next_vh_on_seg != null)
+                            if (seg != null)
                             {
-                                //scApp.VehicleBLL.whenVhObstacle(next_vh_on_seg.VEHICLE_ID);
-                                scApp.VehicleBLL.whenVhObstacle(next_vh_on_seg.VEHICLE_ID, vh.VEHICLE_ID);
+                                AVEHICLE next_vh_on_seg = seg.GetNextVehicle(vh);
+                                if (next_vh_on_seg != null)
+                                {
+                                    //scApp.VehicleBLL.whenVhObstacle(next_vh_on_seg.VEHICLE_ID);
+                                    scApp.VehicleBLL.whenVhObstacle(next_vh_on_seg.VEHICLE_ID, vh.VEHICLE_ID);
+                                }
                             }
                         }
                     }
