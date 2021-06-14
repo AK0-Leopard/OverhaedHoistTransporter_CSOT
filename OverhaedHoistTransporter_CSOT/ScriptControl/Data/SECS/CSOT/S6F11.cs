@@ -14,6 +14,8 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
     [Serializable]
     public class S6F11 : SXFY
     {
+        public static Common.ObjectPool<VIDCollection> VIDCollectionPool = new Common.ObjectPool<VIDCollection>(() => new VIDCollection());
+
         [SecsElement(Index = 1, Type = SecsElement.SecsElementType.TYPE_4_BYTE_UNSIGNED_INTEGER, Length = 1)]
         public string DATAID;
         [SecsElement(Index = 2, Type = SecsElement.SecsElementType.TYPE_2_BYTE_UNSIGNED_INTEGER, Length = 1)]
@@ -1421,9 +1423,9 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
                     public class STAGE_COMMAND
                     {
                         [SecsElement(Index = 1)]
-                        STAGE_INFO StageInfo;
+                        public STAGE_INFO StageInfo;
                         [SecsElement(Index = 2)]
-                        VIDITEM_67_SV TransferInfo;
+                        public VIDITEM_67_SV TransferInfo;
                         public STAGE_COMMAND()
                         {
                             StageInfo = new STAGE_INFO();
@@ -1433,15 +1435,15 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
                         public class STAGE_INFO
                         {
                             [SecsElement(Index = 1, Type = SecsElement.SecsElementType.TYPE_ASCII, Length = 64)]
-                            string StageID;
+                            public string StageID;
                             [SecsElement(Index = 2, Type = SecsElement.SecsElementType.TYPE_2_BYTE_UNSIGNED_INTEGER, Length = 1)]
-                            string Priority;
+                            public string Priority;
                             [SecsElement(Index = 3, Type = SecsElement.SecsElementType.TYPE_2_BYTE_UNSIGNED_INTEGER, Length = 1)]
-                            string ExpectedDuration;
+                            public string ExpectedDuration;
                             [SecsElement(Index = 4, Type = SecsElement.SecsElementType.TYPE_2_BYTE_UNSIGNED_INTEGER, Length = 1)]
-                            string NoBlockingTime;
+                            public string NoBlockingTime;
                             [SecsElement(Index = 5, Type = SecsElement.SecsElementType.TYPE_2_BYTE_UNSIGNED_INTEGER, Length = 1)]
-                            string WaitTimeout;
+                            public string WaitTimeout;
                             public STAGE_INFO()
                             {
                                 StageID = string.Empty;
@@ -1469,11 +1471,11 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
                     public class STAGE_VEHICLE_INFO
                     {
                         [SecsElement(Index = 1, Type = SecsElement.SecsElementType.TYPE_ASCII, Length = 6)]
-                        string VehicleID;
+                        public string VehicleID;
                         [SecsElement(Index = 2, Type = SecsElement.SecsElementType.TYPE_ASCII, Length = 64)]
-                        string StageID;
+                        public string StageID;
                         [SecsElement(Index = 3, Type = SecsElement.SecsElementType.TYPE_ASCII, Length = 64)]
-                        string VehicleLocation;
+                        public string VehicleLocation;
                         public STAGE_VEHICLE_INFO()
                         {
                             VehicleID = string.Empty;
@@ -1570,6 +1572,142 @@ namespace com.mirle.ibg3k0.sc.Data.SECS.CSOT
             VIDITEM_370_SV_ActiveStages = new S6F11.RPTINFO.RPTITEM.VIDITEM_370_SV();
             VIDITEM_371_SV_StageVehicles = new S6F11.RPTINFO.RPTITEM.VIDITEM_371_SV();
         }
+        public void initial()
+        {
+            VIDITEM_01_DVVAL_AlarmID.ALARM_ID = "";
+            VIDITEM_02_ECV_EstablishCommunicationsTimeout.ESTABLISH_COMMU_TIMEOUT = "";
+            VIDITEM_03_SV_AlarmsEnabled.ALIDs = new string[0];
+            VIDITEM_04_SV_AlarmsSet.ALIDs = new string[0];
+            VIDITEM_05_SV_Clock.CLOCK = "";
+            VIDITEM_06_SV_ControlState.CONTROLSTATE = "";
+            VIDITEM_07_SV_EventsEnabled.CEIDs = new string[0];
+            VIDITEM_51_SV_ActiveCarriers.CARRIER_INFO_OBJ = null;
+            VIDITEM_52_SV_ActiveTransfers.TRANSFER_COMMAND_OBJ = null;
+            VIDITEM_53_SV_ActiveVehicles.VEHICLEINFO_OBJ = null;
+            VIDITEM_54_DVVAL_CarrierID.CARRIER_ID = "";
+            VIDITEM_54_SV_CarrierID.CARRIER_ID = "";
+            VIDITEM_55_DVVAL_CarrierInfo.CARRIER_ID = "";
+            VIDITEM_55_DVVAL_CarrierInfo.VEHICLE_ID = "";
+            VIDITEM_55_DVVAL_CarrierInfo.CARRIER_LOC = "";
+            VIDITEM_55_SV_CarrierInfo.CARRIER_ID_OBJ.CARRIER_ID = "";
+            VIDITEM_55_SV_CarrierInfo.CARRIER_LOC_OBJ.CARRIER_LOC = "";
+            VIDITEM_55_SV_CarrierInfo.VEHICLE_ID_OBJ.VEHILCE_ID = "";
+            VIDITEM_56_DVVAL_CarrierLoc.CARRIER_LOC = "";
+            VIDITEM_56_SV_CarrierLoc.CARRIER_LOC = "";
+            VIDITEM_57_DVVAL_CommandName.COMMAND_NAME = "";
+            VIDITEM_58_DVVAL_CommandID.COMMAND_ID = "";
+            VIDITEM_58_SV_CommandID.COMMAND_ID = "";
+            VIDITEM_59_DVVAL_CommandInfo.COMMAND_ID = "";
+            VIDITEM_59_DVVAL_CommandInfo.PRIORITY = "";
+            VIDITEM_59_DVVAL_CommandInfo.REPLACE = "";
+            VIDITEM_59_SV_CommandInfo.COMMAND_ID_OBJ.COMMAND_ID = "";
+            VIDITEM_59_SV_CommandInfo.PRIORITY_OBJ.PRIORITY = "";
+            VIDITEM_59_SV_CommandInfo.REPLACE_OBJ.REPLACE = "";
+            VIDITEM_60_DVVAL_DestPort.DESTINATION_PORT = "";
+            VIDITEM_60_SV_DestPort.DESTINATION_PORT = "";
+            VIDITEM_61_ECV_EqpName.EQPT_NAME = "";
+            VIDITEM_62_DVVAL_Priority.PRIORITY = "";
+            VIDITEM_62_SV_Priority.PRIORITY = "";
+            VIDITEM_63_DVVAL_Replace.REPLACE = "";
+            VIDITEM_63_SV_Replace.REPLACE = "";
+            VIDITEM_64_DVVAL_ResultCode.RESULT_CODE = "";
+            VIDITEM_65_DVVAL_SourcePort.SOURCE_PORT = "";
+            VIDITEM_66_DVVAL_TransferCommand.COMMAND_INFO.COMMAND_ID = "";
+            VIDITEM_66_DVVAL_TransferCommand.COMMAND_INFO.PRIORITY = "";
+            VIDITEM_66_DVVAL_TransferCommand.COMMAND_INFO.REPLACE = "";
+            VIDITEM_66_DVVAL_TransferCommand.TRANSFER_INFOS = null;
+            VIDITEM_66_SV_TransferCommand.COMMAND_INFO_OBJ.COMMAND_ID_OBJ.COMMAND_ID = "";
+            VIDITEM_66_SV_TransferCommand.COMMAND_INFO_OBJ.PRIORITY_OBJ.PRIORITY = "";
+            VIDITEM_66_SV_TransferCommand.COMMAND_INFO_OBJ.REPLACE_OBJ.REPLACE = "";
+            VIDITEM_66_SV_TransferCommand.TRANSFER_INFO_OBJ = null;
+            VIDITEM_67_DVVAL_TransferInfo.CARRIER_ID = "";
+            VIDITEM_67_DVVAL_TransferInfo.SOURCE_PORT = "";
+            VIDITEM_67_DVVAL_TransferInfo.DESTINATION_PORT = "";
+            VIDITEM_67_SV_TransferInfo.CARRIER_ID = "";
+            VIDITEM_67_SV_TransferInfo.SOURCE_PORT = "";
+            VIDITEM_67_SV_TransferInfo.DESTINATION_PORT = "";
+            VIDITEM_68_DVVAL_TransferPort.TRANSFER_PORT = "";
+            VIDITEM_69_DVVAL_TransferPortList.TRANSFER_PORT_OBJ = null;
+            VIDITEM_70_DVVAL_VehicleID.VEHILCE_ID = "";
+            VIDITEM_70_SV_VehicleID.VEHILCE_ID = "";
+            VIDITEM_71_DVVAL_VehicleInfo.VEHICLE_ID = "";
+            VIDITEM_71_DVVAL_VehicleInfo.VEHICLE_STATE = "";
+            VIDITEM_71_SV_VehicleInfo.VRHICLE_ID_OBJ.VEHILCE_ID = "";
+            VIDITEM_71_SV_VehicleInfo.VRHICLE_STATE_OBJ.VEHICLE_STATE = "";
+            VIDITEM_72_DVVAL_VehicleState.VEHICLE_STATE = "";
+            VIDITEM_73_SV_TSCState.TSCState = "";
+            VIDITEM_74_DVVAL_CommandType.COMMAND_TYPE = "";
+            VIDITEM_75_DVVAL_EnhancedCarriInfo.CARRIER_ID = "";
+            VIDITEM_75_DVVAL_EnhancedCarriInfo.VRHICLE_ID = "";
+            VIDITEM_75_DVVAL_EnhancedCarriInfo.CARRIER_LOC = "";
+            VIDITEM_75_DVVAL_EnhancedCarriInfo.INSTALL_TIME = "";
+            VIDITEM_75_SV_EnhancedCarriInfo.CARRIER_ID_OBJ.CARRIER_ID = "";
+            VIDITEM_75_SV_EnhancedCarriInfo.VRHICLE_ID_OBJ.VEHILCE_ID = "";
+            VIDITEM_75_SV_EnhancedCarriInfo.CARRIER_LOC_OBJ.CARRIER_LOC = "";
+            VIDITEM_75_SV_EnhancedCarriInfo.INSTALL_TIME_OBJ.INSTALL_TIME = "";
+            VIDITEM_76_SV_EnhancedTransfers.ENHANCED_TRANSFER_COMMAND_INFOS = null;
+            VIDITEM_78_SV_SourcePort.SOURCE_PORT = "";
+            VIDITEM_79_DVVAL_TransferCompleteInfo.TRANCOMPLETEINFO[0].TRANSFER_INFO_OBJ.CARRIER_ID = "";
+            VIDITEM_79_DVVAL_TransferCompleteInfo.TRANCOMPLETEINFO[0].TRANSFER_INFO_OBJ.SOURCE_PORT = "";
+            VIDITEM_79_DVVAL_TransferCompleteInfo.TRANCOMPLETEINFO[0].TRANSFER_INFO_OBJ.DESTINATION_PORT = "";
+            VIDITEM_79_DVVAL_TransferCompleteInfo.TRANCOMPLETEINFO[0].CARRIER_LOC = "";
+            VIDITEM_114_SV_SpecVersion.SPEC_VERSION = "";
+            VIDITEM_115_DVVAL_PortID.PORT_ID = "";
+            VIDITEM_115_SV_PortID.PORT_ID = "";
+            VIDITEM_116_DVVAL_CarrierIDList.CARRIER_ID_OBJ = null;
+            VIDITEM_117_DVVAL_VehicleLocation.VEHICLE_LOCATION = "";
+            VIDITEM_118_DVVAL_CurrentPortStates.PORT_INFO = null;
+            VIDITEM_119_SV_EnhancedVehicles.ENHANCED_VEHICLE_INFO_OBJ = null;
+            VIDITEM_120_DVVAL_UnitStatusCleable.UNIT_STATUS_CLEABLE = "";
+            VIDITEM_202_DVVAL_TransferState.TRANSFER_STATE = "";
+            VIDITEM_202_SV_TransferState.TRANSFER_STATE = "";
+            VIDITEM_204_DVVAL_InstallTime.INSTALL_TIME = "";
+            VIDITEM_204_SV_InstallTime.INSTALL_TIME = "";
+            VIDITEM_205_DVVAL_EnhancedTransferCommand.COMMAND_INFO_OBJ.COMMAND_ID = "";
+            VIDITEM_205_DVVAL_EnhancedTransferCommand.COMMAND_INFO_OBJ.PRIORITY = "";
+            VIDITEM_205_DVVAL_EnhancedTransferCommand.COMMAND_INFO_OBJ.REPLACE = "";
+            VIDITEM_205_DVVAL_EnhancedTransferCommand.TRANSFER_STATE_OBJ.TRANSFER_STATE = "";
+            VIDITEM_205_DVVAL_EnhancedTransferCommand.TRANSFER_INFO_OBJ = null;
+            VIDITEM_205_SV_EnhancedTransferCommand.COMMAND_INFO_OBJ.COMMAND_ID_OBJ.COMMAND_ID = "";
+            VIDITEM_205_SV_EnhancedTransferCommand.COMMAND_INFO_OBJ.PRIORITY_OBJ.PRIORITY = "";
+            VIDITEM_205_SV_EnhancedTransferCommand.COMMAND_INFO_OBJ.REPLACE_OBJ.REPLACE = "";
+            VIDITEM_205_SV_EnhancedTransferCommand.TRANSFER_STATE_OBJ.TRANSFER_STATE = "";
+            VIDITEM_205_SV_EnhancedTransferCommand.TRANSFER_INFO_OBJ = null;
+            VIDITEM_211_DVVAL_UnitID.UNIT_ID = "";
+            VIDITEM_212_DVVAL_AlarmText.ALARM_TEXT = "";
+            VIDITEM_251_DVVAL_VehicleCurrentPosition.VEHICLE_CURRENT_POSITION = "";
+            VIDITEM_252_SV_MonitoredVehicles.MONITORED_VEHICLE_INFO_OBJ = null;
+            VIDITEM_253_SV_VehicleCurrentDomain.VEHICLE_CURRENT_DOMAIN = "";
+            VIDITEM_254_SV_UnitAlarmStatList.UNIT_ALARMS_INFO_OBJ = null;
+            VIDITEM_262_DVVAL_VehicleNextPosition.VEHICLE_NEXT_POSITION = "";
+            VIDITEM_301_DVVAL_PauseReason.PAUSE_REASON = "";
+            VIDITEM_330_DVVAL_LaneCutInfo.LANE_INFO_OBJ.StartPoint = "";
+            VIDITEM_330_DVVAL_LaneCutInfo.LANE_INFO_OBJ.EndPoint = "";
+            VIDITEM_330_DVVAL_LaneCutInfo.LANE_CUT_TYPE = "";
+            VIDITEM_330_SV_LaneCutInfo.LANE_INFO_OBJ.StartPoint = "";
+            VIDITEM_330_SV_LaneCutInfo.LANE_INFO_OBJ.EndPoint = "";
+            VIDITEM_330_SV_LaneCutInfo.LANE_CUT_TYPE = "";
+            VIDITEM_354_DVVAL_PortInfo.PORT_ID = "";
+            VIDITEM_354_DVVAL_PortInfo.PORT_TRANSFER_STATE = "";
+            VIDITEM_354_SV_PortInfo.PORT_ID_OBJ.PORT_ID = "";
+            VIDITEM_354_SV_PortInfo.PORT_TRANSFTER_STATE_OBJ.PORT_TRANSFER_STATE = "";
+            VIDITEM_355_DVVAL_PortTransferState.PORT_TRANSFER_STATE = "";
+            VIDITEM_355_SV_PortTransferState.PORT_TRANSFER_STATE = "";
+            VIDITEM_360_SV_LaneCutInfoList.LANE_CUT_INFO = null;
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].StageInfo.StageID = "";
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].StageInfo.Priority = "";
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].StageInfo.ExpectedDuration = "";
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].StageInfo.NoBlockingTime = "";
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].StageInfo.WaitTimeout = "";
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].TransferInfo.CARRIER_ID = "";
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].TransferInfo.SOURCE_PORT = "";
+            VIDITEM_370_SV_ActiveStages.STAGE_COMMAND_OBJ[0].TransferInfo.DESTINATION_PORT = "";
+            VIDITEM_371_SV_StageVehicles.STAGE_VEHICLE_INFO_OBJ[0].VehicleID = "";
+            VIDITEM_371_SV_StageVehicles.STAGE_VEHICLE_INFO_OBJ[0].StageID = "";
+            VIDITEM_371_SV_StageVehicles.STAGE_VEHICLE_INFO_OBJ[0].VehicleLocation = "";
+        }
+
+
         public string VH_ID;
         public com.mirle.ibg3k0.sc.Data.SECS.CSOT.S6F11.RPTINFO.RPTITEM.VIDITEM_01_DVVAL VIDITEM_01_DVVAL_AlarmID;
         public com.mirle.ibg3k0.sc.Data.SECS.CSOT.S6F11.RPTINFO.RPTITEM.VIDITEM_02_ECV VIDITEM_02_ECV_EstablishCommunicationsTimeout;

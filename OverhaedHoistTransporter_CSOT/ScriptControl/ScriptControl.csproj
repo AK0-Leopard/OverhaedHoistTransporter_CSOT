@@ -987,6 +987,7 @@
     <Content Include="DLL\BlockControlFramework.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="DLL\Cowboy.Sockets.pdb" />
     <Content Include="DLL\Mirle.AK0.Hlt.ReserveSection.Map.dll" />
     <Content Include="DLL\Mirle.AK0.Hlt.ReserveSection.Vision.dll" />
     <Content Include="DLL\Mirle.AK0.Hlt.Utils.dll" />
