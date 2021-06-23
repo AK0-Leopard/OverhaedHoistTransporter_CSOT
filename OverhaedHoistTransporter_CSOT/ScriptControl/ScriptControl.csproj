@@ -73,6 +73,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncIO, Version=0.1.69.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncIO.0.1.69\lib\net40\AsyncIO.dll</HintPath>
+    </Reference>
     <Reference Include="BlockControlFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\BlockControlFramework.dll</HintPath>
@@ -145,6 +148,9 @@
     </Reference>
     <Reference Include="NATS.Client, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NATS.Client.0.8.1\lib\net45\NATS.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="NetMQ, Version=4.0.0.207, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetMQ.4.0.0.207\lib\net40\NetMQ.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -991,6 +997,8 @@
     <Content Include="DLL\Mirle.AK0.Hlt.ReserveSection.Map.dll" />
     <Content Include="DLL\Mirle.AK0.Hlt.ReserveSection.Vision.dll" />
     <Content Include="DLL\Mirle.AK0.Hlt.Utils.dll" />
+    <Content Include="DLL\MPLC.dll" />
+    <Content Include="DLL\MPLC.NetMQ.dll" />
     <Content Include="DLL\MPLCConnectionControl.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

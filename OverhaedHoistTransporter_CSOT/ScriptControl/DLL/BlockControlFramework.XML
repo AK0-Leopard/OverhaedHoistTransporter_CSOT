@@ -1547,12 +1547,14 @@
             A0.01
         </member>
         <member name="M:com.mirle.ibg3k0.bcf.Common.BCFUtility.setValueToPropety``1(``0@,``0@)">
-            <summary>
-            Sets the value to propety.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="sourceObj">The source object.</param>
-            <param name="destinationObj">The destination object.</param>
+             <summary>
+             Sets the value to propety.
+            需將屬性設定為有get、set方法
+             
+             </summary>
+             <typeparam name="T"></typeparam>
+             <param name="sourceObj">The source object.</param>
+             <param name="destinationObj">The destination object.</param>
         </member>
         <member name="M:com.mirle.ibg3k0.bcf.Common.BCFUtility.Clone``1(``0)">
             <summary>
@@ -5566,7 +5568,7 @@
             </summary>
             <seealso cref="T:System.Configuration.IConfigurationSectionHandler" />
         </member>
-        <!-- 已忽略成員 "M:com.mirle.ibg3k0.bcf.ConfigHandler.ValueEventRelativeConfigHandler.Create(System.Object,System.Object,System.Xml.XmlNode)" 中格式錯誤的 XML 註解 -->
+        <!-- Badly formed XML comment ignored for member "M:com.mirle.ibg3k0.bcf.ConfigHandler.ValueEventRelativeConfigHandler.Create(System.Object,System.Object,System.Xml.XmlNode)" -->
         <member name="T:com.mirle.ibg3k0.bcf.ConfigHandler.ValueEventRelatives">
             <summary>
             Class ValueEventRelatives.
@@ -6226,6 +6228,11 @@
             </summary>
         </member>
         <member name="F:com.mirle.ibg3k0.bcf.Controller.MPLCSMControl.BMemoryBufferLogger">
+            <summary>
+            The b memory buffer logger
+            </summary>
+        </member>
+        <member name="F:com.mirle.ibg3k0.bcf.Controller.MPLCSMControl.ZRMemoryBufferLogger">
             <summary>
             The b memory buffer logger
             </summary>
