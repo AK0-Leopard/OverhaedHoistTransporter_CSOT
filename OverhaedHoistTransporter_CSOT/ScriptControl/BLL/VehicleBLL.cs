@@ -2708,8 +2708,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                 ProcProgressPercen = vh.procProgress_Percen,
                 State = vh.State,
                 UPDTIME = update_time,
-                ISINSTALLED = vh.IS_INSTALLED
-
+                ISINSTALLED = vh.IS_INSTALLED,
+                XAxis = vh.X_Axis,
+                YAxis = vh.Y_Axis
             };
             if (vh.PredictPath != null)
                 vh_gpp.PredictPath.AddRange(vh.PredictPath);
