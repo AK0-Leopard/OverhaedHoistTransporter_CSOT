@@ -69,23 +69,23 @@ namespace Mirle.BigDataCollection.DataCollection
             #region Set Timer
 
             dataCollectionTimer.Elapsed += DataCollection_Elapsed;
-            dataCollectionTimer.Interval = 1000;
+            dataCollectionTimer.Interval = 10000;
             dataCollectionTimer.Start();
 
-            reconnectUps.Elapsed += ReconnectUps_Elapsed;
-            reconnectUps.Interval = 1000;
-            reconnectUps.Start();
+            //reconnectUps.Elapsed += ReconnectUps_Elapsed;
+            //reconnectUps.Interval = 1000;
+            //reconnectUps.Start();
 
-            collatingFolderTimer.Elapsed += collatingFolderTimer_Elapsed;
-            collatingFolderTimer.Interval = 86400000;
-            collatingFolderTimer.Start();
+            //collatingFolderTimer.Elapsed += collatingFolderTimer_Elapsed;
+            //collatingFolderTimer.Interval = 86400000;
+            //collatingFolderTimer.Start();
 
-            if (_dataCollectionINI.STKC.FFUType == (int)FFUType.MDTU)
-            {
-                reconnectMdtuFFU.Elapsed += ReconnectMdtuFFU_Elapsed;
-                reconnectMdtuFFU.Interval = 1000;
-                reconnectMdtuFFU.Start();
-            }
+            //if (_dataCollectionINI.STKC.FFUType == (int)FFUType.MDTU)
+            //{
+            //    reconnectMdtuFFU.Elapsed += ReconnectMdtuFFU_Elapsed;
+            //    reconnectMdtuFFU.Interval = 1000;
+            //    reconnectMdtuFFU.Start();
+            //}
 
             #endregion Set Timer
         }
@@ -233,20 +233,20 @@ namespace Mirle.BigDataCollection.DataCollection
             {
                 dataCollectionTimer.Stop();
 
-
+                string csvPath = @"C:\Log\CSOT\FDC\";
+                DirectoryInfo directoryInfo = new DirectoryInfo(csvPath);
+                var files_csv = directoryInfo.GetFiles("*.csv");
 
                 //_stkDataCollectionController.DataCollection();
                 for (int i = 1; i <= 36; i++)
                 {
-                    string csvPath = @"C:\Log\CSOT\FDC\";
-                    string vhID = i.ToString().PadLeft(2, '0');
+                    string vhID = i.ToString("00");
 
-                    DirectoryInfo directoryInfo = new DirectoryInfo(csvPath);
-
-                    var files_csv = directoryInfo.GetFiles("*.csv");
                     var files_csv_by_vh = files_csv.Where(dir => dir.Name.Contains($"T{vhID}"));
-                    List<string> listFile = files_csv_by_vh.Select(file => file.FullName).ToList();
-
+                    if(files_csv_by_vh.Count() == 0)
+                    {
+                        continue;
+                    }
 
 
                     //foreach (var fileName in directoryInfo.GetFiles("*.csv"))
@@ -265,7 +265,7 @@ namespace Mirle.BigDataCollection.DataCollection
                     //if (System.IO.File.Exists(csvPath))
                     //foreach(string lsFile in listFile)
                     //{
-                    _oHTDataCollectionController.DataCollectionByOht(_device, listFile, vhID);
+                    _oHTDataCollectionController.DataCollectionByOhtNew(_device, files_csv_by_vh, vhID);
 
                     //_sender.conn();
 
@@ -283,17 +283,17 @@ namespace Mirle.BigDataCollection.DataCollection
                     var mp = _oHTDataCollectionController._message;
                     mp.TransactionID = dt;
                     mp.TimeStamp = dt;
-                    mp.EQP_LIST.EQP.Add(new EQP
-                    {
-                        MACHINENAME = _dataCollectionINI.STKC.DeviceID,
-                        CHECK_TIME = dt,
-                        SUBEQP_LIST = new MSUBEQP(),
-                    });
+                    //mp.EQP_LIST.EQP.Add(new EQP
+                    //{
+                    //    MACHINENAME = _dataCollectionINI.STKC.DeviceID,
+                    //    CHECK_TIME = dt,
+                    //    SUBEQP_LIST = new MSUBEQP(),
+                    //});
 
-                    foreach (var item in sendList)
-                    {
-                        mp.EQP_LIST.EQP[0].SUBEQP_LIST.SUBEQP_LIST.Add(item);
-                    }
+                    //foreach (var item in sendList)
+                    //{
+                    //    mp.EQP_LIST.EQP[0].SUBEQP_LIST.SUBEQP_LIST.Add(item);
+                    //}
 
                     string send = Serialize(mp);
 
@@ -308,8 +308,8 @@ namespace Mirle.BigDataCollection.DataCollection
                         _loggerService.WriteException("Tibco Send Message Function", _sender.exMsg);
                     }
                     mp.EQP_LIST.EQP.Clear();
-
                     _oHTDataCollectionController.sendList.Clear();
+
                     //}
                 }
 

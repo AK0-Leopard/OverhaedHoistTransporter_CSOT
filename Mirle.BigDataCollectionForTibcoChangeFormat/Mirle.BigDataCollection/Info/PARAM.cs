@@ -1,5 +1,8 @@
-﻿namespace Mirle.BigDataCollection.Info
+﻿using System;
+
+namespace Mirle.BigDataCollection.Info
 {
+    [Serializable]
     public class PARAM
     {
         public string PARAM_NAME { get; set; } = string.Empty;

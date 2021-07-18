@@ -12,7 +12,8 @@ using System.Data.SQLite;
 using System.Reflection;
 using System.Linq;
 using Mirle.BigDataCollection.DataCollection.Data;
-
+using System.IO;
+using System.Globalization;
 
 namespace Mirle.BigDataCollection.DataCollection.Controller
 {
@@ -65,7 +66,7 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
             _message = new MESSAGE(mp);
 
             _dicTracePosition.Clear();
-            int craneNumber = (device.ControlMode == ControlModeTypes.Single || device.ControlMode == ControlModeTypes.OhtMode) ? 1 : 36;
+            int craneNumber = (device.ControlMode == ControlModeTypes.Single || device.ControlMode == ControlModeTypes.OhtMode) ? 36 : 36;
             int forkNumber = (device.ControlMode == ControlModeTypes.Single || device.ControlMode == ControlModeTypes.Dual) ? 1 : 2;
 
             try
@@ -79,8 +80,8 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
                 //InitialFFUDataFormat(device);
                 //_loggerService.WriteLog("Trace", "Initial FFU Succ");
 
-                InitialUPSDataFormat(device);
-                _loggerService.WriteLog("Trace", "Initial UPS");
+                //InitialUPSDataFormat(device);
+                //_loggerService.WriteLog("Trace", "Initial UPS");
 
                 InitailControllerDataFormat(device, craneNumber);
                 _loggerService.WriteLog("Trace", "Initial Controller");
@@ -97,7 +98,8 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
         {
             for (int craneNo = 1; craneNo <= craneNumber; craneNo++)
             {
-                SUBEQP item = new SUBEQP() { UNITNAME = $"{device.StockerID}_M0{craneNo}_Energy" };
+                string s_crane_no = craneNo.ToString("00");
+                SUBEQP item = new SUBEQP() { UNITNAME = $"{device.StockerID}_M{s_crane_no}_Energy" };
 
                 item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"Electric_energy" });
                 item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"Electric_energy_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineEnergy.Electric_energy_SPEC_MAX.ToString().ToString() });
@@ -135,10 +137,11 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
             //SUBEQP item = new SUBEQP() { UNITNAME = $"{device.StockerID}_Controller" };
             for (int craneNo = 1; craneNo <= craneNumber; craneNo++)
             {
-                SUBEQP item = new SUBEQP() { UNITNAME = $"{device.StockerID}_M0{craneNo}_Controller" };
+                string s_crane_no = craneNo.ToString("00");
+                SUBEQP item = new SUBEQP() { UNITNAME = $"{device.StockerID}_M{s_crane_no}_Controller" };
 
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_HDD_UseRate" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_HDD_UseRate_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineSSSController.HDD_UseRate_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_HDD_UseRate" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_HDD_UseRate_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineSSSController.HDD_UseRate_SPEC_MAX.ToString() });
                 item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"HDD_UseRate_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineSSSController.HDD_UseRate_SPEC_MIN.ToString() });
                 item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"CPU_UseRate" });
                 item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"CPU_UseRate_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineSSSController.CPU_UseRate_SPEC_MAX.ToString() });
@@ -194,16 +197,20 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
             }
         }
 
-        private void InitialPressureDataFormat(Device device, int craneNo)
+        private void InitialPressureDataFormat(Device device, int craneNumber)
         {
-            SUBEQP item = new SUBEQP() { UNITNAME = $"{device.StockerID}_M0{craneNo}_Pressure" };
+            for (int craneNo = 1; craneNo <= craneNumber; craneNo++)
+            {
+                string s_crane_no = craneNo.ToString("00");
 
-            item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Pressure_Difference" });
-            item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Pressure_Difference_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefinePressure.Pressure_Difference_SPEC_MAX.ToString() });
-            item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Pressure_Difference_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefinePressure.Pressure_Difference_SPEC_MIN.ToString() });
+                SUBEQP item = new SUBEQP() { UNITNAME = $"{device.StockerID}_M{s_crane_no}_Pressure" };
 
-            _dicTracePosition.Add(new TracePositionKey(CollectionTypes.PRESSURE, _dataCollectionINI.ReportFrequency.PressureFrequency), item);
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Pressure_Difference" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Pressure_Difference_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefinePressure.Pressure_Difference_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Pressure_Difference_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefinePressure.Pressure_Difference_SPEC_MIN.ToString() });
 
+                _dicTracePosition.Add(new TracePositionKey(CollectionTypes.PRESSURE, _dataCollectionINI.ReportFrequency.PressureFrequency), item);
+            }
             //item = new SUBEQP() { UNITNAME = $"{device.StockerID}_Mid_Pressure" };
 
             //item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"Mid_Pressure_Difference" });
@@ -226,30 +233,31 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
             for (int craneNo = 1; craneNo <= craneNumber; craneNo++)
             {
                 int unitNo = 1;
+                string s_crane_no = craneNo.ToString("00");
                 SUBEQP item;
-                item = new SUBEQP() { UNITNAME = $"{device.StockerID}_M0{craneNo}" };
+                item = new SUBEQP() { UNITNAME = $"{device.StockerID}_Travel_M{s_crane_no}" };
 
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Command_Position" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Current_Position" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Torque" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Deviation" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Speed" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Load_Factor" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Regenerative_Load_Factor" });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Command_Position_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Command_Position_SPEC_MAX.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Command_Position_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Command_Position_SPEC_MIN.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Current_Position_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Current_Position_SPEC_MAX.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Current_Position_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Current_Position_SPEC_MIN.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Torque_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Torque_SPEC_MAX.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Torque_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Torque_SPEC_MIN.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Deviation_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Deviation_SPEC_MAX.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Deviation_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Deviation_SPEC_MIN.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Speed_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Speed_SPEC_MAX.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Speed_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Speed_SPEC_MIN.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Load_Factor_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Load_Factor_SPEC_MAX.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Load_Factor_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Load_Factor_SPEC_MIN.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Regenerative_Load_Factor_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Regenerative_Load_Factor_SPEC_MAX.ToString() });
-                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M0{craneNo}_Regenerative_Load_Factor_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Regenerative_Load_Factor_SPEC_MIN.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Command_Position" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Current_Position" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Torque" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Deviation" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Speed" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Load_Factor" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Regenerative_Load_Factor" });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Command_Position_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Command_Position_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Command_Position_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Command_Position_SPEC_MIN.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Current_Position_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Current_Position_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Current_Position_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Current_Position_SPEC_MIN.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Torque_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Torque_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Torque_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Torque_SPEC_MIN.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Deviation_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Deviation_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Deviation_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Deviation_SPEC_MIN.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Speed_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Speed_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Speed_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Speed_SPEC_MIN.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Load_Factor_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Load_Factor_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Load_Factor_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Load_Factor_SPEC_MIN.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Regenerative_Load_Factor_SPEC_MAX", PARAM_VALUE = _dataCollectionINI.DefineMotor.Regenerative_Load_Factor_SPEC_MAX.ToString() });
+                item.PARAM_LIST.PARAM.Add(new PARAM { PARAM_NAME = $"M{s_crane_no}_Regenerative_Load_Factor_SPEC_MIN", PARAM_VALUE = _dataCollectionINI.DefineMotor.Regenerative_Load_Factor_SPEC_MIN.ToString() });
 
                 _dicTracePosition.Add(new TracePositionKey(CollectionTypes.MOTOR, unitNo, craneNo, _dataCollectionINI.ReportFrequency.MotorFrequency), item);
             }
@@ -263,6 +271,7 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
                 var DIC_BY_VH = _dicTracePosition.Where(dis => dis.Value.UNITNAME.Contains(report_key)).ToList();
                 foreach (var path in lsFile)
                 {
+
                     DataTable dt = new DataTable();
                     dt = Data.OhtRawData.OpenCSV(path);
 
@@ -367,9 +376,145 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
             catch (Exception ex) { _loggerService.WriteException(MethodBase.GetCurrentMethod().ToString(), ex.ToString()); }
         }
 
+
+        public const string DateTimeFormat_24 = "yyyy-MM-dd HH:mm:ss.ffff";
+        public const string DateTimeFormat_23 = "yyyy-MM-dd HH:mm:ss.fff";
+
+        public void DataCollectionByOhtNew(Device device, IEnumerable<FileInfo> lsFile, string vhID)
+        {
+            try
+            {
+                string report_key = $"M{vhID}";
+                //取得該VH要收集的數據有哪些
+                var DIC_BY_VH = _dicTracePosition.Where(dis => dis.Value.UNITNAME.Contains(report_key)).ToList();
+                foreach (var file in lsFile)
+                {
+                    DataTable dt = new DataTable();
+                    dt = Data.OhtRawData.OpenCSV(file.FullName);
+                    string file_date_and_seq = file.Name.Split('_')[2];//OHT-T01_BigData_2021-05-21.00000;
+                    string file_date = file_date_and_seq.Split('.')[0];//OHT-T01_BigData_2021-05-21.00000;
+                    foreach (DataRow dtr in dt.Rows)
+                    {
+                        string data_date_time = $"{file_date} {dtr[0]}";
+                        DateTime.TryParseExact(data_date_time, DateTimeFormat_24,
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime);
+
+                        string converted_date_time = parseDateTime.ToString(DateTimeFormat_23);
+                        var eqp = new EQP
+                        {
+                            MACHINENAME = _dataCollectionINI.STKC.DeviceID,
+                            CHECK_TIME = converted_date_time,
+                            SUBEQP_LIST = new MSUBEQP(),
+                        };
+                        //mp.EQP_LIST.EQP.Add(new EQP
+                        //{
+                        //    MACHINENAME = _dataCollectionINI.STKC.DeviceID,
+                        //    CHECK_TIME = dt,
+                        //    SUBEQP_LIST = new MSUBEQP(),
+                        //});
+
+                        foreach (KeyValuePair<TracePositionKey, SUBEQP> item in DIC_BY_VH)
+                        {
+                            //item.Key.sendRemainingSeconds++;
+
+                            //if (item.Key.sendRemainingSeconds != item.Key.Frequency)
+                            //    continue;
+
+                            item.Key.sendRemainingSeconds = 0;
+
+                            switch (item.Key.Collection)
+                            {
+                                case CollectionTypes.MOTOR:
+                                    //STKMotorDataCache stkMotorData = new STKMotorDataCache(new STKMotorDataCollection(item.Key.CraneNo, item.Key.UnitNo, _SMReadWriter));
+
+
+                                    STKMotorDataCache stkMotorData = new STKMotorDataCache();
+
+
+                                    stkMotorData.Command_Position = dtr[9].ToString();
+                                    stkMotorData.Current_Position = dtr[10].ToString();
+                                    stkMotorData.Torque = dtr[11].ToString();
+                                    stkMotorData.Speed = dtr[12].ToString();
+                                    stkMotorData.Deviation = "0";
+                                    stkMotorData.Load_Factor = "0";
+                                    stkMotorData.Regenerative_Load_Factor = "0";
+
+                                    sendList.Add(MotorDataMapping(item, stkMotorData));
+
+
+                                    break;
+
+                                case CollectionTypes.CONTROLLER:
+
+                                    SSSControllerDataCache sSSControllerData = new SSSControllerDataCache();
+                                    sSSControllerData.CPU_UseRate = dtr[5].ToString();
+                                    sSSControllerData.Memory_UseRate = dtr[6].ToString();
+                                    sSSControllerData.HDD_UseRate = dtr[7].ToString();
+                                    sSSControllerData.Network_UseRate = "0";
+
+                                    sendList.Add(ControllerDataMapping(item, sSSControllerData));
+
+                                    break;
+
+                                case CollectionTypes.FFU:
+                                    STKFFUDataCache stkFFUData = new STKFFUDataCache(new FFUDataCollection(_ffuMplcAddrMapping[item.Key.UnitName], _SMReadWriter));
+                                    if (_dataCollectionINI.STKC.FFUType == (int)FFUType.MDTU)
+                                    {
+                                        _loggerService.WriteLog("Trace", $"Get MDTU FFU Data, _ffuc Connected Status is : {_ffuc.IsConnected}");
+                                        stkFFUData = new STKFFUDataCache(item.Key.UnitName, _ffuc);
+                                    }
+                                    sendList.Add(UPSDataMapping(item, stkFFUData));
+                                    break;
+
+                                case CollectionTypes.UPS:
+                                    if (_upsInfo.isConnect)
+                                    {
+                                        _upsInfo.GetData(true);
+                                    }
+                                    else
+                                    {
+                                        _upsInfo.GetExceptionData();
+                                    }
+                                    sendList.Add(UPSDataMapping(item));
+                                    break;
+
+                                case CollectionTypes.PRESSURE:
+                                    PressureDataCache stkPressureData = new PressureDataCache(new PressureCollection(item.Key.UnitNo, _SMReadWriter));
+                                    sendList.Add(PressureDataMapping(item, stkPressureData));
+                                    break;
+
+                                case CollectionTypes.ENERGY:
+                                    //EnergyDataCache stkEnergyData = new EnergyDataCache(new EnergyCollection(item.Key.CraneNo, _SMReadWriter));
+                                    EnergyDataCache energyDataCache = new EnergyDataCache();
+
+
+                                    energyDataCache.CurrentR = dtr[1].ToString();
+                                    energyDataCache.CurrentT = dtr[1].ToString();
+                                    energyDataCache.VoltageRS = dtr[2].ToString();
+                                    energyDataCache.VoltageST = dtr[2].ToString();
+                                    energyDataCache.ElectricEnergy = dtr[3].ToString();
+
+                                    sendList.Add(EnergyDataMapping(item, energyDataCache));
+
+                                    break;
+                            }
+                        }
+                        eqp.SUBEQP_LIST.SUBEQP_LIST.AddRange(sendList.ToList());
+                        _message.EQP_LIST.EQP.Add(eqp);
+                        sendList.Clear();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _loggerService.WriteException(MethodBase.GetCurrentMethod().ToString(), ex.ToString());
+            }
+        }
+
         private SUBEQP EnergyDataMapping(KeyValuePair<TracePositionKey, SUBEQP> item, EnergyDataCache stkEnergyData)
         {
-            SUBEQP result = item.Value;
+            SUBEQP result = item.Value.Clone();
 
             result.PARAM_LIST.PARAM[0].PARAM_VALUE = stkEnergyData.ElectricEnergy;
             result.PARAM_LIST.PARAM[3].PARAM_VALUE = stkEnergyData.VoltageRS;
@@ -382,7 +527,7 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
 
         private SUBEQP PressureDataMapping(KeyValuePair<TracePositionKey, SUBEQP> item, PressureDataCache stkPressureData)
         {
-            SUBEQP result = item.Value;
+            SUBEQP result = item.Value.Clone();
 
             result.PARAM_LIST.PARAM[0].PARAM_VALUE = stkPressureData.Pressure;
 
@@ -391,7 +536,7 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
 
         private SUBEQP UPSDataMapping(KeyValuePair<TracePositionKey, SUBEQP> item)
         {
-            SUBEQP result = item.Value;
+            SUBEQP result = item.Value.Clone();
 
             result.PARAM_LIST.PARAM[0].PARAM_VALUE = _upsInfo.BatteryChargingStatus;
             result.PARAM_LIST.PARAM[1].PARAM_VALUE = _upsInfo.BatteryTemperature;
@@ -401,7 +546,7 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
 
         private SUBEQP UPSDataMapping(KeyValuePair<TracePositionKey, SUBEQP> item, STKFFUDataCache stkFFUData)
         {
-            SUBEQP result = item.Value;
+            SUBEQP result = item.Value.Clone();
 
             result.PARAM_LIST.PARAM[0].PARAM_VALUE = stkFFUData.CommadSpeed;
             result.PARAM_LIST.PARAM[1].PARAM_VALUE = _computerInfo.HDD_UseRate;
@@ -412,7 +557,7 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
 
         private SUBEQP ControllerDataMapping(KeyValuePair<TracePositionKey, SUBEQP> item, SSSControllerDataCache sSSControllerData)
         {
-            SUBEQP result = item.Value;
+            SUBEQP result = item.Value.Clone();
 
             //result.PARAM_LIST.PARAM[0].PARAM_VALUE = _computerInfo.HDD_UseRate;
             //result.PARAM_LIST.PARAM[3].PARAM_VALUE = _computerInfo.CPU_UseRate;
@@ -428,7 +573,7 @@ namespace Mirle.BigDataCollection.DataCollection.Controller
 
         private SUBEQP MotorDataMapping(KeyValuePair<TracePositionKey, SUBEQP> item, STKMotorDataCache stkMotorData)
         {
-            SUBEQP result = item.Value;
+            SUBEQP result = item.Value.Clone();
 
             result.PARAM_LIST.PARAM[0].PARAM_VALUE = stkMotorData.Command_Position;
             result.PARAM_LIST.PARAM[1].PARAM_VALUE = stkMotorData.Current_Position;
