@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="TIBCO.Rendezvous, Version=1.0.4423.31382, Culture=neutral, PublicKeyToken=1a696d1f90f6158a, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\tibco\tibrv\8.4\bin\TIBCO.Rendezvous.dll</HintPath>
+      <HintPath>DLL\TIBCO.Rendezvous.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +55,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DLL\TIBCO.Rendezvous.dll.config" />
+    <None Include="DLL\TIBCO.Rendezvous.netmodule" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DLL\TIBCO.Rendezvous.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

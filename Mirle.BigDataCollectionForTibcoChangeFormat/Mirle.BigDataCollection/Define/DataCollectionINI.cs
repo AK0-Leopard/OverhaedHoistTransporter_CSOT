@@ -39,7 +39,15 @@ namespace Mirle.BigDataCollection.Define
 
         [Option(Alias = "Tibco")]
         ITibco Tibco { get; }
+        [Option(Alias = "OHT Spec Value")]
+        IOHTData OHTData { get; }
     }
+    public interface IOHTData
+    {
+        [Option(DefaultValue = "")]
+        string OHT_FILE_PATH { get; }
+    }
+
 
     public interface ITibco
     {

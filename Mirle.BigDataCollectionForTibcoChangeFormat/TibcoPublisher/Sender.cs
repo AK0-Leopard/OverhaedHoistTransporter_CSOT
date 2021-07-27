@@ -53,7 +53,6 @@ namespace TibcoPublisher
         {
             try
             {
-                return true;
                 var strNetwork = $";{_network}";
                 _transport = new NetTransport(_service, strNetwork, _port);
 

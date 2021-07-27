@@ -231,87 +231,21 @@ namespace Mirle.BigDataCollection.DataCollection
         {
             try
             {
+
                 dataCollectionTimer.Stop();
 
-                string csvPath = @"C:\Log\CSOT\FDC\";
-                DirectoryInfo directoryInfo = new DirectoryInfo(csvPath);
-                var files_csv = directoryInfo.GetFiles("*.csv");
+                //string csvPath = @"C:\Log\CSOT\FDC\";
+                string csvPath = _dataCollectionINI.OHTData.OHT_FILE_PATH;
+                //先嘗試丟前一天的資料，確保換天時 不會有資料少丟
+                DateTime today_dateTime = DateTime.Now;
 
-                //_stkDataCollectionController.DataCollection();
-                for (int i = 1; i <= 36; i++)
-                {
-                    string vhID = i.ToString("00");
+                string sned_data_today = today_dateTime.ToString("yyyy-MM-dd");
+                sendBigDataByPath($"{csvPath}{sned_data_today}\\");
 
-                    var files_csv_by_vh = files_csv.Where(dir => dir.Name.Contains($"T{vhID}"));
-                    if(files_csv_by_vh.Count() == 0)
-                    {
-                        continue;
-                    }
+                System.Threading.SpinWait.SpinUntil(() => false, 1000);
 
-
-                    //foreach (var fileName in directoryInfo.GetFiles("*.csv"))
-                    //{
-                    //    Regex regex = new Regex("T" + vhID);
-                    //    Match m = regex.Match(fileName.ToString());
-                    //    if (m.Success == true)
-                    //    {
-                    //        listFile.Add(csvPath + fileName.ToString());
-                    //    }
-                    //}
-
-                    //csvPath = csvPath + @"\OHT-T" + vhID + @"_BigData_" + DateTime.Now.ToString("yyyy-MM-dd");
-
-
-                    //if (System.IO.File.Exists(csvPath))
-                    //foreach(string lsFile in listFile)
-                    //{
-                    _oHTDataCollectionController.DataCollectionByOhtNew(_device, files_csv_by_vh, vhID);
-
-                    //_sender.conn();
-
-                    //if (!_sender.isConn)
-                    //{
-                    //    _loggerService.WriteLog("Trace", $"Tibco is not Conn");
-                    //    _loggerService.WriteException("Trace", $"{_sender.exMsg}");
-                    //    _sender.exMsg = string.Empty;
-                    //    return;
-                    //}
-                    //var sendList = _stkDataCollectionController.sendList;
-                    var sendList = _oHTDataCollectionController.sendList;
-
-                    var dt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                    var mp = _oHTDataCollectionController._message;
-                    mp.TransactionID = dt;
-                    mp.TimeStamp = dt;
-                    //mp.EQP_LIST.EQP.Add(new EQP
-                    //{
-                    //    MACHINENAME = _dataCollectionINI.STKC.DeviceID,
-                    //    CHECK_TIME = dt,
-                    //    SUBEQP_LIST = new MSUBEQP(),
-                    //});
-
-                    //foreach (var item in sendList)
-                    //{
-                    //    mp.EQP_LIST.EQP[0].SUBEQP_LIST.SUBEQP_LIST.Add(item);
-                    //}
-
-                    string send = Serialize(mp);
-
-                    if (_sender.Send(send, _dataCollectionINI.STKC.DeviceID))
-                    {
-                        _loggerService.WriteLog("Trace", $"Tibco Send Succ ");
-                        MoveToHitoryAndCompress(files_csv_by_vh);
-                    }
-                    else
-                    {
-                        _loggerService.WriteLog("Trace", $"Tibco Send Fail : { _sender.exMsg}");
-                        _loggerService.WriteException("Tibco Send Message Function", _sender.exMsg);
-                    }
-                    mp.EQP_LIST.EQP.Clear();
-                    _oHTDataCollectionController.sendList.Clear();
-
-                    //}
-                }
+                string sned_data_yesterday = today_dateTime.AddDays(-1).ToString("yyyy-MM-dd");
+                sendBigDataByPath($"{csvPath}{sned_data_yesterday}\\");
 
             }
             catch (Exception ex)
@@ -321,6 +255,97 @@ namespace Mirle.BigDataCollection.DataCollection
             finally
             {
                 dataCollectionTimer.Start();
+            }
+        }
+
+        private void sendBigDataByPath(string csvPath)
+        {
+            if(!System.IO.Directory.Exists(csvPath))
+            {
+                _loggerService.WriteLog("Trace", $"path:{csvPath} not exist,return process");
+                return;
+            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(csvPath);
+            var files_csv = directoryInfo.GetFiles("*.csv");
+
+            //_stkDataCollectionController.DataCollection();
+            for (int i = 1; i <= 36; i++)
+            {
+                string vhID = i.ToString("00");
+                _loggerService.WriteLog("Trace", $"try to send [{vhID}] data...");
+
+                var files_csv_by_vh = files_csv.Where(dir => dir.Name.Contains($"T{vhID}"));
+                if (files_csv_by_vh.Count() == 0)
+                {
+                    _loggerService.WriteLog("Trace", $"[{vhID}] no data in folder pass this one.");
+                    continue;
+                }
+                var files_name_by_vhid = files_csv_by_vh.Select(f => f.Name);
+                _loggerService.WriteLog("Trace", $"[{vhID}] has data in folder:{string.Join(",", files_name_by_vhid)},start send.");
+
+                //foreach (var fileName in directoryInfo.GetFiles("*.csv"))
+                //{
+                //    Regex regex = new Regex("T" + vhID);
+                //    Match m = regex.Match(fileName.ToString());
+                //    if (m.Success == true)
+                //    {
+                //        listFile.Add(csvPath + fileName.ToString());
+                //    }
+                //}
+
+                //csvPath = csvPath + @"\OHT-T" + vhID + @"_BigData_" + DateTime.Now.ToString("yyyy-MM-dd");
+
+
+                //if (System.IO.File.Exists(csvPath))
+                //foreach(string lsFile in listFile)
+                //{
+                _oHTDataCollectionController.DataCollectionByOhtNew(_device, files_csv_by_vh, vhID);
+
+                //_sender.conn();
+
+                //if (!_sender.isConn)
+                //{
+                //    _loggerService.WriteLog("Trace", $"Tibco is not Conn");
+                //    _loggerService.WriteException("Trace", $"{_sender.exMsg}");
+                //    _sender.exMsg = string.Empty;
+                //    return;
+                //}
+                //var sendList = _stkDataCollectionController.sendList;
+                var sendList = _oHTDataCollectionController.sendList;
+
+                var dt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                var mp = _oHTDataCollectionController._message;
+                mp.TransactionID = dt;
+                mp.TimeStamp = dt;
+                //mp.EQP_LIST.EQP.Add(new EQP
+                //{
+                //    MACHINENAME = _dataCollectionINI.STKC.DeviceID,
+                //    CHECK_TIME = dt,
+                //    SUBEQP_LIST = new MSUBEQP(),
+                //});
+
+                //foreach (var item in sendList)
+                //{
+                //    mp.EQP_LIST.EQP[0].SUBEQP_LIST.SUBEQP_LIST.Add(item);
+                //}
+
+                string send = Serialize(mp);
+
+                if (_sender.Send(send, _dataCollectionINI.STKC.DeviceID))
+                {
+                    _loggerService.WriteLog("Trace", $"[{vhID}] Tibco Send Succ ");
+                    MoveToHitoryAndCompress(files_csv_by_vh);
+                }
+                else
+                {
+                    _loggerService.WriteLog("Trace", $"[{vhID}] Tibco Send Fail : { _sender.exMsg}");
+                    _loggerService.WriteException($"[{vhID}] Tibco Send Message Function", _sender.exMsg);
+                }
+                mp.EQP_LIST.EQP.Clear();
+                _oHTDataCollectionController.sendList.Clear();
+
+                //}
+                System.Threading.SpinWait.SpinUntil(() => false, 1000);
             }
         }
 
