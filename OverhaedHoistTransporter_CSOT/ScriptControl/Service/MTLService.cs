@@ -38,7 +38,20 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             scApp = app;
             List<AEQPT> eqpts = app.getEQObjCacheManager().getAllEquipment();
+           
+            //由於7/1更新完OHTC版本後，現場有發生一直跳Nats的例外導致最後程序也無法進行位置更新的問題
+            //因此先取消該部分的Nats事件通知 //20210802 Kevin Wei
 
+            //registerMTxStatusChengeEvent(eqpts);
+
+            VehicleService = app.VehicleService;
+            vehicleBLL = app.VehicleBLL;
+            reportBLL = app.ReportBLL;
+            //  mtl = app.getEQObjCacheManager().getEquipmentByEQPTID("MTL") as MaintainLift;
+        }
+
+        private void registerMTxStatusChengeEvent(List<AEQPT> eqpts)
+        {
             foreach (var eqpt in eqpts)
             {
                 if (eqpt is IMaintainDevice)
@@ -73,11 +86,6 @@ namespace com.mirle.ibg3k0.sc.Service
                     }
                 }
             }
-
-            VehicleService = app.VehicleService;
-            vehicleBLL = app.VehicleBLL;
-            reportBLL = app.ReportBLL;
-            //  mtl = app.getEQObjCacheManager().getEquipmentByEQPTID("MTL") as MaintainLift;
         }
 
 

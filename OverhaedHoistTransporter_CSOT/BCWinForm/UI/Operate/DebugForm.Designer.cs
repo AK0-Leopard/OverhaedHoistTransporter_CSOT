@@ -743,7 +743,6 @@
             this.num_test_dis.Name = "num_test_dis";
             this.num_test_dis.Size = new System.Drawing.Size(149, 30);
             this.num_test_dis.TabIndex = 56;
-            this.num_test_dis.Visible = false;
             this.num_test_dis.ValueChanged += new System.EventHandler(this.num_test_dis_ValueChanged);
             // 
             // txt_sec_id
@@ -752,7 +751,6 @@
             this.txt_sec_id.Name = "txt_sec_id";
             this.txt_sec_id.Size = new System.Drawing.Size(149, 30);
             this.txt_sec_id.TabIndex = 55;
-            this.txt_sec_id.Visible = false;
             // 
             // groupBox14
             // 
@@ -2661,7 +2659,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(85, 3);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(85, 6);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;

@@ -184,7 +184,7 @@ namespace RouteKit
                 returnArray[1] = string.Empty;
                 startAdr = startAdr.ToUpper();
                 endAdr = endAdr.ToUpper();
-                int iStartAdr = 0;
+                int iStartAdr = 0;  
                 int iEndAdr = 0;
                 if (!int.TryParse(startAdr, out iStartAdr) || !int.TryParse(endAdr, out iEndAdr))
                 {

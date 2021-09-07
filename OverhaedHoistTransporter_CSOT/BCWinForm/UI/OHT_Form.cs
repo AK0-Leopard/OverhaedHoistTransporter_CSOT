@@ -843,7 +843,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                             {
                                 dgv_vhStatus.Rows[selectIndex].Selected = true;
                                 if (dgv_vhStatus.Rows[selectIndex].Visible)
-                                { 
+                                {
                                     dgv_vhStatus.FirstDisplayedScrollingRowIndex = selectIndex;
                                 }
                             }
