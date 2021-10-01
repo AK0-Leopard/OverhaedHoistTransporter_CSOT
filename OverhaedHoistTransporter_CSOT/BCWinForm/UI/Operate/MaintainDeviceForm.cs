@@ -85,7 +85,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             CarOutNotify(MTSValueDefMapActionBase, car_id, 1);
         }
 
-        private void CarOutNotify(MTxValueDefMapActionBase mTxValueDefMapActionBase, ushort carNum,ushort action_type)
+        private void CarOutNotify(MTxValueDefMapActionBase mTxValueDefMapActionBase, ushort carNum, ushort action_type)
         {
             Task.Run(() =>
             {
@@ -189,7 +189,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 if (maintainDevice is sc.Data.VO.MaintainLift)
                 {
                     sc.Data.VO.Interface.IMaintainDevice dockingMTS = bcApp.SCApplication.EquipmentBLL.cache.GetDockingMTLOfMaintainSpace();
-                    if((maintainDevice as sc.Data.VO.MaintainLift).EQPT_ID=="MTL"&& dockingMTS != null)
+                    if ((maintainDevice as sc.Data.VO.MaintainLift).EQPT_ID == "MTL" && dockingMTS != null)
                     {
                         r = bcApp.SCApplication.MTLService.checkVhAndMTxCarOutStatus(maintainDevice, dockingMTS, pre_car_out_vh);
                     }
@@ -214,7 +214,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                     if (r.isSuccess)
                     {
 
-                            r = bcApp.SCApplication.MTLService.processCarOutScenario(maintainDevice as sc.Data.VO.MaintainLift, pre_car_out_vh);
+                        r = bcApp.SCApplication.MTLService.processCarOutScenario(maintainDevice as sc.Data.VO.MaintainLift, pre_car_out_vh);
                     }
                 }
                 else if (maintainDevice is sc.Data.VO.MaintainSpace)

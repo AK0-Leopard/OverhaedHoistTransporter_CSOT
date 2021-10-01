@@ -83,10 +83,41 @@ namespace com.mirle.ibg3k0.sc.Service
                 vh.LongTimeNoCommuncation += Vh_LongTimeNoCommuncation;
                 vh.LongTimeInaction += Vh_LongTimeInaction;
                 vh.NonLongTimeInaction += Vh_NonLongTimeInaction;
+                vh.CommandStateOutOfSyncHappend += Vh_CommandStateOutOfSyncHappend;
                 vh.TimerActionStart();
             }
         }
 
+        private void Vh_CommandStateOutOfSyncHappend(object sender, EventArgs e)
+        {
+            AVEHICLE vh = (sender as AVEHICLE);
+            string current_excute_ohtc_cmd_id = SCUtility.Trim(vh.VhCurrentExcuteOhtcCmdID, true);
+            if (SCUtility.isEmpty(current_excute_ohtc_cmd_id))
+            {
+                //命令狀態不同步的問題發生，但車子並無對應的Command ID，故不進行處理
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: "Command state out of sync happend ,but oht not write excute command id in [144], pass this one process.",
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
+            }
+            else
+            {
+                CMDCancelType cmd_cancel_type = CMDCancelType.CmdCancel;
+                if (vh.HAS_CST == 0)
+                {
+                    cmd_cancel_type = CMDCancelType.CmdCancel;
+                }
+                else
+                {
+                    cmd_cancel_type = CMDCancelType.CmdAbort;
+                }
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"Command state out of sync happend ,start excute [{cmd_cancel_type}] ID:[{current_excute_ohtc_cmd_id}]",
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
+                doAbortCommand(vh, current_excute_ohtc_cmd_id, cmd_cancel_type);
+            }
+        }
 
         private void Vh_AssignCommandFailOverTimes(object sender, int failTimes)
         {
@@ -759,6 +790,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 VhStopSingle hidStat = receive_gpp.HIDStatus;
                 VhStopSingle errorStat = receive_gpp.ErrorStatus;
                 VhLoadCSTStatus loadCSTStatus = receive_gpp.HasCST;
+                string vh_current_excute_cmd_id = receive_gpp.CmdID;
                 //VhGuideStatus leftGuideStat = recive_str.LeftGuideLockStatus;
                 //VhGuideStatus rightGuideStat = recive_str.RightGuideLockStatus;
 
@@ -770,6 +802,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 {
                     scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
                     scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
+                    vh.VhCurrentExcuteOhtcCmdID = vh_current_excute_cmd_id;
                 }
                 //A0.04 scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, receive_gpp);
                 //A0.04 scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
@@ -2489,21 +2522,22 @@ namespace com.mirle.ibg3k0.sc.Service
                     foreach (var detail in block_detail_section)
                     {
                         HltDirection hltDirection = HltDirection.None;
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                        //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                            Data: $"vh:{vhID} Try add reserve section:{detail} ,hlt dir:{hltDirection}...",
                            VehicleID: vhID);
                         var result = scApp.ReserveBLL.TryAddReservedSection(vhID, detail,
                                                                              sensorDir: hltDirection,
                                                                              isAsk: true);
-
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"vh:{vhID} Try add reserve section:{detail},result:{result}",
-                           VehicleID: vhID);
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"current reserve section:{scApp.ReserveBLL.GetCurrentReserveSection()}",
-                           VehicleID: vhID);
                         if (!result.OK)
                         {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"vh:{vhID} Try add reserve section:{detail},result:{result}",
+                               VehicleID: vhID);
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"current reserve section:{scApp.ReserveBLL.GetCurrentReserveSection()}",
+                               VehicleID: vhID);
+
                             if (!SCUtility.isEmpty(result.VehicleID))
                                 Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
                             return false;
@@ -2825,6 +2859,7 @@ namespace com.mirle.ibg3k0.sc.Service
         public bool replyTranEventReport(BCFApplication bcfApp, EventType eventType, AVEHICLE eqpt, int seq_num, bool canBlockPass = true, bool canHIDPass = true,
                                           string renameCarrierID = "", CMDCancelType cancelType = CMDCancelType.CmdNone)
         {
+            cancelType = checkCancelType(eqpt, eventType, cancelType);
             ID_36_TRANS_EVENT_RESPONSE send_str = new ID_36_TRANS_EVENT_RESPONSE
             {
                 IsBlockPass = canBlockPass ? PassType.Pass : PassType.Block,
@@ -2848,6 +2883,50 @@ namespace com.mirle.ibg3k0.sc.Service
             SCUtility.RecodeReportInfo(eqpt.VEHICLE_ID, seq_num, send_str, resp_cmp.ToString());
             return resp_cmp;
         }
+        /// <summary>
+        /// 當車子在OHTC Command Table中已無命令，在回復36-Loading...事件時，皆要要求車子進行cacnel
+        /// </summary>
+        private CMDCancelType checkCancelType(AVEHICLE vh, EventType eventType, CMDCancelType cancelType)
+        {
+            try
+            {
+                if (cancelType != CMDCancelType.CmdNone)
+                {
+                    return cancelType;
+                }
+                switch (eventType)
+                {
+                    case EventType.LoadArrivals:
+                    case EventType.Vhloading:
+                    case EventType.LoadComplete:
+                    case EventType.UnloadArrivals:
+                    case EventType.Vhunloading:
+                        //case EventType.UnloadComplete:
+                        bool has_cmd_excute = scApp.CMDBLL.hasCmdOhtcExcute(vh.VEHICLE_ID);
+                        if (has_cmd_excute)
+                        {
+                            return cancelType;
+                        }
+                        else
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"vh:{vh.VEHICLE_ID} report event:{eventType}, but no command in db, return:{CMDCancelType.CmdCancel}",
+                               VehicleID: vh.VEHICLE_ID,
+                               CarrierID: vh.CST_ID);
+                            return CMDCancelType.CmdCancel;
+                        }
+                    default:
+                        return cancelType;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+                return cancelType;
+            }
+        }
+
+
         private bool checkHasOrtherBolckZoneQueueNonRelease(AVEHICLE eqpt, out List<BLOCKZONEQUEUE> blockZoneQueues)
         {
             blockZoneQueues = scApp.MapBLL.loadNonReleaseBlockQueueByCarID(eqpt.VEHICLE_ID);
@@ -3827,6 +3906,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 VhStopSingle hidStat = recive_str.HIDStatus;
                 VhStopSingle errorStat = recive_str.ErrorStatus;
                 VhLoadCSTStatus loadCSTStatus = recive_str.HasCST;
+                string vh_current_excute_cmd_id = recive_str.CmdID;
 
                 //VhGuideStatus leftGuideStat = recive_str.LeftGuideLockStatus;
                 //VhGuideStatus rightGuideStat = recive_str.RightGuideLockStatus;
@@ -3841,6 +3921,8 @@ namespace com.mirle.ibg3k0.sc.Service
                         eqpt.HIDStatus != hidStat ||
                         eqpt.ERROR != errorStat ||
                         eqpt.HAS_CST != (int)loadCSTStatus;
+
+                eqpt.VhCurrentExcuteOhtcCmdID = vh_current_excute_cmd_id;
 
                 bool is_error_happend = false;
                 if (eqpt.ERROR != errorStat)

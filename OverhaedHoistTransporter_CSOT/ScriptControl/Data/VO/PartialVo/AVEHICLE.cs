@@ -75,6 +75,7 @@ namespace com.mirle.ibg3k0.sc
         public event EventHandler LongTimeNoCommuncation;
         public event EventHandler<string> LongTimeInaction;
         public event EventHandler NonLongTimeInaction;
+        public event EventHandler CommandStateOutOfSyncHappend;
 
 
         VehicleTimerAction vehicleTimer = null;
@@ -104,6 +105,11 @@ namespace com.mirle.ibg3k0.sc
         public void onNonLongTimeInaction()
         {
             NonLongTimeInaction?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void onCommandStateOutOfSyncHappend()
+        {
+            CommandStateOutOfSyncHappend?.Invoke(this, EventArgs.Empty);
         }
 
         public AVEHICLE()
@@ -151,6 +157,7 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         public virtual double Y_Axis { get; set; }
         public virtual bool IsProcessingCommandFinish { get; set; }
+        public virtual string VhCurrentExcuteOhtcCmdID { get; set; }
 
         [JsonIgnore]
         public virtual int CMD_Priority { get; set; } = 0;
@@ -202,7 +209,9 @@ namespace com.mirle.ibg3k0.sc
 
         [JsonIgnore]
         public virtual E_CMD_STATUS vh_CMD_Status { get; set; }
+        [JsonIgnore]
         public virtual bool isLongTimeInaction { get; private set; }
+        public virtual bool isCommandStateOutOfSyncHappend { get; private set; }
         /// <summary>
         /// 用來預防在更新Mode Status的時候，會有多執行續的問題，導致最後狀態不正確。
         /// </summary>
@@ -1319,7 +1328,7 @@ namespace com.mirle.ibg3k0.sc
                         //    vh.onLongTimeInaction(vh.OHTC_CMD);
                         //}
                         var cmds = scApp.CMDBLL.loadUnfinishCMD_OHT();
-                        CommandActionTimeCheck(cmds);
+                        bool has_command_excute_in_db = hasCommandActionTimeCheck(cmds);
                         if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > AVEHICLE.MAX_ALLOW_ACTION_TIME_MILLISECOND)
                         {
                             var currnet_excute_ids = getVhCurrentExcuteCommandID(cmds);
@@ -1334,10 +1343,24 @@ namespace com.mirle.ibg3k0.sc
                             }
                             vh.isLongTimeInaction = false;
                         }
+                        //當車子是Commnading狀態，但cmd Table並無該筆命令時，則將車子的下達cancel
+                        if (vh.ACT_STATUS == VHActionStatus.Commanding &&
+                            has_command_excute_in_db == false)
+                        {
+                            if (!vh.isCommandStateOutOfSyncHappend)
+                            {
+                                vh.onCommandStateOutOfSyncHappend();
+                                vh.isCommandStateOutOfSyncHappend = true;
+                            }
+                        }
+                        else
+                        {
+                            vh.isCommandStateOutOfSyncHappend = false;
+                        }
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(AVEHICLE), Device: "AGVC",
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(AVEHICLE), Device: "OHTC",
                            Data: ex,
                            VehicleID: vh.VEHICLE_ID,
                            CarrierID: vh.CST_ID);
@@ -1350,9 +1373,9 @@ namespace com.mirle.ibg3k0.sc
                 }
             }
 
-            private void CommandActionTimeCheck(List<ACMD_OHTC> cmds)
+            private bool hasCommandActionTimeCheck(List<ACMD_OHTC> cmds)
             {
-                if (cmds == null) return;
+                if (cmds == null) return false;
                 bool has_command_excute = getVhCurrentExcuteCommandCount(cmds);
                 if (has_command_excute)
                 {
@@ -1368,11 +1391,13 @@ namespace com.mirle.ibg3k0.sc
                         vh.CurrentCommandExcuteTime.Reset();
                     }
                 }
+                return has_command_excute;
             }
 
             private bool getVhCurrentExcuteCommandCount(List<ACMD_OHTC> cmds)
             {
-                return cmds.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vh.VEHICLE_ID))
+                return cmds.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vh.VEHICLE_ID) &&
+                                         cmd.CMD_STAUS > E_CMD_STATUS.Queue)
                            .Count() > 0;
             }
             private string getVhCurrentExcuteCommandID(List<ACMD_OHTC> cmds)

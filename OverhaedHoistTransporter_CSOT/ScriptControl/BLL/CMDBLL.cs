@@ -159,14 +159,27 @@ namespace com.mirle.ibg3k0.sc.BLL
                         checkcode = SECSConst.HCACK_Param_Invalid;
                         check_result = $"No find {nameof(HostSource)}={HostSource} of adr.";
                     }
+                    //多判斷同樣的Source是否已經有命令存在且沒還被搬走，有的話要拒絕MCS命令
+                    if (isSuccess)
+                    {
+                        ACMD_MCS waitting_cmd_mcs = getWatingCMD_MCSByFrom(HostSource);
+                        bool has_waittring_transfer_cmd_mcs = waitting_cmd_mcs != null;
+                        if (has_waittring_transfer_cmd_mcs)
+                        {
+                            isSuccess = false;
+                            checkcode = SECSConst.HCACK_Rejected_Already_Requested;
+                            check_result = $"MCS command id:{command_id} is same as orther mcs command id " +
+                                           $"{SCUtility.Trim(waitting_cmd_mcs.CMD_ID, true)} of load port.";
+                        }
+                    }
                 }
-                if (!isSourceOnVehicle &&
-                !scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type))
-                {
-                    isSuccess = false;
-                    checkcode = SECSConst.HCACK_Param_Invalid;
-                    check_result = $"No find {nameof(HostSource)}={HostSource} of adr.";
-                }
+                //if (!isSourceOnVehicle &&
+                //!scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type))
+                //{
+                //    isSuccess = false;
+                //    checkcode = SECSConst.HCACK_Param_Invalid;
+                //    check_result = $"No find {nameof(HostSource)}={HostSource} of adr.";
+                //}
 
                 if (!scApp.MapBLL.getAddressID(HostDestination, out to_adr))
                 {
@@ -746,6 +759,15 @@ namespace com.mirle.ibg3k0.sc.BLL
             using (DBConnection_EF con = DBConnection_EF.GetUContext())
             {
                 cmd_mcs = cmd_mcsDao.getByID(con, cmd_id);
+            }
+            return cmd_mcs;
+        }
+        public ACMD_MCS getWatingCMD_MCSByFrom(string hostSource)
+        {
+            ACMD_MCS cmd_mcs = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                cmd_mcs = cmd_mcsDao.getWatingCMDMCSByFrom(con, hostSource);
             }
             return cmd_mcs;
         }
@@ -1818,6 +1840,22 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return cmd_ohtcDAO.loadUnfinishCMD_OHT(con);
             }
         }
+
+        public bool hasCmdOhtcExcute(string vhID)
+        {
+            List<ACMD_OHTC> cmd_ohtc = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                cmd_ohtc = cmd_ohtcDAO.loadUnfinishCMD_OHT(con);
+            }
+            if (cmd_ohtc == null || cmd_ohtc.Count == 0)
+            {
+                return false;
+            }
+            int vh_excute_count = cmd_ohtc.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vhID)).Count();
+            return vh_excute_count > 0;
+        }
+
         public void remoteCMD_OHTCByBatch(List<ACMD_OHTC> cmds)
         {
             using (DBConnection_EF con = DBConnection_EF.GetUContext())
@@ -2664,6 +2702,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             string[] shortest_route = scApp.RouteGuide.DownstreamSearchSection(startAdr, endAdr, 0);
             return PaserRoute2SectionsAndDistance(shortest_route[0]);
         }
+
 
         private (string[] routeSection, double distance) PaserRoute2SectionsAndDistance(string minRouteInfo)
         {

@@ -184,7 +184,7 @@ namespace RouteKit
                 returnArray[1] = string.Empty;
                 startAdr = startAdr.ToUpper();
                 endAdr = endAdr.ToUpper();
-                int iStartAdr = 0;  
+                int iStartAdr = 0;
                 int iEndAdr = 0;
                 if (!int.TryParse(startAdr, out iStartAdr) || !int.TryParse(endAdr, out iEndAdr))
                 {
@@ -1026,7 +1026,8 @@ namespace RouteKit
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+            //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(GuideNew), Device: "OHT",
             Data: $"Start Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}]");
             if (from_addr == to_addr)
             {
@@ -1189,7 +1190,8 @@ Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}
                 string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+                //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(GuideNew), Device: "OHT",
                 Data: $"End Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] Using Time:[{elapsedTime}]");
                 //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Error, Class: nameof(GuideNew), Device: "OHT",
                 //Data: $"Find Path using Dijkstra have exception happen. From Adr: [{from_addr}] To Adr: [{to_addr}] Path Add Count: [{pathAddCount}] PathInfo:[{pathInfo.path}]");

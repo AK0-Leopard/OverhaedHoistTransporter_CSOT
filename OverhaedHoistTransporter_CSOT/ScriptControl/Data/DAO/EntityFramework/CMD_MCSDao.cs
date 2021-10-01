@@ -40,6 +40,17 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
                         select cmd;
             return query.SingleOrDefault();
         }
+
+        public ACMD_MCS getWatingCMDMCSByFrom(DBConnection_EF con, string hostSource)
+        {
+            var query = from cmd in con.ACMD_MCS
+                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue && cmd.TRANSFERSTATE < E_TRAN_STATUS.Transferring) &&
+                               cmd.HOSTSOURCE.Trim() == hostSource.Trim()
+                        select cmd;
+            return query.FirstOrDefault();
+        }
+
+
         public List<ACMD_MCS> loadACMD_MCSIsQueue(DBConnection_EF con)
         {
             var query = from cmd in con.ACMD_MCS.AsNoTracking()
@@ -165,6 +176,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
                         select cmd;
             return query.Count();
         }
+
 
 
         public int getCMD_MCSMaxPrioritySum(DBConnection_EF con)
