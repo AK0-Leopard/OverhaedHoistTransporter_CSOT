@@ -2902,18 +2902,31 @@ namespace com.mirle.ibg3k0.sc.Service
                     case EventType.UnloadArrivals:
                     case EventType.Vhunloading:
                         //case EventType.UnloadComplete:
-                        bool has_cmd_excute = scApp.CMDBLL.hasCmdOhtcExcute(vh.VEHICLE_ID);
-                        if (has_cmd_excute)
+                        //bool has_cmd_excute = scApp.CMDBLL.hasCmdOhtcExcute(vh.VEHICLE_ID);
+                        bool has_cmd_excute_cache = scApp.CMDBLL.cache.hasCMD_OHTC_Excute(vh.VEHICLE_ID);
+                        if (has_cmd_excute_cache)
                         {
-                            return cancelType;
+                            return CMDCancelType.CmdNone;
                         }
                         else
                         {
                             LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{vh.VEHICLE_ID} report event:{eventType}, but no command in cache, check again in db data.",
+                           VehicleID: vh.VEHICLE_ID,
+                           CarrierID: vh.CST_ID);
+                            bool has_cmd_excute_in_db = scApp.CMDBLL.hasCmdOhtcExcute(vh.VEHICLE_ID);
+                            if (has_cmd_excute_in_db)
+                            {
+                                return CMDCancelType.CmdNone;
+                            }
+                            else
+                            {
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                                Data: $"vh:{vh.VEHICLE_ID} report event:{eventType}, but no command in db, return:{CMDCancelType.CmdCancel}",
                                VehicleID: vh.VEHICLE_ID,
                                CarrierID: vh.CST_ID);
-                            return CMDCancelType.CmdCancel;
+                                return CMDCancelType.CmdCancel;
+                            }
                         }
                     default:
                         return cancelType;

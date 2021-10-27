@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace com.mirle.ibg3k0.sc
 {
@@ -1114,8 +1115,13 @@ namespace com.mirle.ibg3k0.sc
             }
         }
 
-        public List<ACMD_MCS> CurrentExcuteMCSCommands = null;
-        public List<ACMD_OHTC> CurrentExcuteOHTCCommands = null;
+        public List<ACMD_MCS> CurrentExcuteMCSCommands = new List<ACMD_MCS>();
+        public List<ACMD_OHTC> CurrentExcuteOHTCCommands = new List<ACMD_OHTC>();
+        public List<ACMD_OHTC> getCurrentExcuteOHTCCommands()
+        {
+            if (CurrentExcuteOHTCCommands == null || CurrentExcuteOHTCCommands.Count == 0) return new List<ACMD_OHTC>();
+            return CurrentExcuteOHTCCommands.ToList();
+        }
 
         public TSCState SCStats = TSCState.NONE;
         void TransitionedHandler(Stateless.StateMachine<TSCState, TSCTrigger>.Transition transition)

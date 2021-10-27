@@ -178,6 +178,14 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
             return query.Count();
         }
 
+        public int getUnfinishCMD_OHT(DBConnection_EF con, string vhID)
+        {
+            var query = from cmd in con.ACMD_OHTC
+                        where cmd.CMD_STAUS < E_CMD_STATUS.NormalEnd &&
+                              cmd.VH_ID.Trim() == vhID.Trim()
+                        select cmd;
+            return query.Count();
+        }
 
         public int getVhExcutedCMDConut(DBConnection_EF con, string vh_id)
         {

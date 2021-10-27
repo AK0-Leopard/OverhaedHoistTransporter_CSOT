@@ -1843,17 +1843,12 @@ namespace com.mirle.ibg3k0.sc.BLL
 
         public bool hasCmdOhtcExcute(string vhID)
         {
-            List<ACMD_OHTC> cmd_ohtc = null;
+            int cmd_ohtc_count = 0;
             using (DBConnection_EF con = DBConnection_EF.GetUContext())
             {
-                cmd_ohtc = cmd_ohtcDAO.loadUnfinishCMD_OHT(con);
+                cmd_ohtc_count = cmd_ohtcDAO.getUnfinishCMD_OHT(con, vhID);
             }
-            if (cmd_ohtc == null || cmd_ohtc.Count == 0)
-            {
-                return false;
-            }
-            int vh_excute_count = cmd_ohtc.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vhID)).Count();
-            return vh_excute_count > 0;
+            return cmd_ohtc_count > 0;
         }
 
         public void remoteCMD_OHTCByBatch(List<ACMD_OHTC> cmds)
@@ -2125,12 +2120,12 @@ namespace com.mirle.ibg3k0.sc.BLL
                     if (scApp.getEQObjCacheManager().getLine().ServiceMode
                         != SCAppConstants.AppServiceMode.Active)
                         return;
-                    //List<ACMD_OHTC> unfinish_ohtc_cmd = scApp.CMDBLL.loadUnfinishCMD_OHT();
-                    //ALINE line = scApp.getEQObjCacheManager().getLine();
-                    //line.CurrentExcuteOHTCCommands = unfinish_ohtc_cmd;
+                    List<ACMD_OHTC> unfinish_ohtc_cmd = scApp.CMDBLL.loadUnfinishCMD_OHT();
+                    ALINE line = scApp.getEQObjCacheManager().getLine();
+                    line.CurrentExcuteOHTCCommands = unfinish_ohtc_cmd.ToList();
 
-                    List<ACMD_OHTC> CMD_OHTC_Queues = scApp.CMDBLL.loadCMD_OHTCMDStatusIsQueue();
-                    //List<ACMD_OHTC> CMD_OHTC_Queues = unfinish_ohtc_cmd.Where(cmd => cmd.CMD_STAUS == E_CMD_STATUS.Queue).ToList();
+                    //List<ACMD_OHTC> CMD_OHTC_Queues = scApp.CMDBLL.loadCMD_OHTCMDStatusIsQueue();
+                    List<ACMD_OHTC> CMD_OHTC_Queues = unfinish_ohtc_cmd.Where(cmd => cmd.CMD_STAUS == E_CMD_STATUS.Queue).ToList();
                     if (CMD_OHTC_Queues == null || CMD_OHTC_Queues.Count == 0)
                         return;
                     foreach (ACMD_OHTC cmd in CMD_OHTC_Queues)
@@ -3499,7 +3494,17 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return mcs_cmds;
             }
 
-
+            public bool hasCMD_OHTC_Excute(string vhID)
+            {
+                var current_ohtc_cmds_temp = app.getEQObjCacheManager().getLine().getCurrentExcuteOHTCCommands();
+                if (current_ohtc_cmds_temp == null || current_ohtc_cmds_temp.Count == 0)
+                {
+                    return false;
+                }
+                int cmd_count = current_ohtc_cmds_temp.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vhID)).Count();
+                if (cmd_count > 0) return true;
+                return false;
+            }
 
         }
 
