@@ -82,7 +82,8 @@ namespace com.mirle.ibg3k0.sc.Common
         };
         private List<MTLSetting> MTLSettings = new List<MTLSetting>()
         {
-            new MTLSetting(){ID = "MTL",MTLSegment="013", MTLAddress ="20293", SystemInAddress ="20199",MTL_CAR_IN_BUFFER_ADDRESS ="24294" ,MTL_SYSTEM_OUT_ADDRESS = "20292" },
+            //new MTLSetting(){ID = "MTL",MTLSegment="013", MTLAddress ="20293", SystemInAddress ="20199",MTL_CAR_IN_BUFFER_ADDRESS ="24294" ,MTL_SYSTEM_OUT_ADDRESS = "20292" },
+            new MTLSetting(){ID = "MTL",MTLSegment="013", MTLAddress ="20293", SystemInAddress ="20198",MTL_CAR_IN_BUFFER_ADDRESS ="24294" ,MTL_SYSTEM_OUT_ADDRESS = "20292" },
             new MTLSetting(){ID = "MTL2",MTLSegment="132", MTLAddress ="10387", SystemInAddress ="10043",MTL_CAR_IN_BUFFER_ADDRESS ="10388" ,MTL_SYSTEM_OUT_ADDRESS = "10387" },
             new MTLSetting(){ID = "MTL3",MTLSegment="150", MTLAddress ="10110", SystemInAddress ="10113",MTL_CAR_IN_BUFFER_ADDRESS ="10111" ,MTL_SYSTEM_OUT_ADDRESS = "10110" }
     };
