@@ -44,10 +44,20 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
         public ACMD_MCS getWatingCMDMCSByFrom(DBConnection_EF con, string hostSource)
         {
             var query = from cmd in con.ACMD_MCS
-                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue && cmd.TRANSFERSTATE < E_TRAN_STATUS.Transferring) &&
+                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue && 
+                               cmd.TRANSFERSTATE < E_TRAN_STATUS.Transferring) &&
                                cmd.HOSTSOURCE.Trim() == hostSource.Trim()
                         select cmd;
             return query.FirstOrDefault();
+        }
+        public int getWatingCMDMCSByFromOfCount(DBConnection_EF con, string hostSource)
+        {
+            var query = from cmd in con.ACMD_MCS
+                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue && 
+                               cmd.TRANSFERSTATE < E_TRAN_STATUS.Transferring) &&
+                               cmd.HOSTSOURCE.Trim() == hostSource.Trim()
+                        select cmd;
+            return query.Count();
         }
 
 

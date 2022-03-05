@@ -52,6 +52,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace com.mirle.ibg3k0.sc.App
 {
@@ -440,6 +441,8 @@ namespace com.mirle.ibg3k0.sc.App
         public HCMD_MCSDao HCMD_MCSDao { get { return hcmd_mcsDao; } }
         private HCMD_OHTCDao hcmd_ohtcDao = null;
         public HCMD_OHTCDao HCMD_OHTCDao { get { return hcmd_ohtcDao; } }
+        private PortGroupDao portGroupDao = null;
+        public PortGroupDao PortGroupDao { get { return portGroupDao; } }
 
         //BLL
         /// <summary>
@@ -1235,6 +1238,7 @@ namespace com.mirle.ibg3k0.sc.App
             hcmd_mcsDao = new HCMD_MCSDao();
             hcmd_ohtcDao = new HCMD_OHTCDao();
             flexsimcommandDao = new FlexsimCommandDao();
+            portGroupDao = new PortGroupDao();
         }
 
         /// <summary>
@@ -1253,6 +1257,10 @@ namespace com.mirle.ibg3k0.sc.App
                 loadCSVToDataset(ohxcConfig, "RETURNCODEMAP");
                 loadCSVToDataset(ohxcConfig, "EQPTLOCATIONINFO");
                 loadCSVToDataset(ohxcConfig, "ECDATAMAP");
+
+                loadCSVToDataset(ohxcConfig, "PORTGROUPMAP");
+                loadCSVToDataset(ohxcConfig, "PORTGROUPINFO");
+
                 loadMapInfoCSVToDataset(ohxcConfig, "AADDRESS");
                 loadMapInfoCSVToDataset(ohxcConfig, "ASECTION");
 
@@ -1264,11 +1272,32 @@ namespace com.mirle.ibg3k0.sc.App
             }
         }
 
+
         private void initialTransferCommandPeriodicDataSet()
         {
             string excelPath = Environment.CurrentDirectory + Path.Combine("\\config", BC_ID, "CSTTranSchedule.xlsx");
 
             loadExcel2DataTable(ref TranCmdPeriodicDataSet, excelPath);
+        }
+
+        public bool reloadPortGroupData()
+        {
+            try
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
+                   Data: $"Start reload port group data...");
+                loadCSVToDataset(ohxcConfig, "PORTGROUPMAP");
+                loadCSVToDataset(ohxcConfig, "PORTGROUPINFO");
+                commObjCacheManager.reloadPortGroupData();
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
+                   Data: $"Reload port group data finish.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return false;
+            }
         }
 
         /// <summary>
@@ -1307,15 +1336,24 @@ namespace com.mirle.ibg3k0.sc.App
                 //parser.MaxRows = 500;
                 //parser.TextQualifier = '\"';
 
-
-                DataTable dt = new System.Data.DataTable(tableName);
+                bool is_new_table = !ds.Tables.Contains(tableName);
+                DataTable dt = null;
+                if (is_new_table)
+                {
+                    dt = new System.Data.DataTable(tableName);
+                }
+                else
+                {
+                    dt = ds.Tables[tableName];
+                    dt.Clear();
+                }
 
                 bool isfirst = true;
                 while (parser.Read())
                 {
 
                     int cs = parser.ColumnCount;
-                    if (isfirst)
+                    if (is_new_table && isfirst)
                     {
 
                         for (int i = 0; i < cs; i++)
@@ -1342,7 +1380,8 @@ namespace com.mirle.ibg3k0.sc.App
                     }
                     dt.Rows.Add(dr);
                 }
-                ds.Tables.Add(dt);
+                if (is_new_table)
+                    ds.Tables.Add(dt);
             }
         }
         private void loadMapInfoCSVToDataset(DataSet ds, string tableName)
@@ -2334,6 +2373,7 @@ namespace com.mirle.ibg3k0.sc.App
 
         public static bool isOpenCommandShift = false;
         public static bool isOpenAdjustmentParkingZone = false;
+        public static bool isOpenPortGroupLimit = true;
 
     }
 }

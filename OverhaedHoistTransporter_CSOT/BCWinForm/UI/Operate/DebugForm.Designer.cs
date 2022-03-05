@@ -366,6 +366,7 @@
             this.label77 = new System.Windows.Forms.Label();
             this.label78 = new System.Windows.Forms.Label();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.btn_reloadPortGroupData = new System.Windows.Forms.Button();
             this.num_ChangePathCommandPath = new System.Windows.Forms.NumericUpDown();
             this.label80 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Current_txb = new System.Windows.Forms.TextBox();
@@ -376,6 +377,7 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.cb_IsOpenPortGroupLimit = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -633,7 +635,7 @@
             // cb_StartGenAntoCmd
             // 
             this.cb_StartGenAntoCmd.AutoSize = true;
-            this.cb_StartGenAntoCmd.Location = new System.Drawing.Point(1100, 6);
+            this.cb_StartGenAntoCmd.Location = new System.Drawing.Point(1100, -1);
             this.cb_StartGenAntoCmd.Name = "cb_StartGenAntoCmd";
             this.cb_StartGenAntoCmd.Size = new System.Drawing.Size(349, 26);
             this.cb_StartGenAntoCmd.TabIndex = 18;
@@ -1295,6 +1297,7 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.cb_IsOpenPortGroupLimit);
             this.tabPage1.Controls.Add(this.cb_isOpenAdjustmentParkingZone);
             this.tabPage1.Controls.Add(this.ck_is_open_command_shift);
             this.tabPage1.Controls.Add(this.groupBox12);
@@ -1315,7 +1318,7 @@
             // cb_isOpenAdjustmentParkingZone
             // 
             this.cb_isOpenAdjustmentParkingZone.AutoSize = true;
-            this.cb_isOpenAdjustmentParkingZone.Location = new System.Drawing.Point(1100, 48);
+            this.cb_isOpenAdjustmentParkingZone.Location = new System.Drawing.Point(1100, 41);
             this.cb_isOpenAdjustmentParkingZone.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_isOpenAdjustmentParkingZone.Name = "cb_isOpenAdjustmentParkingZone";
             this.cb_isOpenAdjustmentParkingZone.Size = new System.Drawing.Size(339, 26);
@@ -1327,7 +1330,7 @@
             // ck_is_open_command_shift
             // 
             this.ck_is_open_command_shift.AutoSize = true;
-            this.ck_is_open_command_shift.Location = new System.Drawing.Point(1100, 27);
+            this.ck_is_open_command_shift.Location = new System.Drawing.Point(1100, 20);
             this.ck_is_open_command_shift.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ck_is_open_command_shift.Name = "ck_is_open_command_shift";
             this.ck_is_open_command_shift.Size = new System.Drawing.Size(239, 26);
@@ -1531,9 +1534,9 @@
             // 
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockReject);
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockPass);
-            this.gb_blockControl.Location = new System.Drawing.Point(1103, 80);
+            this.gb_blockControl.Location = new System.Drawing.Point(1102, 93);
             this.gb_blockControl.Name = "gb_blockControl";
-            this.gb_blockControl.Size = new System.Drawing.Size(257, 83);
+            this.gb_blockControl.Size = new System.Drawing.Size(257, 71);
             this.gb_blockControl.TabIndex = 23;
             this.gb_blockControl.TabStop = false;
             this.gb_blockControl.Text = "Block Control";
@@ -4508,6 +4511,7 @@
             // 
             // tabPage9
             // 
+            this.tabPage9.Controls.Add(this.btn_reloadPortGroupData);
             this.tabPage9.Controls.Add(this.num_ChangePathCommandPath);
             this.tabPage9.Controls.Add(this.label80);
             this.tabPage9.Controls.Add(this.MaxAllowActionTimeSecond_Current_txb);
@@ -4525,6 +4529,16 @@
             this.tabPage9.TabIndex = 9;
             this.tabPage9.Text = "Setting";
             this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // btn_reloadPortGroupData
+            // 
+            this.btn_reloadPortGroupData.Location = new System.Drawing.Point(32, 141);
+            this.btn_reloadPortGroupData.Name = "btn_reloadPortGroupData";
+            this.btn_reloadPortGroupData.Size = new System.Drawing.Size(251, 42);
+            this.btn_reloadPortGroupData.TabIndex = 66;
+            this.btn_reloadPortGroupData.Text = "Reload Port Group Data";
+            this.btn_reloadPortGroupData.UseVisualStyleBackColor = true;
+            this.btn_reloadPortGroupData.Click += new System.EventHandler(this.btn_reloadPortGroupData_Click);
             // 
             // num_ChangePathCommandPath
             // 
@@ -4612,6 +4626,18 @@
             this.MaxAllowActionTimeSecond_Set_btn.Text = "Set";
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
+            // 
+            // cb_IsOpenPortGroupLimit
+            // 
+            this.cb_IsOpenPortGroupLimit.AutoSize = true;
+            this.cb_IsOpenPortGroupLimit.Location = new System.Drawing.Point(1100, 63);
+            this.cb_IsOpenPortGroupLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_IsOpenPortGroupLimit.Name = "cb_IsOpenPortGroupLimit";
+            this.cb_IsOpenPortGroupLimit.Size = new System.Drawing.Size(269, 26);
+            this.cb_IsOpenPortGroupLimit.TabIndex = 28;
+            this.cb_IsOpenPortGroupLimit.Text = "Is Open Port Group Limit";
+            this.cb_IsOpenPortGroupLimit.UseVisualStyleBackColor = true;
+            this.cb_IsOpenPortGroupLimit.CheckedChanged += new System.EventHandler(this.cb_IsOpenPortGroupLimit_CheckedChanged);
             // 
             // DebugForm
             // 
@@ -5052,5 +5078,7 @@
         private System.Windows.Forms.Label label80;
         private System.Windows.Forms.CheckBox ck_is_open_command_shift;
         private System.Windows.Forms.CheckBox cb_isOpenAdjustmentParkingZone;
+        private System.Windows.Forms.Button btn_reloadPortGroupData;
+        private System.Windows.Forms.CheckBox cb_IsOpenPortGroupLimit;
     }
 }

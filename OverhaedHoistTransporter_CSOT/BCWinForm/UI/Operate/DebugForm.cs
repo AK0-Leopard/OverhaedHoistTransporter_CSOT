@@ -40,6 +40,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_FroceBlockPass.Checked = DebugParameter.isForcedRejectBlockControl;
             ck_is_open_command_shift.Checked = DebugParameter.isOpenCommandShift;
             cb_isOpenAdjustmentParkingZone.Checked = DebugParameter.isOpenAdjustmentParkingZone;
+            cb_IsOpenPortGroupLimit.Checked = DebugParameter.isOpenPortGroupLimit;
 
 
             ch_force_pass_red_light_with_buzzer.Checked = DebugParameter.isForcePassFourColorLightRedWithBuzzerSignal;
@@ -1641,6 +1642,37 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void cb_isOpenAdjustmentParkingZone_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.isOpenAdjustmentParkingZone = cb_isOpenAdjustmentParkingZone.Checked;
+        }
+
+        private async void btn_reloadPortGroupData_Click(object sender, EventArgs e)
+        {
+            bool is_success = false;
+            try
+            {
+                btn_reloadPortGroupData.Enabled = false;
+                await Task.Run(() => is_success = bcApp.SCApplication.reloadPortGroupData());
+            }
+            catch (Exception ex)
+            {
+                NLog.LogManager.GetCurrentClassLogger().Error(ex, "Exception:");
+            }
+            finally
+            {
+                btn_reloadPortGroupData.Enabled = true;
+            }
+            if (is_success)
+            {
+                MessageBox.Show("Reload port group data success.");
+            }
+            else
+            {
+                MessageBox.Show("Reload port group data Fail.");
+            }
+        }
+
+        private void cb_IsOpenPortGroupLimit_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.isOpenPortGroupLimit = cb_IsOpenPortGroupLimit.Checked;
         }
     }
 }

@@ -46,6 +46,7 @@ namespace com.mirle.ibg3k0.sc.Common
         private List<ABLOCKZONEMASTER> BlockZoneMasters;
         private List<APARKZONEDETAIL> ParkZoneDetails;
         private List<APARKZONEMASTER> ParkZoneMasters;
+        private List<PortGroupInfo> PortGroupInfos;
 
 
         private CommonInfo CommonInfo;
@@ -82,6 +83,7 @@ namespace com.mirle.ibg3k0.sc.Common
             BlockZoneMasters = scApp.MapBLL.loadAllBlockZoneMaster();
             ParkZoneDetails = scApp.ParkBLL.LoadAllParkZoneDetails();
             ParkZoneMasters = scApp.ParkBLL.LoadAllParkZoneMaster();
+
             ParkZoneDetails.ForEach(detail => SCUtility.TrimAllParameter(detail));
             ParkZoneMasters.ForEach(master => SCUtility.TrimAllParameter(master));
             foreach (ASEGMENT segment in Segments)
@@ -97,9 +99,22 @@ namespace com.mirle.ibg3k0.sc.Common
             {
                 park_zone_master.setParkDetails(ParkZoneDetails);
             }
-            CommonInfo = new CommonInfo();
 
+            loadPortGroupData();
+
+            CommonInfo = new CommonInfo();
         }
+
+        private void loadPortGroupData()
+        {
+            PortGroupInfos = scApp.PortGroupDao.loadPortGroupInfo(scApp);
+            var port_group_maps = scApp.PortGroupDao.loadPortGroupMap(scApp);
+            foreach (var port_group_info in PortGroupInfos)
+            {
+                port_group_info.setGroupPortIDs(port_group_maps);
+            }
+        }
+
         public void initialAdrEqType()
         {
             foreach (var adr in Addresses)
@@ -164,6 +179,10 @@ namespace com.mirle.ibg3k0.sc.Common
         {
             return ParkZoneDetails.ToList();
         }
+        public List<PortGroupInfo> LoadPortGroupInfos()
+        {
+            return PortGroupInfos.ToList();
+        }
 
         #endregion
 
@@ -180,6 +199,10 @@ namespace com.mirle.ibg3k0.sc.Common
 
         #region 從DB取得最新EQ Object，並更新Cache
         //NotImplemented
+        public void reloadPortGroupData()
+        {
+            loadPortGroupData();
+        }
         #endregion
 
 

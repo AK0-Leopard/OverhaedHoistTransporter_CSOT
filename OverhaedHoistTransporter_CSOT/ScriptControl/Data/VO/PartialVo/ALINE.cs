@@ -1115,7 +1115,6 @@ namespace com.mirle.ibg3k0.sc
             }
         }
 
-        public List<ACMD_MCS> CurrentExcuteMCSCommands = new List<ACMD_MCS>();
         public List<ACMD_OHTC> CurrentExcuteOHTCCommands = new List<ACMD_OHTC>();
         public List<ACMD_OHTC> getCurrentExcuteOHTCCommands()
         {

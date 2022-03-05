@@ -491,6 +491,7 @@
     <Compile Include="Data\BackgroundWorkSample.cs" />
     <Compile Include="Data\DAO\ADDRESSDao.cs" />
     <Compile Include="Data\DAO\AddressDataDao.cs" />
+    <Compile Include="Data\DAO\PortGroupDao.cs" />
     <Compile Include="Data\DAO\EntityFramework\HCMD_OHTCDao.cs" />
     <Compile Include="Data\DAO\EntityFramework\HCMD_MCSDao.cs" />
     <Compile Include="Data\DAO\EqptLocationInfoDao.cs" />
@@ -764,6 +765,8 @@
     <Compile Include="Data\ValueDefMapAction\ValueDefMapActionBase.cs" />
     <Compile Include="Data\ValueDefMapAction\EQTcpIpMapAction.cs" />
     <Compile Include="Data\VO\AlarmHisList.cs" />
+    <Compile Include="Data\VO\PortGroupInfo.cs" />
+    <Compile Include="Data\VO\PortGroupMap.cs" />
     <Compile Include="Data\VO\Interface\IConnectionStatusChange.cs" />
     <Compile Include="Data\VO\Interface\IMaintainDevice.cs" />
     <Compile Include="Data\VO\MTLSetting.cs" />

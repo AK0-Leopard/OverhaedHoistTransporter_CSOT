@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace com.mirle.ibg3k0.sc
 {
     public partial class ACMD_MCS
     {
+        public static ConcurrentDictionary<string, ACMD_MCS> MCS_CMD_InfoList { get; private set; } = new ConcurrentDictionary<string, ACMD_MCS>();
 
         public const string COMMAND_PAUSE_FLAG_EMPTY = "";
         public const string COMMAND_PAUSE_FLAG_COMMAND_SHIFT = "S";
@@ -26,6 +28,8 @@ namespace com.mirle.ibg3k0.sc
         public const int COMMAND_STATUS_BIT_INDEX_UNLOADING = 32;
         public const int COMMAND_STATUS_BIT_INDEX_UNLOAD_COMPLETE = 64;
         public const int COMMAND_STATUS_BIT_INDEX_COMMNAD_FINISH = 128;
+
+        public string CanNotServiceReason = "";
         public static string COMMAND_STATUS_BIT_To_String(int commandStatus)
         {
             switch (commandStatus)
@@ -113,6 +117,147 @@ namespace com.mirle.ibg3k0.sc
                 REPLACE = this.REPLACE,
             };
         }
+        public string DestPortGroupID { get; set; } = "";
+        public void setDestPortGroupID(BLL.PortStationBLL portStationBLL)
+        {
+            var get_group_id_result = portStationBLL.OperateCatch.tryGetPortGroupID(HOSTDESTINATION);
+            if (get_group_id_result.isExist)
+            {
+                DestPortGroupID = get_group_id_result.portGroupID;
+            }
+            else
+            {
+                //not thing....
+            }
+        }
 
+        public (bool isExist, string portGroupID) tryGetDestPortGroupID(BLL.PortStationBLL portStationBLL)
+        {
+            if (!sc.Common.SCUtility.isEmpty(DestPortGroupID))
+            {
+                return (true, DestPortGroupID);
+            }
+            else
+            {
+                return (false, "");
+            }
+
+        }
+
+        public bool put(ACMD_MCS ortherObj)
+        {
+            bool has_change = false;
+            if (!sc.Common.SCUtility.isMatche(CMD_ID, ortherObj.CMD_ID))
+            {
+                CMD_ID = ortherObj.CMD_ID;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(CARRIER_ID, ortherObj.CARRIER_ID))
+            {
+                CARRIER_ID = ortherObj.CARRIER_ID;
+                has_change = true;
+            }
+            if (TRANSFERSTATE != ortherObj.TRANSFERSTATE)
+            {
+                TRANSFERSTATE = ortherObj.TRANSFERSTATE;
+                has_change = true;
+            }
+            if (COMMANDSTATE != ortherObj.COMMANDSTATE)
+            {
+                COMMANDSTATE = ortherObj.COMMANDSTATE;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(HOSTSOURCE, ortherObj.HOSTSOURCE))
+            {
+                HOSTSOURCE = ortherObj.HOSTSOURCE;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(HOSTDESTINATION, ortherObj.HOSTDESTINATION))
+            {
+                HOSTDESTINATION = ortherObj.HOSTDESTINATION;
+                has_change = true;
+            }
+            if (PRIORITY != ortherObj.PRIORITY)
+            {
+                PRIORITY = ortherObj.PRIORITY;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(HOSTDESTINATION, ortherObj.HOSTDESTINATION))
+            {
+                HOSTDESTINATION = ortherObj.HOSTDESTINATION;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(HOSTDESTINATION, ortherObj.HOSTDESTINATION))
+            {
+                HOSTDESTINATION = ortherObj.HOSTDESTINATION;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(HOSTDESTINATION, ortherObj.HOSTDESTINATION))
+            {
+                HOSTDESTINATION = ortherObj.HOSTDESTINATION;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(CHECKCODE, ortherObj.CHECKCODE))
+            {
+                CHECKCODE = ortherObj.CHECKCODE;
+                has_change = true;
+            }
+            if (!sc.Common.SCUtility.isMatche(PAUSEFLAG, ortherObj.PAUSEFLAG))
+            {
+                PAUSEFLAG = ortherObj.PAUSEFLAG;
+                has_change = true;
+            }
+            if (CMD_INSER_TIME != ortherObj.CMD_INSER_TIME)
+            {
+                CMD_INSER_TIME = ortherObj.CMD_INSER_TIME;
+                has_change = true;
+            }
+            if (CMD_START_TIME != ortherObj.CMD_START_TIME)
+            {
+                CMD_START_TIME = ortherObj.CMD_START_TIME;
+                has_change = true;
+            }
+            if (CMD_FINISH_TIME != ortherObj.CMD_FINISH_TIME)
+            {
+                CMD_FINISH_TIME = ortherObj.CMD_FINISH_TIME;
+                has_change = true;
+            }
+            if (TIME_PRIORITY != ortherObj.TIME_PRIORITY)
+            {
+                TIME_PRIORITY = ortherObj.TIME_PRIORITY;
+                has_change = true;
+            }
+            if (PORT_PRIORITY != ortherObj.PORT_PRIORITY)
+            {
+                PORT_PRIORITY = ortherObj.PORT_PRIORITY;
+                has_change = true;
+            }
+            if (PRIORITY_SUM != ortherObj.PRIORITY_SUM)
+            {
+                PRIORITY_SUM = ortherObj.PRIORITY_SUM;
+                has_change = true;
+            }
+            if (REPLACE != ortherObj.REPLACE)
+            {
+                REPLACE = ortherObj.REPLACE;
+                has_change = true;
+            }
+            if (DestPortGroupID != ortherObj.DestPortGroupID)
+            {
+                DestPortGroupID = ortherObj.DestPortGroupID;
+                has_change = true;
+            }
+            return has_change;
+        }
+
+        public bool setCanNotServiceReason(string reason)
+        {
+            if (!sc.Common.SCUtility.isMatche(CanNotServiceReason, reason))
+            {
+                CanNotServiceReason = reason;
+                return true;
+            }
+            return false;
+        }
     }
 }

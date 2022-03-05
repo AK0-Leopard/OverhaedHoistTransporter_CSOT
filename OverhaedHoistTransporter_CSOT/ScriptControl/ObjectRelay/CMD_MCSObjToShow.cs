@@ -17,9 +17,12 @@ namespace com.mirle.ibg3k0.sc.ObjectRelay
         private BLL.VehicleBLL VehicleBLL = null;
         public CMD_MCSObjToShow(BLL.VehicleBLL vehicleBLL, ACMD_MCS cmdMcs)
         {
+            sc.Common.SCUtility.TrimAllParameter(cmdMcs);
             cmd_mcs = cmdMcs;
             VehicleBLL = vehicleBLL;
         }
+
+
         public string CMD_ID { get { return cmd_mcs.CMD_ID; } }
         public string CARRIER_ID { get { return cmd_mcs.CARRIER_ID; } }
         public string VEHICLE_ID
@@ -59,7 +62,14 @@ namespace com.mirle.ibg3k0.sc.ObjectRelay
         public Nullable<System.DateTime> CMD_START_TIME { get { return cmd_mcs.CMD_START_TIME; } }
         public Nullable<System.DateTime> CMD_FINISH_TIME { get { return cmd_mcs.CMD_FINISH_TIME; } }
         public int REPLACE { get { return cmd_mcs.REPLACE; } }
+        public string GroupID { get { return cmd_mcs.DestPortGroupID; } }
+        public string Describe { get { return cmd_mcs.CanNotServiceReason; } }
 
+        public void setVTRANSFER(ACMD_MCS cmd_obj)
+        {
+            sc.Common.SCUtility.TrimAllParameter(cmd_obj);
+            cmd_mcs = cmd_obj;
+        }
     }
     //public class HCMD_MCSObjToShow
     //{

@@ -23,7 +23,7 @@ namespace com.mirle.ibg3k0.sc.BLL
         public void start(SCApplication _app)
         {
             OperateDB = new DB(_app.PortStationDao);
-            OperateCatch = new Catch(_app.getEQObjCacheManager());
+            OperateCatch = new Catch(_app.getEQObjCacheManager(), _app.getCommObjCacheManager());
         }
         public class DB
         {
@@ -147,9 +147,11 @@ namespace com.mirle.ibg3k0.sc.BLL
         public class Catch
         {
             EQObjCacheManager CacheManager;
-            public Catch(EQObjCacheManager _cache_manager)
+            CommObjCacheManager CommCacheManager;
+            public Catch(EQObjCacheManager _cache_manager, CommObjCacheManager _commCacehManager)
             {
                 CacheManager = _cache_manager;
+                CommCacheManager = _commCacehManager;
             }
             public List<APORTSTATION> loadPortStations()
             {
@@ -286,6 +288,21 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return SegmentInActive;
             }
 
+            public (bool isExist, string portGroupID) tryGetPortGroupID(string portID)
+            {
+                var port_group_port_infos = CommCacheManager.LoadPortGroupInfos();
+                var port_group_info = port_group_port_infos.Where(info => info.IsInclude(portID)).FirstOrDefault();
+                if (port_group_info != null)
+                    return (true, port_group_info.GROUP_ID);
+                else
+                    return (false, "");
+            }
+            public (bool isExist, Data.VO.PortGroupInfo portGroupInfo) tryGetPortGroupInfo(string groupID)
+            {
+                var port_group_port_infos = CommCacheManager.LoadPortGroupInfos();
+                var port_group_info = port_group_port_infos.Where(info => sc.Common.SCUtility.isMatche(info.GROUP_ID, groupID)).FirstOrDefault();
+                return (port_group_info != null, port_group_info);
+            }
 
 
         }

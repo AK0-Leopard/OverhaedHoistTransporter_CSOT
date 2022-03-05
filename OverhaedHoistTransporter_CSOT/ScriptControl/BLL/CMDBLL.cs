@@ -98,156 +98,165 @@ namespace com.mirle.ibg3k0.sc.BLL
         #region CMD_MCS
         public string doCheckMCSCommand(string command_id, string Priority, string carrier_id, string HostSource, string HostDestination, out string check_result)
         {
-            check_result = string.Empty;
-            string checkcode = SECSConst.HCACK_Confirm;
-            bool isSuccess = true;
-            int ipriority = 0;
-            string from_adr = string.Empty;
-            string to_adr = string.Empty;
-            E_VH_TYPE vh_type = E_VH_TYPE.None;
-            //確認命令是否已經執行中
-
-            if (isSuccess)
+            try
             {
-                var cmd_obj = scApp.CMDBLL.getCMD_MCSByID(command_id);
-                if (cmd_obj != null)
-                {
-                    check_result = $"MCS command id:{command_id} already exist.";
-                    return SECSConst.HCACK_Rejected_Already_Requested;
-                }
-            }
+                check_result = string.Empty;
+                string checkcode = SECSConst.HCACK_Confirm;
+                bool isSuccess = true;
+                int ipriority = 0;
+                string from_adr = string.Empty;
+                string to_adr = string.Empty;
+                E_VH_TYPE vh_type = E_VH_TYPE.None;
+                //確認命令是否已經執行中
 
-            if (isSuccess)
-            {
-                if (SCUtility.isMatche(HostSource, HostDestination))
+                if (isSuccess)
                 {
-                    check_result = $"MCS command of source port:{HostSource} and destination port:{HostDestination} is same.";
-                    return SECSConst.HCACK_Param_Invalid;
-                }
-            }
-
-            bool isSourceOnVehicle = scApp.VehicleBLL.getVehicleByRealID(HostSource) != null;
-            if (isSuccess)
-            {
-                if (isSourceOnVehicle)
-                {
-                    AVEHICLE carray_vh = scApp.VehicleBLL.getVehicleByRealID(HostSource);
-                    if (carray_vh.HAS_CST == 0)
+                    var cmd_obj = scApp.CMDBLL.getCMD_MCSByID(command_id);
+                    if (cmd_obj != null)
                     {
-                        check_result = $"Vh:{HostSource.Trim()},not carray cst.";
-                        return SECSConst.HCACK_Current_Not_Able_Execute;
+                        check_result = $"MCS command id:{command_id} already exist.";
+                        return SECSConst.HCACK_Rejected_Already_Requested;
                     }
-                    else if (!SCUtility.isMatche(carray_vh.CST_ID, carrier_id))
+                }
+
+                if (isSuccess)
+                {
+                    if (SCUtility.isMatche(HostSource, HostDestination))
                     {
-                        check_result = $"Vh:{HostSource.Trim()}, current carray cst id:{carray_vh.CST_ID} ,not matche host carrier id:{carrier_id}.";
-                        return SECSConst.HCACK_Current_Not_Able_Execute;
+                        check_result = $"MCS command of source port:{HostSource} and destination port:{HostDestination} is same.";
+                        return SECSConst.HCACK_Param_Invalid;
+                    }
+                }
+
+                bool isSourceOnVehicle = scApp.VehicleBLL.getVehicleByRealID(HostSource) != null;
+                if (isSuccess)
+                {
+                    if (isSourceOnVehicle)
+                    {
+                        AVEHICLE carray_vh = scApp.VehicleBLL.getVehicleByRealID(HostSource);
+                        if (carray_vh.HAS_CST == 0)
+                        {
+                            check_result = $"Vh:{HostSource.Trim()},not carray cst.";
+                            return SECSConst.HCACK_Current_Not_Able_Execute;
+                        }
+                        else if (!SCUtility.isMatche(carray_vh.CST_ID, carrier_id))
+                        {
+                            check_result = $"Vh:{HostSource.Trim()}, current carray cst id:{carray_vh.CST_ID} ,not matche host carrier id:{carrier_id}.";
+                            return SECSConst.HCACK_Current_Not_Able_Execute;
+                        }
+                        else
+                        {
+                            if (scApp.CMDBLL.getCMD_MCSIsUnfinishedCountByCarrierID(carrier_id) > 0)
+                            {
+                                check_result = $"Host carrier:{carrier_id} already have command.";
+                                return SECSConst.HCACK_Current_Not_Able_Execute;
+                            }
+                        }
                     }
                     else
                     {
-                        if (scApp.CMDBLL.getCMD_MCSIsUnfinishedCountByCarrierID(carrier_id) > 0)
+                        if (!scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type))
                         {
-                            check_result = $"Host carrier:{carrier_id} already have command.";
-                            return SECSConst.HCACK_Current_Not_Able_Execute;
+                            isSuccess = false;
+                            checkcode = SECSConst.HCACK_Param_Invalid;
+                            check_result = $"No find {nameof(HostSource)}={HostSource} of adr.";
+                        }
+                        //多判斷同樣的Source是否已經有命令存在且沒還被搬走，有的話要拒絕MCS命令
+                        if (isSuccess)
+                        {
+                            //ACMD_MCS waitting_cmd_mcs = getWatingCMD_MCSByFrom(HostSource);
+                            //bool has_waittring_transfer_cmd_mcs = waitting_cmd_mcs != null;
+                            bool has_waittring_transfer_cmd_mcs = hasWatingCmdMcsByFrom(HostSource);
+                            if (has_waittring_transfer_cmd_mcs)
+                            {
+                                isSuccess = false;
+                                checkcode = SECSConst.HCACK_Rejected_Already_Requested;
+                                check_result = $"MCS command id:{command_id} is same as orther mcs command of load port.";
+                            }
                         }
                     }
-                }
-                else
-                {
-                    if (!scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type))
+                    //if (!isSourceOnVehicle &&
+                    //!scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type))
+                    //{
+                    //    isSuccess = false;
+                    //    checkcode = SECSConst.HCACK_Param_Invalid;
+                    //    check_result = $"No find {nameof(HostSource)}={HostSource} of adr.";
+                    //}
+
+                    if (!scApp.MapBLL.getAddressID(HostDestination, out to_adr))
                     {
                         isSuccess = false;
                         checkcode = SECSConst.HCACK_Param_Invalid;
-                        check_result = $"No find {nameof(HostSource)}={HostSource} of adr.";
+                        check_result = $"No find {nameof(HostDestination)}={HostDestination} of adr.";
                     }
-                    //多判斷同樣的Source是否已經有命令存在且沒還被搬走，有的話要拒絕MCS命令
-                    if (isSuccess)
+                }
+                if (isSuccess)
+                {
+                    if (!int.TryParse(Priority, out ipriority))
                     {
-                        ACMD_MCS waitting_cmd_mcs = getWatingCMD_MCSByFrom(HostSource);
-                        bool has_waittring_transfer_cmd_mcs = waitting_cmd_mcs != null;
-                        if (has_waittring_transfer_cmd_mcs)
+                        isSuccess = false;
+                        checkcode = SECSConst.HCACK_Param_Invalid;
+                        check_result = $"The {nameof(Priority)}:[{Priority}] is invalid ";
+                    }
+                }
+                if (isSuccess)
+                {
+                    bool IsSegmentInActive_Source = true;
+                    bool IsSegmentInActive_Destination = true;
+                    if (!isSourceOnVehicle)
+                    {
+                        IsSegmentInActive_Source = scApp.MapBLL.CheckSegmentInActiveByPortID(HostSource);
+                        if (!IsSegmentInActive_Source)
                         {
-                            isSuccess = false;
-                            checkcode = SECSConst.HCACK_Rejected_Already_Requested;
-                            check_result = $"MCS command id:{command_id} is same as orther mcs command id " +
-                                           $"{SCUtility.Trim(waitting_cmd_mcs.CMD_ID, true)} of load port.";
+                            check_result = $"{nameof(HostSource)} : {HostSource} of segment is disable";
                         }
                     }
-                }
-                //if (!isSourceOnVehicle &&
-                //!scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type))
-                //{
-                //    isSuccess = false;
-                //    checkcode = SECSConst.HCACK_Param_Invalid;
-                //    check_result = $"No find {nameof(HostSource)}={HostSource} of adr.";
-                //}
-
-                if (!scApp.MapBLL.getAddressID(HostDestination, out to_adr))
-                {
-                    isSuccess = false;
-                    checkcode = SECSConst.HCACK_Param_Invalid;
-                    check_result = $"No find {nameof(HostDestination)}={HostDestination} of adr.";
-                }
-            }
-            if (isSuccess)
-            {
-                if (!int.TryParse(Priority, out ipriority))
-                {
-                    isSuccess = false;
-                    checkcode = SECSConst.HCACK_Param_Invalid;
-                    check_result = $"The {nameof(Priority)}:[{Priority}] is invalid ";
-                }
-            }
-            if (isSuccess)
-            {
-                bool IsSegmentInActive_Source = true;
-                bool IsSegmentInActive_Destination = true;
-                if (!isSourceOnVehicle)
-                {
-                    IsSegmentInActive_Source = scApp.MapBLL.CheckSegmentInActiveByPortID(HostSource);
-                    if (!IsSegmentInActive_Source)
+                    IsSegmentInActive_Destination = scApp.MapBLL.CheckSegmentInActiveByPortID(HostDestination);
+                    if (!IsSegmentInActive_Destination)
                     {
-                        check_result = $"{nameof(HostSource)} : {HostSource} of segment is disable";
+                        if (!SCUtility.isEmpty(check_result))
+                            check_result += "\n";
+                        check_result += $"{nameof(HostDestination)} : {HostDestination} of segment is disable";
+                    }
+                    if (!IsSegmentInActive_Source || !IsSegmentInActive_Destination)
+                    {
+                        isSuccess = false;
+                        checkcode = SECSConst.HCACK_Enabled_Route_Does_Not_Exist;
                     }
                 }
-                IsSegmentInActive_Destination = scApp.MapBLL.CheckSegmentInActiveByPortID(HostDestination);
-                if (!IsSegmentInActive_Destination)
+                //確認有VH可以派送
+                if (!isSourceOnVehicle && isSuccess)
                 {
-                    if (!SCUtility.isEmpty(check_result))
-                        check_result += "\n";
-                    check_result += $"{nameof(HostDestination)} : {HostDestination} of segment is disable";
+                    scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type);
+                    //AVEHICLE may_be_can_carry_vh = scApp.VehicleBLL.findBestSuitableVhStepByStepFromAdr(from_adr, vh_type
+                    //                                                                                    , is_check_has_vh_carry: true);
+                    AVEHICLE may_be_can_carry_vh = scApp.VehicleBLL.findBestSuitableVhStepByNearest(from_adr, vh_type
+                                                                                                        , is_check_has_vh_carry: true);
+                    if (may_be_can_carry_vh == null)
+                    {
+                        isSuccess = false;
+                        checkcode = SECSConst.HCACK_Current_Not_Able_Execute;
+                        check_result = "Can't find vehicle to carry";
+                    }
                 }
-                if (!IsSegmentInActive_Source || !IsSegmentInActive_Destination)
+                //確認Source 2 Traget可以通
+                if (!isSourceOnVehicle && isSuccess)
                 {
-                    isSuccess = false;
-                    checkcode = SECSConst.HCACK_Enabled_Route_Does_Not_Exist;
+                    if (!scApp.RouteGuide.checkRoadIsWalkableForMCSCommand(from_adr, to_adr))
+                    {
+                        isSuccess = false;
+                        checkcode = SECSConst.HCACK_Enabled_Route_Does_Not_Exist;
+                        check_result = "The road is not walkable, source to destination ";
+                    }
                 }
+                return checkcode;
             }
-            //確認有VH可以派送
-            if (!isSourceOnVehicle && isSuccess)
+            catch (Exception ex)
             {
-                scApp.MapBLL.getAddressID(HostSource, out from_adr, out vh_type);
-                //AVEHICLE may_be_can_carry_vh = scApp.VehicleBLL.findBestSuitableVhStepByStepFromAdr(from_adr, vh_type
-                //                                                                                    , is_check_has_vh_carry: true);
-                AVEHICLE may_be_can_carry_vh = scApp.VehicleBLL.findBestSuitableVhStepByNearest(from_adr, vh_type
-                                                                                                    , is_check_has_vh_carry: true);
-                if (may_be_can_carry_vh == null)
-                {
-                    isSuccess = false;
-                    checkcode = SECSConst.HCACK_Current_Not_Able_Execute;
-                    check_result = "Can't find vehicle to carry";
-                }
+                logger.Error(ex, "Exception:");
+                check_result = $"check MCS command id:{command_id} ,has exception happend";
+                return SECSConst.HCACK_Current_Not_Able_Execute;
             }
-            //確認Source 2 Traget可以通
-            if (!isSourceOnVehicle && isSuccess)
-            {
-                if (!scApp.RouteGuide.checkRoadIsWalkableForMCSCommand(from_adr, to_adr))
-                {
-                    isSuccess = false;
-                    checkcode = SECSConst.HCACK_Enabled_Route_Does_Not_Exist;
-                    check_result = "The road is not walkable, source to destination ";
-                }
-            }
-            return checkcode;
         }
 
         public bool doCreatMCSCommand(string command_id, string Priority, string replace, string carrier_id, string HostSource, string HostDestination, string checkcode)
@@ -772,6 +781,24 @@ namespace com.mirle.ibg3k0.sc.BLL
             return cmd_mcs;
         }
 
+        public bool hasWatingCmdMcsByFrom(string hostSource)
+        {
+            try
+            {
+                int count = 0;
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    count = cmd_mcsDao.getWatingCMDMCSByFromOfCount(con, hostSource);
+                }
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                throw ex;
+            }
+        }
+
         public int getCMD_MCSIsQueueCount()
         {
             //using (DBConnection_EF con = new DBConnection_EF())
@@ -937,8 +964,10 @@ namespace com.mirle.ibg3k0.sc.BLL
                         return;
 
                     List<ACMD_MCS> unfinish_mcs_cmd = scApp.CMDBLL.loadACMD_MCSIsUnfinished();
-                    ALINE line = scApp.getEQObjCacheManager().getLine();
-                    line.CurrentExcuteMCSCommands = unfinish_mcs_cmd == null ? new List<ACMD_MCS>() : unfinish_mcs_cmd;
+                    unfinish_mcs_cmd.ForEach(cmd => cmd.setDestPortGroupID(scApp.PortStationBLL));
+                    //ALINE line = scApp.getEQObjCacheManager().getLine();
+                    //line.CurrentExcuteMCSCommands = unfinish_mcs_cmd == null ? new List<ACMD_MCS>() : unfinish_mcs_cmd;
+                    refreshACMD_MCSInfoList(unfinish_mcs_cmd);
 
                     if (scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSING
                         || scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSED)
@@ -948,12 +977,31 @@ namespace com.mirle.ibg3k0.sc.BLL
                         return;
 
                     if (unfinish_mcs_cmd == null || unfinish_mcs_cmd.Count == 0) return;
-                    List<ACMD_MCS> ACMD_MCSs = unfinish_mcs_cmd.Where(mcs_cmd => mcs_cmd.TRANSFERSTATE == E_TRAN_STATUS.Queue).
+                    List<ACMD_MCS> queue_cmd_mcs = unfinish_mcs_cmd.Where(mcs_cmd => mcs_cmd.TRANSFERSTATE == E_TRAN_STATUS.Queue).
                                                ToList();
-                    if (ACMD_MCSs != null && ACMD_MCSs.Count > 0)
+                    List<ACMD_MCS> excute_cmd_mcs = unfinish_mcs_cmd.Where(mcs_cmd => mcs_cmd.TRANSFERSTATE > E_TRAN_STATUS.Queue).
+                                               ToList();
+
+
+                    if (queue_cmd_mcs != null && queue_cmd_mcs.Count > 0)
                     {
-                        foreach (ACMD_MCS waitting_excute_mcs_cmd in ACMD_MCSs)
+                        foreach (ACMD_MCS waitting_excute_mcs_cmd in queue_cmd_mcs)
                         {
+                            //由於要避免同時多台車前往同一個Bay/群組進行搬送貨物造成堵塞，
+                            //因此加入Port group的管理
+                            var chcek_desc_port_group_enough_result = IsPortGroupCarryingCapacityEnough(waitting_excute_mcs_cmd, excute_cmd_mcs);
+                            if (DebugParameter.isOpenPortGroupLimit && !chcek_desc_port_group_enough_result.isEnough)
+                            {
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: "OHx",
+                                   Data: $"Cmd ID:{SCUtility.Trim(waitting_excute_mcs_cmd.CMD_ID, true)} source:{SCUtility.Trim(waitting_excute_mcs_cmd.HOSTSOURCE, true)} dest:{SCUtility.Trim(waitting_excute_mcs_cmd.HOSTDESTINATION, true)} will pass excute," +
+                                         $"because dest group:{waitting_excute_mcs_cmd.DestPortGroupID} is over load.reason:{chcek_desc_port_group_enough_result.reason}");
+                                SetTransferCommandNGReason(waitting_excute_mcs_cmd.CMD_ID, chcek_desc_port_group_enough_result.reason);
+                                continue;
+                            }
+                            else
+                            {
+                                SetTransferCommandNGReason(waitting_excute_mcs_cmd.CMD_ID, "");
+                            }
                             //ACMD_MCS excute_cmd = ACMD_MCSs[0];
                             string hostsource = waitting_excute_mcs_cmd.HOSTSOURCE;
                             string hostdest = waitting_excute_mcs_cmd.HOSTDESTINATION;
@@ -1016,9 +1064,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                                     bool isSuccess = true;
                                     //int total_priority = waitting_excute_mcs_cmd.PRIORITY + waitting_excute_mcs_cmd.TIME_PRIORITY + waitting_excute_mcs_cmd.PORT_PRIORITY;
                                     isSuccess &= scApp.CMDBLL.doCreatTransferCommand(vehicleId, waitting_excute_mcs_cmd.CMD_ID, waitting_excute_mcs_cmd.CARRIER_ID,
-                                                        cmd_type,
-                                                        from_adr,
-                                                        to_adr, waitting_excute_mcs_cmd.PRIORITY_SUM, 0);
+                                                       cmd_type,
+                                                       from_adr,
+                                                       to_adr, waitting_excute_mcs_cmd.PRIORITY_SUM, 0);
                                     //在找到車子後先把它改成PreInitial，防止Timer再找到該筆命令
                                     if (isSuccess)
                                     {
@@ -1042,6 +1090,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                                     if (isSuccess)
                                     {
                                         tx.Complete();
+                                        break;
                                     }
                                     else
                                     {
@@ -1073,6 +1122,103 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
         }
 
+        private void refreshACMD_MCSInfoList(List<ACMD_MCS> currentExcuteMCSCmd)
+        {
+            try
+            {
+                bool has_change = false;
+                List<string> new_current_excute_mcs_cmd = currentExcuteMCSCmd.Select(cmd => SCUtility.Trim(cmd.CMD_ID, true)).ToList();
+                List<string> old_current_excute_mcs_cmd = ACMD_MCS.MCS_CMD_InfoList.Keys.ToList();
+
+                List<string> new_add_mcs_cmds = new_current_excute_mcs_cmd.Except(old_current_excute_mcs_cmd).ToList();
+                //1.新增多出來的命令
+                foreach (string new_cmd in new_add_mcs_cmds)
+                {
+                    ACMD_MCS new_cmd_obj = new ACMD_MCS();
+                    var current_cmd = currentExcuteMCSCmd.Where(cmd => SCUtility.isMatche(cmd.CMD_ID, new_cmd)).FirstOrDefault();
+                    if (current_cmd == null) continue;
+                    new_cmd_obj.put(current_cmd);
+                    ACMD_MCS.MCS_CMD_InfoList.TryAdd(new_cmd, new_cmd_obj);
+                    has_change = true;
+                }
+                //2.刪除已經結束的命令
+                List<string> will_del_mcs_cmds = old_current_excute_mcs_cmd.Except(new_current_excute_mcs_cmd).ToList();
+                foreach (string old_cmd in will_del_mcs_cmds)
+                {
+                    ACMD_MCS.MCS_CMD_InfoList.TryRemove(old_cmd, out ACMD_MCS cmd_mcs);
+                    has_change = true;
+                }
+                //3.更新現有命令
+                foreach (var mcs_cmd_item in ACMD_MCS.MCS_CMD_InfoList)
+                {
+                    string cmd_mcs_id = mcs_cmd_item.Key;
+                    ACMD_MCS cmd_mcs = currentExcuteMCSCmd.Where(cmd => SCUtility.isMatche(cmd.CMD_ID, cmd_mcs_id)).FirstOrDefault();
+                    if (cmd_mcs == null)
+                    {
+                        continue;
+                    }
+                    if (mcs_cmd_item.Value.put(cmd_mcs))
+                    {
+                        has_change = true;
+                    }
+                    if (mcs_cmd_item.Value.TRANSFERSTATE != E_TRAN_STATUS.Queue &&
+                       !SCUtility.isEmpty(mcs_cmd_item.Value.CanNotServiceReason))
+                    {
+                        mcs_cmd_item.Value.CanNotServiceReason = string.Empty;
+                        has_change = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                NLog.LogManager.GetCurrentClassLogger().Error(ex, "Exception");
+            }
+        }
+        private void SetTransferCommandNGReason(string cmdID, string reason)
+        {
+            bool is_exist = ACMD_MCS.MCS_CMD_InfoList.TryGetValue(SCUtility.Trim(cmdID), out var cmd_mcs_obj);
+            if (is_exist)
+            {
+                cmd_mcs_obj.setCanNotServiceReason(reason);
+            }
+        }
+
+        private (bool isEnough, string reason) IsPortGroupCarryingCapacityEnough(ACMD_MCS waitting_excute_mcs_cmd, List<ACMD_MCS> excute_cmd_mcs)
+        {
+            var get_watting_excute_cmd_group_id_result = waitting_excute_mcs_cmd.tryGetDestPortGroupID(scApp.PortStationBLL);
+            if (!get_watting_excute_cmd_group_id_result.isExist)
+                return (true, "");
+
+            string will_excute_cmd_group_id = get_watting_excute_cmd_group_id_result.portGroupID;
+            var current_excute_mcs_cmds = excute_cmd_mcs.ToList();
+            int current_same_group_excute_cmd_count = current_excute_mcs_cmds.
+                                                      Where(cmd => IsDescSamePortGroup(cmd, will_excute_cmd_group_id)).
+                                                      Count();
+
+            var get_info_result = scApp.PortStationBLL.OperateCatch.tryGetPortGroupInfo(will_excute_cmd_group_id);
+            if (get_info_result.isExist)
+            {
+                var group_port_info = get_info_result.portGroupInfo;
+                if (current_same_group_excute_cmd_count < group_port_info.MAX_COUNT)
+                {
+                    return (true, "");
+                }
+                else
+                {
+                    return (false, $"目前已有{current_same_group_excute_cmd_count}笔命令准备前往Group:{group_port_info.GROUP_ID},等待命令结束...");
+                }
+            }
+            else
+            {
+                return (true, "");
+            }
+        }
+        private bool IsDescSamePortGroup(ACMD_MCS currentExcuteCmd, string waitExcuteGroupPortID)
+        {
+            var get_current_excute_cmd_group_id_result = currentExcuteCmd.tryGetDestPortGroupID(scApp.PortStationBLL);
+            if (!get_current_excute_cmd_group_id_result.isExist) return false;
+            return SCUtility.isMatche(get_current_excute_cmd_group_id_result.portGroupID, waitExcuteGroupPortID);
+        }
 
         public bool assignCommnadToVehicleByCommandShift(string vh_id, ACMD_MCS cmdMCS)
         {
@@ -3439,7 +3585,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 SectionBLL sectionBLL = app.SectionBLL;
                 List<string> busy_segment = new List<string>();
                 if (sc.App.SystemParameter.ChangePathCommandCount == 0) return busy_segment;
-                var current_acmd_mcs = app.getEQObjCacheManager().getLine().CurrentExcuteMCSCommands;
+                //var current_acmd_mcs = app.getEQObjCacheManager().getLine().CurrentExcuteMCSCommands;
+                var current_acmd_mcs = ACMD_MCS.MCS_CMD_InfoList.Values.ToList();
 
                 //1.先找出準備要去Load的 vh 路段
                 var will_to_load_mcs_cmd =
@@ -3479,20 +3626,6 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return busy_section;
             }
 
-
-            public List<ACMD_MCS> loadExcuteAndNonLoaded()
-            {
-                var current_mcs_cmds_temp = app.getEQObjCacheManager().getLine().CurrentExcuteMCSCommands;
-                if (current_mcs_cmds_temp == null) return new List<ACMD_MCS>();
-                //1.找出目前所有的Transfer command且尚未載到貨的
-                //2.如果準備去執行的OHT已經在Load Port的Segment就不執行
-                List<ACMD_MCS> mcs_cmds =
-                    current_mcs_cmds_temp.Where(cmd =>
-                    cmd.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE && cmd.COMMANDSTATE <= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE).
-                    ToList();
-
-                return mcs_cmds;
-            }
 
             public bool hasCMD_OHTC_Excute(string vhID)
             {

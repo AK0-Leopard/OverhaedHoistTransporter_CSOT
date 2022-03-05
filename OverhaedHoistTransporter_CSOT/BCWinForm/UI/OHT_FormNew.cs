@@ -770,7 +770,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         //}
         private void updateTransferCommand(ALINE line)
         {
-            List<ACMD_MCS> ACMD_MCSs = line.CurrentExcuteMCSCommands;
+            //List<ACMD_MCS> ACMD_MCSs = line.CurrentExcuteMCSCommands;
+            List<ACMD_MCS> ACMD_MCSs = ACMD_MCS.MCS_CMD_InfoList.Values.ToList();
             cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
             //cmd_mcs_obj_to_show = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinishedObjToShow();
             cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
