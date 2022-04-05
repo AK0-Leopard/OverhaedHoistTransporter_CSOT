@@ -916,6 +916,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Doc\SPEC\OHTC Format_1.0.05.pdf" />
+    <None Include="Doc\SPEC\OHTC Format_1.0.06.xlsx" />
+    <None Include="Doc\SPEC\OHTC Format_1.0.09.xlsx" />
+    <None Include="Doc\SPEC\OHTC Format_1.0.10.xlsx" />
+    <None Include="Doc\SPEC\OHTC Format_1.0.11.xlsx" />
+    <None Include="Doc\SPEC\OHTC Format_1.0.12.xlsx" />
     <None Include="Image\single_0.png" />
     <None Include="Image\single_1.png" />
     <None Include="Image\single_2.png" />
