@@ -1,0 +1,83 @@
+﻿// See README.txt for information and build instructions.
+//
+// Note: START and END tags are used in comments to define sections used in
+// tutorials.  They are not part of the syntax for Protocol Buffers.
+//
+// To get an in-depth walkthrough of this file and the related examples, see:
+// https://developers.google.com/protocol-buffers/docs/tutorials
+
+// [START declaration]
+syntax = "proto3";
+package tutorial;
+// [END declaration]
+
+// [START java_declaration]
+option java_package = "com.example.tutorial";
+option java_outer_classname = "AddressBookProtos";
+// [END java_declaration]
+
+// [START csharp_declaration]
+option csharp_namespace = "com.mirle.iibg3k0.ids.ProtocolFormat.OHTMessage";
+// [END csharp_declaration]
+
+// [START messages]
+
+  enum VHModeStatus {
+    None = 0;
+    Initial_Power_OFF = 1;
+    Initial_Power_ON = 2;
+    Manual = 3;
+    Auto_Remote = 4;
+    Auto_Local = 5;
+  }
+     enum VHActionStatus {
+    NonAction = 0;
+    Action = 1;
+    Home = 2;
+    Teaching = 3;
+    GripperTeaching = 4;
+    CycleRun = 5;
+  }
+    enum VhStopSingle{
+    StopSingle_Off = 0;
+	StopSingle_On = 1;
+  }
+
+ enum EventType {
+    LoadArrivals = 0;
+    LoadComplete = 1;
+    UnloadArrivals = 2;
+    UnloadComplete = 3;
+	AdrOrMoveArrivals =4;
+	AdrPass = 5;
+    MovePause = 6;
+    MoveRestart = 7;
+	BlockReq = 8;
+	HIDReq = 9;
+	VHLoading = 11;
+	VHUnloading = 12;
+	VHMoveArrivals = 13;
+	BlockRelease = 21;
+	HIDRelease = 22;
+	BlockHIDRelease = 23;
+  }
+  enum VhLoadCSTStatus{
+    NotExist  = 0;
+    Exist = 1;
+  }
+  enum VhGuideStatus{
+    Unlock = 0;
+	Lock = 1;
+  }
+  message ID_134_TRANS_EVENT_REP {
+    EventType EventType = 1;
+	string CurrentAdrID = 2;
+	string CurrentSecID = 3;
+	VhLoadCSTStatus HasCST = 4;	
+	string CST_ID = 5;
+	VhGuideStatus LeftGuideLockStatus = 6;
+	VhGuideStatus RightGuideLockStatus = 7;
+	int32 Sec_Distance = 8;
+  }
+ 
+// [END messages]

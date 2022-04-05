@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>com.mirle.iibg3k0.ids.ohxc</RootNamespace>
+	<RuntimeIdentifiers>win10-x64;ubuntu.16.10-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Compile Remove="ProtocolFormat\**" />
+    <Compile Remove="RouteKit\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="ProtocolFormat\**" />
+    <EmbeddedResource Remove="RouteKit\**" />
+    <None Remove="Models\**" />
+    <None Remove="ProtocolFormat\**" />
+    <None Remove="RouteKit\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Dao\BlockZoneMasterDao.cs" />
+    <Compile Remove="Data\Dao\SECTIONDao.cs" />
+    <Compile Remove="Data\Dao\SegmentDao.cs" />
+    <Compile Remove="Data\Service\VehicleService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.6.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="NLog" Version="4.5.6" />
+    <PackageReference Include="RedLock.net" Version="2.0.0" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
+    <PackageReference Include="STAN.Client" Version="0.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BlockControlFramework">
+      <HintPath>DLL\BlockControlFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="ScriptControl">
+      <HintPath>DLL\ScriptControl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DLL\BlockControlFramework.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "IntelligentRealTimeDetectionSystem_OHxC_Core": {
+      "commandName": "Project",
+      "commandLineArgs": "Taichung6F ams_ohxc2"
+    }
+  }
+}
