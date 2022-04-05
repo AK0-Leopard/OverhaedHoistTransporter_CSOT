@@ -922,6 +922,7 @@
     <None Include="Doc\SPEC\OHTC Format_1.0.10.xlsx" />
     <None Include="Doc\SPEC\OHTC Format_1.0.11.xlsx" />
     <None Include="Doc\SPEC\OHTC Format_1.0.12.xlsx" />
+    <None Include="Doc\SPEC\OHTC Format_1.0.04.xlsx" />
     <None Include="Image\single_0.png" />
     <None Include="Image\single_1.png" />
     <None Include="Image\single_2.png" />
