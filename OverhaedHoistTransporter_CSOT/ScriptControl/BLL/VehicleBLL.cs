@@ -2422,7 +2422,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 //    }
                 //}
                 if (obstacleVh.IS_PARKING &&
-                    !SCUtility.isEmpty(obstacleVh.PARK_ADR_ID))
+                    !SCUtility.isEmpty(obstacleVh.PARK_ADR_ID) &&
+                     SCUtility.isMatche(obstacleVh.PARK_ADR_ID, obstacleVh.CUR_ADR_ID))
                 {
                     //ExcuteAndFindParkZoneForDriveAway(obstacleVh);
                     //var workItem2 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, obstacleVh, FindTheParkZoneTheWay.IsOnParkZone);

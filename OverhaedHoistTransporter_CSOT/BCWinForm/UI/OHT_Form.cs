@@ -876,7 +876,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                     if (veicleObjShow != null)
                     {
                         int selectIndex = scApp.getEQObjCacheManager().CommonInfo.ObjectToShow_list.IndexOf(veicleObjShow);
-                        if (selectIndex >= 0)
+                        if (selectIndex >= 0 && selectIndex < dgv_vhStatus.RowCount)
                         {
                             if ((dgv_vhStatus.SelectedRows.Count > 0 && dgv_vhStatus.SelectedRows[0].Index != selectIndex) ||
                                 dgv_vhStatus.SelectedRows.Count == 0)

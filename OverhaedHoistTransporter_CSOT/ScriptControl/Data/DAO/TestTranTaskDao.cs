@@ -22,6 +22,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                 {
                     if (i == 0)
                         continue; //跳過第一行
+                    if (i % 10 != 0) continue; 
                     string cellData = row[i].ToString();
                     double icellData = 0;
                     if (double.TryParse(cellData, out icellData))

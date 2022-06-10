@@ -41,6 +41,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             ck_is_open_command_shift.Checked = DebugParameter.isOpenCommandShift;
             cb_isOpenAdjustmentParkingZone.Checked = DebugParameter.isOpenAdjustmentParkingZone;
             cb_IsOpenPortGroupLimit.Checked = DebugParameter.isOpenPortGroupLimit;
+            ck_CycleRunTest.Checked = DebugParameter.IsCycleRun;
+
 
 
             ch_force_pass_red_light_with_buzzer.Checked = DebugParameter.isForcePassFourColorLightRedWithBuzzerSignal;

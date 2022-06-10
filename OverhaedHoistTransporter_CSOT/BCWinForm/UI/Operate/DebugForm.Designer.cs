@@ -104,6 +104,7 @@
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.cb_IsOpenPortGroupLimit = new System.Windows.Forms.CheckBox();
             this.cb_isOpenAdjustmentParkingZone = new System.Windows.Forms.CheckBox();
             this.ck_is_open_command_shift = new System.Windows.Forms.CheckBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
@@ -377,7 +378,6 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.cb_IsOpenPortGroupLimit = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -928,6 +928,7 @@
             this.ck_CycleRunTest.TabIndex = 38;
             this.ck_CycleRunTest.Text = "Cycle Run Test";
             this.ck_CycleRunTest.UseVisualStyleBackColor = true;
+            this.ck_CycleRunTest.Visible = false;
             this.ck_CycleRunTest.CheckedChanged += new System.EventHandler(this.ck_CycleRunTest_CheckedChanged);
             // 
             // cb_pauseFirst
@@ -1314,6 +1315,18 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // cb_IsOpenPortGroupLimit
+            // 
+            this.cb_IsOpenPortGroupLimit.AutoSize = true;
+            this.cb_IsOpenPortGroupLimit.Location = new System.Drawing.Point(1100, 63);
+            this.cb_IsOpenPortGroupLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_IsOpenPortGroupLimit.Name = "cb_IsOpenPortGroupLimit";
+            this.cb_IsOpenPortGroupLimit.Size = new System.Drawing.Size(269, 26);
+            this.cb_IsOpenPortGroupLimit.TabIndex = 28;
+            this.cb_IsOpenPortGroupLimit.Text = "Is Open Port Group Limit";
+            this.cb_IsOpenPortGroupLimit.UseVisualStyleBackColor = true;
+            this.cb_IsOpenPortGroupLimit.CheckedChanged += new System.EventHandler(this.cb_IsOpenPortGroupLimit_CheckedChanged);
             // 
             // cb_isOpenAdjustmentParkingZone
             // 
@@ -2662,7 +2675,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(85, 6);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(85, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4626,18 +4639,6 @@
             this.MaxAllowActionTimeSecond_Set_btn.Text = "Set";
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
-            // 
-            // cb_IsOpenPortGroupLimit
-            // 
-            this.cb_IsOpenPortGroupLimit.AutoSize = true;
-            this.cb_IsOpenPortGroupLimit.Location = new System.Drawing.Point(1100, 63);
-            this.cb_IsOpenPortGroupLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cb_IsOpenPortGroupLimit.Name = "cb_IsOpenPortGroupLimit";
-            this.cb_IsOpenPortGroupLimit.Size = new System.Drawing.Size(269, 26);
-            this.cb_IsOpenPortGroupLimit.TabIndex = 28;
-            this.cb_IsOpenPortGroupLimit.Text = "Is Open Port Group Limit";
-            this.cb_IsOpenPortGroupLimit.UseVisualStyleBackColor = true;
-            this.cb_IsOpenPortGroupLimit.CheckedChanged += new System.EventHandler(this.cb_IsOpenPortGroupLimit_CheckedChanged);
             // 
             // DebugForm
             // 

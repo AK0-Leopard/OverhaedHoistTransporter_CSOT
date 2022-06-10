@@ -1115,6 +1115,10 @@ namespace com.mirle.ibg3k0.sc.BLL
                         }
                     }
                 }
+                catch(Exception ex)
+                {
+                    logger.Error(ex, "Exception");
+                }
                 finally
                 {
                     System.Threading.Interlocked.Exchange(ref syncTranCmdPoint, 0);

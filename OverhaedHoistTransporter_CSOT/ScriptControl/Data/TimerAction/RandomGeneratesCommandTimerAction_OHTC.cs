@@ -139,7 +139,9 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
 
                     if (scApp.BC_ID == SCAppConstants.WorkVersion.VERSION_NAME_TAICHUNG6F ||
                         scApp.BC_ID == SCAppConstants.WorkVersion.VERSION_NAME_TAICHUNG ||
-                        scApp.BC_ID == SCAppConstants.WorkVersion.VERSION_NAME_CSOT_T4)
+                        scApp.BC_ID == SCAppConstants.WorkVersion.VERSION_NAME_CSOT_T4 ||
+                        scApp.BC_ID == "CSOT_T4_PH1PH2"
+                        )
                     {
                         Taichung();
                     }
@@ -182,10 +184,10 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
         private void Taichung()
         {
             tryCreatMCSCommand(E_VH_TYPE.None, SourcePorts_None);
-            tryCreatMCSCommand(E_VH_TYPE.None, SourcePorts_Clear);
-            tryCreatMCSCommand(E_VH_TYPE.None, SourcePorts_Dirty);
-            tryCreatMCSCommand(E_VH_TYPE.Clean, SourcePorts_Clear);
-            tryCreatMCSCommand(E_VH_TYPE.Dirty, SourcePorts_Dirty);
+            //tryCreatMCSCommand(E_VH_TYPE.None, SourcePorts_Clear);
+            //tryCreatMCSCommand(E_VH_TYPE.None, SourcePorts_Dirty);
+            //tryCreatMCSCommand(E_VH_TYPE.Clean, SourcePorts_Clear);
+            //tryCreatMCSCommand(E_VH_TYPE.Dirty, SourcePorts_Dirty);
         }
 
         private void tryCreatMCSCommand(E_VH_TYPE vh_type, List<string> load_port_lst)
@@ -227,7 +229,9 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
                     //(destination_port_station != null))
                     if (source_port_station != null && destination_port_station != null)
                     {
-
+                        bool is_walk_able = scApp.RouteGuide.checkRoadIsWalkable(source_port_station.ADR_ID, destination_port_station.ADR_ID);
+                        if (!is_walk_able)
+                            continue;
                         //carrier_id = $"{tranTask.SourcePort}To{tranTask.DestinationPort}";
                         //carrier_id = source_port_station.CST_ID;
                         //carrier_id = $"{SCUtility.Trim(source_port_station.PORT_ID, true)}To{SCUtility.Trim(destination_port_station.PORT_ID, true)}";
@@ -253,7 +257,7 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
             string cmdID = DateTime.Now.ToString("yyyyMMddHHmmssfffff");
             scApp.CMDBLL.doCreatMCSCommand(cmdID, "0", "0", carrier_id, source_port, destn_port, SECSConst.HCACK_Confirm);
             scApp.SysExcuteQualityBLL.creatSysExcuteQuality(cmdID, carrier_id, source_port, destn_port);
-            SpinWait.SpinUntil(() => false, 10000);
+            SpinWait.SpinUntil(() => false, 1000);
             scApp.CMDBLL.checkMCS_TransferCommand();
         }
     }
