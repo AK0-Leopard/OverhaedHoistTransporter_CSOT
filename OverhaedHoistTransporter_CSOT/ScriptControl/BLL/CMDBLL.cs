@@ -420,6 +420,12 @@ namespace com.mirle.ibg3k0.sc.BLL
             {
                 ACMD_MCS cmd = cmd_mcsDao.getByID(con, cmd_id);
                 cmd.TRANSFERSTATE = status;
+
+                if (status == E_TRAN_STATUS.Queue)
+                {
+                    cmd.COMMANDSTATE = 0;
+                    cmd.PAUSEFLAG = "";
+                }
                 cmd_mcsDao.update(con, cmd);
             }
             return isSuccess;
@@ -2354,6 +2360,22 @@ namespace com.mirle.ibg3k0.sc.BLL
             if (obj != null)
             {
                 System.Runtime.Remoting.Messaging.CallContext.SetData(key, obj);
+            }
+        }
+
+        public string GetCmdMCSPauseFlag(string cmdMcsID)
+        {
+            try
+            {
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    return cmd_mcsDao.GetCmdPauseFlag(con, cmdMcsID);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+                return "";
             }
         }
 

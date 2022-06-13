@@ -1724,39 +1724,22 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
         }
         //public void doTransferCommandFinish(Equipment eqpt)
-        public bool doTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus, bool isCommandCompleteByCmdShift = false)
+        //public bool doTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus, bool isCommandCompleteByCmdShift = false)
+        public bool doTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus)
         {
             bool isSuccess = true;
             //1.
             try
             {
+                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
+                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
                 scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
                 //TODO 再Update沒有成功這件事情要分成兩個部分，1.沒有找到該筆Command (要回復VH)2.發生Exection(不回復VH)。
-                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
                 string mcs_cmd_id = vh.MCS_CMD;
+                isSuccess = initialVhCommandInfoAndFinishCMD_OHTC(vh, cmd_id, ohtc_cmd_status);
 
-                //vh.startAdr = null;
-                vh.FromAdr = null;
-                vh.ToAdr = null;
-                vh.CMD_CST_ID = null;
-                vh.CMD_Priority = 0;
-                vh.CmdType = E_CMD_TYPE.Home;
-
-                vh.PredictPath = null;
-                vh.WillPassSectionID = null;
-                vh.CyclingPath = null;
-                vh.procProgress_Percen = 0;
-                vh.vh_CMD_Status = E_CMD_STATUS.NormalEnd;
-
-                vh.VehicleUnassign();
-                vh.Stop();
-
-                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
-
-                //isSuccess &= scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(cmd_id, E_CMD_STATUS.NormalEnd);
-                isSuccess &= scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(cmd_id, ohtc_cmd_status);
-
-                if (!SCUtility.isEmpty(mcs_cmd_id) && !isCommandCompleteByCmdShift)
+                //if (!SCUtility.isEmpty(mcs_cmd_id) && !isCommandCompleteByCmdShift)
+                if (!SCUtility.isEmpty(mcs_cmd_id))
                 {
                     E_TRAN_STATUS mcs_cmd_tran_status = CompleteStatusToETransferStatus(completeStatus);
                     //isSuccess &= scApp.SysExcuteQualityBLL.updateSysExecQity_CmdFinish(vh.MCS_CMD);
@@ -1767,7 +1750,6 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
                 //isSuccess &= scApp.CMDBLL.updateCommand_OHTC_StatusByVhID(vh_id, E_CMD_STATUS.NormalEnd);
                 //updateVehicleExcuteCMD(vh_id, string.Empty, string.Empty);
-                vh.NotifyVhExcuteCMDStatusChange();
             }
             catch (Exception ex)
             {
@@ -1809,6 +1791,143 @@ namespace com.mirle.ibg3k0.sc.BLL
             //mcsDefaultMapAction.sendS6F11_common(SECSConst.CEID_Vehicle_Unassigned, eq_id);
             //mcsDefaultMapAction.sendS6F11_common(SECSConst.CEID_Transfer_Completed, eq_id);
             //scApp.VIDBLL.initialVIDCommandInfo(eq_id);
+        }
+        public bool doTransferCommandFinishWhneCommandShift(string vh_id, string cmd_id, CompleteStatus completeStatus)
+        {
+            bool isSuccess = true;
+            //1.
+            try
+            {
+                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
+                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
+                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
+                string mcs_cmd_id = vh.MCS_CMD;
+                isSuccess = initialVhCommandInfoAndFinishCMD_OHTC(vh, cmd_id, ohtc_cmd_status);
+
+                //如果是Command shift，就不用進行將原本的MCS命令結束的流程
+                if (!SCUtility.isEmpty(mcs_cmd_id))
+                {
+                    //Not thing...
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
+        public bool doTransferCommandFinishWhneInterruptThenReturnToQueue
+            (string vh_id, string cmd_id, CompleteStatus completeStatus)
+        {
+            bool isSuccess = true;
+            //1.
+            try
+            {
+                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
+                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
+                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
+                string mcs_cmd_id = vh.MCS_CMD;
+                isSuccess = initialVhCommandInfoAndFinishCMD_OHTC(vh, cmd_id, ohtc_cmd_status);
+
+                //如果是Command Interrupt Then Return To Queue，在命令結束後，要將該命令改回Queue
+                if (!SCUtility.isEmpty(mcs_cmd_id))
+                {
+                    scApp.CMDBLL.updateCMD_MCS_TranStatus(mcs_cmd_id, E_TRAN_STATUS.Queue);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
+
+
+        private bool initialVhCommandInfoAndFinishCMD_OHTC(AVEHICLE vh, string cmd_id, E_CMD_STATUS ohtc_cmd_status)
+        {
+            try
+            {
+
+                bool isSuccess = false;
+                //vh.startAdr = null;
+                vh.FromAdr = null;
+                vh.ToAdr = null;
+                vh.CMD_CST_ID = null;
+                vh.CMD_Priority = 0;
+                vh.CmdType = E_CMD_TYPE.Home;
+
+                vh.PredictPath = null;
+                vh.WillPassSectionID = null;
+                vh.CyclingPath = null;
+                vh.procProgress_Percen = 0;
+                vh.vh_CMD_Status = E_CMD_STATUS.NormalEnd;
+
+                vh.VehicleUnassign();
+                vh.Stop();
+
+
+                //isSuccess &= scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(cmd_id, E_CMD_STATUS.NormalEnd);
+                isSuccess = scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(cmd_id, ohtc_cmd_status);
+
+                vh.NotifyVhExcuteCMDStatusChange();
+
+                return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return false;
+            }
+        }
+
+        public bool doSpcialTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus)
+        {
+            bool isSuccess = true;
+            //1.
+            try
+            {
+                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
+                //TODO 再Update沒有成功這件事情要分成兩個部分，1.沒有找到該筆Command (要回復VH)2.發生Exection(不回復VH)。
+                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
+                string mcs_cmd_id = vh.MCS_CMD;
+
+                //vh.startAdr = null;
+                vh.FromAdr = null;
+                vh.ToAdr = null;
+                vh.CMD_CST_ID = null;
+                vh.CMD_Priority = 0;
+                vh.CmdType = E_CMD_TYPE.Home;
+
+                vh.PredictPath = null;
+                vh.WillPassSectionID = null;
+                vh.CyclingPath = null;
+                vh.procProgress_Percen = 0;
+                vh.vh_CMD_Status = E_CMD_STATUS.NormalEnd;
+
+                vh.VehicleUnassign();
+                vh.Stop();
+
+                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
+
+                isSuccess &= scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(cmd_id, ohtc_cmd_status);
+
+                if (!SCUtility.isEmpty(mcs_cmd_id))
+                {
+                    E_TRAN_STATUS mcs_cmd_tran_status = CompleteStatusToETransferStatus(completeStatus);
+                    scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd_id, mcs_cmd_tran_status);
+                    scApp.SysExcuteQualityBLL.doCommandFinish(mcs_cmd_id, completeStatus, ohtc_cmd_status);
+                }
+                vh.NotifyVhExcuteCMDStatusChange();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
+            return isSuccess;
+
         }
 
 

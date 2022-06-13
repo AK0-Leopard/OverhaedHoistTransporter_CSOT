@@ -23,6 +23,11 @@ namespace com.mirle.ibg3k0.sc
             }
             return sections[0].SEG_NUM;
         }
+        public bool IsTransferCmdByMCS
+        {
+            get { return !Common.SCUtility.isEmpty(CMD_ID_MCS); }
+        }
+
         public HCMD_OHTC ToHCMD_OHTC()
         {
             return new HCMD_OHTC()

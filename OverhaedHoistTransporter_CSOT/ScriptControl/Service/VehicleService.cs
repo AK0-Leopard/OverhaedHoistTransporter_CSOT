@@ -4023,8 +4023,9 @@ namespace com.mirle.ibg3k0.sc.Service
                                                     CMDCancelType actType = default(CMDCancelType);
                                                     if (mcs_cmd.TRANSFERSTATE < sc.E_TRAN_STATUS.Transferring)
                                                     {
-                                                        actType = CMDCancelType.CmdCancel;
-                                                        scApp.VehicleService.doCancelOrAbortCommandByMCSCmdID(mcs_cmd_id, actType);
+                                                        //actType = CMDCancelType.CmdCancel;
+                                                        //scApp.VehicleService.doCancelOrAbortCommandByMCSCmdID(mcs_cmd_id, actType);
+                                                        StartProcessCommandInterruptBeforeTransferring(eqpt);
                                                     }
                                                     else if (mcs_cmd.TRANSFERSTATE < sc.E_TRAN_STATUS.Canceling)
                                                     {
@@ -4067,14 +4068,10 @@ namespace com.mirle.ibg3k0.sc.Service
                                                 }
                                             }
                                         }
-
-
                                     }
-
                                 }
                             }
                         }
-
                     }
                 }
 
@@ -4161,6 +4158,60 @@ namespace com.mirle.ibg3k0.sc.Service
             //    }
             //}
             //}
+        }
+        private bool StartProcessCommandInterruptBeforeTransferring(AVEHICLE eqpt)
+        {
+            string excute_ohtc_cmd_id = eqpt.OHTC_CMD;
+            ACMD_OHTC cmd_ohtc = scApp.CMDBLL.getCMD_OHTCByID(excute_ohtc_cmd_id);
+            if (cmd_ohtc == null)
+                return false;
+            if (cmd_ohtc.IsTransferCmdByMCS)
+            {
+                string cmd_mcs_pause_flag = scApp.CMDBLL.GetCmdMCSPauseFlag(cmd_ohtc.CMD_ID_MCS);
+                if (SCUtility.isMatche(cmd_mcs_pause_flag, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_INTERRUPT_THEN_TO_QUEUE))
+                {
+                    return true;
+                }
+                using (TransactionScope tx = SCUtility.getTransactionScope())
+                {
+                    using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                    {
+                        scApp.CMDBLL.updateCMD_MCS_PauseFlag(cmd_ohtc.CMD_ID_MCS, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_INTERRUPT_THEN_TO_QUEUE);
+                        bool is_success = doAbortCommand(eqpt, excute_ohtc_cmd_id, CMDCancelType.CmdCancel); //A0.01
+                        if (is_success)
+                        {
+                            tx.Complete();
+                        }
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private (bool isSuccess, CMDCancelType cancelType) getCMDCancelType(AVEHICLE vh, ACMD_OHTC cmd_ohtc)
+        {
+            if (cmd_ohtc == null)
+                return (false, default(CMDCancelType));
+            switch (cmd_ohtc.CMD_TPYE)
+            {
+                case E_CMD_TYPE.Unload:
+                    return (true, CMDCancelType.CmdAbort);
+                case E_CMD_TYPE.LoadUnload:
+                    //if (vh.HAS_BOX == 1)
+                    if (vh.HAS_CST == 1)
+                    {
+                        return (true, CMDCancelType.CmdAbort);
+                    }
+                    else
+                    {
+                        return (true, CMDCancelType.CmdCancel);
+                    }
+                default:
+                    return (true, CMDCancelType.CmdCancel);
+            }
         }
 
         private VHModeStatus DecideVhModeStatus(string vh_id, string current_adr, VHModeStatus vh_current_mode_status)
@@ -4300,7 +4351,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 //        break;
                 //}
 
-                bool is_command_complete_by_command_shift = checkIsCommandCompleteByCommandShift(finish_mcs_cmd, completeStatus);
+                var chcek_is_special_cancel_command_result = checkIsCommandCompleteBySpecialCancel(finish_mcs_cmd, completeStatus);
                 List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
                 if (!SCUtility.isEmpty(finish_mcs_cmd))
                 {
@@ -4313,7 +4364,7 @@ namespace com.mirle.ibg3k0.sc.Service
                                 case CompleteStatus.CmpStatusCancel:
                                     //isSuccess = scApp.ReportBLL.newReportTransferCommandCancelFinish(eqpt.VEHICLE_ID, reportqueues);
                                     isSuccess = scApp.ReportBLL.newReportTransferCommandCancelFinish
-                                        (eqpt.VEHICLE_ID, reportqueues, is_command_complete_by_command_shift);
+                                        (eqpt.VEHICLE_ID, reportqueues, chcek_is_special_cancel_command_result.isSpecial);
                                     break;
                                 case CompleteStatus.CmpStatusAbort:
                                     isSuccess = scApp.ReportBLL.newReportTransferCommandAbortFinish(eqpt.VEHICLE_ID, reportqueues);
@@ -4368,7 +4419,22 @@ namespace com.mirle.ibg3k0.sc.Service
                     {
                         //isSuccess = scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id);
                         //isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus);
-                        isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus, is_command_complete_by_command_shift);
+                        if(chcek_is_special_cancel_command_result.isSpecial)
+                        {
+                            switch(chcek_is_special_cancel_command_result.cancelType)
+                            {
+                                case CommandCancelType.CommandShift:
+                                    isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneCommandShift(eqpt.VEHICLE_ID, cmd_id, completeStatus);
+                                    break;
+                                case CommandCancelType.InterruptThenToQueue:
+                                    isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneInterruptThenReturnToQueue(eqpt.VEHICLE_ID, cmd_id, completeStatus);
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus);
+                        }
                         isSuccess &= scApp.VIDBLL.initialVIDCommandInfo(eqpt.VEHICLE_ID);
 
                         //釋放尚未Release的Block
@@ -4641,27 +4707,44 @@ namespace com.mirle.ibg3k0.sc.Service
             }
         }
 
-        private bool checkIsCommandCompleteByCommandShift(string finish_mcs_cmd, CompleteStatus completeStatus)
+        private (bool isSpecial, CommandCancelType cancelType) checkIsCommandCompleteBySpecialCancel(string finish_mcs_cmd, CompleteStatus completeStatus)
         {
             try
             {
                 if (SCUtility.isEmpty(finish_mcs_cmd))
-                    return false;
+                    return (false, CommandCancelType.Normal);
                 if (completeStatus != CompleteStatus.CmpStatusCancel)
-                    return false;
+                    return (false, CommandCancelType.Normal);
                 var cmd_mcs = scApp.CMDBLL.getCMD_MCSByID(finish_mcs_cmd);
                 if (cmd_mcs == null)
-                    return false;
-                if (!SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT))
-                    return false;
-                return true;
+                    return (false, CommandCancelType.Normal);
+                if (SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT))
+                {
+                    return (true, CommandCancelType.CommandShift);
+                }
+                else if (SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_INTERRUPT_THEN_TO_QUEUE))
+                {
+                    return (true, CommandCancelType.InterruptThenToQueue);
+                }
+                else
+                {
+                    return (false, CommandCancelType.Normal);
+                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception:");
-                return false;
+                return (false, CommandCancelType.Normal);
             }
         }
+
+        enum CommandCancelType
+        {
+            Normal,
+            CommandShift,
+            InterruptThenToQueue
+        }
+
 
         const int STOP_EXCUTE_COMMAND_SHIFT_IDLE_VH_COUNT = 16;
         private bool tryToExcuteCommandShiftNew(AVEHICLE commandFinishVh)

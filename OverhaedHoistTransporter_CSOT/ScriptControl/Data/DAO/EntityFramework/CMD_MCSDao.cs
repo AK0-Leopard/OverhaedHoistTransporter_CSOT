@@ -229,6 +229,13 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
             return query.Count();
         }
 
+        internal string GetCmdPauseFlag(DBConnection_EF con, string cmdMcsID)
+        {
+            var query = from cmd in con.ACMD_MCS
+                        where cmd.CMD_ID == cmdMcsID.Trim()
+                        select cmd.PAUSEFLAG;
+            return query.FirstOrDefault();
+        }
     }
 
 }

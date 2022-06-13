@@ -451,10 +451,10 @@ namespace com.mirle.ibg3k0.sc.BLL
             return isSuccsess;
         }
 
-        public bool newReportTransferCommandCancelFinish(string vhID, List<AMCSREPORTQUEUE> reportqueues, bool isCommandCompleteByCmdShift)
+        public bool newReportTransferCommandCancelFinish(string vhID, List<AMCSREPORTQUEUE> reportqueues, bool isCommandCompleteBySpecialCancel)
         {
             bool isSuccsess = true;
-            if (!isCommandCompleteByCmdShift)
+            if (!isCommandCompleteBySpecialCancel)
             {
                 isSuccsess = isSuccsess && iBSEMDriver.S6F11SendTransferCancelCompleted(vhID, reportqueues);
             }
