@@ -2476,9 +2476,10 @@ namespace com.mirle.ibg3k0.sc.Service
                Data: $"Process block request,request block id:{req_block_id}",
                VehicleID: eqpt.VEHICLE_ID,
                CarrierID: eqpt.CST_ID);
+            ALINE line = scApp.getEQObjCacheManager().getLine();
             if (DebugParameter.isForcedPassBlockControl)
             {
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                    Data: "test flag: Force pass block control is open, will driect reply to vh can pass block",
                    VehicleID: eqpt.VEHICLE_ID,
                    CarrierID: eqpt.CST_ID);
@@ -2486,11 +2487,19 @@ namespace com.mirle.ibg3k0.sc.Service
             }
             else if (DebugParameter.isForcedRejectBlockControl)
             {
-                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                    Data: "test flag: Force reject block control is open, will driect reply to vh can't pass block",
                    VehicleID: eqpt.VEHICLE_ID,
                    CarrierID: eqpt.CST_ID);
-                return true;
+                return false;
+            }
+            else if (DebugParameter.isOpenPortBlockReqCheckFun && line.IsSystemLagHappending)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: "由於系統反應變慢，因此一律拒絕路權的要求。",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+                return false;
             }
             else
             {
@@ -4025,12 +4034,18 @@ namespace com.mirle.ibg3k0.sc.Service
                                                     {
                                                         //actType = CMDCancelType.CmdCancel;
                                                         //scApp.VehicleService.doCancelOrAbortCommandByMCSCmdID(mcs_cmd_id, actType);
-                                                        StartProcessCommandInterruptBeforeTransferring(eqpt);
+                                                        StartProcessCommandInterruptBeforeTransferring(vh);
                                                     }
                                                     else if (mcs_cmd.TRANSFERSTATE < sc.E_TRAN_STATUS.Canceling)
                                                     {
-                                                        actType = CMDCancelType.CmdAbort;
-                                                        scApp.VehicleService.doCancelOrAbortCommandByMCSCmdID(mcs_cmd_id, actType);
+                                                        //如果取到貨後，又即將前往該異常CV區放貨的，才需要將他的命令Abort
+                                                        string unload_port_seg = mcs_cmd.getUnloadPortSegment(scApp.PortStationBLL, scApp.SectionBLL);
+                                                        if (SCUtility.isMatche(unload_port_seg, section.SEG_NUM))
+                                                        {
+                                                            actType = CMDCancelType.CmdAbort;
+                                                            scApp.VehicleService.doCancelOrAbortCommandByMCSCmdID(mcs_cmd_id, actType);
+                                                        }
+
                                                     }
                                                     else
                                                     {
@@ -4419,9 +4434,9 @@ namespace com.mirle.ibg3k0.sc.Service
                     {
                         //isSuccess = scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id);
                         //isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus);
-                        if(chcek_is_special_cancel_command_result.isSpecial)
+                        if (chcek_is_special_cancel_command_result.isSpecial)
                         {
-                            switch(chcek_is_special_cancel_command_result.cancelType)
+                            switch (chcek_is_special_cancel_command_result.cancelType)
                             {
                                 case CommandCancelType.CommandShift:
                                     isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneCommandShift(eqpt.VEHICLE_ID, cmd_id, completeStatus);

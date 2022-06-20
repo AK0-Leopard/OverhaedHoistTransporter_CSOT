@@ -42,6 +42,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_isOpenAdjustmentParkingZone.Checked = DebugParameter.isOpenAdjustmentParkingZone;
             cb_IsOpenPortGroupLimit.Checked = DebugParameter.isOpenPortGroupLimit;
             ck_CycleRunTest.Checked = DebugParameter.IsCycleRun;
+            cb_blockReqCheckFun.Checked = DebugParameter.isOpenPortBlockReqCheckFun;
 
 
 
@@ -1675,6 +1676,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void cb_IsOpenPortGroupLimit_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.isOpenPortGroupLimit = cb_IsOpenPortGroupLimit.Checked;
+        }
+
+        private void cb_blockReqCheckFun_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.isOpenPortBlockReqCheckFun = cb_blockReqCheckFun.Checked;
         }
     }
 }

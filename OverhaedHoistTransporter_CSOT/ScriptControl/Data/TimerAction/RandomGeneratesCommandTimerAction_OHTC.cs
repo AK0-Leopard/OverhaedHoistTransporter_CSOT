@@ -194,7 +194,8 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
         {
             int vh_count = scApp.VehicleBLL.getActVhCount(vh_type);
             if (vh_count == 0 || load_port_lst == null) return;
-            int unfinished_cmd_count = scApp.CMDBLL.getCMD_MCSIsUnfinishedCount(load_port_lst);
+            //int unfinished_cmd_count = scApp.CMDBLL.getCMD_MCSIsUnfinishedCount(load_port_lst);
+            int unfinished_cmd_count = ACMD_MCS.MCS_CMD_InfoList.Count;
             int task_RandomIndex = 0;
             TranTask tranTask = null;
             APORTSTATION source_port_station = null;

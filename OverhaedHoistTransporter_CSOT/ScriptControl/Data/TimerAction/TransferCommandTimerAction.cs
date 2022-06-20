@@ -60,9 +60,12 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
             //}
             try
             {
+                line.SystemAliveCheck();
+                NLog.LogManager.GetLogger("TraceLog_ForAlive").Trace($"system lag happending:{line.IsSystemLagHappending}");
+
                 if (!line.MCSCommandAutoAssign)
                 {
-                    if (line.MCSAutoAssignLastOffTime.AddSeconds(MCS_Auto_Assign_Keep_sec)<DateTime.Now)
+                    if (line.MCSAutoAssignLastOffTime.AddSeconds(MCS_Auto_Assign_Keep_sec) < DateTime.Now)
                     {
                         line.MCSCommandAutoAssign = true;//如果太久沒有重新打開AutoAssign，就自動打開，避免命令一直不執行
                     }

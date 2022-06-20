@@ -1310,6 +1310,43 @@ namespace com.mirle.ibg3k0.sc
             }
         }
 
+        NLog.Logger SystemAliveLogger = NLog.LogManager.GetLogger("TraceLog_ForAlive");
+        private const int SYSTEM_ALIVE_SAFETY_TIMES = 3;
+        private const int JUDGE_SYSTEM_ALIVE_SAFETY_TIME_MS_MIN = 800;
+        private const int JUDGE_SYSTEM_ALIVE_SAFETY_TIME_MS_MAX = 1_500;
+        private const int JUDGE_SYSTEM_ALIVE_LAG_TIME_MS = 10_000;
+        int SystemAliveSafetyCount = 0;
+        private Stopwatch SystemAlive = new Stopwatch();
+        public void SystemAliveCheck()
+        {
+            if (SystemAlive.IsRunning && SystemAlive.ElapsedMilliseconds < JUDGE_SYSTEM_ALIVE_SAFETY_TIME_MS_MIN)
+            {
+                SystemAliveLogger.Trace($"system alive:{SystemAlive.ElapsedMilliseconds}，" +
+                                  $"小於{JUDGE_SYSTEM_ALIVE_SAFETY_TIME_MS_MIN}判斷為Lag後執行續塞車的情況");
+                return;
+            }
+
+            if (SystemAlive.ElapsedMilliseconds < JUDGE_SYSTEM_ALIVE_SAFETY_TIME_MS_MAX)
+            {
+                SystemAliveSafetyCount++;
+            }
+            else if (SystemAlive.ElapsedMilliseconds > JUDGE_SYSTEM_ALIVE_LAG_TIME_MS)
+            {
+                SystemAliveSafetyCount = 0;
+            }
+            SystemAliveLogger.Trace($"system alive:{SystemAlive.ElapsedMilliseconds}");
+            SystemAliveLogger.Trace($"system alive safety count:{SystemAliveSafetyCount}");
+
+            SystemAlive.Restart();
+        }
+        public bool IsSystemLagHappending
+        {
+            get
+            {
+                return SystemAlive.ElapsedMilliseconds > JUDGE_SYSTEM_ALIVE_LAG_TIME_MS ||
+                       SystemAliveSafetyCount <= SYSTEM_ALIVE_SAFETY_TIMES;
+            }
+        }
 
 
         #region TSC state machine
