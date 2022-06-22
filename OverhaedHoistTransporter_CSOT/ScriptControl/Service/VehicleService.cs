@@ -1881,12 +1881,17 @@ namespace com.mirle.ibg3k0.sc.Service
                         switch (eventType)
                         {
                             case EventType.Vhloading:
+                                Thread.Sleep(1);
                                 scApp.CMDBLL.updateCMD_MCS_TranStatus2Transferring(eqpt.MCS_CMD);
+                                Thread.Sleep(1);
                                 scApp.CMDBLL.updateCMD_MCS_CmdStatus2Loading(eqpt.MCS_CMD);
+                                Thread.Sleep(1);
                                 scApp.ReportBLL.newReportLoading(eqpt.VEHICLE_ID, reportqueues);
                                 break;
                             case EventType.Vhunloading:
+                                Thread.Sleep(1);
                                 scApp.CMDBLL.updateCMD_MCS_CmdStatus2Unloading(eqpt.MCS_CMD);
+                                Thread.Sleep(1);
                                 scApp.ReportBLL.newReportUnloading(eqpt.VEHICLE_ID, reportqueues);
                                 break;
                         }
@@ -1897,7 +1902,9 @@ namespace com.mirle.ibg3k0.sc.Service
                             if (replyTranEventReport(bcfApp, recive_str.EventType, eqpt, seq_num))
                             {
                                 //scApp.VehicleBLL.updateVehicleStatus_CacheMangerForAct(eqpt, actionStat);
+                                Thread.Sleep(1);
                                 tx.Complete();
+                                Thread.Sleep(1);
                                 scApp.ReportBLL.newSendMCSMessage(reportqueues);
                             }
                         }
