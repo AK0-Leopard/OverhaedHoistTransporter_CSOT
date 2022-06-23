@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Transactions;
 using Z.EntityFramework.Plus;
 
 namespace com.mirle.ibg3k0.sc.Data.DAO
@@ -93,10 +94,14 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
         }
         public List<ACMD_OHTC> loadUnfinishCMD_OHT(DBConnection_EF con)
         {
-            var query = from cmd in con.ACMD_OHTC
-                        where cmd.CMD_STAUS < E_CMD_STATUS.NormalEnd
-                        select cmd;
-            return query.FromCache(EXPIRE_TAG_NON_FINISH_OHTC_CMD).ToList();
+            using (TransactionScope ts = new TransactionScope(TransactionScopeOption.Required
+       , new TransactionOptions() { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var query = from cmd in con.ACMD_OHTC
+                            where cmd.CMD_STAUS < E_CMD_STATUS.NormalEnd
+                            select cmd;
+                return query.FromCache(EXPIRE_TAG_NON_FINISH_OHTC_CMD).ToList();
+            }
         }
 
         public ACMD_OHTC getByID(DBConnection_EF con, String cmd_id)
