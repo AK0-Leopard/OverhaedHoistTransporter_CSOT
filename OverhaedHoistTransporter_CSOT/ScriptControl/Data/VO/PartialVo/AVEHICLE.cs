@@ -1327,8 +1327,8 @@ namespace com.mirle.ibg3k0.sc
                         //{
                         //    vh.onLongTimeInaction(vh.OHTC_CMD);
                         //}
-                        var cmds = scApp.CMDBLL.loadUnfinishCMD_OHT();
-                        bool has_command_excute_in_db = hasCommandActionTimeCheck(cmds);
+                        //var cmds = scApp.CMDBLL.loadUnfinishCMD_OHT();
+                        var cmds = ACMD_OHTC.tryGetCMD_OHTCSList();
                         if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > AVEHICLE.MAX_ALLOW_ACTION_TIME_MILLISECOND)
                         {
                             var currnet_excute_ids = getVhCurrentExcuteCommandID(cmds);
@@ -1344,6 +1344,7 @@ namespace com.mirle.ibg3k0.sc
                             vh.isLongTimeInaction = false;
                         }
                         //當車子是Commnading狀態，但cmd Table並無該筆命令時，則將車子的下達cancel
+                        bool has_command_excute_in_db = hasCommandActionTimeCheck(cmds);
                         if (vh.ACT_STATUS == VHActionStatus.Commanding &&
                             has_command_excute_in_db == false)
                         {

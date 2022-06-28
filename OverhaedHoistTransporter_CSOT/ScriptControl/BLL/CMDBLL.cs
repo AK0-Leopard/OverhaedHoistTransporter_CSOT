@@ -1121,7 +1121,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     logger.Error(ex, "Exception");
                 }
@@ -1929,6 +1929,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
                 isSuccess = true;
             }
+            ACMD_OHTC.tryUpdateCMD_OHTCStatus(cmd_id, status);
             return isSuccess;
         }
         public bool DeleteCommand_OHTC_DetailByCmdID(string cmd_id)
@@ -2279,7 +2280,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     List<ACMD_OHTC> unfinish_ohtc_cmd = scApp.CMDBLL.loadUnfinishCMD_OHT();
                     ALINE line = scApp.getEQObjCacheManager().getLine();
                     line.CurrentExcuteOHTCCommands = unfinish_ohtc_cmd.ToList();
-
+                    refreshACMD_OHTCInfoList(unfinish_ohtc_cmd);
                     //List<ACMD_OHTC> CMD_OHTC_Queues = scApp.CMDBLL.loadCMD_OHTCMDStatusIsQueue();
                     List<ACMD_OHTC> CMD_OHTC_Queues = unfinish_ohtc_cmd.Where(cmd => cmd.CMD_STAUS == E_CMD_STATUS.Queue).ToList();
                     if (CMD_OHTC_Queues == null || CMD_OHTC_Queues.Count == 0)
@@ -2331,6 +2332,56 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     System.Threading.Interlocked.Exchange(ref ohxc_cmd_SyncPoint, 0);
                 }
+            }
+        }
+        private void refreshACMD_OHTCInfoList(List<ACMD_OHTC> currentExcuteCmdOhtc)
+        {
+            try
+            {
+                bool has_change = false;
+                List<string> new_current_excute_cmd_ohtc = currentExcuteCmdOhtc.Select(cmd => SCUtility.Trim(cmd.CMD_ID, true)).ToList();
+                List<string> old_current_excute_cmd_ohtc = ACMD_OHTC.CMD_OHTC_InfoList.Keys.ToList();
+
+                List<string> new_add_cmds_ohtc = new_current_excute_cmd_ohtc.Except(old_current_excute_cmd_ohtc).ToList();
+                //1.新增多出來的命令
+                foreach (string new_cmd in new_add_cmds_ohtc)
+                {
+                    ACMD_OHTC new_cmd_obj = new ACMD_OHTC();
+                    var current_cmd = currentExcuteCmdOhtc.Where(cmd => SCUtility.isMatche(cmd.CMD_ID, new_cmd)).FirstOrDefault();
+                    if (current_cmd == null) continue;
+                    new_cmd_obj.put(current_cmd);
+                    ACMD_OHTC.CMD_OHTC_InfoList.TryAdd(new_cmd, new_cmd_obj);
+                    has_change = true;
+                }
+                //2.刪除以結束的命令
+                List<string> will_del_mcs_cmds = old_current_excute_cmd_ohtc.Except(new_current_excute_cmd_ohtc).ToList();
+                foreach (string old_cmd in will_del_mcs_cmds)
+                {
+                    ACMD_OHTC.CMD_OHTC_InfoList.TryRemove(old_cmd, out ACMD_OHTC cmd_ohtc);
+                    has_change = true;
+                }
+                //3.更新現有命令
+                foreach (var cmd_ohtc_item in ACMD_OHTC.CMD_OHTC_InfoList)
+                {
+                    string cmd_ohtc_id = cmd_ohtc_item.Key;
+                    ACMD_OHTC cmd_ohtc = currentExcuteCmdOhtc.Where(cmd => SCUtility.isMatche(cmd.CMD_ID, cmd_ohtc_id)).FirstOrDefault();
+                    if (cmd_ohtc == null)
+                    {
+                        continue;
+                    }
+                    if (cmd_ohtc_item.Value.put(cmd_ohtc))
+                    {
+                        has_change = true;
+                    }
+                }
+                if (has_change)
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
             }
         }
 

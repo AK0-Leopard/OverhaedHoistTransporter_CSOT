@@ -17,7 +17,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
             con.ACMD_OHTC.Add(blockObj);
             con.SaveChanges();
             QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD, EXPIRE_TAG_QUEUE_OHTC_CMD);
-
+            ACMD_OHTC.tryAddCMD_OHTC_ToList(blockObj);
         }
         public void RemoteByBatch(DBConnection_EF con, List<ACMD_OHTC> cmd_mcss)
         {
@@ -94,14 +94,10 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
         }
         public List<ACMD_OHTC> loadUnfinishCMD_OHT(DBConnection_EF con)
         {
-            using (TransactionScope ts = new TransactionScope(TransactionScopeOption.Required
-       , new TransactionOptions() { IsolationLevel = IsolationLevel.ReadUncommitted }))
-            {
-                var query = from cmd in con.ACMD_OHTC
-                            where cmd.CMD_STAUS < E_CMD_STATUS.NormalEnd
-                            select cmd;
-                return query.FromCache(EXPIRE_TAG_NON_FINISH_OHTC_CMD).ToList();
-            }
+            var query = from cmd in con.ACMD_OHTC
+                        where cmd.CMD_STAUS < E_CMD_STATUS.NormalEnd
+                        select cmd;
+            return query.FromCache(EXPIRE_TAG_NON_FINISH_OHTC_CMD).ToList();
         }
 
         public ACMD_OHTC getByID(DBConnection_EF con, String cmd_id)
