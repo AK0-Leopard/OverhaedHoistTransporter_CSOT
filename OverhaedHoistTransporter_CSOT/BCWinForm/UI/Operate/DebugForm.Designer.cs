@@ -104,15 +104,10 @@
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.cb_blockReqCheckFun = new System.Windows.Forms.CheckBox();
             this.cb_IsOpenPortGroupLimit = new System.Windows.Forms.CheckBox();
             this.cb_isOpenAdjustmentParkingZone = new System.Windows.Forms.CheckBox();
             this.ck_is_open_command_shift = new System.Windows.Forms.CheckBox();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.txt_vh_order_in_segment = new System.Windows.Forms.TextBox();
-            this.label72 = new System.Windows.Forms.Label();
-            this.btn_refresh_vh_order_in_seg = new System.Windows.Forms.Button();
-            this.label71 = new System.Windows.Forms.Label();
-            this.cmb_refresh_vh_order_in_seg_id = new System.Windows.Forms.ComboBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.btn_portOutOfServeice = new System.Windows.Forms.Button();
             this.btn_portInServeice = new System.Windows.Forms.Button();
@@ -378,7 +373,7 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.cb_blockReqCheckFun = new System.Windows.Forms.CheckBox();
+            this.cb_PassObstacleFlagWhenSendContinueRequest = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -390,7 +385,6 @@
             this.groupBox5.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.groupBox12.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.gb_blockControl.SuspendLayout();
@@ -1268,7 +1262,7 @@
             // 
             // btn_forceReleaseAllBlock
             // 
-            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1100, 196);
+            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1100, 251);
             this.btn_forceReleaseAllBlock.Name = "btn_forceReleaseAllBlock";
             this.btn_forceReleaseAllBlock.Size = new System.Drawing.Size(284, 41);
             this.btn_forceReleaseAllBlock.TabIndex = 22;
@@ -1299,11 +1293,11 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.cb_PassObstacleFlagWhenSendContinueRequest);
             this.tabPage1.Controls.Add(this.cb_blockReqCheckFun);
             this.tabPage1.Controls.Add(this.cb_IsOpenPortGroupLimit);
             this.tabPage1.Controls.Add(this.cb_isOpenAdjustmentParkingZone);
             this.tabPage1.Controls.Add(this.ck_is_open_command_shift);
-            this.tabPage1.Controls.Add(this.groupBox12);
             this.tabPage1.Controls.Add(this.groupBox7);
             this.tabPage1.Controls.Add(this.groupBox6);
             this.tabPage1.Controls.Add(this.gb_blockControl);
@@ -1317,6 +1311,18 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // cb_blockReqCheckFun
+            // 
+            this.cb_blockReqCheckFun.AutoSize = true;
+            this.cb_blockReqCheckFun.Location = new System.Drawing.Point(1100, 85);
+            this.cb_blockReqCheckFun.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_blockReqCheckFun.Name = "cb_blockReqCheckFun";
+            this.cb_blockReqCheckFun.Size = new System.Drawing.Size(197, 26);
+            this.cb_blockReqCheckFun.TabIndex = 29;
+            this.cb_blockReqCheckFun.Text = "開啟路權保護機制";
+            this.cb_blockReqCheckFun.UseVisualStyleBackColor = true;
+            this.cb_blockReqCheckFun.CheckedChanged += new System.EventHandler(this.cb_blockReqCheckFun_CheckedChanged);
             // 
             // cb_IsOpenPortGroupLimit
             // 
@@ -1353,69 +1359,6 @@
             this.ck_is_open_command_shift.Text = "Is Open Command Shift";
             this.ck_is_open_command_shift.UseVisualStyleBackColor = true;
             this.ck_is_open_command_shift.CheckedChanged += new System.EventHandler(this.ck_is_open_command_shift_CheckedChanged);
-            // 
-            // groupBox12
-            // 
-            this.groupBox12.Controls.Add(this.txt_vh_order_in_segment);
-            this.groupBox12.Controls.Add(this.label72);
-            this.groupBox12.Controls.Add(this.btn_refresh_vh_order_in_seg);
-            this.groupBox12.Controls.Add(this.label71);
-            this.groupBox12.Controls.Add(this.cmb_refresh_vh_order_in_seg_id);
-            this.groupBox12.Location = new System.Drawing.Point(1100, 502);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(302, 180);
-            this.groupBox12.TabIndex = 26;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = "Refresh Vh Order In Segment";
-            this.groupBox12.Visible = false;
-            // 
-            // txt_vh_order_in_segment
-            // 
-            this.txt_vh_order_in_segment.Location = new System.Drawing.Point(10, 90);
-            this.txt_vh_order_in_segment.Name = "txt_vh_order_in_segment";
-            this.txt_vh_order_in_segment.ReadOnly = true;
-            this.txt_vh_order_in_segment.Size = new System.Drawing.Size(286, 30);
-            this.txt_vh_order_in_segment.TabIndex = 52;
-            this.txt_vh_order_in_segment.Visible = false;
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(6, 65);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(180, 22);
-            this.label72.TabIndex = 51;
-            this.label72.Text = "Current vh order:";
-            // 
-            // btn_refresh_vh_order_in_seg
-            // 
-            this.btn_refresh_vh_order_in_seg.Location = new System.Drawing.Point(10, 135);
-            this.btn_refresh_vh_order_in_seg.Name = "btn_refresh_vh_order_in_seg";
-            this.btn_refresh_vh_order_in_seg.Size = new System.Drawing.Size(286, 27);
-            this.btn_refresh_vh_order_in_seg.TabIndex = 50;
-            this.btn_refresh_vh_order_in_seg.Text = "Force Refersh";
-            this.btn_refresh_vh_order_in_seg.UseVisualStyleBackColor = true;
-            this.btn_refresh_vh_order_in_seg.Visible = false;
-            this.btn_refresh_vh_order_in_seg.Click += new System.EventHandler(this.btn_refresh_vh_order_in_seg_Click);
-            // 
-            // label71
-            // 
-            this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(6, 34);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(120, 22);
-            this.label71.TabIndex = 49;
-            this.label71.Text = "Segment ID:";
-            // 
-            // cmb_refresh_vh_order_in_seg_id
-            // 
-            this.cmb_refresh_vh_order_in_seg_id.FormattingEnabled = true;
-            this.cmb_refresh_vh_order_in_seg_id.Location = new System.Drawing.Point(128, 30);
-            this.cmb_refresh_vh_order_in_seg_id.Name = "cmb_refresh_vh_order_in_seg_id";
-            this.cmb_refresh_vh_order_in_seg_id.Size = new System.Drawing.Size(121, 30);
-            this.cmb_refresh_vh_order_in_seg_id.TabIndex = 48;
-            this.cmb_refresh_vh_order_in_seg_id.Visible = false;
-            this.cmb_refresh_vh_order_in_seg_id.SelectedIndexChanged += new System.EventHandler(this.cmb_refresh_vh_order_in_seg_id_SelectedIndexChanged);
             // 
             // groupBox7
             // 
@@ -1475,7 +1418,7 @@
             this.groupBox6.Controls.Add(this.label16);
             this.groupBox6.Controls.Add(this.label12);
             this.groupBox6.Controls.Add(this.cb_block_section);
-            this.groupBox6.Location = new System.Drawing.Point(1100, 243);
+            this.groupBox6.Location = new System.Drawing.Point(1100, 298);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(284, 251);
             this.groupBox6.TabIndex = 24;
@@ -1549,7 +1492,7 @@
             // 
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockReject);
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockPass);
-            this.gb_blockControl.Location = new System.Drawing.Point(1100, 125);
+            this.gb_blockControl.Location = new System.Drawing.Point(1100, 180);
             this.gb_blockControl.Name = "gb_blockControl";
             this.gb_blockControl.Size = new System.Drawing.Size(257, 71);
             this.gb_blockControl.TabIndex = 23;
@@ -1579,7 +1522,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 31);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage2.Size = new System.Drawing.Size(1433, 714);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "PLC Control";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -2616,7 +2559,7 @@
             this.table_cache_data_pisplay.Location = new System.Drawing.Point(4, 31);
             this.table_cache_data_pisplay.Name = "table_cache_data_pisplay";
             this.table_cache_data_pisplay.Padding = new System.Windows.Forms.Padding(3);
-            this.table_cache_data_pisplay.Size = new System.Drawing.Size(1362, 714);
+            this.table_cache_data_pisplay.Size = new System.Drawing.Size(1433, 714);
             this.table_cache_data_pisplay.TabIndex = 3;
             this.table_cache_data_pisplay.Text = "Cache Data Display";
             this.table_cache_data_pisplay.UseVisualStyleBackColor = true;
@@ -2636,7 +2579,7 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 4.61165F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 95.38835F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1356, 708);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1427, 708);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
             // dgv_cache_object_data
@@ -2652,7 +2595,7 @@
             this.dgv_cache_object_data.Name = "dgv_cache_object_data";
             this.dgv_cache_object_data.RowTemplate.Height = 24;
             this.dgv_cache_object_data.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv_cache_object_data.Size = new System.Drawing.Size(1350, 670);
+            this.dgv_cache_object_data.Size = new System.Drawing.Size(1421, 670);
             this.dgv_cache_object_data.TabIndex = 0;
             this.dgv_cache_object_data.EditModeChanged += new System.EventHandler(this.dgv_cache_object_data_EditModeChanged);
             // 
@@ -2677,7 +2620,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(85, 6);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(156, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -2687,9 +2630,9 @@
             // 
             this.label22.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(9, 0);
+            this.label22.Location = new System.Drawing.Point(30, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(70, 32);
+            this.label22.Size = new System.Drawing.Size(120, 32);
             this.label22.TabIndex = 2;
             this.label22.Text = "Cache Data Name";
             // 
@@ -2704,7 +2647,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 31);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage3.Size = new System.Drawing.Size(1433, 714);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -2797,7 +2740,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 31);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage4.Size = new System.Drawing.Size(1433, 714);
             this.tabPage4.TabIndex = 4;
             this.tabPage4.Text = "MTL Test";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -3570,7 +3513,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 31);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage6.Size = new System.Drawing.Size(1433, 714);
             this.tabPage6.TabIndex = 6;
             this.tabPage6.Text = "MTL/MTS Simulator";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -3719,7 +3662,7 @@
             this.tabPage5.Controls.Add(this.btn_SendHIDControl);
             this.tabPage5.Location = new System.Drawing.Point(4, 31);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage5.Size = new System.Drawing.Size(1433, 714);
             this.tabPage5.TabIndex = 5;
             this.tabPage5.Text = "HID Test";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -3979,7 +3922,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 31);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage7.Size = new System.Drawing.Size(1433, 714);
             this.tabPage7.TabIndex = 7;
             this.tabPage7.Text = "CV Test";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -4351,7 +4294,7 @@
             this.tabPage8.Location = new System.Drawing.Point(4, 31);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage8.Size = new System.Drawing.Size(1433, 714);
             this.tabPage8.TabIndex = 8;
             this.tabPage8.Text = "Four-color lighthouse";
             this.tabPage8.UseVisualStyleBackColor = true;
@@ -4540,7 +4483,7 @@
             this.tabPage9.Location = new System.Drawing.Point(4, 31);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(1362, 714);
+            this.tabPage9.Size = new System.Drawing.Size(1433, 714);
             this.tabPage9.TabIndex = 9;
             this.tabPage9.Text = "Setting";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -4642,17 +4585,17 @@
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
-            // cb_blockReqCheckFun
+            // cb_PassObstacleFlagWhenSendContinueRequest
             // 
-            this.cb_blockReqCheckFun.AutoSize = true;
-            this.cb_blockReqCheckFun.Location = new System.Drawing.Point(1100, 85);
-            this.cb_blockReqCheckFun.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cb_blockReqCheckFun.Name = "cb_blockReqCheckFun";
-            this.cb_blockReqCheckFun.Size = new System.Drawing.Size(197, 26);
-            this.cb_blockReqCheckFun.TabIndex = 29;
-            this.cb_blockReqCheckFun.Text = "開啟路權保護機制";
-            this.cb_blockReqCheckFun.UseVisualStyleBackColor = true;
-            this.cb_blockReqCheckFun.CheckedChanged += new System.EventHandler(this.cb_blockReqCheckFun_CheckedChanged);
+            this.cb_PassObstacleFlagWhenSendContinueRequest.AutoSize = true;
+            this.cb_PassObstacleFlagWhenSendContinueRequest.Location = new System.Drawing.Point(1100, 109);
+            this.cb_PassObstacleFlagWhenSendContinueRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_PassObstacleFlagWhenSendContinueRequest.Name = "cb_PassObstacleFlagWhenSendContinueRequest";
+            this.cb_PassObstacleFlagWhenSendContinueRequest.Size = new System.Drawing.Size(319, 26);
+            this.cb_PassObstacleFlagWhenSendContinueRequest.TabIndex = 30;
+            this.cb_PassObstacleFlagWhenSendContinueRequest.Text = "發送Continue不參考障礙物訊號";
+            this.cb_PassObstacleFlagWhenSendContinueRequest.UseVisualStyleBackColor = true;
+            this.cb_PassObstacleFlagWhenSendContinueRequest.CheckedChanged += new System.EventHandler(this.cb_PassObstacleFlagWhenSendContinueRequest_CheckedChanged);
             // 
             // DebugForm
             // 
@@ -4686,8 +4629,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.groupBox12.ResumeLayout(false);
-            this.groupBox12.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -5002,12 +4943,6 @@
         private Components.uctlButton btn_changeToRemove;
         private Components.uctlButton btn_changeToInstall;
         private System.Windows.Forms.CheckBox cb_test_duplicate;
-        private System.Windows.Forms.GroupBox groupBox12;
-        private System.Windows.Forms.Button btn_refresh_vh_order_in_seg;
-        private System.Windows.Forms.Label label71;
-        private System.Windows.Forms.ComboBox cmb_refresh_vh_order_in_seg_id;
-        private System.Windows.Forms.Label label72;
-        private System.Windows.Forms.TextBox txt_vh_order_in_segment;
         private System.Windows.Forms.Label lbl_install_status;
         private System.Windows.Forms.Label label73;
         private System.Windows.Forms.Button button10;
@@ -5096,5 +5031,6 @@
         private System.Windows.Forms.Button btn_reloadPortGroupData;
         private System.Windows.Forms.CheckBox cb_IsOpenPortGroupLimit;
         private System.Windows.Forms.CheckBox cb_blockReqCheckFun;
+        private System.Windows.Forms.CheckBox cb_PassObstacleFlagWhenSendContinueRequest;
     }
 }

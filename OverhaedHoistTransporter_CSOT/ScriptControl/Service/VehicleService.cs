@@ -3485,17 +3485,17 @@ namespace com.mirle.ibg3k0.sc.Service
             //}
         }
 
-        public void noticeVhPass(string vh_id)
+        public bool noticeVhPass(string vh_id)
         {
             BLOCKZONEQUEUE usingBlockQueue = scApp.MapBLL.getUsingBlockZoneQueueByVhID(vh_id);
             if (usingBlockQueue != null)
             {
-                noticeVhPass(usingBlockQueue);
+                return noticeVhPass(usingBlockQueue);
             }
             else
             {
                 string reason = string.Empty;
-                PauseRequest(vh_id, PauseEvent.Continue, SCAppConstants.OHxCPauseType.Block);
+                return PauseRequest(vh_id, PauseEvent.Continue, SCAppConstants.OHxCPauseType.Block);
             }
         }
 

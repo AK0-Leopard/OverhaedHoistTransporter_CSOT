@@ -79,7 +79,7 @@ namespace com.mirle.ibg3k0.sc
 
 
         VehicleTimerAction vehicleTimer = null;
-        private Stopwatch CurrentCommandExcuteTime;
+        public Stopwatch CurrentCommandExcuteTime { get; private set; }
 
         public void onCommandComplete(CompleteStatus cmpStatus)
         {
@@ -210,8 +210,8 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         public virtual E_CMD_STATUS vh_CMD_Status { get; set; }
         [JsonIgnore]
-        public virtual bool isLongTimeInaction { get; private set; }
-        public virtual bool isCommandStateOutOfSyncHappend { get; private set; }
+        public virtual bool isLongTimeInaction { get;  set; }
+        public virtual bool isCommandStateOutOfSyncHappend { get;  set; }
         /// <summary>
         /// 用來預防在更新Mode Status的時候，會有多執行續的問題，導致最後狀態不正確。
         /// </summary>

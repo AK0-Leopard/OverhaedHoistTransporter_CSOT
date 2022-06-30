@@ -247,11 +247,11 @@ namespace com.mirle.ibg3k0.sc.BLL
         /// <param name="action">The action.</param>
         public void addOperationHis(string user_id, string formName, string action)
         {
-            DBConnection_EF conn = null;
+            //DBConnection_EF conn = null;
             try
             {
-                conn = DBConnection_EF.GetContext();
-                conn.BeginTransaction();
+                //conn = DBConnection_EF.GetContext();
+                //conn.BeginTransaction();
                 string timeStamp = BCFUtility.formatDateTime(DateTime.Now, SCAppConstants.TimestampFormat_19);
                 HOPERATION his = new HOPERATION()
                 {
@@ -261,17 +261,17 @@ namespace com.mirle.ibg3k0.sc.BLL
                     ACTION = action
                 };
                 SCUtility.PrintOperationLog(his);
-                operationHisDao.insertOperationHis(conn, his);
-                conn.Commit();
+                //operationHisDao.insertOperationHis(conn, his);
+                //conn.Commit();
             }
             catch (Exception ex)
             {
-                if (conn != null) { try { conn.Rollback(); } catch (Exception ex_rollback) { logger.Error(ex_rollback, "Exception"); } }
+                //if (conn != null) { try { conn.Rollback(); } catch (Exception ex_rollback) { logger.Error(ex_rollback, "Exception"); } }
                 logger.Error(ex);
             }
             finally
             {
-                if (conn != null) { try { conn.Close(); } catch (Exception ex_close) { logger.Error(ex_close, "Exception:"); } }
+                //if (conn != null) { try { conn.Close(); } catch (Exception ex_close) { logger.Error(ex_close, "Exception:"); } }
             }
         }
 

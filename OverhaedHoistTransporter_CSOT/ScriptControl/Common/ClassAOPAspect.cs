@@ -32,8 +32,11 @@ namespace com.mirle.ibg3k0.sc.Common
         public override void OnExit(MethodExecutionArgs args)
         {
             sw.Stop();
-            RecodeMethodExecuteInfo(args);
-            Console.WriteLine(string.Format("Spend {0}ms", sw.ElapsedMilliseconds));
+            if (sw.ElapsedMilliseconds > 5000)
+            {
+                RecodeMethodExecuteInfo(args);
+                //Console.WriteLine(string.Format("Spend {0}ms", sw.ElapsedMilliseconds));
+            }
             sw.Reset();
         }
 
@@ -46,7 +49,7 @@ namespace com.mirle.ibg3k0.sc.Common
             logEntry.PROC_TIME = sw.ElapsedMilliseconds;
             logEntry.EXECTION = args.Exception != null ? args.Exception.ToString() : string.Empty;
             var json = logEntry.ToString(Formatting.None);
-            json= json.Replace("RPT_TIME", "@timestamp");
+            json = json.Replace("RPT_TIME", "@timestamp");
             LogManager.GetLogger("AOP_MethodExecuteInfo").Info(json);
         }
 

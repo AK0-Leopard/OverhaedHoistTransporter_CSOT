@@ -2204,6 +2204,8 @@ namespace com.mirle.ibg3k0.sc.App
     /// </summary>
     public class SystemParameter
     {
+        public static event EventHandler<bool> PassObstacleFlagChanged;
+
         //System EC Data 
         /// <summary>
         /// The secs conversaction timeout
@@ -2228,6 +2230,7 @@ namespace com.mirle.ibg3k0.sc.App
 
         public static bool IsEnableIDReadFailScenario { private set; get; } = false;
         public static int ChangePathCommandCount { private set; get; } = 3;
+        public static bool IsPassObstacleFlagWhenSendContinueRequest { private set; get; } = false;
 
 
         /// <summary>
@@ -2277,6 +2280,15 @@ namespace com.mirle.ibg3k0.sc.App
         public static void setChangePathCommandCount(int count)
         {
             ChangePathCommandCount = count;
+        }
+        public static void setIsPassObstacleFlagWhenSendContinueRequest(bool flag)
+        {
+            if (IsPassObstacleFlagWhenSendContinueRequest != flag)
+            {
+                IsPassObstacleFlagWhenSendContinueRequest = flag;
+                PassObstacleFlagChanged?.Invoke(null, flag);
+            }
+
         }
     }
 

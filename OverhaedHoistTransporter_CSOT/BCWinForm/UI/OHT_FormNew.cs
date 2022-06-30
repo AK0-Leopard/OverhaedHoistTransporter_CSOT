@@ -977,29 +977,93 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //todo error catch
         }
 
-        private void btn_continuous_Click(object sender, EventArgs e)
+        private async void btn_continuous_Click(object sender, EventArgs e)
         {
-            //Equipment noticeCar = scApp.getEQObjCacheManager().getEquipmentByEQPTID(cmb_Vehicle.Text.Trim());
-            string vh_id = cmb_Vehicle.Text.Trim();
-            Task.Run(() =>
+            try
             {
+                btn_continuous.Enabled = false;
+                string vh_id = cmb_Vehicle.Text.Trim();
                 AVEHICLE noticeCar = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
-
-                if (noticeCar.IsPause)
+                if (sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest)
                 {
-                    Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(OHT_Form), Device: "OHTC",
-                      Data: $"Send manual continuous to vh;{vh_id}");
-                    scApp.VehicleService.PauseRequest(vh_id, PauseEvent.Continue, SCAppConstants.OHxCPauseType.Normal);
-                    //noticeCar.sned_Str39(PauseEvent.Continue, PauseType.OhxC);
+                    if (noticeCar.IsObstacle)
+                    {
+                        string msg = $"vh:{noticeCar.VEHICLE_ID}目前障礙物感測器觸發，再次確認是否要下達[Continue]命令?";
+                        DialogResult confirmResult = MessageBox.Show(this, msg,
+                            BCApplication.getMessageString("CONFIRM"), MessageBoxButtons.YesNo);
+                        mainform.BCApp.SCApplication.BCSystemBLL.
+                            addOperationHis(mainform.BCApp.LoginUserID, this.Name, $"{msg},confirm result:{confirmResult}");
+                        if (confirmResult != System.Windows.Forms.DialogResult.Yes)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        string msg = $"vh:{noticeCar.VEHICLE_ID}，確認是否要下達[Continue]命令?";
+                        DialogResult confirmResult = MessageBox.Show(this, msg,
+                            BCApplication.getMessageString("CONFIRM"), MessageBoxButtons.YesNo);
+                        mainform.BCApp.SCApplication.BCSystemBLL.
+                            addOperationHis(mainform.BCApp.LoginUserID, this.Name, $"{msg},confirm result:{confirmResult}");
+                    }
                 }
                 else
                 {
-                    //scApp.VehicleBLL.noticeVhPass(vh_id);
-                    Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(OHT_Form), Device: "OHTC",
-                      Data: $"Send manual continuous(block release) to vh;{vh_id}");
-                    scApp.VehicleService.noticeVhPass(vh_id);
+                    if (noticeCar.IsObstacle)
+                    {
+                        string msg = $"vh:{noticeCar.VEHICLE_ID}目前障礙物感測試觸發，無法下達[Continue]命令。";
+                        bcf.App.BCFApplication.onWarningMsg(msg);
+                        mainform.BCApp.SCApplication.BCSystemBLL.
+                            addOperationHis(mainform.BCApp.LoginUserID, this.Name, msg);
+                        return;
+                    }
                 }
-            });
+                var send_result = await Task.Run(() => sendContinueToVh(vh_id));
+
+                mainform.BCApp.SCApplication.BCSystemBLL.
+                    addOperationHis(mainform.BCApp.LoginUserID, this.Name, $"Continue 發送結果:{send_result.isSuccess},message:{send_result.result}");
+
+                if (send_result.isSuccess)
+                {
+                    bcf.App.BCFApplication.onInfoMsg(send_result.result);
+                }
+                else
+                {
+                    bcf.App.BCFApplication.onWarningMsg(send_result.result);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                btn_continuous.Enabled = true;
+            }
+        }
+        private (bool isSuccess, string result) sendContinueToVh(string vh_id)
+        {
+            AVEHICLE noticeCar = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
+
+            bool is_success = false;
+            string reason = "";
+            if (noticeCar.IsPause)
+            {
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(OHT_Form), Device: "OHTC",
+                  Data: $"Send manual continuous to vh;{vh_id}");
+                is_success = scApp.VehicleService.PauseRequest(vh_id, PauseEvent.Continue, SCAppConstants.OHxCPauseType.Normal);
+                reason = is_success ? $"vh:{vh_id} 發送 continue 成功" : $"vh:{vh_id} 發送 continue 失敗";
+                return (is_success, reason);
+            }
+            else
+            {
+                //scApp.VehicleBLL.noticeVhPass(vh_id);
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(OHT_Form), Device: "OHTC",
+                   Data: $"Send manual continuous(block release) to vh;{vh_id}");
+                is_success = scApp.VehicleService.noticeVhPass(vh_id);
+                reason = is_success ? $"vh:{vh_id} 發送 continue 成功" : $"vh:{vh_id} 發送 continue 失敗";
+                return (is_success, reason);
+            }
         }
 
         private void btn_pause_Click(object sender, EventArgs e)

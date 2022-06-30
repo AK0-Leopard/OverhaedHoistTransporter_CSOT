@@ -43,6 +43,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_IsOpenPortGroupLimit.Checked = DebugParameter.isOpenPortGroupLimit;
             ck_CycleRunTest.Checked = DebugParameter.IsCycleRun;
             cb_blockReqCheckFun.Checked = DebugParameter.isOpenPortBlockReqCheckFun;
+            cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
 
 
 
@@ -58,7 +59,6 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
             List<ASEGMENT> segments = bcApp.SCApplication.SegmentBLL.cache.GetSegments();
             string[] segment_ids = segments.Select(seg => seg.SEG_NUM).ToArray();
-            BCUtility.setComboboxDataSource(cmb_refresh_vh_order_in_seg_id, segment_ids.ToArray());
 
 
             List<AADDRESS> allAddress_obj = bcApp.SCApplication.MapBLL.loadAllAddress();
@@ -118,6 +118,12 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 MaxAllowActionTimeSecond_Min_txb.Text = maxAllowActionTimeECData.ECMIN;
                 MaxAllowActionTimeSecond_Current_txb.Text = maxAllowActionTimeECData.ECV;
             }
+            sc.App.SystemParameter.PassObstacleFlagChanged += SystemParameter_PassObstacleFlagChanged;
+        }
+
+        private void SystemParameter_PassObstacleFlagChanged(object sender, bool e)
+        {
+            cb_PassObstacleFlagWhenSendContinueRequest.Checked = e;
         }
 
         private void DebugForm_Load(object sender, EventArgs e)
@@ -127,6 +133,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void DebugForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            sc.App.SystemParameter.PassObstacleFlagChanged -= SystemParameter_PassObstacleFlagChanged;
             TrunOffAllVhPLCControl();
             DebugParameter.IsDebugMode = false;
             mainForm.removeForm(typeof(DebugForm).Name);
@@ -1171,39 +1178,6 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             DebugParameter.TestDuplicate = cb_test_duplicate.Checked;
         }
 
-        private async void btn_refresh_vh_order_in_seg_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                btn_refresh_vh_order_in_seg.Enabled = false;
-                string seg_id = cmb_refresh_vh_order_in_seg_id.Text;
-                var seg_obj = bcApp.SCApplication.SegmentBLL.cache.GetSegment(seg_id);
-                await Task.Run(() => seg_obj.RefreshVhOrder(bcApp.SCApplication.VehicleBLL, bcApp.SCApplication.SectionBLL));
-                RefreshVehicleOrderInSegment(seg_id);
-            }
-            finally
-            {
-                btn_refresh_vh_order_in_seg.Enabled = true;
-            }
-        }
-
-        private void cmb_refresh_vh_order_in_seg_id_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string seg_id = (sender as ComboBox).Text;
-            RefreshVehicleOrderInSegment(seg_id);
-        }
-
-        private void RefreshVehicleOrderInSegment(string seg_id)
-        {
-            var seg_obj = bcApp.SCApplication.SegmentBLL.cache.GetSegment(seg_id);
-            txt_vh_order_in_segment.Text = string.Join(",", seg_obj.GetVehicleOrderInSegment());
-        }
-
-        private void tabPage6_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void LifterPosition_cb_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -1681,6 +1655,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void cb_blockReqCheckFun_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.isOpenPortBlockReqCheckFun = cb_blockReqCheckFun.Checked;
+        }
+
+        private void cb_PassObstacleFlagWhenSendContinueRequest_CheckedChanged(object sender, EventArgs e)
+        {
+            sc.App.SystemParameter.setIsPassObstacleFlagWhenSendContinueRequest(cb_PassObstacleFlagWhenSendContinueRequest.Checked);
         }
     }
 }
