@@ -975,9 +975,14 @@ namespace com.mirle.ibg3k0.sc.BLL
                     //line.CurrentExcuteMCSCommands = unfinish_mcs_cmd == null ? new List<ACMD_MCS>() : unfinish_mcs_cmd;
                     refreshACMD_MCSInfoList(unfinish_mcs_cmd);
 
-                    if (scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSING
-                        || scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSED)
+                    bool is_pause = IsPauseStateCheckAndChangeToPauseWhenPausing(unfinish_mcs_cmd);
+                    if (is_pause)
+                    {
                         return;
+                    }
+                    //if (scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSING
+                    //|| scApp.getEQObjCacheManager().getLine().SCStats == ALINE.TSCState.PAUSED)
+                    //    return;
 
                     if (!scApp.getEQObjCacheManager().getLine().MCSCommandAutoAssign)
                         return;
@@ -1130,6 +1135,25 @@ namespace com.mirle.ibg3k0.sc.BLL
                     System.Threading.Interlocked.Exchange(ref syncTranCmdPoint, 0);
                 }
             }
+        }
+
+        private bool IsPauseStateCheckAndChangeToPauseWhenPausing(List<ACMD_MCS> unfinish_mcs_cmd)
+        {
+            ALINE.TSCState sc_stats = scApp.getEQObjCacheManager().getLine().SCStats;
+            if (sc_stats == ALINE.TSCState.PAUSING)
+            {
+                int transferring_cmd_count = unfinish_mcs_cmd.Where(cmd_mcs => cmd_mcs.TRANSFERSTATE > E_TRAN_STATUS.Queue).Count();
+                if (transferring_cmd_count == 0)
+                {
+                    scApp.LineService.TSCStateToPause("");
+                }
+                return true;
+            }
+            else if (sc_stats == ALINE.TSCState.PAUSED)
+            {
+                return true;
+            }
+            return false;
         }
 
         private void refreshACMD_MCSInfoList(List<ACMD_MCS> currentExcuteMCSCmd)

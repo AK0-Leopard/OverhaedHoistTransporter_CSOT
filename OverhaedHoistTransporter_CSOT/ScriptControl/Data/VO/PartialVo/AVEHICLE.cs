@@ -157,6 +157,8 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         public virtual double Y_Axis { get; set; }
         public virtual bool IsProcessingCommandFinish { get; set; }
+        public virtual bool IsProcessingCommandSend { get; set; }
+
         public virtual string VhCurrentExcuteOhtcCmdID { get; set; }
 
         [JsonIgnore]

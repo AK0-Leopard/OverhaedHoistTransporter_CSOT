@@ -1376,6 +1376,7 @@ namespace com.mirle.ibg3k0.sc.Service
             bool isSuccess = true;
             try
             {
+                assignVH.IsProcessingCommandSend = true;
                 List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
                 using (var tx = SCUtility.getTransactionScope())
                 {
@@ -1473,6 +1474,10 @@ namespace com.mirle.ibg3k0.sc.Service
                 logger.Error(ex, "Exection:");
                 isSuccess = false;
                 //scApp.getEQObjCacheManager().restoreVhDataFromDB(assignVH);
+            }
+            finally
+            {
+                assignVH.IsProcessingCommandSend = false;
             }
             return isSuccess;
         }
