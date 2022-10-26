@@ -769,6 +769,7 @@ namespace com.mirle.ibg3k0.sc.App
             SystemParameter.SECSConversactionTimeout = getInt("SECSConversactionTimeout", 60);
 
             SystemParameter.setIsEnableIDReadFailScenarioFlag(getBoolean("IsEnableIDReadFailScenario", false));
+            SystemParameter.setMCSCommandAccumulateTimePriority(getInt("MCSCommandAccumulateTimePriority", 4));
 
             initDao();      //Initial DAO
             initBLL();      //Initial BLL
@@ -1680,7 +1681,15 @@ namespace com.mirle.ibg3k0.sc.App
             int rtn = defaultValue;
             try
             {
-                rtn = Convert.ToInt32(ConfigurationManager.AppSettings.Get(key));
+                string app_setting_value = ConfigurationManager.AppSettings.Get(key);
+                if(app_setting_value == null)
+                {
+                    rtn = defaultValue;
+                }
+                else
+                {
+                    rtn = Convert.ToInt32(app_setting_value);
+                }
             }
             catch (Exception e)
             {
@@ -2232,6 +2241,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static int ChangePathCommandCount { private set; get; } = 3;
         public static bool IsPassObstacleFlagWhenSendContinueRequest { private set; get; } = false;
 
+        public static int MCSCommandAccumulateTimePriority { get; private set; } = 1;
 
         /// <summary>
         /// Sets the secs conversaction timeout.
@@ -2290,6 +2300,11 @@ namespace com.mirle.ibg3k0.sc.App
             }
 
         }
+        public static void setMCSCommandAccumulateTimePriority(int count)
+        {
+            MCSCommandAccumulateTimePriority = count;
+        }
+
     }
 
     public class HAProxyConnectionTest

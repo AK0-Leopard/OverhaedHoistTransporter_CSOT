@@ -260,5 +260,18 @@ namespace com.mirle.ibg3k0.sc
             }
             return false;
         }
+
+        public override string ToString()
+        {
+            string cmd_id = sc.Common.SCUtility.Trim(CMD_ID, true);
+            string source = sc.Common.SCUtility.Trim(HOSTSOURCE, true);
+            string dest = sc.Common.SCUtility.Trim(HOSTDESTINATION, true);
+            string inser_time = CMD_INSER_TIME.ToString(sc.App.SCAppConstants.DateTimeFormat_23);
+            string prioirty = PRIORITY.ToString();
+            string time_prioirty = TIME_PRIORITY.ToString();
+            string port_prioirty_time = PORT_PRIORITY.ToString();
+            string prioirty_sum = PRIORITY_SUM.ToString();
+            return $"id:{cmd_id},l:{source},u:{dest},inser_time:{inser_time},priority:{prioirty},time_prioirty:{time_prioirty},port_prioirty:{port_prioirty_time},sum_prioirty:{prioirty_sum}";
+        }
     }
 }

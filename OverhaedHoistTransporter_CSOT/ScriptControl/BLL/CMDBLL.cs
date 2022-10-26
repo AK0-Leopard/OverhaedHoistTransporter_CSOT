@@ -1054,8 +1054,10 @@ namespace com.mirle.ibg3k0.sc.BLL
                                 vehicleId = bestSuitableVh.VEHICLE_ID.Trim();
                             else
                             {
-                                int AccumulateTime_minute = 1;
-                                int current_time_priority = (DateTime.Now - waitting_excute_mcs_cmd.CMD_INSER_TIME).Minutes / AccumulateTime_minute;
+                                //int AccumulateTime_minute = 1;
+                                int AccumulateTime_minute = SystemParameter.MCSCommandAccumulateTimePriority;
+                                //int current_time_priority = (DateTime.Now - waitting_excute_mcs_cmd.CMD_INSER_TIME).Minutes / AccumulateTime_minute;
+                                int current_time_priority = (DateTime.Now - waitting_excute_mcs_cmd.CMD_INSER_TIME).Minutes * AccumulateTime_minute;
                                 if (current_time_priority != waitting_excute_mcs_cmd.TIME_PRIORITY)
                                 {
                                     int change_priority = current_time_priority - waitting_excute_mcs_cmd.TIME_PRIORITY;
@@ -1125,6 +1127,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                             checkOHxC_TransferCommand();
                         }
                     }
+
+                    recordQueueCommandInfo(queue_cmd_mcs);
+
                 }
                 catch (Exception ex)
                 {
@@ -1134,6 +1139,31 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     System.Threading.Interlocked.Exchange(ref syncTranCmdPoint, 0);
                 }
+            }
+        }
+
+        string lastRecordQueueCommandInfo = "";
+        private void recordQueueCommandInfo(List<ACMD_MCS> queue_cmd_mcs)
+        {
+            StringBuilder sb = scApp.stringBuilder.GetObject();
+            try
+            {
+                queue_cmd_mcs.ForEach(cmd => sb.AppendLine(cmd.ToString()));
+                string sb_result = sb.ToString();
+                if (!SCUtility.isMatche(lastRecordQueueCommandInfo, sb_result))
+                {
+                    lastRecordQueueCommandInfo = sb_result;
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: "OHx",
+                       Data: $"command order:{lastRecordQueueCommandInfo}");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+            finally
+            {
+                scApp.stringBuilder.PutObject(sb);
             }
         }
 
@@ -2108,6 +2138,51 @@ namespace com.mirle.ibg3k0.sc.BLL
             return count != 0;
         }
 
+        public bool checkCanCreatTransferCommand(string vhID)
+        {
+            try
+            {
+                List<ACMD_OHTC> cmds_ohtc = null;
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    cmds_ohtc = cmd_ohtcDAO.loadExecuteCmd(con, vhID);
+                }
+                if (cmds_ohtc.Count == 0)
+                {
+                    return true;
+                }
+                if (cmds_ohtc.Count == 1)
+                {
+                    var cmd_ohtc = cmds_ohtc.FirstOrDefault();
+                    if (cmd_ohtc.IsTransferCmdByMCS)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        //如果是一般的移動命令在Sending都不允許生成新的
+                        if (cmd_ohtc.CMD_STAUS <= E_CMD_STATUS.Sending)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+                return false;
+            }
+
+        }
 
         public bool isCMD_OHTCExcuteByVh(string vh_id)
         {
