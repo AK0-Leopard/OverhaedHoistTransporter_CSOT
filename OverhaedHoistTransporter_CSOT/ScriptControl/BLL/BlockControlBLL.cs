@@ -727,7 +727,32 @@ namespace com.mirle.ibg3k0.sc.BLL
                     ToList();
                 return (block_zone_masters != null && block_zone_masters.Count > 0);
             }
-        }
 
+            public (bool hasRelatedReserveBlock, ABLOCKZONEMASTER relatedReserveBlock)
+                tryGetRelatedReserveBlock(string relatedBlockID, string vhID)
+            {
+                var block_zone_masters = commObjCache.getBlockMasterZone();
+                var current_vh_reserved_blocks = block_zone_masters.
+                                                Where(block => SCUtility.isMatche(block.CurrentRequestVhID, vhID)).
+                                                ToList();
+                string common_block_id = "";
+                if (relatedBlockID.Length > 5)
+                {
+                    common_block_id = relatedBlockID.Substring(0, 5);
+                }
+                else
+                {
+                    return (false, null);
+                }
+                var current_related_blocks = current_vh_reserved_blocks.
+                                             Where(block => block.ENTRY_SEC_ID.Contains(common_block_id)).
+                                             ToList();
+                if (current_related_blocks.Count == 0) //找不到目前有相關的block就不釋放
+                    return (false, null);
+                if(current_related_blocks.Count>1) //如果有找到多個相關的block，代表可能有問題也回復找不到
+                    return (false, null);
+                return (true, current_related_blocks.FirstOrDefault());
+            }
+        }
     }
 }

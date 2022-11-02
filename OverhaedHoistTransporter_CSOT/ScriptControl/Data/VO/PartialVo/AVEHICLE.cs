@@ -156,6 +156,9 @@ namespace com.mirle.ibg3k0.sc
         public virtual double X_Axis { get; set; }
         [JsonIgnore]
         public virtual double Y_Axis { get; set; }
+        [JsonIgnore]
+        public string CurrentRequestBlockID { get; set; }
+
         public virtual bool IsProcessingCommandFinish { get; set; }
         public virtual bool IsProcessingCommandSend { get; set; }
 
@@ -212,8 +215,8 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         public virtual E_CMD_STATUS vh_CMD_Status { get; set; }
         [JsonIgnore]
-        public virtual bool isLongTimeInaction { get;  set; }
-        public virtual bool isCommandStateOutOfSyncHappend { get;  set; }
+        public virtual bool isLongTimeInaction { get; set; }
+        public virtual bool isCommandStateOutOfSyncHappend { get; set; }
         /// <summary>
         /// 用來預防在更新Mode Status的時候，會有多執行續的問題，導致最後狀態不正確。
         /// </summary>
@@ -235,6 +238,9 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         [BaseElement(NonChangeFromOtherVO = true)]
         public object DoCreatTransferCommand_Sync = new object();
+        [JsonIgnore]
+        [BaseElement(NonChangeFromOtherVO = true)]
+        public long BlockCanceling_Sync = 0;
 
         [JsonIgnore]
         [BaseElement(NonChangeFromOtherVO = true)]

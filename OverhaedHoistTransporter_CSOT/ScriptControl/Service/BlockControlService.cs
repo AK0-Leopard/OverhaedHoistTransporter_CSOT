@@ -68,6 +68,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 string sec_id = SCUtility.Trim(block_detail_sec_id);
                 reserveBLL.RemoveManyReservedSectionsByVIDSID(vh_id, sec_id);
             }
+            block_master.BlockRelease(vh_id);
         }
 
 
