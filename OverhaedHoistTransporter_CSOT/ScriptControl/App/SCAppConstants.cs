@@ -514,6 +514,7 @@ namespace com.mirle.ibg3k0.sc.App
             {
                 public const string OHTLongInaction = "10000";
                 public const string OHTBlockingRelaseTimeout = "10001";
+                public const string OHTDisconnection = "10002";
             }
         }
         #endregion Alarm

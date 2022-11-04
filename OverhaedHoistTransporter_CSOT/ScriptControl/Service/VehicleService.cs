@@ -763,6 +763,29 @@ namespace com.mirle.ibg3k0.sc.Service
             }
         }
 
+        public bool ManualRefreshVhStatus(string vhID)
+        {
+            try
+            {
+
+                bool is_refresh_success = VehicleStatusRequest(vhID, true);
+                if (is_refresh_success)
+                {
+                    var vh = scApp.VehicleBLL.cache.getVhByID(vhID);
+                    scApp.LineService.ProcessAlarmReport(
+                        vh.NODE_ID, vh.VEHICLE_ID, vh.Real_ID, "",
+                        SCAppConstants.SystemAlarmCode.OHT_Issue.OHTDisconnection,
+                        ProtocolFormat.OHTMessage.ErrorStatus.ErrReset);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return false;
+            }
+        }
+
         public bool VehicleStatusRequest(string vh_id, bool isSync = false)
         {
             bool isSuccess = false;
@@ -5720,7 +5743,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     return true;
                 }
             }
-            return false;
+            return false;   
         }
         #region Vh connection / disconnention
         [ClassAOPAspect]
@@ -5744,6 +5767,11 @@ namespace com.mirle.ibg3k0.sc.Service
                 (vh.VEHICLE_ID,
                 SCAppConstants.RecodeConnectionInfo_Type.Connection.ToString(),
                 vh.getDisconnectionIntervalTime(bcfApp));
+
+            scApp.LineService.ProcessAlarmReport(
+                vh.NODE_ID, vh.VEHICLE_ID, vh.Real_ID, "",
+                SCAppConstants.SystemAlarmCode.OHT_Issue.OHTDisconnection,
+                ProtocolFormat.OHTMessage.ErrorStatus.ErrReset);
         }
         [ClassAOPAspect]
         public void Disconnection(BCFApplication bcfApp, AVEHICLE vh)
@@ -5758,6 +5786,11 @@ namespace com.mirle.ibg3k0.sc.Service
                 (vh.VEHICLE_ID,
                 SCAppConstants.RecodeConnectionInfo_Type.Disconnection.ToString(),
                 vh.getConnectionIntervalTime(bcfApp));
+
+            scApp.LineService.ProcessAlarmReport(
+                vh.NODE_ID, vh.VEHICLE_ID, vh.Real_ID, "",
+                SCAppConstants.SystemAlarmCode.OHT_Issue.OHTDisconnection,
+                ProtocolFormat.OHTMessage.ErrorStatus.ErrSet);
         }
         #endregion Vh Connection / disconnention
 
@@ -5886,6 +5919,10 @@ namespace com.mirle.ibg3k0.sc.Service
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"vh id:{vhID} remove success. end release reserved control.",
                        VehicleID: vhID);
+                    scApp.LineService.ProcessAlarmReport(
+                        vh_vo.NODE_ID, vh_vo.VEHICLE_ID, vh_vo.Real_ID, "",
+                        SCAppConstants.SystemAlarmCode.OHT_Issue.OHTDisconnection,
+                        ProtocolFormat.OHTMessage.ErrorStatus.ErrReset);
                 }
                 List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
                 is_success = is_success && scApp.ReportBLL.newReportVehicleRemoved(vhID, reportqueues);

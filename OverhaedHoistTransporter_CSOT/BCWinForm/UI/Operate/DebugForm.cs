@@ -289,16 +289,17 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             }
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private async void button7_Click(object sender, EventArgs e)
         {
             try
             {
                 button7.Enabled = false;
-                Task.Run(() =>
-                {
-                    //bcApp.SCApplication.VehicleService.forceResetVHStatus(vh_id);
-                    bcApp.SCApplication.VehicleService.VehicleStatusRequest(vh_id, true);
-                });
+                await Task.Run(() =>
+                 {
+                     //bcApp.SCApplication.VehicleService.forceResetVHStatus(vh_id);
+                     //bcApp.SCApplication.VehicleService.VehicleStatusRequest(vh_id, true);
+                     bcApp.SCApplication.VehicleService.ManualRefreshVhStatus(vh_id);
+                 });
             }
             catch (Exception ex)
             {
