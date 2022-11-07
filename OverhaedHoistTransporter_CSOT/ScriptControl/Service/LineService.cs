@@ -287,7 +287,20 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
         }
+        const string BACK_GROUND_WORK_ITEM_ALARM_PROCESS_KEY_WORD = "BACK_GROUND_WORK_ITEM_ALARM_PROCESS_KEY_WORD";
+        public void ProcessAlarmReportByQueue(string nodeID, string eqID, string eqRealID, string currentAddressID, string errCode, ErrorStatus errorStatus)
+        {
 
+            var workItem = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem
+                (scApp,
+                 nodeID,
+                 eqID,
+                 eqRealID,
+                 currentAddressID,
+                 errCode,
+                 errorStatus);
+            scApp.BackgroundWorkProcAlarmReport.triggerBackgroundWork(BACK_GROUND_WORK_ITEM_ALARM_PROCESS_KEY_WORD, workItem);
+        }
 
         public void ProcessAlarmReport(string nodeID, string eqID, string eqRealID, string currentAddressID, string errCode, ErrorStatus errorStatus)
         {

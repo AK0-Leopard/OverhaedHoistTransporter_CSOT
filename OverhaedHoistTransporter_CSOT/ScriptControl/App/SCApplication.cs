@@ -634,6 +634,7 @@ namespace com.mirle.ibg3k0.sc.App
         public BackgroundWorkDriver BackgroundWorkProcVehiclePosition { get; private set; }              //A0.03
         public BackgroundWorkDriver BackgroundWorkProcVehicleStatus { get; private set; }
         public BackgroundWorkDriver BackgroundWorkProcFindTheParkZone { get; private set; }              //A0.03
+        public BackgroundWorkDriver BackgroundWorkProcAlarmReport { get; private set; }
 
         public IScheduler Scheduler { get; private set; }
 
@@ -1126,6 +1127,7 @@ namespace com.mirle.ibg3k0.sc.App
             BackgroundWorkProcVehiclePosition = new BackgroundWorkDriver(new BackgroundWorkProcVehiclePosition());            //A0.01
             BackgroundWorkProcVehicleStatus = new BackgroundWorkDriver(new BackgroundWorkProcVehicleStatus());
             BackgroundWorkProcFindTheParkZone = new BackgroundWorkDriver(new BackgroundWorkProcFindTheParkZone());            //A0.01
+            BackgroundWorkProcAlarmReport = new BackgroundWorkDriver(new BackgroundWorkProcAlarmReport());            //A0.01
         }
         private void initScheduler()
         {

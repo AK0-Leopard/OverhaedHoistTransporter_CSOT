@@ -655,6 +655,7 @@ a2. 仅执行必要软件即可
 a3. 清理不必要档案","IPC Timeout  || Unexcepted Error
 complete all NG"
 VH_LINE,10000,2,Long time in action,车子执行命令过久,a.默停,,
+VH_LINE,10002,2,OHT disconnection,车子斷線,a.檢查網路連線狀況,,
 HID_NODE,1,1,power alarm,A.HID雅米供电异常,A.HID雅米供电异常,A.检查HID电箱,
 HID_NODE,2,1,Temp alarm,A.HID温度异常,A.HID温度异常,A.检查HID电箱,
 MTS_NODE,1,1,OHxC timeout Alarm,A.与OHTC网络通讯异常,A.与OHTC网络通讯异常,A.检查通讯网络线,
