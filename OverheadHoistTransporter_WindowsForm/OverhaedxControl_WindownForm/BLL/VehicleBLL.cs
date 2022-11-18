@@ -20,7 +20,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
     {
 
         const string WEB_API_ACTION_VIEWERUPDATE = "ViewerUpdate";
-
+        private static Logger logger = LogManager.GetLogger("OperationLogger");
         WindownApplication app = null;
         VehicleDao vehicleDAO = null;
         public Cache cache { get; private set; }
@@ -155,6 +155,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(vh_id)}={vh_id}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: TransferManagement/SendCancelAbort");
             return result == "OK";
         }
 
@@ -174,6 +175,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(to_port_id)}={to_port_id}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog:SendCmdToControl- AVEHICLES/SendCommand");
             return result == "OK";
         }
 
@@ -192,6 +194,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(to_port_id)}={to_port_id}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog:SendCmdToControl-2 AVEHICLES/SendCommand");
             return result == "OK";
         }
 
@@ -208,6 +211,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(event_type)}={event_type.ToString()}").Append("&");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: AVEHICLES/PauseEvent");
             return result == "OK";
         }
 
@@ -225,6 +229,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(event_type)}={event_type.ToString()}").Append("&");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: AVEHICLES/PauseStatusChange");
             return result == "OK";
         }
 
@@ -241,6 +246,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(modeStatus)}={modeStatus.ToString()}").Append("&");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: AVEHICLES/ModeStatusChange");
             return result == "OK";
         }
 
@@ -256,6 +262,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(vh_id)}={vh_id}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: AVEHICLES/ResetAlarm");
             return result == "OK";
         }
 

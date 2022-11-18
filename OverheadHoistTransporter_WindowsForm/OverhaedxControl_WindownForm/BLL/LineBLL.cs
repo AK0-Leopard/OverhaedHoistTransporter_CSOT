@@ -7,11 +7,13 @@ using System.Collections.Generic;
 using com.mirle.ibg3k0.sc.Data.DAO;
 using System.Text;
 using com.mirle.ibg3k0.ohxc.winform.Common;
+using NLog;
 
 namespace com.mirle.ibg3k0.ohxc.winform.BLL
 {
     public class LineBLL
     {
+        private static Logger logger = LogManager.GetLogger("OperationLogger");
         WindownApplication app = null;
 
         public LineBLL(WindownApplication _app)
@@ -362,6 +364,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(mcs_cmd)}={mcs_cmd}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: TransferManagement/CancelAbort");
             return result == "OK";
         }
 
@@ -377,6 +380,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(mcs_cmd)}={mcs_cmd}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: TransferManagement/ForceFinish");
             return result == "OK";
         }
 
@@ -393,6 +397,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(vh_id)}={vh_id}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: TransferManagement/AssignVehicle");
             return result == "OK";
         }
 
@@ -409,6 +414,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(vh_id)}={vh_id}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: TransferManagement/ShiftCommand");
             return result == "OK";
         }
 
@@ -425,6 +431,9 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(status)}={status}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+
+          
+            logger.Info( string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: TransferManagement/ChangeStatus");
             return result == "OK";
         }
 
@@ -441,6 +450,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(priority)}={priority}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: TransferManagement/Priority");
             return result == "OK";
         }
 
@@ -458,6 +468,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(isSet)}={isSet}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: MTSMTLInfo/InterlockRequest");
             return result == "OK";
         }
 
@@ -474,6 +485,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(isSet)}={isSet}");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: MTSMTLInfo/CarInInterlockRequest");
             return result == "OK";
         }
         public bool SendMTSMTLCarOurRequest(string vh_id, string station_id, out string result)
@@ -489,6 +501,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(station_id)}={station_id}").Append("&");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: MTSMTLInfo/CarOutRequest");
             return result == "OK";
         }
         public bool SendMTSMTLCarOurCancel(string station_id, out string result)
@@ -503,6 +516,7 @@ namespace com.mirle.ibg3k0.ohxc.winform.BLL
             sb.Append($"{nameof(station_id)}={station_id}").Append("&");
             byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
             result = app.GetWebClientManager().PostInfoToServer(WebClientManager.OHxC_CONTROL_URI, action_targets, WebClientManager.HTTP_METHOD.POST, byteArray);
+            logger.Info(string.Format("{0}Time: {1}", new string(' ', 5), DateTime.Now) + " , TestLog: MTSMTLInfo/CarOutCancel");
             return result == "OK";
         }
 
