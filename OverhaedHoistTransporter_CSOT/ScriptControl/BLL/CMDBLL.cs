@@ -329,18 +329,26 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
                 catch (System.Data.SqlClient.SqlException ex)
                 {
-                    logger.Error(ex, "Exection:");
-                    if (ex.Number == DBConnection_EF.SQL_SERVER_ERROR_CODE_DEAD_LOCK)
+
+                    logger.Error(ex, $"SqlException-Numer:{ex.Number}:creat command id :{command_id} dead lock happend. retry count:{retry_count}");
+                    isSuccess = false;
+                    if(retry_count >= MAX_RETYIES)
                     {
-                        //Not thing...
-                        logger.Warn($"creat command id :{command_id} dead lock happend. retry count:{retry_count}");
-                        isSuccess = false;
-                    }
-                    else
-                    {
-                        isSuccess = false;
+                        logger.Error(ex, $"SqlException:retry creat command id :{command_id} dead lock happend.over retry count:{retry_count} break retry action");
                         break;
                     }
+                    //改成不判斷是否為Dead lock，只要是DB失敗，就直接retry 20221117
+                    //if (ex.Number == DBConnection_EF.SQL_SERVER_ERROR_CODE_DEAD_LOCK)
+                    //{
+                    //    //Not thing...
+                    //    logger.Warn($"creat command id :{command_id} dead lock happend. retry count:{retry_count}");
+                    //    isSuccess = false;
+                    //}
+                    //else
+                    //{
+                    //    isSuccess = false;
+                    //    break;
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -1035,6 +1043,20 @@ namespace com.mirle.ibg3k0.sc.BLL
                                              $"can't excute mcs command:{SCUtility.Trim(waitting_excute_mcs_cmd.CMD_ID)}",
                                        VehicleID: bestSuitableVh.VEHICLE_ID,
                                        CarrierID: bestSuitableVh.CST_ID);
+                                    continue;
+                                }
+                                //當OHT狀態已恢復為Idel模式後，若準備要下unload給他的命令而他身上沒有該顆CST時，則直接將該命令取消
+                                if (bestSuitableVh.HAS_CST == 0)
+                                {
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                                       Data: $"vh id:{bestSuitableVh.VEHICLE_ID} has mcs unload command id:{waitting_excute_mcs_cmd.CMD_ID}," +
+                                             $" but vh current no cst in car (has cst flag:{bestSuitableVh.HAS_CST})," +
+                                             $"force finish this transfer command",
+                                       VehicleID: bestSuitableVh.VEHICLE_ID,
+                                       CarrierID: bestSuitableVh.CST_ID);
+
+                                    waitting_excute_mcs_cmd.COMMANDSTATE = ACMD_MCS.COMMAND_STATUS_BIT_CARRIER_UNKNOW_LOCATION;
+                                    scApp.TransferService.forceFinishTransferCommand(waitting_excute_mcs_cmd, CompleteStatus.CmpStatusUnloadCommandCstnotExist);
                                     continue;
                                 }
                                 cmd_type = E_CMD_TYPE.Unload;

@@ -2528,7 +2528,7 @@ namespace com.mirle.ibg3k0.sc.Service
                    CarrierID: request_block_vh.CST_ID);
                 return false;
             }
-            else if (DebugParameter.isOpenPortBlockReqCheckFun && line.IsSystemLagHappending)
+            else if (DebugParameter.isOpenBlockReqCheckFun && line.IsSystemLagHappending)
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                    Data: "由於系統反應變慢，因此一律拒絕路權的要求。",
@@ -2650,7 +2650,13 @@ namespace com.mirle.ibg3k0.sc.Service
                 //       VehicleID: requestBlockVh.VEHICLE_ID);
                 //    return;
                 //}
-
+                if (!DebugParameter.isOpenDoubleCheckBlockReqFun)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"準備要求 vh:{current_reserve_block_vh.VEHICLE_ID} 進行cancel block rquest，但由於該功能目前關閉，故不下達命令",
+                       VehicleID: requestBlockVh.VEHICLE_ID);
+                    return;
+                }
                 if (current_reserve_block_vh.BlockCanceling_Sync == 0)
                     Task.Run(() => ExcuteCancelBlockAction(current_reserve_block_vh));
             }

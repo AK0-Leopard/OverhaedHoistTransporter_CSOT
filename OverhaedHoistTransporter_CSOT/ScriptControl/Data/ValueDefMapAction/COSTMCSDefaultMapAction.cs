@@ -1980,7 +1980,11 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 vid_collection.VIDITEM_59_DVVAL_CommandInfo.REPLACE = CMD_MCS.REPLACE.ToString();
                 string carrier_loc = "";
                 //if (CMD_MCS.TRANSFERSTATE >= E_TRAN_STATUS.Transferring)
-                if (CMD_MCS.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE)
+                if (CMD_MCS.COMMANDSTATE == ACMD_MCS.COMMAND_STATUS_BIT_CARRIER_UNKNOW_LOCATION)
+                {
+                    carrier_loc = "";
+                }
+                else if (CMD_MCS.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE)
                 {
                     AVEHICLE carry_vh = scApp.VehicleBLL.cache.getVehicleByCSTID(CMD_MCS.CARRIER_ID);
                     if (carry_vh != null)

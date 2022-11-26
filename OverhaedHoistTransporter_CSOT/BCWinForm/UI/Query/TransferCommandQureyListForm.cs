@@ -63,6 +63,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
                 cmsMCS_bindingSource.DataSource = cmdMCSList;
                 dgv_TransferCommand.Refresh();
+                lbl_currentCommandCountValue.Text = ACMD_MCSs.Count().ToString();
 
             }
             catch (Exception ex)

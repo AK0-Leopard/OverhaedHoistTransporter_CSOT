@@ -30,6 +30,8 @@ namespace com.mirle.ibg3k0.sc
         public const int COMMAND_STATUS_BIT_INDEX_UNLOAD_COMPLETE = 64;
         public const int COMMAND_STATUS_BIT_INDEX_COMMNAD_FINISH = 128;
 
+        public const int COMMAND_STATUS_BIT_CARRIER_UNKNOW_LOCATION = 256;
+
         public string CanNotServiceReason = "";
         public static string COMMAND_STATUS_BIT_To_String(int commandStatus)
         {

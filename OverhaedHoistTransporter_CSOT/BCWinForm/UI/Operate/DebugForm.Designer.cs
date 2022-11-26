@@ -374,6 +374,7 @@
             this.uctl_SendAllFun = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.uctlButton1 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.cb_openDoubleCheckBlockReq = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -737,6 +738,7 @@
             this.groupBox14.TabIndex = 54;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Block Test";
+            this.groupBox14.Visible = false;
             // 
             // txt_req_block_id_test
             // 
@@ -1055,6 +1057,7 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.cb_openDoubleCheckBlockReq);
             this.tabPage1.Controls.Add(this.cb_PassObstacleFlagWhenSendContinueRequest);
             this.tabPage1.Controls.Add(this.cb_blockReqCheckFun);
             this.tabPage1.Controls.Add(this.cb_IsOpenPortGroupLimit);
@@ -2353,7 +2356,7 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 4.61165F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 95.38835F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1427, 717);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1427, 708);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
             // dgv_cache_object_data
@@ -2364,12 +2367,12 @@
             this.Column_cst_id});
             this.tableLayoutPanel2.SetColumnSpan(this.dgv_cache_object_data, 2);
             this.dgv_cache_object_data.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_cache_object_data.Location = new System.Drawing.Point(3, 36);
+            this.dgv_cache_object_data.Location = new System.Drawing.Point(3, 35);
             this.dgv_cache_object_data.MultiSelect = false;
             this.dgv_cache_object_data.Name = "dgv_cache_object_data";
             this.dgv_cache_object_data.RowTemplate.Height = 24;
             this.dgv_cache_object_data.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv_cache_object_data.Size = new System.Drawing.Size(1421, 678);
+            this.dgv_cache_object_data.Size = new System.Drawing.Size(1421, 670);
             this.dgv_cache_object_data.TabIndex = 0;
             this.dgv_cache_object_data.EditModeChanged += new System.EventHandler(this.dgv_cache_object_data_EditModeChanged);
             // 
@@ -2406,7 +2409,7 @@
             this.label22.AutoSize = true;
             this.label22.Location = new System.Drawing.Point(30, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(120, 33);
+            this.label22.Size = new System.Drawing.Size(120, 32);
             this.label22.TabIndex = 2;
             this.label22.Text = "Cache Data Name";
             // 
@@ -4594,6 +4597,18 @@
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
+            // cb_openDoubleCheckBlockReq
+            // 
+            this.cb_openDoubleCheckBlockReq.AutoSize = true;
+            this.cb_openDoubleCheckBlockReq.Location = new System.Drawing.Point(1100, 137);
+            this.cb_openDoubleCheckBlockReq.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_openDoubleCheckBlockReq.Name = "cb_openDoubleCheckBlockReq";
+            this.cb_openDoubleCheckBlockReq.Size = new System.Drawing.Size(259, 26);
+            this.cb_openDoubleCheckBlockReq.TabIndex = 31;
+            this.cb_openDoubleCheckBlockReq.Text = "開啟[路權再次確認]機制";
+            this.cb_openDoubleCheckBlockReq.UseVisualStyleBackColor = true;
+            this.cb_openDoubleCheckBlockReq.CheckedChanged += new System.EventHandler(this.cb_openDoubleCheckBlockReq_CheckedChanged);
+            // 
             // DebugForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -5029,5 +5044,6 @@
         private System.Windows.Forms.CheckBox cb_IsOpenPortGroupLimit;
         private System.Windows.Forms.CheckBox cb_blockReqCheckFun;
         private System.Windows.Forms.CheckBox cb_PassObstacleFlagWhenSendContinueRequest;
+        private System.Windows.Forms.CheckBox cb_openDoubleCheckBlockReq;
     }
 }

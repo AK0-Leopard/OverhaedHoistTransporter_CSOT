@@ -96,6 +96,7 @@ message Timestamp {
 	CmpStatusDoubleStorage = 28;
 	CmpStatusInterlockError = 64;
 
+	CmpStatusUnloadCommandCSTNotExist = 97;
 	CmpStatusLongTimeInaction = 98;
 	CmpStatusForceFinishByOp = 99;
   }

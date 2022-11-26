@@ -43,9 +43,11 @@
             this.cMDSTARTTIMEDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rEPLACEDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pel_button = new System.Windows.Forms.Panel();
+            this.btn_returnToQueue = new System.Windows.Forms.Button();
             this.btn_force_finish = new System.Windows.Forms.Button();
             this.btn_refresh = new System.Windows.Forms.Button();
-            this.btn_returnToQueue = new System.Windows.Forms.Button();
+            this.lbl_currentCommandCountName = new System.Windows.Forms.Label();
+            this.lbl_currentCommandCountValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.cMDMCSObjToShowBindingSource)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_TransferCommand)).BeginInit();
@@ -183,6 +185,8 @@
             // 
             // pel_button
             // 
+            this.pel_button.Controls.Add(this.lbl_currentCommandCountValue);
+            this.pel_button.Controls.Add(this.lbl_currentCommandCountName);
             this.pel_button.Controls.Add(this.btn_returnToQueue);
             this.pel_button.Controls.Add(this.btn_force_finish);
             this.pel_button.Controls.Add(this.btn_refresh);
@@ -192,6 +196,16 @@
             this.pel_button.Name = "pel_button";
             this.pel_button.Size = new System.Drawing.Size(1592, 63);
             this.pel_button.TabIndex = 6;
+            // 
+            // btn_returnToQueue
+            // 
+            this.btn_returnToQueue.Location = new System.Drawing.Point(132, 12);
+            this.btn_returnToQueue.Name = "btn_returnToQueue";
+            this.btn_returnToQueue.Size = new System.Drawing.Size(172, 42);
+            this.btn_returnToQueue.TabIndex = 6;
+            this.btn_returnToQueue.Text = "Return To Queue";
+            this.btn_returnToQueue.UseVisualStyleBackColor = true;
+            this.btn_returnToQueue.Click += new System.EventHandler(this.btn_returnToQueue_Click);
             // 
             // btn_force_finish
             // 
@@ -214,15 +228,23 @@
             this.btn_refresh.UseVisualStyleBackColor = true;
             this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
-            // btn_returnToQueue
+            // lbl_currentCommandCountName
             // 
-            this.btn_returnToQueue.Location = new System.Drawing.Point(132, 12);
-            this.btn_returnToQueue.Name = "btn_returnToQueue";
-            this.btn_returnToQueue.Size = new System.Drawing.Size(172, 42);
-            this.btn_returnToQueue.TabIndex = 6;
-            this.btn_returnToQueue.Text = "Return To Queue";
-            this.btn_returnToQueue.UseVisualStyleBackColor = true;
-            this.btn_returnToQueue.Click += new System.EventHandler(this.btn_returnToQueue_Click);
+            this.lbl_currentCommandCountName.AutoSize = true;
+            this.lbl_currentCommandCountName.Location = new System.Drawing.Point(516, 22);
+            this.lbl_currentCommandCountName.Name = "lbl_currentCommandCountName";
+            this.lbl_currentCommandCountName.Size = new System.Drawing.Size(230, 22);
+            this.lbl_currentCommandCountName.TabIndex = 7;
+            this.lbl_currentCommandCountName.Text = "Current command count:";
+            // 
+            // lbl_currentCommandCountValue
+            // 
+            this.lbl_currentCommandCountValue.AutoSize = true;
+            this.lbl_currentCommandCountValue.Location = new System.Drawing.Point(752, 22);
+            this.lbl_currentCommandCountValue.Name = "lbl_currentCommandCountValue";
+            this.lbl_currentCommandCountValue.Size = new System.Drawing.Size(140, 22);
+            this.lbl_currentCommandCountValue.TabIndex = 8;
+            this.lbl_currentCommandCountValue.Text = "             ";
             // 
             // TransferCommandQureyListForm
             // 
@@ -239,6 +261,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_TransferCommand)).EndInit();
             this.pel_button.ResumeLayout(false);
+            this.pel_button.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -261,5 +284,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn cMDSTARTTIMEDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rEPLACEDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button btn_returnToQueue;
+        private System.Windows.Forms.Label lbl_currentCommandCountValue;
+        private System.Windows.Forms.Label lbl_currentCommandCountName;
     }
 }

@@ -2403,7 +2403,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool isOpenCommandShift = false;
         public static bool isOpenAdjustmentParkingZone = false;
         public static bool isOpenPortGroupLimit = true;
-        public static bool isOpenPortBlockReqCheckFun = true;
-
+        public static bool isOpenBlockReqCheckFun = true;
+        public static bool isOpenDoubleCheckBlockReqFun = false;
     }
 }
