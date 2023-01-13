@@ -347,6 +347,33 @@ namespace com.mirle.ibg3k0.sc.Service
 
             if (scApp.getEQObjCacheManager().getLine().ServiceMode == AppServiceMode.Active)
                 scApp.VehicleBLL.NetworkQualityTest(vh.VEHICLE_ID, e.EntrySection, vh.CUR_ADR_ID, 0);
+            ConfirmTheCorrectnessOfWalkingRoute(vh, e);
+        }
+        private void ConfirmTheCorrectnessOfWalkingRoute(AVEHICLE vh, LocationChangeEventArgs e)
+        {
+            var curent_route_info = vh.tryGetCurrentGuideSection();
+            if (!curent_route_info.hasInfo)
+            {
+                logger.Warn($"Fun:{nameof(ConfirmTheCorrectnessOfWalkingRoute)}.vh:{vh.VEHICLE_ID} not current route info, don't check route correctness");
+                return;
+            }
+            if (!curent_route_info.currentGuideSection.Contains(e.EntrySection))
+            {
+                logger.Warn($"Fun:{nameof(ConfirmTheCorrectnessOfWalkingRoute)}.vh:{vh.VEHICLE_ID} [Wrong way] happend, excute command:{SCUtility.Trim(vh.OHTC_CMD, true)} entry section:{e.EntrySection}");
+                return;
+            }
+            if (!curent_route_info.currentGuideSection.Contains(e.LeaveSection))
+            {
+                //主要應該新進入的section就好，離開的section 如果是第一段 有可能會是上一次結束的地方
+                return;
+            }
+            int entry_section_index = curent_route_info.currentGuideSection.IndexOf(e.EntrySection);
+            int leave_section_index = curent_route_info.currentGuideSection.IndexOf(e.LeaveSection);
+            if (leave_section_index > entry_section_index)
+            {
+                logger.Warn($"Fun:{nameof(ConfirmTheCorrectnessOfWalkingRoute)}.vh:{vh.VEHICLE_ID} [walk backwards] happend, excute command:{SCUtility.Trim(vh.OHTC_CMD, true)} " +
+                            $"entry section:{e.EntrySection} leave section:{e.LeaveSection}");
+            }
         }
 
         private void Vh_SegementChange(object sender, SegmentChangeEventArgs e)
@@ -1166,6 +1193,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 if (scApp.CMDBLL.tryGenerateCmd_OHTC_Details(cmd, out activeType, out routeSections, out cycleRunSections
                                                                              , out minRouteSeg_Vh2From, out minRouteSeg_From2To))
                 {
+                    assignVH.setVhGuideInfo(activeType, minRouteSeg_Vh2From, minRouteSeg_From2To);
                     //若下達的命令為Park、CycleRun時,會一併更新Table:AVEHICLE、APARKZONEDETAIL或ACYCLEZONEDETAIL來確保停車數量、在途量的正確性。
                     isSuccess = sendTransferCommandToVh(cmd, assignVH, activeType, routeSections, cycleRunSections);
 
@@ -1204,11 +1232,13 @@ namespace com.mirle.ibg3k0.sc.Service
                     else
                     {
                         AbnormalEndCMD_OHT(cmd, E_CMD_STATUS.AbnormalEndByOHT);
+                        assignVH.resetVhGuideInfo();
                     }
                 }
                 else
                 {
                     AbnormalEndCMD_OHT(cmd, E_CMD_STATUS.AbnormalEndByOHTC);//A0.02 
+                    assignVH.resetVhGuideInfo();
                 }
             }
             catch (Exception ex)
@@ -4999,6 +5029,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 eqpt.onCommandComplete(completeStatus);
                 scApp.VehicleBLL.updateVehicleActionStatus(eqpt, EventType.AdrPass);
+                eqpt.resetVhGuideInfo();
             }
             catch (Exception ex)
             {

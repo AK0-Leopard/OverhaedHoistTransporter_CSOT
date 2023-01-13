@@ -17,6 +17,7 @@ using Stateless;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +25,93 @@ using static com.mirle.ibg3k0.sc.App.SCAppConstants;
 
 namespace com.mirle.ibg3k0.sc
 {
+    public class GuideInfo
+    {
+        public class Section
+        {
+            public string ID;
+            public bool isPass { get; private set; }
+            public void setIsPassFlag()
+            {
+                isPass = true;
+            }
+            public Section(string _id, DriveDirction _dir)
+            {
+                ID = _id;
+                isPass = false;
+            }
+        }
+        public GuideInfo(AVEHICLE _vh)
+        {
+            vh = _vh;
+            startToLoadGuideSection = new List<string>();
+            ToDesinationGuideSection = new List<string>();
+        }
+        public void setGuideSection(ActiveType activeType, string[] guideSectionStartToLoad, string[] guideSectionToDesination)
+        {
+            startToLoadGuideSection = guideSectionStartToLoad == null ? new List<string>() : guideSectionStartToLoad.ToList();
+            ToDesinationGuideSection = guideSectionToDesination == null ? new List<string>() : guideSectionToDesination.ToList();
+
+            judgeIsMoveCommand(activeType);
+        }
+
+        private void judgeIsMoveCommand(ActiveType activeType)
+        {
+            switch (activeType)
+            {
+                case ActiveType.Move:
+                case ActiveType.Movetomtl:
+                case ActiveType.Systemin:
+                case ActiveType.Systemout:
+                case ActiveType.Mtlhome:
+                    isMove = true;
+                    break;
+                default:
+                    isMove = false;
+                    break;
+            }
+        }
+        public void resetGuideInfo()
+        {
+            startToLoadGuideSection = new List<string>();
+            ToDesinationGuideSection = new List<string>();
+            isMove = false;
+        }
+
+        AVEHICLE vh;
+        bool isMove;
+        List<string> startToLoadGuideSection;
+        ReadOnlyCollection<string> startToLoadGuideSectionReadOnly => startToLoadGuideSection?.AsReadOnly();
+        List<string> ToDesinationGuideSection;
+        ReadOnlyCollection<string> ToDesinationGuideSectionReadOnly => ToDesinationGuideSection?.AsReadOnly();
+        public (bool hasInfo, ReadOnlyCollection<string> currentGuideSection) tryGetCurrentGuideSection()
+        {
+            if (isMove)
+            {
+                if (ToDesinationGuideSectionReadOnly != null && ToDesinationGuideSectionReadOnly.Count > 0)
+                    return (true, ToDesinationGuideSectionReadOnly);
+                else
+                    return (false, null);
+            }
+            else
+            {
+                if (vh.HAS_CST == 0)
+                {
+                    if (startToLoadGuideSectionReadOnly != null && startToLoadGuideSectionReadOnly.Count > 0)
+                        return (true, startToLoadGuideSectionReadOnly);
+                    else
+                        return (false, null);
+                }
+                else
+                {
+                    if (ToDesinationGuideSectionReadOnly != null && ToDesinationGuideSectionReadOnly.Count > 0)
+                        return (true, ToDesinationGuideSectionReadOnly);
+                    else
+                        return (false, null);
+                }
+            }
+        }
+    }
     public class LocationChangeEventArgs : EventArgs
     {
         public string EntrySection;
@@ -80,6 +168,7 @@ namespace com.mirle.ibg3k0.sc
 
         VehicleTimerAction vehicleTimer = null;
         public Stopwatch CurrentCommandExcuteTime { get; private set; }
+        private GuideInfo guideInfo { get; set; }
 
         public void onCommandComplete(CompleteStatus cmpStatus)
         {
@@ -122,6 +211,8 @@ namespace com.mirle.ibg3k0.sc
 
             CurrentCommandExcuteTime = new Stopwatch();
             LastBlockRequestFailInterval.Restart();
+            guideInfo = new GuideInfo(this);
+
         }
 
         public void TimerActionStart()
@@ -525,6 +616,30 @@ namespace com.mirle.ibg3k0.sc
             CurrentCommandExcuteTime.Reset();
         }
 
+        #region GuideInfo相關Function
+        object guideInfoSetLock = new object();
+        public void resetVhGuideInfo()
+        {
+            lock (guideInfoSetLock)
+                guideInfo.resetGuideInfo();
+        }
+        public void setVhGuideInfo(ActiveType activeType, string[] guideSectionStartToLoad, string[] guideSectionToDesination)
+        {
+            try
+            {
+                lock (guideInfoSetLock)
+                    guideInfo.setGuideSection(activeType, guideSectionStartToLoad, guideSectionToDesination);
+            }
+            catch(Exception ex) 
+            {
+                NLog.LogManager.GetCurrentClassLogger().Error(ex, "Exception:");
+            }
+        }
+        public (bool hasInfo, ReadOnlyCollection<string> currentGuideSection) tryGetCurrentGuideSection()
+        {
+            return guideInfo.tryGetCurrentGuideSection();
+        }
+        #endregion GuideInfo相關Function
 
         public string getCurrentSegment(BLL.SectionBLL sectionBLL)
         {
