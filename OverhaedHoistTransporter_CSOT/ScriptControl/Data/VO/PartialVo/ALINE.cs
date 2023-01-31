@@ -1630,6 +1630,20 @@ namespace com.mirle.ibg3k0.sc
             }
 
         }
+        public Stopwatch ReserveModuleLastAskTime = new Stopwatch();
+        public void ResetReserveModuleLastAskTime()
+        {
+            ReserveModuleLastAskTime.Restart();
+        }
+        const int WITH_RESERVE_MODULE_CONNECTION_TIME_OUT_MS = 30_000;
+        public bool IsConnectionWithReserveModule
+        {
+            get
+            {
+                return ReserveModuleLastAskTime.IsRunning &&
+                       ReserveModuleLastAskTime.ElapsedMilliseconds < WITH_RESERVE_MODULE_CONNECTION_TIME_OUT_MS;
+            }
+        }
 
 
     }

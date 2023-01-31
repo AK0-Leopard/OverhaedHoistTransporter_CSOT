@@ -95,7 +95,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
             //if (refresh_sw.ElapsedMilliseconds < 500) return;
             Console.WriteLine(refresh_sw.ElapsedMilliseconds);
             refresh_sw.Restart();
-            scApp.ReserveBLL.DrawAllReserveSectionInfo();
+            //scApp.ReserveBLL.DrawAllReserveSectionInfo();
             var Bitmap = scApp.ReserveBLL.GetCurrentReserveInfoMap();
             MapBitmapSource = Bitmap;
 

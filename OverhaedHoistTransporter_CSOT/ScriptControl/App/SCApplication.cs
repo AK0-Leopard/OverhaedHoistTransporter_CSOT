@@ -22,6 +22,7 @@ using com.mirle.ibg3k0.bcf.Data.VO;
 using com.mirle.ibg3k0.bcf.Schedule;
 using com.mirle.ibg3k0.sc.BLL;
 using com.mirle.ibg3k0.sc.Common;
+using com.mirle.ibg3k0.sc.Common.Interface;
 using com.mirle.ibg3k0.sc.ConfigHandler;
 using com.mirle.ibg3k0.sc.Data;
 using com.mirle.ibg3k0.sc.Data.DAO;
@@ -538,6 +539,8 @@ namespace com.mirle.ibg3k0.sc.App
         private EquipmentBLL equipmentBLL = null;
         public EquipmentBLL EquipmentBLL { get { return equipmentBLL; } }
         public ReserveBLL ReserveBLL { get; private set; } = null; //A0.01
+        public IReserveModule localReserveModule { get; private set; }
+        public IReserveModule remoteReserveModule { get; private set; }
 
 
         /// <summary>
@@ -775,6 +778,7 @@ namespace com.mirle.ibg3k0.sc.App
             initDao();      //Initial DAO
             initBLL();      //Initial BLL
             initServer();
+            initMoudule();
             initConfig();   //Initial Config
             initialTransferCommandPeriodicDataSet();
 
@@ -837,6 +841,12 @@ namespace com.mirle.ibg3k0.sc.App
             //bdTableWatcher = new DBTableWatcher(this);
 
 
+        }
+
+        private void initMoudule()
+        {
+            localReserveModule = new Common.ReserveModule(this);
+            remoteReserveModule = new WebAPI.ReserveModule(this);
         }
 
         private void initialRestfulServer()
@@ -1684,7 +1694,7 @@ namespace com.mirle.ibg3k0.sc.App
             try
             {
                 string app_setting_value = ConfigurationManager.AppSettings.Get(key);
-                if(app_setting_value == null)
+                if (app_setting_value == null)
                 {
                     rtn = defaultValue;
                 }
@@ -1726,12 +1736,16 @@ namespace com.mirle.ibg3k0.sc.App
         /// <param name="key">The key.</param>
         /// <param name="defaultValue">The default value.</param>
         /// <returns>System.String.</returns>
-        private string getString(string key, string defaultValue)
+        public string getString(string key, string defaultValue)
         {
             string rtn = defaultValue;
             try
             {
-                rtn = ConfigurationManager.AppSettings.Get(key);
+                string rtn_temp = ConfigurationManager.AppSettings.Get(key);
+                if(rtn_temp != null)
+                {
+                    rtn = rtn_temp;
+                }
             }
             catch (Exception e)
             {
@@ -1979,8 +1993,15 @@ namespace com.mirle.ibg3k0.sc.App
         {
             initScriptForEquipment();
             startService();
+            startModule();
 
             Scheduler.Start();
+        }
+
+        private void startModule()
+        {
+            remoteReserveModule.Start(this);
+            localReserveModule.Start(this);
         }
 
         /// <summary>
@@ -2244,6 +2265,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool IsPassObstacleFlagWhenSendContinueRequest { private set; get; } = false;
 
         public static int MCSCommandAccumulateTimePriority { get; private set; } = 1;
+        public static bool IsUsingRemoteReserveModule { get; private set; } = true;
 
         /// <summary>
         /// Sets the secs conversaction timeout.
