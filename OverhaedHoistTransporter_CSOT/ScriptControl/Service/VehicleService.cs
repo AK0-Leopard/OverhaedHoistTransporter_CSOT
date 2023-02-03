@@ -28,17 +28,20 @@ using com.mirle.ibg3k0.bcf.Common;
 using com.mirle.ibg3k0.sc.App;
 using com.mirle.ibg3k0.sc.Common;
 using com.mirle.ibg3k0.sc.Data;
+using com.mirle.ibg3k0.sc.Data.Expansion;
 using com.mirle.ibg3k0.sc.Data.PLC_Functions;
 using com.mirle.ibg3k0.sc.Data.SECS.CSOT;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using KingAOP;
 using Mirle.AK0.Hlt.Utils;
+using Mirle.Protos.ReserveModule;
 using Newtonsoft.Json.Linq;
 using NLog;
 using RouteKit;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
@@ -1988,9 +1991,18 @@ namespace com.mirle.ibg3k0.sc.Service
         //public void TranEventReport_100(BCFApplication bcfApp, AVEHICLE eqpt, ID_136_TRANS_EVENT_REP recive_str, int seq_num)
         public void TranEventReport(BCFApplication bcfApp, AVEHICLE eqpt, ID_136_TRANS_EVENT_REP recive_str, int seq_num)
         {
-            if (scApp.getEQObjCacheManager().getLine().ServerPreStop)
+            ALINE line = scApp.getEQObjCacheManager().getLine();
+            if (line.ServerPreStop)
                 return;
 
+            if (line.ServiceMode != AppServiceMode.Active)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"vh:{eqpt.VEHICLE_ID} 發送 Event type:{recive_str.EventType} 但該OHTC ServiceMode為:{line.ServiceMode} 不進行處裡",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
+                return;
+            }
             //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
             //   seq_num: seq_num,
             //   Data: recive_str,
@@ -2612,7 +2624,9 @@ namespace com.mirle.ibg3k0.sc.Service
                                Data: $"current reserve section:{scApp.ReserveBLL.GetCurrentReserveSection()}",
                                VehicleID: vhID);
 
-                            DoubleCheckBlockStatus(request_block_vh, block_master, result);
+                            DoubleCheckBlockStatusFrontAndRearCar(request_block_vh, block_master, result);
+
+                            DoubleCheckBlockStatusMissReleaseBlock(request_block_vh, result);
 
                             if (!SCUtility.isEmpty(result.VehicleID))
                                 Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
@@ -2633,7 +2647,96 @@ namespace com.mirle.ibg3k0.sc.Service
             }
         }
 
-        private void DoubleCheckBlockStatus(AVEHICLE requestBlockVh, ABLOCKZONEMASTER requestBlockMaster, HltResult result)
+        private void DoubleCheckBlockStatusMissReleaseBlock(AVEHICLE requestBlockVh, HltResult requestBlockResult)
+        {
+            try
+            {
+
+                var check_is_block_by_section = isBlockBySection(requestBlockResult);
+                if (!check_is_block_by_section.isBlockBySection)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"並非被其他車所預約的Section卡住，結束 double check block(MissReleaseBlock) 流程",
+                       VehicleID: requestBlockVh.VEHICLE_ID);
+                    return;
+                }
+
+                string ownerVhID = requestBlockResult.VehicleID;
+                string reserveSectionID = requestBlockResult.SectionID;
+
+                AVEHICLE ownerVh = scApp.VehicleBLL.cache.getVhByID(ownerVhID);
+                if (ownerVh == null)
+                    return;
+                if (ownerVh.ACT_STATUS == VHActionStatus.NoCommand)
+                    return;
+                var get_current_guide_section_result = ownerVh.tryGetCurrentGuideSection();
+                if (!get_current_guide_section_result.hasInfo)
+                    return;
+
+                var current_guide_section = get_current_guide_section_result.currentGuideSection;
+                var get_intersect_section_result = tryFindTheIntersectSectionBlockWithGuideSection(reserveSectionID, current_guide_section);
+                if (!get_intersect_section_result.isSuccess)
+                    return;
+
+                int reserve_section_index = current_guide_section.IndexOf(get_intersect_section_result.intersectSectionID);
+                if (reserve_section_index < 0)
+                    return;
+                int vh_cur_section_index = current_guide_section.IndexOf(SCUtility.Trim(ownerVh.CUR_SEC_ID, true));
+                if (vh_cur_section_index < 0)
+                    return;
+                if (reserve_section_index > vh_cur_section_index)
+                    return;
+
+                for (int i = reserve_section_index; i < vh_cur_section_index - 1; i++)
+                {
+                    string leave_section_id = current_guide_section[i];
+                    string entry_section_id = current_guide_section[i + 1];
+
+                    var entry_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(entry_section_id);
+                    var leave_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(leave_section_id);
+
+                    var leave_blocks = leave_sec_related_blocks.Except(entry_sec_related_blocks);
+                    foreach (var leave_block in leave_blocks)
+                    {
+                        leave_block.Leave(ownerVh.VEHICLE_ID);
+                    }
+                }
+
+                //var entry_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(e.EntrySection);
+                //var leave_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(e.LeaveSection);
+                //var entry_blocks = entry_sec_related_blocks.Except(leave_sec_related_blocks);
+                //foreach (var entry_block in entry_blocks)
+                //{
+                //    entry_block.Entry(vh.VEHICLE_ID);
+                //}
+                //var leave_blocks = leave_sec_related_blocks.Except(entry_sec_related_blocks);
+                //foreach (var leave_block in leave_blocks)
+                //{
+                //    leave_block.Leave(vh.VEHICLE_ID);
+                //}
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+        }
+        private (bool isSuccess, string intersectSectionID) tryFindTheIntersectSectionBlockWithGuideSection(string reserveSecID, ReadOnlyCollection<string> currentGuideSection)
+        {
+            var sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(reserveSecID);
+            foreach (var block_master in sec_related_blocks)
+            {
+                var block_detail = block_master.GetBlockZoneDetailSectionIDs().AsReadOnly();
+                var intersectedList = currentGuideSection.Intersect(block_detail);
+                if (intersectedList.Any())
+                {
+                    return (true, intersectedList.First());
+                }
+            }
+            return (false, "");
+        }
+
+        private void DoubleCheckBlockStatusFrontAndRearCar(AVEHICLE requestBlockVh, ABLOCKZONEMASTER requestBlockMaster, HltResult result)
         {
             try
             {
@@ -6385,5 +6488,28 @@ namespace com.mirle.ibg3k0.sc.Service
         }
 
         #endregion TEST
+
+        public void syncAllVehicleInfoWhenStandbyToActive()
+        {
+            try
+            {
+                var vhs = scApp.VehicleBLL.cache.loadVhs();
+                foreach (var vh in vhs)
+                {
+                    ACMD_OHTC executed_cmd = scApp.CMDBLL.geExecutedCMD_OHTCByVehicleID(vh.VEHICLE_ID);
+                    if (executed_cmd == null)
+                        continue;
+                    var all_path_info = scApp.CMDBLL.loadPassSectionAll_StartToFromAndFromToTargetByCMDID(executed_cmd.CMD_ID);
+                    if (!all_path_info.isSuccess)
+                        continue;
+                    vh.setVhGuideInfo(executed_cmd.CMD_TPYE.convert2ActiveType(), all_path_info.StartToFromPath, all_path_info.FromToTargetPath);
+                    scApp.CMDBLL.setVhExcuteCmdToShow(executed_cmd, vh, all_path_info.PredictPath, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+        }
     }
 }

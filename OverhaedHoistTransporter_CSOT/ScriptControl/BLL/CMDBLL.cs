@@ -332,7 +332,7 @@ namespace com.mirle.ibg3k0.sc.BLL
 
                     logger.Error(ex, $"SqlException-Numer:{ex.Number}:creat command id :{command_id} dead lock happend. retry count:{retry_count}");
                     isSuccess = false;
-                    if(retry_count >= MAX_RETYIES)
+                    if (retry_count >= MAX_RETYIES)
                     {
                         logger.Error(ex, $"SqlException:retry creat command id :{command_id} dead lock happend.over retry count:{retry_count} break retry action");
                         break;
@@ -2419,7 +2419,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                             {
                                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: string.Empty,
                                    Data: $"can't send command ,id:{SCUtility.Trim(cmd.CMD_ID)},vh id:{SCUtility.Trim(cmd.VH_ID)} current status not allowed." +
-                                   $"is connect:{assignVH.isTcpIpConnect },is error:{assignVH.IsError }, current assign ohtc cmd id:{assignVH.OHTC_CMD}.");
+                                   $"is connect:{assignVH.isTcpIpConnect},is error:{assignVH.IsError}, current assign ohtc cmd id:{assignVH.OHTC_CMD}.");
                                 continue;
                             }
 
@@ -2680,7 +2680,7 @@ namespace com.mirle.ibg3k0.sc.BLL
 
 
                 //if (creatCmd_OHTC_Details(acmd_ohtc.CMD_ID, minRouteSeg))
-                if (creatCmd_OHTC_DetailByBatch(acmd_ohtc.CMD_ID, minRouteSeg))
+                if (creatCmd_OHTC_LoadAndTargetDetailByBatch(acmd_ohtc.CMD_ID, minRouteSeg_Vh2FromTemp, minRouteSeg_From2ToTemp))
                 {
                     scApp.CMDBLL.updateCommand_OHTC_StatusByCmdID(acmd_ohtc.CMD_ID, E_CMD_STATUS.Sending);
                 }
@@ -3427,6 +3427,61 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return true;
         }
+        public bool creatCmd_OHTC_LoadAndTargetDetailByBatch(string cmd_id, string[] minRouteSeg_Vh2From, string[] minRouteSeg_From2To)
+        {
+            //using (DBConnection_EF con = new DBConnection_EF())
+            int start_seq_no = 0;
+            //using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            //{
+            //    ACMD_OHTC_DETAIL last_cmd_detail = cmd_ohtc_detailDAO.getLastByID(con, cmd_id);
+            //    if (last_cmd_detail != null)
+            //    {
+            //        start_seq_no = last_cmd_detail.SEQ_NO;
+            //    }
+            //}
+            List<ACMD_OHTC_DETAIL> cmd_details = new List<ACMD_OHTC_DETAIL>();
+            if (minRouteSeg_Vh2From != null && minRouteSeg_Vh2From.Length > 0)
+            {
+                foreach (string sec_id in minRouteSeg_Vh2From)
+                {
+                    ASECTION section = scApp.MapBLL.getSectiontByID(sec_id);
+                    ACMD_OHTC_DETAIL cmd_detail = new ACMD_OHTC_DETAIL()
+                    {
+                        CMD_ID = cmd_id,
+                        SEQ_NO = ++start_seq_no,
+                        ADD_ID = section.FROM_ADR_ID,
+                        SEC_ID = section.SEC_ID,
+                        SEG_NUM = section.SEG_NUM,
+                        ESTIMATED_TIME = 0
+                    };
+                    cmd_details.Add(cmd_detail);
+                }
+            }
+            start_seq_no = 10000;
+            if (minRouteSeg_From2To != null && minRouteSeg_From2To.Length > 0)
+            {
+                foreach (string sec_id in minRouteSeg_From2To)
+                {
+                    ASECTION section = scApp.MapBLL.getSectiontByID(sec_id);
+                    ACMD_OHTC_DETAIL cmd_detail = new ACMD_OHTC_DETAIL()
+                    {
+                        CMD_ID = cmd_id,
+                        SEQ_NO = ++start_seq_no,
+                        ADD_ID = section.FROM_ADR_ID,
+                        SEC_ID = section.SEC_ID,
+                        SEG_NUM = section.SEG_NUM,
+                        ESTIMATED_TIME = 0
+                    };
+                    cmd_details.Add(cmd_detail);
+                }
+            }
+
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                cmd_ohtc_detailDAO.AddByBatch(con, cmd_details);
+            }
+            return true;
+        }
 
         public bool update_CMD_DetailEntryTime(string cmd_id,
                                                string add_id,
@@ -3702,6 +3757,27 @@ namespace com.mirle.ibg3k0.sc.BLL
                 sections = cmd_ohtc_detailDAO.loadAllSecIDByCmdID(con, cmd_id);
             }
             return sections;
+        }
+
+        public (bool isSuccess, string[] PredictPath, string[] StartToFromPath, string[] FromToTargetPath)
+            loadPassSectionAll_StartToFromAndFromToTargetByCMDID(string cmd_id)
+        {
+            List<ACMD_OHTC_DETAIL> details = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                details = cmd_ohtc_detailDAO.loadAllCMD_OHTC_DetailByCmdID(con, cmd_id);
+            }
+            if (details == null || details.Count == 0)
+            {
+                return (false, null, null, null);
+            }
+            else
+            {
+                var all_path = details.Select(d => SCUtility.Trim(d.SEC_ID, true)).ToArray();
+                var start_to_from = details.Where(d => d.SEQ_NO < 10000).Select(d => SCUtility.Trim(d.SEC_ID, true)).ToArray();
+                var from_to_target = details.Where(d => d.SEQ_NO >= 10000).Select(d => SCUtility.Trim(d.SEC_ID, true)).ToArray();
+                return (true, all_path, start_to_from, from_to_target);
+            }
         }
 
         #endregion CMD_OHTC_DETAIL

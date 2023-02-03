@@ -580,6 +580,7 @@
     <Compile Include="Data\DAO\HIDZoneMasterDao.cs" />
     <Compile Include="Data\DBConnection_EF.cs" />
     <Compile Include="Data\Expansion\HltDirectionExpansion.cs" />
+    <Compile Include="Data\Expansion\E_CMD_TYPEExpansion.cs" />
     <Compile Include="Data\Expansion\HltResultExpansion.cs" />
     <Compile Include="Data\PLC_Functions\FourColorLightBlue.cs" />
     <Compile Include="Data\PLC_Functions\FourColorLightOrange.cs" />

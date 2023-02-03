@@ -57,17 +57,20 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
                     {
                         if (line.ServiceMode != SCAppConstants.AppServiceMode.Active)
                         {
+                            scApp.VehicleService.syncAllVehicleInfoWhenStandbyToActive();
+
                             line.ServiceMode = SCAppConstants.AppServiceMode.Active;
 
                             //scApp.getBCFApplication().startTcpIpSecverListen();
 
                             // scApp.VehicleService.SubscriptionPositionChangeEvent();
+
                             if (scApp.LineBLL.isSegmentPreDisableExcuting())
                             {
                                 scApp.LineBLL.BegingOrEndSegmentPreDisableExcute(true);
                             }
                             scApp.getNatsManager().Unsubscriber(SCAppConstants.NATS_SUBJECT_LINE_INFO);
-                            logger.Info($"{ SCApplication.ServerName} become {line.ServiceMode}");
+                            logger.Info($"{SCApplication.ServerName} become {line.ServiceMode}");
                         }
                     }
                     else
@@ -77,7 +80,7 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
                             line.ServiceMode = SCAppConstants.AppServiceMode.Standby;
                             //scApp.VehicleService.UnsubscribePositionChangeEvent();
                             //scApp.getBCFApplication().ShutdownTcpIpSecverListen();
-                            logger.Info($"{ SCApplication.ServerName} become {line.ServiceMode}");
+                            logger.Info($"{SCApplication.ServerName} become {line.ServiceMode}");
                             scApp.getNatsManager().Subscriber(SCAppConstants.NATS_SUBJECT_LINE_INFO, ProcLineInfo, is_last: true);
                             line.ReStartStateMachine();
                         }

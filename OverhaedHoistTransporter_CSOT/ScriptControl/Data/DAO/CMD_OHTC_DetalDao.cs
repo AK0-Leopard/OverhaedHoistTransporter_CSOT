@@ -108,6 +108,14 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         select detail.SEC_ID.Trim();
             return query.ToArray();
         }
+        public List<ACMD_OHTC_DETAIL> loadAllCMD_OHTC_DetailByCmdID(DBConnection_EF con, string cmd_id)
+        {
+            var query = from detail in con.ACMD_OHTC_DETAIL
+                        where detail.CMD_ID == cmd_id.Trim()
+                        orderby detail.SEQ_NO
+                        select detail;
+            return query.ToList();
+        }
 
         public int getAllDetailCountByCmdID(DBConnection_EF con, string cmd_id)
         {

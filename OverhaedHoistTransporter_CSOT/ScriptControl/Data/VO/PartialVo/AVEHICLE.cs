@@ -630,7 +630,7 @@ namespace com.mirle.ibg3k0.sc
                 lock (guideInfoSetLock)
                     guideInfo.setGuideSection(activeType, guideSectionStartToLoad, guideSectionToDesination);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 NLog.LogManager.GetCurrentClassLogger().Error(ex, "Exception:");
             }

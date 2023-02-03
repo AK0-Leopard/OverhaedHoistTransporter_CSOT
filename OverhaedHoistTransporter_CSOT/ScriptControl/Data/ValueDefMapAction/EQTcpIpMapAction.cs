@@ -16,6 +16,7 @@ using com.mirle.ibg3k0.bcf.Controller;
 using com.mirle.ibg3k0.bcf.Data.VO;
 using com.mirle.ibg3k0.sc.App;
 using com.mirle.ibg3k0.sc.Common;
+using com.mirle.ibg3k0.sc.Data.Expansion;
 using com.mirle.ibg3k0.sc.Data.PLC_Functions;
 using com.mirle.ibg3k0.sc.Data.TcpIp;
 using com.mirle.ibg3k0.sc.Data.VO;
@@ -104,8 +105,13 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                             if (!SCUtility.isEmpty(eqpt.OHTC_CMD))
                             {
                                 ACMD_OHTC aCMD_OHTC = scApp.CMDBLL.getExcuteCMD_OHTCByCmdID(eqpt.OHTC_CMD);
-                                string[] PredictPath = scApp.CMDBLL.loadPassSectionByCMDID(eqpt.OHTC_CMD);
-                                scApp.CMDBLL.setVhExcuteCmdToShow(aCMD_OHTC, this.eqpt, PredictPath, null);
+                                //string[] PredictPath = scApp.CMDBLL.loadPassSectionByCMDID(eqpt.OHTC_CMD);
+                                var all_path_info = scApp.CMDBLL.loadPassSectionAll_StartToFromAndFromToTargetByCMDID(eqpt.OHTC_CMD);
+                                if (all_path_info.isSuccess)
+                                {
+                                    eqpt.setVhGuideInfo(aCMD_OHTC.CMD_TPYE.convert2ActiveType(), all_path_info.StartToFromPath, all_path_info.FromToTargetPath);
+                                    scApp.CMDBLL.setVhExcuteCmdToShow(aCMD_OHTC, this.eqpt, all_path_info.PredictPath, null);
+                                }
                             }
                         }
                         //先讓車子一開始都當作是"VehicleInstall"的狀態
