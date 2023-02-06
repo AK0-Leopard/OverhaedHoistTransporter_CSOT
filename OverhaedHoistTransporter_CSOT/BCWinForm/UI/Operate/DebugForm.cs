@@ -42,10 +42,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_isOpenAdjustmentParkingZone.Checked = DebugParameter.isOpenAdjustmentParkingZone;
             cb_IsOpenPortGroupLimit.Checked = DebugParameter.isOpenPortGroupLimit;
             ck_CycleRunTest.Checked = DebugParameter.IsCycleRun;
-            cb_blockReqCheckFun.Checked = DebugParameter.isOpenBlockReqCheckFun;
+            cb_blockReleaseCheckFun.Checked = DebugParameter.isOpenBlockReleaseCheckFun;
             cb_openDoubleCheckBlockReq.Checked = DebugParameter.isOpenDoubleCheckBlockReqFun;
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
+            cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
 
 
 
@@ -1655,9 +1656,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             DebugParameter.isOpenPortGroupLimit = cb_IsOpenPortGroupLimit.Checked;
         }
 
-        private void cb_blockReqCheckFun_CheckedChanged(object sender, EventArgs e)
+        private void cb_blockReleaseCheckFun_CheckedChanged(object sender, EventArgs e)
         {
-            DebugParameter.isOpenBlockReqCheckFun = cb_blockReqCheckFun.Checked;
+            DebugParameter.isOpenBlockReleaseCheckFun = cb_blockReleaseCheckFun.Checked;
         }
 
         private void cb_PassObstacleFlagWhenSendContinueRequest_CheckedChanged(object sender, EventArgs e)
@@ -1668,6 +1669,16 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void cb_openDoubleCheckBlockReq_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.isOpenDoubleCheckBlockReqFun = cb_openDoubleCheckBlockReq.Checked;
+        }
+
+        private void cb_isUsingRemoveReserveModule_CheckedChanged(object sender, EventArgs e)
+        {
+            sc.App.SystemParameter.setIsUsingRemoteReserveModule(cb_isUsingRemoveReserveModule.Checked);
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            lbl_value_reserveModule_LorR.Text = bcApp.SCApplication.ReserveBLL.getReserveMoudleSymbol().ToString();
         }
     }
 }

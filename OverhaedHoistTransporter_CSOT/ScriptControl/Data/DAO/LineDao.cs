@@ -170,7 +170,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
         /// <param name="conn">The connection.</param>
         /// <param name="line_id">The line_id.</param>
         /// <param name="line_stat">The line_stat.</param>
-        public void updateLineStatus(DBConnection_EF conn, string line_id, int line_stat)
+        public void updateLineStat(DBConnection_EF conn, string line_id, int line_stat)
         {
             try
             {

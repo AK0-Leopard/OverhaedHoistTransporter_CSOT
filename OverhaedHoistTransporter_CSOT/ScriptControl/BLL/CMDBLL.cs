@@ -1618,6 +1618,12 @@ namespace com.mirle.ibg3k0.sc.BLL
             return dicTranTaskSchedule;
         }
 
+        public void ForceExpireTagCmdMCS()
+        {
+            cmd_mcsDao.ForceExpireTag();
+        }
+
+
         #endregion CMD_MCS
 
         #region CMD_OHTC
@@ -2550,6 +2556,12 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return "";
             }
         }
+
+        public void ForceExpireTagCmdOHTC()
+        {
+            cmd_ohtcDAO.ForceExpireTag();
+        }
+
 
         #endregion CMD_OHTC
 

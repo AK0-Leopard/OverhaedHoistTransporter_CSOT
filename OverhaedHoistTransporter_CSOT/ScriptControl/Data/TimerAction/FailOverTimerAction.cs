@@ -55,10 +55,16 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
 
                     if (scApp.FailOverService.isActive())
                     {
-                        if (line.ServiceMode != SCAppConstants.AppServiceMode.Active)
+                        //如果原本是standby後來才變成Active，才需要進行資料同步
+                        if (line.ServiceMode == SCAppConstants.AppServiceMode.Standby)
                         {
                             scApp.VehicleService.syncAllVehicleInfoWhenStandbyToActive();
+                            scApp.TransferService.ForceExpireCommandCacheManagerTag();
+                            scApp.LineService.syncHostStateWithDB();
+                        }
 
+                        if (line.ServiceMode != SCAppConstants.AppServiceMode.Active)
+                        {
                             line.ServiceMode = SCAppConstants.AppServiceMode.Active;
 
                             //scApp.getBCFApplication().startTcpIpSecverListen();

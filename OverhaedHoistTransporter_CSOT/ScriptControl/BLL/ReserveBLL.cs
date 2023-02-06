@@ -229,6 +229,28 @@ namespace com.mirle.ibg3k0.sc.BLL
             onReserveStatusChange();
         }
 
+        public enum ReserveMoudleSymbol
+        {
+            None,
+            Local,
+            Remote,
+        }
+        public ReserveMoudleSymbol getReserveMoudleSymbol()
+        {
+            if (GetUsingReserveModule() == localReserveModule)
+            {
+                return ReserveMoudleSymbol.Local;
+            }
+            else if (GetUsingReserveModule() == remoteReserveModule)
+            {
+                return ReserveMoudleSymbol.Remote;
+            }
+            else
+            {
+                return ReserveMoudleSymbol.None;
+            }
+        }
+
     }
 
 }

@@ -312,6 +312,18 @@ namespace com.mirle.ibg3k0.sc.Service
             }
         }
 
+        public void ForceExpireCommandCacheManagerTag()
+        {
+            try
+            {
+                scApp.CMDBLL.ForceExpireTagCmdMCS();
+                scApp.CMDBLL.ForceExpireTagCmdOHTC();
+            }
+            catch(Exception ex)
+            {
+                logger.Error(ex, "Execption:");
+            }
+        }
 
 
 

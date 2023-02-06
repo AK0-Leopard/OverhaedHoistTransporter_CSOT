@@ -12,6 +12,10 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
     {
         public const string EXPIRE_TAG_NON_FINISH_OHTC_CMD = "EXPIRE_TAG_NON_FINISH_OHTC_CMD";
         public const string EXPIRE_TAG_QUEUE_OHTC_CMD = "EXPIRE_TAG_QUEUE_OHTC_CMD";
+        public void ForceExpireTag()
+        {
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_OHTC_CMD, EXPIRE_TAG_QUEUE_OHTC_CMD);
+        }
         public void add(DBConnection_EF con, ACMD_OHTC blockObj)
         {
             con.ACMD_OHTC.Add(blockObj);

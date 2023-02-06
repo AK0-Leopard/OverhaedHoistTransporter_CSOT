@@ -26,6 +26,10 @@ using com.mirle.ibg3k0.sc.Data.VO.Interface;
 using com.mirle.ibg3k0.sc.Common;
 using System.Globalization;
 using com.mirle.ibg3k0.Utility.ul.Data.VO;
+using System.Data.Entity;
+using com.mirle.ibg3k0.sc.WIF;
+using System.Windows.Forms;
+using static com.mirle.ibg3k0.sc.App.SCAppConstants.LineHostControlState;
 
 namespace com.mirle.ibg3k0.sc.BLL
 {
@@ -1385,6 +1389,10 @@ namespace com.mirle.ibg3k0.sc.BLL
             {
                 ALINE line = scApp.getEQObjCacheManager().getLine();
                 line.Host_Control_State = hostControlState;
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    lineDao.updateLineHostMode(con, line.LINE_ID, (int)hostControlState);
+                }
             }
             catch (Exception ex)
             {
@@ -1723,6 +1731,48 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             scApp.getEQObjCacheManager().getLine().SegmentPreDisableExcuting = is_excute;
         }
+        public void UpdateLineSCStat(string lineID, int lineStat)
+        {
+            try
+            {
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    lineDao.updateLineStat(con, lineID, lineStat);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+        }
+        public ALINE getLine(string lineID)
+        {
+            try
+            {
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    return lineDao.getLineByID(con, false, lineID);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return null;
+            }
+        }
+        public void forceUpdateLineCacheStatus(SCAppConstants.LineHostControlState.HostControlState hostControlState, ALINE.TSCState tSCState)
+        {
+            try
+            {
+                ALINE line = scApp.getEQObjCacheManager().getLine();
+                line.Host_Control_State = hostControlState;
+                line.SCStats = tSCState;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
 
+        }
     }
 }

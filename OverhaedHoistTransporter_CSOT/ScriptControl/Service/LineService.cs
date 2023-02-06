@@ -36,6 +36,9 @@ namespace com.mirle.ibg3k0.sc.Service
             lineBLL = _app.LineBLL;
             line = scApp.getEQObjCacheManager().getLine();
 
+            line.addEventHandler(nameof(LineService), nameof(line.SCStats), UpdateLineSCStats);
+
+
             line.addEventHandler(nameof(LineService), nameof(line.Host_Control_State), PublishLineInfo);
             line.addEventHandler(nameof(LineService), nameof(line.SCStats), PublishLineInfo);
             line.addEventHandler(nameof(LineService), nameof(line.Currnet_Park_Type), PublishLineInfo);
@@ -459,6 +462,30 @@ namespace com.mirle.ibg3k0.sc.Service
                 Task.Run(() => Lighthouse?.setFourColorLightRedWithBuzzer(need_trun_on_buzzer, need_trun_on_red_light));
             }
         }
+        private void UpdateLineSCStats(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                lineBLL.UpdateLineSCStat(line.LINE_ID, (int)line.SCStats);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+        }
 
+        public void syncHostStateWithDB()
+        {
+            try
+            {
+                var line_db = lineBLL.getLine(line.LINE_ID);
+                lineBLL.forceUpdateLineCacheStatus
+                    ((SCAppConstants.LineHostControlState.HostControlState)line_db.HOST_MODE, (ALINE.TSCState)line_db.LINE_STAT);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+        }
     }
 }

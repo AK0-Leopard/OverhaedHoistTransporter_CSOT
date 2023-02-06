@@ -12,6 +12,10 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
     public class CMD_MCSDao
     {
         public const string EXPIRE_TAG_NON_FINISH_MCS_CMD = "EXPIRE_TAG_NON_FINISH_MCS_CMD";
+        public void ForceExpireTag()
+        {
+            QueryCacheManager.ExpireTag(EXPIRE_TAG_NON_FINISH_MCS_CMD);
+        }
         public void add(DBConnection_EF con, ACMD_MCS rail)
         {
             con.ACMD_MCS.Add(rail);

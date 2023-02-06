@@ -106,7 +106,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.cb_openDoubleCheckBlockReq = new System.Windows.Forms.CheckBox();
             this.cb_PassObstacleFlagWhenSendContinueRequest = new System.Windows.Forms.CheckBox();
-            this.cb_blockReqCheckFun = new System.Windows.Forms.CheckBox();
+            this.cb_blockReleaseCheckFun = new System.Windows.Forms.CheckBox();
             this.cb_IsOpenPortGroupLimit = new System.Windows.Forms.CheckBox();
             this.cb_isOpenAdjustmentParkingZone = new System.Windows.Forms.CheckBox();
             this.ck_is_open_command_shift = new System.Windows.Forms.CheckBox();
@@ -375,6 +375,10 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.cb_isUsingRemoveReserveModule = new System.Windows.Forms.CheckBox();
+            this.button12 = new System.Windows.Forms.Button();
+            this.label71 = new System.Windows.Forms.Label();
+            this.lbl_value_reserveModule_LorR = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -1260,7 +1264,7 @@
             // 
             // btn_forceReleaseAllBlock
             // 
-            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1100, 251);
+            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1100, 369);
             this.btn_forceReleaseAllBlock.Name = "btn_forceReleaseAllBlock";
             this.btn_forceReleaseAllBlock.Size = new System.Drawing.Size(284, 41);
             this.btn_forceReleaseAllBlock.TabIndex = 22;
@@ -1291,9 +1295,13 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.lbl_value_reserveModule_LorR);
+            this.tabPage1.Controls.Add(this.label71);
+            this.tabPage1.Controls.Add(this.button12);
+            this.tabPage1.Controls.Add(this.cb_isUsingRemoveReserveModule);
             this.tabPage1.Controls.Add(this.cb_openDoubleCheckBlockReq);
             this.tabPage1.Controls.Add(this.cb_PassObstacleFlagWhenSendContinueRequest);
-            this.tabPage1.Controls.Add(this.cb_blockReqCheckFun);
+            this.tabPage1.Controls.Add(this.cb_blockReleaseCheckFun);
             this.tabPage1.Controls.Add(this.cb_IsOpenPortGroupLimit);
             this.tabPage1.Controls.Add(this.cb_isOpenAdjustmentParkingZone);
             this.tabPage1.Controls.Add(this.ck_is_open_command_shift);
@@ -1335,17 +1343,17 @@
             this.cb_PassObstacleFlagWhenSendContinueRequest.UseVisualStyleBackColor = true;
             this.cb_PassObstacleFlagWhenSendContinueRequest.CheckedChanged += new System.EventHandler(this.cb_PassObstacleFlagWhenSendContinueRequest_CheckedChanged);
             // 
-            // cb_blockReqCheckFun
+            // cb_blockReleaseCheckFun
             // 
-            this.cb_blockReqCheckFun.AutoSize = true;
-            this.cb_blockReqCheckFun.Location = new System.Drawing.Point(1100, 85);
-            this.cb_blockReqCheckFun.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cb_blockReqCheckFun.Name = "cb_blockReqCheckFun";
-            this.cb_blockReqCheckFun.Size = new System.Drawing.Size(197, 26);
-            this.cb_blockReqCheckFun.TabIndex = 29;
-            this.cb_blockReqCheckFun.Text = "開啟路權保護機制";
-            this.cb_blockReqCheckFun.UseVisualStyleBackColor = true;
-            this.cb_blockReqCheckFun.CheckedChanged += new System.EventHandler(this.cb_blockReqCheckFun_CheckedChanged);
+            this.cb_blockReleaseCheckFun.AutoSize = true;
+            this.cb_blockReleaseCheckFun.Location = new System.Drawing.Point(1100, 163);
+            this.cb_blockReleaseCheckFun.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_blockReleaseCheckFun.Name = "cb_blockReleaseCheckFun";
+            this.cb_blockReleaseCheckFun.Size = new System.Drawing.Size(333, 26);
+            this.cb_blockReleaseCheckFun.TabIndex = 29;
+            this.cb_blockReleaseCheckFun.Text = "開啟路權保護機制-檢查行走路徑";
+            this.cb_blockReleaseCheckFun.UseVisualStyleBackColor = true;
+            this.cb_blockReleaseCheckFun.CheckedChanged += new System.EventHandler(this.cb_blockReleaseCheckFun_CheckedChanged);
             // 
             // cb_IsOpenPortGroupLimit
             // 
@@ -1441,7 +1449,7 @@
             this.groupBox6.Controls.Add(this.label16);
             this.groupBox6.Controls.Add(this.label12);
             this.groupBox6.Controls.Add(this.cb_block_section);
-            this.groupBox6.Location = new System.Drawing.Point(1100, 298);
+            this.groupBox6.Location = new System.Drawing.Point(1100, 416);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(284, 251);
             this.groupBox6.TabIndex = 24;
@@ -1515,7 +1523,7 @@
             // 
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockReject);
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockPass);
-            this.gb_blockControl.Location = new System.Drawing.Point(1100, 180);
+            this.gb_blockControl.Location = new System.Drawing.Point(1100, 298);
             this.gb_blockControl.Name = "gb_blockControl";
             this.gb_blockControl.Size = new System.Drawing.Size(257, 71);
             this.gb_blockControl.TabIndex = 23;
@@ -2643,7 +2651,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(156, 6);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(156, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4608,6 +4616,47 @@
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
+            // cb_isUsingRemoveReserveModule
+            // 
+            this.cb_isUsingRemoveReserveModule.AutoSize = true;
+            this.cb_isUsingRemoveReserveModule.Location = new System.Drawing.Point(1100, 192);
+            this.cb_isUsingRemoveReserveModule.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_isUsingRemoveReserveModule.Name = "cb_isUsingRemoveReserveModule";
+            this.cb_isUsingRemoveReserveModule.Size = new System.Drawing.Size(197, 26);
+            this.cb_isUsingRemoveReserveModule.TabIndex = 32;
+            this.cb_isUsingRemoveReserveModule.Text = "使用遠端預約模組";
+            this.cb_isUsingRemoveReserveModule.UseVisualStyleBackColor = true;
+            this.cb_isUsingRemoveReserveModule.CheckedChanged += new System.EventHandler(this.cb_isUsingRemoveReserveModule_CheckedChanged);
+            // 
+            // button12
+            // 
+            this.button12.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button12.Location = new System.Drawing.Point(1365, 224);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(84, 39);
+            this.button12.TabIndex = 5;
+            this.button12.Text = "Refresh";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // label71
+            // 
+            this.label71.AutoSize = true;
+            this.label71.Location = new System.Drawing.Point(1075, 234);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(209, 22);
+            this.label71.TabIndex = 58;
+            this.label71.Text = "目前使用的預約模組:";
+            // 
+            // lbl_value_reserveModule_LorR
+            // 
+            this.lbl_value_reserveModule_LorR.AutoSize = true;
+            this.lbl_value_reserveModule_LorR.Location = new System.Drawing.Point(1280, 234);
+            this.lbl_value_reserveModule_LorR.Name = "lbl_value_reserveModule_LorR";
+            this.lbl_value_reserveModule_LorR.Size = new System.Drawing.Size(80, 22);
+            this.lbl_value_reserveModule_LorR.TabIndex = 59;
+            this.lbl_value_reserveModule_LorR.Text = "       ";
+            // 
             // DebugForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -5041,8 +5090,12 @@
         private System.Windows.Forms.CheckBox cb_isOpenAdjustmentParkingZone;
         private System.Windows.Forms.Button btn_reloadPortGroupData;
         private System.Windows.Forms.CheckBox cb_IsOpenPortGroupLimit;
-        private System.Windows.Forms.CheckBox cb_blockReqCheckFun;
+        private System.Windows.Forms.CheckBox cb_blockReleaseCheckFun;
         private System.Windows.Forms.CheckBox cb_PassObstacleFlagWhenSendContinueRequest;
         private System.Windows.Forms.CheckBox cb_openDoubleCheckBlockReq;
+        private System.Windows.Forms.CheckBox cb_isUsingRemoveReserveModule;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Label label71;
+        private System.Windows.Forms.Label lbl_value_reserveModule_LorR;
     }
 }

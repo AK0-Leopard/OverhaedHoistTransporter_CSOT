@@ -301,6 +301,20 @@ namespace com.mirle.ibg3k0.sc.Service
             AVEHICLE vh = sender as AVEHICLE;
             ASECTION leave_section = scApp.SectionBLL.cache.GetSection(e.LeaveSection);
             ASECTION entry_section = scApp.SectionBLL.cache.GetSection(e.EntrySection);
+
+            if (vh.WillPassSectionID != null && leave_section != null)
+            {
+                vh.WillPassSectionID.Remove(SCUtility.Trim(leave_section.SEC_ID, true));
+            }
+
+            bool is_need_by_pass_location_change =
+                IsPassBlockReleaseByConfirmTheCorrectnessOfWalkingRouteResult(vh, e);
+            if (DebugParameter.isOpenBlockReleaseCheckFun && is_need_by_pass_location_change)
+            {
+                logger.Warn($"Fun:{nameof(Vh_LocationChange)}.vh:{vh.VEHICLE_ID} 由於路徑更新關係判定需要進行 by pass block release，因此跳過該次的處理.");
+                return;
+            }
+
             leave_section?.Leave(vh.VEHICLE_ID);
             entry_section?.Entry(vh.VEHICLE_ID);
 
@@ -326,10 +340,7 @@ namespace com.mirle.ibg3k0.sc.Service
             }
 
 
-            if (vh.WillPassSectionID != null && leave_section != null)
-            {
-                vh.WillPassSectionID.Remove(SCUtility.Trim(leave_section.SEC_ID, true));
-            }
+
 
             //if (leave_section != null && entry_section != null)
             //{
@@ -350,32 +361,50 @@ namespace com.mirle.ibg3k0.sc.Service
 
             if (scApp.getEQObjCacheManager().getLine().ServiceMode == AppServiceMode.Active)
                 scApp.VehicleBLL.NetworkQualityTest(vh.VEHICLE_ID, e.EntrySection, vh.CUR_ADR_ID, 0);
-            ConfirmTheCorrectnessOfWalkingRoute(vh, e);
         }
-        private void ConfirmTheCorrectnessOfWalkingRoute(AVEHICLE vh, LocationChangeEventArgs e)
+        /// <summary>
+        /// 通過OHTC規劃給OHT的路線來確認目前OHT的行走是否正常，並用來協助確認是否要進行BlockRelease的功能
+        /// </summary>
+        /// <param name="vh"></param>
+        /// <param name="e"></param>
+        private bool IsPassBlockReleaseByConfirmTheCorrectnessOfWalkingRouteResult(AVEHICLE vh, LocationChangeEventArgs e)
         {
-            var curent_route_info = vh.tryGetCurrentGuideSection();
-            if (!curent_route_info.hasInfo)
+            try
             {
-                logger.Warn($"Fun:{nameof(ConfirmTheCorrectnessOfWalkingRoute)}.vh:{vh.VEHICLE_ID} not current route info, don't check route correctness");
-                return;
+
+                var curent_route_info = vh.tryGetCurrentGuideSection();
+                if (!curent_route_info.hasInfo)
+                {
+                    logger.Warn($"Fun:{nameof(IsPassBlockReleaseByConfirmTheCorrectnessOfWalkingRouteResult)}.vh:{vh.VEHICLE_ID} not current route info, don't check route correctness,is pass:{false}");
+                    return false;
+                }
+                if (!curent_route_info.currentGuideSection.Contains(e.EntrySection))
+                {
+                    logger.Warn($"Fun:{nameof(IsPassBlockReleaseByConfirmTheCorrectnessOfWalkingRouteResult)}.vh:{vh.VEHICLE_ID} [Wrong way] happend, excute command:{SCUtility.Trim(vh.OHTC_CMD, true)} entry section:{e.EntrySection},is pass:{true}");
+                    return true;
+                }
+                if (!curent_route_info.currentGuideSection.Contains(e.LeaveSection))
+                {
+                    //主要應該新進入的section就好，離開的section 如果是第一段 有可能會是上一次結束的地方
+                    return false;
+                }
+                int entry_section_index = curent_route_info.currentGuideSection.IndexOf(e.EntrySection);
+                int leave_section_index = curent_route_info.currentGuideSection.IndexOf(e.LeaveSection);
+                if (leave_section_index > entry_section_index)
+                {
+                    logger.Warn($"Fun:{nameof(IsPassBlockReleaseByConfirmTheCorrectnessOfWalkingRouteResult)}.vh:{vh.VEHICLE_ID} [walk backwards] happend, excute command:{SCUtility.Trim(vh.OHTC_CMD, true)} " +
+                                $"entry section:{e.EntrySection} leave section:{e.LeaveSection},is pass:{true}");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            if (!curent_route_info.currentGuideSection.Contains(e.EntrySection))
+            catch (Exception ex)
             {
-                logger.Warn($"Fun:{nameof(ConfirmTheCorrectnessOfWalkingRoute)}.vh:{vh.VEHICLE_ID} [Wrong way] happend, excute command:{SCUtility.Trim(vh.OHTC_CMD, true)} entry section:{e.EntrySection}");
-                return;
-            }
-            if (!curent_route_info.currentGuideSection.Contains(e.LeaveSection))
-            {
-                //主要應該新進入的section就好，離開的section 如果是第一段 有可能會是上一次結束的地方
-                return;
-            }
-            int entry_section_index = curent_route_info.currentGuideSection.IndexOf(e.EntrySection);
-            int leave_section_index = curent_route_info.currentGuideSection.IndexOf(e.LeaveSection);
-            if (leave_section_index > entry_section_index)
-            {
-                logger.Warn($"Fun:{nameof(ConfirmTheCorrectnessOfWalkingRoute)}.vh:{vh.VEHICLE_ID} [walk backwards] happend, excute command:{SCUtility.Trim(vh.OHTC_CMD, true)} " +
-                            $"entry section:{e.EntrySection} leave section:{e.LeaveSection}");
+                logger.Error(ex, "Exception:");
+                return false;
             }
         }
 
@@ -2570,7 +2599,8 @@ namespace com.mirle.ibg3k0.sc.Service
                    CarrierID: request_block_vh.CST_ID);
                 return false;
             }
-            else if (DebugParameter.isOpenBlockReqCheckFun && line.IsSystemLagHappending)
+            //else if (DebugParameter.isOpenBlockReqCheckFun && line.IsSystemLagHappending)
+            else if (line.IsSystemLagHappending)
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                    Data: "由於系統反應變慢，因此一律拒絕路權的要求。",
@@ -2651,7 +2681,6 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             try
             {
-
                 var check_is_block_by_section = isBlockBySection(requestBlockResult);
                 if (!check_is_block_by_section.isBlockBySection)
                 {
@@ -2698,23 +2727,12 @@ namespace com.mirle.ibg3k0.sc.Service
                     var leave_blocks = leave_sec_related_blocks.Except(entry_sec_related_blocks);
                     foreach (var leave_block in leave_blocks)
                     {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"發現有尚未正確釋放的 vh:{ownerVh.VEHICLE_ID} block:{leave_block.ENTRY_SEC_ID},開始進行強制釋放",
+                           VehicleID: requestBlockVh.VEHICLE_ID);
                         leave_block.Leave(ownerVh.VEHICLE_ID);
                     }
                 }
-
-                //var entry_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(e.EntrySection);
-                //var leave_sec_related_blocks = scApp.BlockControlBLL.cache.loadBlockZoneMasterBySectionID(e.LeaveSection);
-                //var entry_blocks = entry_sec_related_blocks.Except(leave_sec_related_blocks);
-                //foreach (var entry_block in entry_blocks)
-                //{
-                //    entry_block.Entry(vh.VEHICLE_ID);
-                //}
-                //var leave_blocks = leave_sec_related_blocks.Except(entry_sec_related_blocks);
-                //foreach (var leave_block in leave_blocks)
-                //{
-                //    leave_block.Leave(vh.VEHICLE_ID);
-                //}
-
             }
             catch (Exception ex)
             {
