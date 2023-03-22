@@ -206,7 +206,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                 vhPassEvent != EventType.Hidrelease &&
                 vhPassEvent != EventType.BlockHidreq &&
                 vhPassEvent != EventType.BlockHidrelease)
+            {
                 vh.NotifyVhStatusChange();
+            }
         }
         public void updateVehicleBCRReadResult(AVEHICLE vh, BCRReadResult bcrReadResult)
         {

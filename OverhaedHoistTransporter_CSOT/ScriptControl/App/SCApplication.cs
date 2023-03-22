@@ -2265,7 +2265,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool IsPassObstacleFlagWhenSendContinueRequest { private set; get; } = false;
 
         public static int MCSCommandAccumulateTimePriority { get; private set; } = 1;
-        public static bool IsUsingRemoteReserveModule { get; private set; } = true;
+        public static bool IsUsingRemoteReserveModule { get; private set; } = false;
 
         /// <summary>
         /// Sets the secs conversaction timeout.

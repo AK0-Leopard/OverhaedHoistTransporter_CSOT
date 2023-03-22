@@ -104,6 +104,10 @@
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lbl_value_reserveModule_LorR = new System.Windows.Forms.Label();
+            this.label71 = new System.Windows.Forms.Label();
+            this.button12 = new System.Windows.Forms.Button();
+            this.cb_isUsingRemoveReserveModule = new System.Windows.Forms.CheckBox();
             this.cb_openDoubleCheckBlockReq = new System.Windows.Forms.CheckBox();
             this.cb_PassObstacleFlagWhenSendContinueRequest = new System.Windows.Forms.CheckBox();
             this.cb_blockReleaseCheckFun = new System.Windows.Forms.CheckBox();
@@ -375,10 +379,6 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.cb_isUsingRemoveReserveModule = new System.Windows.Forms.CheckBox();
-            this.button12 = new System.Windows.Forms.Button();
-            this.label71 = new System.Windows.Forms.Label();
-            this.lbl_value_reserveModule_LorR = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -1318,6 +1318,48 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // lbl_value_reserveModule_LorR
+            // 
+            this.lbl_value_reserveModule_LorR.AutoSize = true;
+            this.lbl_value_reserveModule_LorR.Location = new System.Drawing.Point(1280, 234);
+            this.lbl_value_reserveModule_LorR.Name = "lbl_value_reserveModule_LorR";
+            this.lbl_value_reserveModule_LorR.Size = new System.Drawing.Size(80, 22);
+            this.lbl_value_reserveModule_LorR.TabIndex = 59;
+            this.lbl_value_reserveModule_LorR.Text = "       ";
+            // 
+            // label71
+            // 
+            this.label71.AutoSize = true;
+            this.label71.Location = new System.Drawing.Point(1075, 234);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(209, 22);
+            this.label71.TabIndex = 58;
+            this.label71.Text = "目前使用的預約模組:";
+            // 
+            // button12
+            // 
+            this.button12.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button12.Location = new System.Drawing.Point(1365, 224);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(84, 39);
+            this.button12.TabIndex = 5;
+            this.button12.Text = "Refresh";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // cb_isUsingRemoveReserveModule
+            // 
+            this.cb_isUsingRemoveReserveModule.AutoSize = true;
+            this.cb_isUsingRemoveReserveModule.Enabled = false;
+            this.cb_isUsingRemoveReserveModule.Location = new System.Drawing.Point(1100, 192);
+            this.cb_isUsingRemoveReserveModule.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_isUsingRemoveReserveModule.Name = "cb_isUsingRemoveReserveModule";
+            this.cb_isUsingRemoveReserveModule.Size = new System.Drawing.Size(197, 26);
+            this.cb_isUsingRemoveReserveModule.TabIndex = 32;
+            this.cb_isUsingRemoveReserveModule.Text = "使用遠端預約模組";
+            this.cb_isUsingRemoveReserveModule.UseVisualStyleBackColor = true;
+            this.cb_isUsingRemoveReserveModule.CheckedChanged += new System.EventHandler(this.cb_isUsingRemoveReserveModule_CheckedChanged);
             // 
             // cb_openDoubleCheckBlockReq
             // 
@@ -4615,47 +4657,6 @@
             this.MaxAllowActionTimeSecond_Set_btn.Text = "Set";
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
-            // 
-            // cb_isUsingRemoveReserveModule
-            // 
-            this.cb_isUsingRemoveReserveModule.AutoSize = true;
-            this.cb_isUsingRemoveReserveModule.Location = new System.Drawing.Point(1100, 192);
-            this.cb_isUsingRemoveReserveModule.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cb_isUsingRemoveReserveModule.Name = "cb_isUsingRemoveReserveModule";
-            this.cb_isUsingRemoveReserveModule.Size = new System.Drawing.Size(197, 26);
-            this.cb_isUsingRemoveReserveModule.TabIndex = 32;
-            this.cb_isUsingRemoveReserveModule.Text = "使用遠端預約模組";
-            this.cb_isUsingRemoveReserveModule.UseVisualStyleBackColor = true;
-            this.cb_isUsingRemoveReserveModule.CheckedChanged += new System.EventHandler(this.cb_isUsingRemoveReserveModule_CheckedChanged);
-            // 
-            // button12
-            // 
-            this.button12.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button12.Location = new System.Drawing.Point(1365, 224);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(84, 39);
-            this.button12.TabIndex = 5;
-            this.button12.Text = "Refresh";
-            this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
-            // 
-            // label71
-            // 
-            this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(1075, 234);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(209, 22);
-            this.label71.TabIndex = 58;
-            this.label71.Text = "目前使用的預約模組:";
-            // 
-            // lbl_value_reserveModule_LorR
-            // 
-            this.lbl_value_reserveModule_LorR.AutoSize = true;
-            this.lbl_value_reserveModule_LorR.Location = new System.Drawing.Point(1280, 234);
-            this.lbl_value_reserveModule_LorR.Name = "lbl_value_reserveModule_LorR";
-            this.lbl_value_reserveModule_LorR.Size = new System.Drawing.Size(80, 22);
-            this.lbl_value_reserveModule_LorR.TabIndex = 59;
-            this.lbl_value_reserveModule_LorR.Text = "       ";
             // 
             // DebugForm
             // 

@@ -41,7 +41,7 @@ namespace com.mirle.ibg3k0.sc.WebAPI
         {
             line = scApp.getEQObjCacheManager().getLine();
             removeReserveModuleTimerAction = new RemoveReserveModuleTimerAction(this, line, "RemoveReserveModuleTimerAction", 1000);
-            removeReserveModuleTimerAction.start();
+            //removeReserveModuleTimerAction.start(); //暫時先取消對於Remote reserve模組的alive確認，尚未要執行HA機制的使用
         }
 
         public void sendAlive()
