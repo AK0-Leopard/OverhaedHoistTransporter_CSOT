@@ -235,7 +235,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
                     m_objItemAddr[index] = new uctlAddress(this);
                     m_objItemAddr[index].p_AddrPt = index;
                     m_objItemAddr[index].p_Address = adr.ADR_ID.Trim();
-                    var port_obj = mainForm.BCApp.SCApplication.PortStationBLL.OperateCatch.getPortStationByID(adr.ADR_ID.Trim());
+                    var port_obj = mainForm.BCApp.SCApplication.PortStationBLL.OperateCatch.getPortStationByAdrID(adr.ADR_ID.Trim());
                     if (port_obj != null)
                     {
                         m_objItemAddr[index].p_Port = port_obj.PORT_ID.Trim();

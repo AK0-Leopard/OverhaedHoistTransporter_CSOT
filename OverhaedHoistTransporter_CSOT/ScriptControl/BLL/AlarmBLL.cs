@@ -24,6 +24,7 @@ using NLog;
 using com.mirle.ibg3k0.bcf.App;
 using com.mirle.ibg3k0.sc.Data;
 using Newtonsoft.Json;
+using NetMQ;
 
 namespace com.mirle.ibg3k0.sc.BLL
 {
@@ -126,16 +127,23 @@ namespace com.mirle.ibg3k0.sc.BLL
                 //AlarmMap alarmMap = alarmMapDao.getAlarmMap(scApp, eq_id, error_code);
                 AlarmMap alarmMap = alarmMapDao.getAlarmMap(scApp, node_id, error_code);
                 //string strNow = BCFUtility.formatDateTime(DateTime.Now, SCAppConstants.TimestampFormat_19);
-                ALARM alarm = new ALARM()
+                ALARM alarm = null;
+                if (alarmMap == null)
                 {
-                    EQPT_ID = eq_id,
-                    RPT_DATE_TIME = DateTime.Now,
-                    ALAM_CODE = error_code,
-                    ALAM_LVL = alarmMap == null ? E_ALARM_LVL.None : alarmMap.ALARM_LVL,
-                    ALAM_STAT = ProtocolFormat.OHTMessage.ErrorStatus.ErrSet,
-                    ALAM_DESC = alarmMap == null ? $"unknow alarm code:{error_code}" : $"{alarmMap.ALARM_DESC}(error code:{error_code})",
-                    ADDRESS_ID = currentAdrID
-                };
+                    alarm = GetErrorAlarmObjWhenSet(eq_id, error_code, E_ALARM_LVL.None, $"unknow alarm code:{error_code}", currentAdrID);
+                }
+                else
+                {
+                    switch (alarmMap.ALARM_LVL)
+                    {
+                        case E_ALARM_LVL.Warn:
+                            alarm = GetWarnAlarmObjWhenSet(eq_id, error_code, E_ALARM_LVL.Warn, $"{alarmMap.ALARM_DESC}(error code:{error_code})", currentAdrID);
+                            break;
+                        default:
+                            alarm = GetErrorAlarmObjWhenSet(eq_id, error_code, alarmMap.ALARM_LVL, $"{alarmMap.ALARM_DESC}(error code:{error_code})", currentAdrID);
+                            break;
+                    }
+                }
                 //為了確保在存進去DB時，超出最大的ALAM_DESC字串範圍，因此將ALARM重新切一次長度
                 if (alarm.ALAM_DESC.Length > 80)
                 {
@@ -152,9 +160,50 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
         }
 
+        private ALARM GetErrorAlarmObjWhenSet(string eqID, string errorCode, E_ALARM_LVL lvl, string alarmDesc, string currentAdrID)
+        {
+            ALARM alarm = new ALARM()
+            {
+                EQPT_ID = eqID,
+                RPT_DATE_TIME = DateTime.Now,
+                ALAM_CODE = errorCode,
+                ALAM_LVL = lvl,
+                ALAM_STAT = ProtocolFormat.OHTMessage.ErrorStatus.ErrSet,
+                ALAM_DESC = alarmDesc,
+                ADDRESS_ID = currentAdrID
+            };
+            return alarm;
+        }
+        /// <summary>
+        /// 如果是warn的alarm，直接記錄一筆並清掉就好
+        /// </summary>
+        /// <param name="eqID"></param>
+        /// <param name="errorCode"></param>
+        /// <param name="lvl"></param>
+        /// <param name="alarmDesc"></param>
+        /// <param name="currentAdrID"></param>
+        /// <returns></returns>
+        private ALARM GetWarnAlarmObjWhenSet(string eqID, string errorCode, E_ALARM_LVL lvl, string alarmDesc, string currentAdrID)
+        {
+            DateTime happend_date_time = DateTime.Now;
+            ALARM alarm = new ALARM()
+            {
+                EQPT_ID = eqID,
+                RPT_DATE_TIME = happend_date_time,
+                CLEAR_DATE_TIME = happend_date_time,
+                ALAM_CODE = errorCode,
+                ALAM_LVL = lvl,
+                ALAM_STAT = ProtocolFormat.OHTMessage.ErrorStatus.ErrReset,
+                ALAM_DESC = alarmDesc,
+                ADDRESS_ID = currentAdrID
+            };
+            return alarm;
+        }
+
         public void setAlarmReport2Redis(ALARM alarm)
         {
             if (alarm == null) return;
+            if (alarm.ALAM_LVL == E_ALARM_LVL.Warn) return;
             string hash_field = $"{alarm.EQPT_ID}_{alarm.ALAM_CODE}";
             scApp.getRedisCacheManager().AddTransactionCondition(StackExchange.Redis.Condition.HashNotExists(SCAppConstants.REDIS_KEY_CURRENT_ALARM, hash_field));
             scApp.getRedisCacheManager().HashSetAsync(SCAppConstants.REDIS_KEY_CURRENT_ALARM, hash_field, JsonConvert.SerializeObject(alarm));

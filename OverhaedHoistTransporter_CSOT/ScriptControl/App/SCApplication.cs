@@ -1742,7 +1742,7 @@ namespace com.mirle.ibg3k0.sc.App
             try
             {
                 string rtn_temp = ConfigurationManager.AppSettings.Get(key);
-                if(rtn_temp != null)
+                if (rtn_temp != null)
                 {
                     rtn = rtn_temp;
                 }
@@ -2429,7 +2429,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool isOpenCommandShift = false;
         public static bool isOpenAdjustmentParkingZone = false;
         public static bool isOpenPortGroupLimit = true;
-        public static bool isOpenBlockReleaseCheckFun = true;
+        public static bool isOpenBlockReleaseCheckFun = false;
         public static bool isOpenDoubleCheckBlockReqFun = false;
     }
 }

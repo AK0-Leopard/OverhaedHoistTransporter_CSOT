@@ -57,7 +57,7 @@ namespace com.mirle.ibg3k0.sc
         public App.SCAppConstants.EqptType EqptType;
         public void setEqType(BLL.EquipmentBLL equipmentBLL, BLL.PortStationBLL portStationBLL)
         {
-            var port_station = portStationBLL.OperateCatch.getPortStationByID(this.ADR_ID);
+            var port_station = portStationBLL.OperateCatch.getPortStationByAdrID(this.ADR_ID);
             if (port_station != null)
             {
                 if (port_station.IsBufferPort(equipmentBLL))

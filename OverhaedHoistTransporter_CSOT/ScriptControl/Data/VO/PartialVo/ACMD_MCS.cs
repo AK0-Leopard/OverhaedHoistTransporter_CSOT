@@ -1,4 +1,5 @@
-﻿using System;
+﻿using com.mirle.ibg3k0.sc.Common;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,13 @@ namespace com.mirle.ibg3k0.sc
     public partial class ACMD_MCS
     {
         public static ConcurrentDictionary<string, ACMD_MCS> MCS_CMD_InfoList { get; private set; } = new ConcurrentDictionary<string, ACMD_MCS>();
+        public static (bool isSuccess, ACMD_MCS tranCmd) tryMCS_CMDByID(string id)
+        {
+
+            bool is_get = MCS_CMD_InfoList.TryGetValue(SCUtility.Trim(id, true), out var tran);
+            return (is_get, tran);
+        }
+
 
         public const string COMMAND_PAUSE_FLAG_EMPTY = "";
         public const string COMMAND_PAUSE_FLAG_COMMAND_SHIFT = "S";

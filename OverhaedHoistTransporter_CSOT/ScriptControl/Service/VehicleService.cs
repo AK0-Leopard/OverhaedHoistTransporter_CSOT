@@ -2125,7 +2125,7 @@ namespace com.mirle.ibg3k0.sc.Service
             AVIDINFO vid_info = scApp.VIDBLL.getVIDInfo(eqpt.VEHICLE_ID);
             string old_carrier_id = SCUtility.Trim(vid_info.CARRIER_ID, true);
 
-            var port_station = scApp.PortStationBLL.OperateCatch.getPortStationByID(eqpt.CUR_ADR_ID);
+            var port_station = scApp.PortStationBLL.OperateCatch.getPortStationByAdrID(eqpt.CUR_ADR_ID);
             string port_station_id = port_station == null ? "" : port_station.PORT_ID;
             LogHelper.LogBCRReadInfo
                 (eqpt.VEHICLE_ID, port_station_id, eqpt.MCS_CMD, eqpt.OHTC_CMD, old_carrier_id, read_carrier_id, bCRReadResult, SystemParameter.IsEnableIDReadFailScenario);
@@ -2656,7 +2656,7 @@ namespace com.mirle.ibg3k0.sc.Service
 
                             DoubleCheckBlockStatusFrontAndRearCar(request_block_vh, block_master, result);
 
-                            DoubleCheckBlockStatusMissReleaseBlock(request_block_vh, result);
+                            //DoubleCheckBlockStatusMissReleaseBlock(request_block_vh, result);
 
                             if (!SCUtility.isEmpty(result.VehicleID))
                                 Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
@@ -3147,22 +3147,27 @@ namespace com.mirle.ibg3k0.sc.Service
             //using (TransactionScope tx = new
             //    TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
 
-
             switch (eventType)
             {
                 case EventType.LoadArrivals:
+
                     if (!SCUtility.isEmpty(eqpt.MCS_CMD))
                     {
                         scApp.CMDBLL.updateCMD_MCS_CmdStatus2LoadArrivals(eqpt.MCS_CMD);
                     }
-                    scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, eqpt.CUR_ADR_ID);
+                    string load_tran_port = tryGetTransferPort(eqpt, eventType);
+                    //scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, eqpt.CUR_ADR_ID);
+                    scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, load_tran_port);
                     break;
                 case EventType.UnloadArrivals:
+
                     if (!SCUtility.isEmpty(eqpt.MCS_CMD))
                     {
                         scApp.CMDBLL.updateCMD_MCS_CmdStatus2UnloadArrive(eqpt.MCS_CMD);
                     }
-                    scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, eqpt.CUR_ADR_ID);
+                    string unload_tran_port = tryGetTransferPort(eqpt, eventType);
+                    //scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, eqpt.CUR_ADR_ID);
+                    scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, unload_tran_port);
                     break;
                 case EventType.LoadComplete:
                     scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, eqpt.Real_ID);
@@ -3266,6 +3271,34 @@ namespace com.mirle.ibg3k0.sc.Service
                     Task.Run(() => scApp.FlexsimCommandDao.setVhEventTypeToFlexsimDB(eqpt.VEHICLE_ID, eventType));
                     break;
             }
+        }
+        private string tryGetTransferPort(AVEHICLE vh, EventType eventType)
+        {
+            if (!SCUtility.isEmpty(vh.MCS_CMD))
+            {
+                var try_get_cmd_mcs = ACMD_MCS.tryMCS_CMDByID(vh.MCS_CMD);
+                if (try_get_cmd_mcs.isSuccess)
+                {
+                    switch (eventType)
+                    {
+                        case EventType.LoadArrivals:
+                            return SCUtility.Trim(try_get_cmd_mcs.tranCmd.HOSTSOURCE, true);
+                        case EventType.UnloadArrivals:
+                            return SCUtility.Trim(try_get_cmd_mcs.tranCmd.HOSTDESTINATION, true);
+                    }
+                }
+            }
+            string current_adr = vh.CUR_ADR_ID;
+            APORTSTATION port_station = scApp.PortStationBLL.OperateCatch.getPortStationByAdrID(current_adr);
+            if (port_station == null)
+            {
+                return "";
+            }
+            else
+            {
+                return port_station.PORT_ID;
+            }
+
         }
 
         private void PositionReport_AdrPassArrivals(BCFApplication bcfApp, AVEHICLE eqpt, ID_134_TRANS_EVENT_REP recive_str, string last_adr_id, string last_sec_id)
@@ -5934,19 +5967,6 @@ namespace com.mirle.ibg3k0.sc.Service
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception:");
-            }
-        }
-        private void VehicleBlockedByTheErrorVehicle()
-        {
-            ALARM alarm = scApp.AlarmBLL.setAlarmReport(SCAppConstants.System_ID, SCAppConstants.System_ID, MainAlarmCode.OHxC_BOLCKED_BY_THE_ERROR_VEHICLE_0_1, "");
-            if (alarm != null)
-            {
-                //scApp.AlarmBLL.onMainAlarm(SCAppConstants.MainAlarmCode.OHxC_BOLCKED_BY_THE_ERROR_VEHICLE_0_1,
-                //                           vh_id,
-                //                           ohxc_cmd_id);
-                List<AMCSREPORTQUEUE> reportqueues = null;
-                //scApp.ReportBLL.ReportAlarmHappend(alarm.EQPT_ID, alarm.ALAM_STAT, alarm.ALAM_CODE, alarm.ALAM_DESC, out reportqueues);
-                scApp.LineBLL.updateHostControlState(LineHostControlState.HostControlState.On_Line_Local);
             }
         }
         #endregion Vehicle Change The Path

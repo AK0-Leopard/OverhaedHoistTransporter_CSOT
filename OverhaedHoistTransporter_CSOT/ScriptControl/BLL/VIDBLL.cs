@@ -195,30 +195,63 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return isSuccess;
         }
-        public bool upDateVIDPortID(string eq_id, string adr_id)
+        //public bool upDateVIDPortID(string eq_id, string adr_id)
+        //{
+        //    bool isSuccess = true;
+        //    //DBConnection_EF con = DBConnection_EF.GetContext();
+        //    try
+        //    {
+        //        //using (DBConnection_EF con = new DBConnection_EF())
+        //        var port_station = scApp.MapBLL.getPortByAdrID(adr_id);
+
+        //        using (DBConnection_EF con = DBConnection_EF.GetUContext())
+        //        {
+        //            AVIDINFO vid_info = vidIvfoDAO.getByID(con, eq_id);
+        //            if (vid_info != null)
+        //            {
+        //                //con.BeginTransaction();
+        //                vid_info.PORT_ID = port_station == null ? string.Empty : port_station.PORT_ID;
+        //                // vid_info.CARRIER_LOC = adr_id;
+        //                vidIvfoDAO.update(con);
+        //                //con.Commit();
+        //            }
+        //            else
+        //            {
+        //                isSuccess = false;
+        //                //TODO Exception log
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //if (con != null) { try { con.Rollback(); } catch (Exception ex_rollback) { logger.Error(ex_rollback, "Exception"); } }
+        //        logger.Error(ex, "Exception");
+        //        isSuccess = false;
+        //    }
+        //    finally
+        //    {
+        //        //if (con != null) { try { con.Close(); } catch (Exception ex_close) { logger.Error(ex_close, "Exception"); } }
+        //    }
+        //    return isSuccess;
+        //}
+
+        public bool upDateVIDPortID(string eq_id, string portID)
         {
             bool isSuccess = true;
-            //DBConnection_EF con = DBConnection_EF.GetContext();
             try
             {
-                //using (DBConnection_EF con = new DBConnection_EF())
-                var port_station = scApp.MapBLL.getPortByAdrID(adr_id);
 
                 using (DBConnection_EF con = DBConnection_EF.GetUContext())
                 {
                     AVIDINFO vid_info = vidIvfoDAO.getByID(con, eq_id);
                     if (vid_info != null)
                     {
-                        //con.BeginTransaction();
-                        vid_info.PORT_ID = port_station == null ? string.Empty : port_station.PORT_ID;
-                        // vid_info.CARRIER_LOC = adr_id;
+                        vid_info.PORT_ID = portID;
                         vidIvfoDAO.update(con);
-                        //con.Commit();
                     }
                     else
                     {
                         isSuccess = false;
-                        //TODO Exception log
                     }
                 }
             }

@@ -190,11 +190,11 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return SCUtility.Trim(portTemp.ADR_ID);
             }
 
-            public APORTSTATION getPortStationByID(string adr_id)
+            public APORTSTATION getPortStationByAdrID(string adr_id)
             {
                 APORTSTATION portTemp = CacheManager.getALLPortStation().
                                                      Where(p => SCUtility.isMatche(p.ADR_ID, adr_id)).
-                                                     SingleOrDefault();
+                                                     FirstOrDefault();
                 return portTemp;
             }
             public List<APORTSTATION> getPortStationByEqID(string eqID)
