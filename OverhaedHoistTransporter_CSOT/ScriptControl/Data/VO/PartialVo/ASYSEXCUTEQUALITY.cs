@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Nancy.TinyIoc;
 
 namespace com.mirle.ibg3k0.sc
 {
@@ -24,6 +25,8 @@ namespace com.mirle.ibg3k0.sc
         public string Index = "SysExcuteQuality";
         public string CST_ID;
         public ProtocolFormat.OHTMessage.CompleteStatus CompleteStatus;
+        public int CommandShiftCount = 0;
+        public double WalkingSavingDistance = 0;
 
 
         static JsTimeConverter jsTimeConverter = new JsTimeConverter();

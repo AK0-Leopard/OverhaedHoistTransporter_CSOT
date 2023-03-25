@@ -282,6 +282,22 @@ namespace com.mirle.ibg3k0.sc.BLL
             //}
             return isSuccess;
         }
+        public bool updateSysExecQity_CommandShiftInfo(string mcs_cmd_id, double walkingSavingDistance)
+        {
+            bool isSuccess = true;
+            //using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            //{
+            ASYSEXCUTEQUALITY quality = sysExeQualityDAO.getByID(scApp.getRedisCacheManager(), mcs_cmd_id);
+            if (quality != null)
+            {
+                quality.CommandShiftCount += 1;
+                quality.WalkingSavingDistance += walkingSavingDistance;
+                sysExeQualityDAO.update(scApp.getRedisCacheManager(), quality);
+            }
+            //}
+            return isSuccess;
+        }
+
 
         public void doCommandFinish(string mcs_cmd_id, CompleteStatus completeStatus, E_CMD_STATUS ohtc_cmd_status)
         {
