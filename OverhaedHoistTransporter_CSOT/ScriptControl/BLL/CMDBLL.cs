@@ -1343,6 +1343,26 @@ namespace com.mirle.ibg3k0.sc.BLL
                 scApp.CMDBLL.updateCMD_MCS_TranStatus2Queue(cmd_mcs_id);
             return isSuccess;
         }
+        public bool assignCommnadToVehicleByCommandShiftNew(string vh_id, ACMD_MCS cmdMCS)
+        {
+            string cmd_mcs_id = SCUtility.Trim(cmdMCS.CMD_ID, true);
+            int rpiority_sum = cmdMCS.PRIORITY_SUM;
+            string carrier_id = cmdMCS.CARRIER_ID;
+            string hostsource = cmdMCS.HOSTSOURCE;
+            string hostdest = cmdMCS.HOSTDESTINATION;
+            scApp.MapBLL.getAddressID(hostsource, out string from_adr);
+            scApp.MapBLL.getAddressID(hostdest, out string to_adr);
+
+            bool isSuccess = true;
+            isSuccess = isSuccess && scApp.CMDBLL.doCreatTransferCommand(vh_id, cmd_mcs_id, carrier_id,
+                                E_CMD_TYPE.LoadUnload,
+                                from_adr,
+                                to_adr,
+                                rpiority_sum, 0);
+            //在找到車子後先把它改成PreInitial，防止Timer再找到該筆命令
+            isSuccess = isSuccess && scApp.CMDBLL.updateCMD_MCS_TranStatus2PreInitial(cmd_mcs_id);
+            return isSuccess;
+        }
         public bool assignCommnadToVehicleForCmdShift(string mcs_id, string vh_id, out string result)
         {
             try
@@ -2014,6 +2034,23 @@ namespace com.mirle.ibg3k0.sc.BLL
             ACMD_OHTC.tryUpdateCMD_OHTCStatus(cmd_id, status);
             return isSuccess;
         }
+        public bool updateCommand_OHTC_Interrupted(string cmd_id, int interrupFlag)
+        {
+            bool isSuccess = false;
+            //using (DBConnection_EF con = new DBConnection_EF())
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                ACMD_OHTC cmd = cmd_ohtcDAO.getByID(con, cmd_id);
+                if (cmd != null)
+                {
+                    cmd.INTERRUPTED_REASON = interrupFlag;
+                    cmd_ohtcDAO.Update(con, cmd);
+                    isSuccess = true;
+                }
+            }
+            return isSuccess;
+        }
+
         public bool DeleteCommand_OHTC_DetailByCmdID(string cmd_id)
         {
             bool isSuccess = false;
@@ -2143,6 +2180,17 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return cmd_ohtc;
         }
+        public ACMD_OHTC getExcuteCMD_OHTCAndNoInterruptedByMCSID(string cmdMcsID)
+        {
+            ACMD_OHTC cmd_ohtc = null;
+            using (DBConnection_EF con = new DBConnection_EF())
+            {
+                cmd_ohtc = cmd_ohtcDAO.getExcuteCMD_OHTCAndNoInterruptedByMCSID(con, cmdMcsID);
+            }
+            return cmd_ohtc;
+        }
+
+
 
         public bool isCMD_OHTCQueueByVh(string vh_id)
         {
@@ -2315,7 +2363,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                         if (cmd.CMD_STAUS > E_CMD_STATUS.Queue)
                         {
                             updateCommand_OHTC_StatusByCmdID(cmd.CMD_ID, E_CMD_STATUS.AbnormalEndByOHTC);
-                            if (!SCUtility.isEmpty(cmd.CMD_ID_MCS))
+                            //if (!SCUtility.isEmpty(cmd.CMD_ID_MCS))
+                            if (IsMcsCommandAndExcuting(cmd))
                             {
                                 scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(cmd.CMD_ID_MCS, E_TRAN_STATUS.Aborted);
                                 scApp.SysExcuteQualityBLL.doCommandFinish(cmd.CMD_ID_MCS, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
@@ -2325,7 +2374,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                         {
                             ACMD_OHTC queue_cmd = cmd;
                             updateCommand_OHTC_StatusByCmdID(queue_cmd.CMD_ID, E_CMD_STATUS.AbnormalEndByOHTC);
-                            if (!SCUtility.isEmpty(queue_cmd.CMD_ID_MCS))
+                            //if (!SCUtility.isEmpty(queue_cmd.CMD_ID_MCS))
+                            if (IsMcsCommandAndExcuting(queue_cmd))
                             {
                                 ACMD_MCS pre_initial_cmd_mcs = getCMD_MCSByID(queue_cmd.CMD_ID_MCS);
                                 if (pre_initial_cmd_mcs != null &&
@@ -2341,7 +2391,27 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return count != 0;
         }
-
+        public bool IsMcsCommandAndExcuting(ACMD_OHTC cmdOHTC)
+        {
+            //如果原本就不是在執行MCS命令，就直接回false
+            if (SCUtility.isEmpty(cmdOHTC.CMD_ID_MCS))
+            {
+                return false;
+            }
+            else
+            {
+                //如果是在執行MCS命令則需要看是否該命令被中斷了
+                if (cmdOHTC.INTERRUPTED_REASON.HasValue &&
+                    (cmdOHTC.INTERRUPTED_REASON.Value == ACMD_OHTC.COMMAND_INTERRUPTED_CANCELLING_FLAG || cmdOHTC.INTERRUPTED_REASON.Value == ACMD_OHTC.COMMAND_INTERRUPTED_COMPLETE_FLAG))
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: "OHxC",
+                       Data: $"vh id:{cmdOHTC.VH_ID} 正在執行cmd_mcs:{cmdOHTC.CMD_ID_MCS}，但該命令:{cmdOHTC.CMD_ID} 目前的interrupted valus:{cmdOHTC.INTERRUPTED_REASON.Value}，代表已被中斷",
+                       VehicleID: cmdOHTC.VH_ID);
+                    return false;
+                }
+                return true;
+            }
+        }
         public bool isCMCD_OHTCFinish(string cmdID)
         {
             ACMD_OHTC cmd_ohtc = null;

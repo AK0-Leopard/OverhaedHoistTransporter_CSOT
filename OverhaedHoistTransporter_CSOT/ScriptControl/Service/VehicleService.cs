@@ -87,7 +87,47 @@ namespace com.mirle.ibg3k0.sc.Service
                 vh.LongTimeInaction += Vh_LongTimeInaction;
                 vh.NonLongTimeInaction += Vh_NonLongTimeInaction;
                 vh.CommandStateOutOfSyncHappend += Vh_CommandStateOutOfSyncHappend;
+                vh.CommandStateInterruptedTimeout += Vh_CommandStateInterruptedTimeout;
                 vh.TimerActionStart();
+            }
+        }
+        private long cmdOHTCCancelSyncPoint = 0;
+        private void Vh_CommandStateInterruptedTimeout(object sender, string interruptingCmdOHTCID)
+        {
+            if (System.Threading.Interlocked.Exchange(ref cmdOHTCCancelSyncPoint, 1) == 0)
+            {
+                try
+                {
+                    AVEHICLE vh = (sender as AVEHICLE);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"vh:{vh.VEHICLE_ID}，命令:{interruptingCmdOHTCID}正在嘗試中斷中，再次發送Cancel指令",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                    bool is_cancel_success = doAbortCommand(vh, interruptingCmdOHTCID, CMDCancelType.CmdCancel);
+                    if (is_cancel_success)
+                    {
+                        scApp.CMDBLL.updateCommand_OHTC_Interrupted(interruptingCmdOHTCID, ACMD_OHTC.COMMAND_INTERRUPTED_COMPLETE_FLAG);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{vh.VEHICLE_ID}，命令:{interruptingCmdOHTCID} 成功將其變成已經中斷",
+                           VehicleID: vh.VEHICLE_ID,
+                           CarrierID: vh.CST_ID);
+                    }
+                    else
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{vh.VEHICLE_ID}，命令:{interruptingCmdOHTCID} 中斷失敗",
+                           VehicleID: vh.VEHICLE_ID,
+                           CarrierID: vh.CST_ID);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Exception:");
+                }
+                finally
+                {
+                    System.Threading.Interlocked.Exchange(ref cmdOHTCCancelSyncPoint, 0);
+                }
             }
         }
 
@@ -3150,11 +3190,20 @@ namespace com.mirle.ibg3k0.sc.Service
             switch (eventType)
             {
                 case EventType.LoadArrivals:
-
-                    if (!SCUtility.isEmpty(eqpt.MCS_CMD))
+                    //if (!SCUtility.isEmpty(eqpt.MCS_CMD))
+                    if (scApp.VehicleBLL.IsMcsCommandAndExcuting(eqpt, out bool is_force_interrupted_reply))
                     {
                         scApp.CMDBLL.updateCMD_MCS_CmdStatus2LoadArrivals(eqpt.MCS_CMD);
                     }
+                    if (is_force_interrupted_reply)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"由於vh:{eqpt.VEHICLE_ID},ohtc cmd id:{eqpt.OHTC_CMD},已被標示為中斷中，因此強制不回復oht的event:{eventType}",
+                           VehicleID: eqpt.VEHICLE_ID,
+                           CarrierID: eqpt.CST_ID);
+                        return;
+                    }
+
                     string load_tran_port = tryGetTransferPort(eqpt, eventType);
                     //scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, eqpt.CUR_ADR_ID);
                     scApp.VIDBLL.upDateVIDPortID(eqpt.VEHICLE_ID, load_tran_port);
@@ -3301,7 +3350,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     return port_station.PORT_ID;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Error(ex, "Exception:");
                 return "";
@@ -4845,10 +4894,15 @@ namespace com.mirle.ibg3k0.sc.Service
                 //        scApp.VIDBLL.upDateVIDCarrierLocInfo(eqpt.VEHICLE_ID, "");
                 //        break;
                 //}
-
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"處裡命令結束流程(id:132)，Vh ID:{eqpt.VEHICLE_ID}、cmd id:{finish_ohxc_cmd}、mcs cmd id:{finish_mcs_cmd}....",
+                   VehicleID: eqpt.VEHICLE_ID,
+                   CarrierID: eqpt.CST_ID);
                 var chcek_is_special_cancel_command_result = checkIsCommandCompleteBySpecialCancel(finish_mcs_cmd, completeStatus);
                 List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
-                if (!SCUtility.isEmpty(finish_mcs_cmd))
+                //if (!SCUtility.isEmpty(finish_mcs_cmd))
+                bool is_mcs_command_and_excuting = scApp.VehicleBLL.IsMcsCommandAndExcuting(eqpt);
+                if (is_mcs_command_and_excuting)
                 {
                     using (TransactionScope tx = SCUtility.getTransactionScope())
                     {
@@ -4918,9 +4972,9 @@ namespace com.mirle.ibg3k0.sc.Service
                         {
                             switch (chcek_is_special_cancel_command_result.cancelType)
                             {
-                                case CommandCancelType.CommandShift:
-                                    isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneCommandShift(eqpt.VEHICLE_ID, cmd_id, completeStatus);
-                                    break;
+                                //case CommandCancelType.CommandShift:
+                                //    isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneCommandShift(eqpt.VEHICLE_ID, cmd_id, completeStatus);
+                                //    break;
                                 case CommandCancelType.InterruptThenToQueue:
                                     isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneInterruptThenReturnToQueue(eqpt.VEHICLE_ID, cmd_id, completeStatus);
                                     break;
@@ -4928,7 +4982,7 @@ namespace com.mirle.ibg3k0.sc.Service
                         }
                         else
                         {
-                            isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus);
+                            isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt, cmd_id, completeStatus, is_mcs_command_and_excuting);
                         }
                         isSuccess &= scApp.VIDBLL.initialVIDCommandInfo(eqpt.VEHICLE_ID);
 
@@ -5214,11 +5268,12 @@ namespace com.mirle.ibg3k0.sc.Service
                 var cmd_mcs = scApp.CMDBLL.getCMD_MCSByID(finish_mcs_cmd);
                 if (cmd_mcs == null)
                     return (false, CommandCancelType.Normal);
-                if (SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT))
-                {
-                    return (true, CommandCancelType.CommandShift);
-                }
-                else if (SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_INTERRUPT_THEN_TO_QUEUE))
+                //if (SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT))
+                //{
+                //    return (true, CommandCancelType.CommandShift);
+                //}
+                //else 
+                if (SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_INTERRUPT_THEN_TO_QUEUE))
                 {
                     return (true, CommandCancelType.InterruptThenToQueue);
                 }
@@ -5272,7 +5327,8 @@ namespace com.mirle.ibg3k0.sc.Service
                 find_result = findSuitableExcuteCommandShiftOfCommand(commandFinishVh);
                 if (find_result.isFind)
                 {
-                    is_command_shift_success = startExcuteCommandShift(commandFinishVh, find_result.suitableCmdShiftCmd, find_result.diffDistance);
+                    //is_command_shift_success = startExcuteCommandShift(commandFinishVh, find_result.suitableCmdShiftCmd, find_result.diffDistance);
+                    is_command_shift_success = startExcuteCommandShiftNew(commandFinishVh, find_result.suitableCmdShiftCmd, find_result.diffDistance);
                 }
             }
             catch (Exception ex)
@@ -5450,6 +5506,79 @@ namespace com.mirle.ibg3k0.sc.Service
             finally
             {
                 scApp.CMDBLL.updateCMD_MCS_PauseFlag(can_cmd_shift_mcs_cmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_EMPTY);
+            }
+        }
+        private bool startExcuteCommandShiftNew(AVEHICLE commandFinishVh, ACMD_MCS can_cmd_shift_mcs_cmd, double walkingSavingDistance)
+        {
+            try
+            {
+
+                //當選定某一筆命令要來進行轉移時，就直接將該命令轉移給新的車子
+                //直接下給OHT命令cancle
+                string shift_mcs_cmd_id = SCUtility.Trim(can_cmd_shift_mcs_cmd.CMD_ID, true);
+                ACMD_OHTC excuting_cmd_ohtc = can_cmd_shift_mcs_cmd.getExcuteCMD_OHTC(scApp.CMDBLL);
+                string excuting_cmd_id = SCUtility.Trim(excuting_cmd_ohtc.CMD_ID, true);
+                string excuting_vh_id = SCUtility.Trim(excuting_cmd_ohtc.VH_ID, true);
+                AVEHICLE excuting_vh = scApp.VehicleBLL.cache.getVhByID(excuting_vh_id);
+
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"mcs cmd id:{shift_mcs_cmd_id} 由vh:{excuting_vh_id}轉移至vh:{commandFinishVh.VEHICLE_ID},開始進行命令的轉移...",
+                   VehicleID: commandFinishVh.VEHICLE_ID,
+                   CarrierID: commandFinishVh.CST_ID);
+
+
+                bool is_success = true;
+                using (TransactionScope tx = SCUtility.getTransactionScope())
+                {
+                    using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                    {
+                        is_success = is_success && scApp.CMDBLL.updateCommand_OHTC_Interrupted(excuting_cmd_ohtc.CMD_ID, ACMD_OHTC.COMMAND_INTERRUPTED_CANCELLING_FLAG);
+                        is_success = is_success && scApp.CMDBLL.assignCommnadToVehicleByCommandShiftNew(commandFinishVh.VEHICLE_ID, can_cmd_shift_mcs_cmd);
+
+                        if (is_success)
+                        {
+                            tx.Complete();
+                        }
+                        else
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"mcs cmd id:{shift_mcs_cmd_id} 命令轉移失敗。",
+                               VehicleID: commandFinishVh.VEHICLE_ID,
+                               CarrierID: commandFinishVh.CST_ID);
+                            return false;
+                        }
+                    }
+                }
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"mcs cmd id:{shift_mcs_cmd_id} 命令轉移成功,準備對vh:{excuting_vh_id}下達命令cancel...",
+                   VehicleID: commandFinishVh.VEHICLE_ID,
+                   CarrierID: commandFinishVh.CST_ID);
+
+                scApp.SysExcuteQualityBLL.updateSysExecQity_CommandShiftInfo(shift_mcs_cmd_id, walkingSavingDistance);
+
+                bool is_cnacel_success = doAbortCommand(excuting_vh, excuting_cmd_id, CMDCancelType.CmdCancel);
+
+                if (is_cnacel_success)
+                {
+                    scApp.CMDBLL.updateCommand_OHTC_Interrupted(excuting_cmd_ohtc.CMD_ID, ACMD_OHTC.COMMAND_INTERRUPTED_COMPLETE_FLAG);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"準備對vh:{excuting_vh_id}下達命令cancel,成功.",
+                       VehicleID: commandFinishVh.VEHICLE_ID,
+                       CarrierID: commandFinishVh.CST_ID);
+                }
+                else
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"準備對vh:{excuting_vh_id}下達命令cancel,失敗.",
+                       VehicleID: commandFinishVh.VEHICLE_ID,
+                       CarrierID: commandFinishVh.CST_ID);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return false;
             }
         }
 

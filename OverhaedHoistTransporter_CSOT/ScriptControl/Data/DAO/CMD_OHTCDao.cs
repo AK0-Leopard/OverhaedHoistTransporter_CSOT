@@ -155,6 +155,18 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                         select cmd;
             return query.FirstOrDefault();
         }
+        public ACMD_OHTC getExcuteCMD_OHTCAndNoInterruptedByMCSID(DBConnection_EF con, string cmdMcsID)
+        {
+            var query = from cmd in con.ACMD_OHTC
+                        where cmd.CMD_ID_MCS == cmdMcsID.Trim()
+                        && cmd.CMD_STAUS >= E_CMD_STATUS.Queue
+                        && cmd.CMD_STAUS < E_CMD_STATUS.NormalEnd
+                        && cmd.INTERRUPTED_REASON == null
+                        select cmd;
+            return query.FirstOrDefault();
+        }
+
+
 
         public int getVhQueueCMDConut(DBConnection_EF con, string vh_id)
         {

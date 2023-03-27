@@ -1,4 +1,5 @@
-﻿using System;
+﻿using com.mirle.ibg3k0.sc.Common;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace com.mirle.ibg3k0.sc
 {
     public partial class ACMD_OHTC
     {
+
+        public const int COMMAND_INTERRUPTED_CANCELLING_FLAG = 1;
+        public const int COMMAND_INTERRUPTED_COMPLETE_FLAG = 2;
+
         public static ConcurrentDictionary<string, ACMD_OHTC> CMD_OHTC_InfoList { get; private set; } = new ConcurrentDictionary<string, ACMD_OHTC>();
         public static void tryAddCMD_OHTC_ToList(ACMD_OHTC cmdOHTC)
         {
@@ -35,6 +40,14 @@ namespace com.mirle.ibg3k0.sc
             var cmd_ohtc_Key_value_array = CMD_OHTC_InfoList.ToArray();
             var cmd_ohtc_list = cmd_ohtc_Key_value_array.Select(kv => kv.Value).ToList();
             return cmd_ohtc_list;
+        }
+        public static (bool isSuccess, ACMD_OHTC cmdOHTC) tryGetCMD_OHTCNoInterruptedByCmdMCS(string cmdMcsID)
+        {
+            var cmd_ohtc_Key_value_array = CMD_OHTC_InfoList.ToArray();
+            var cmd_ohtc_list = cmd_ohtc_Key_value_array.Select(kv => kv.Value).ToList();
+            var cmd_ohtc = cmd_ohtc_list.Where(c => SCUtility.isMatche(c.CMD_ID_MCS, cmdMcsID) && c.INTERRUPTED_REASON == null)
+                                        .FirstOrDefault();
+            return (cmd_ohtc != null, cmd_ohtc);
         }
 
         public string getSourcePortSegment(BLL.SectionBLL sectionBLL)

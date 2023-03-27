@@ -92,16 +92,20 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 btn_force_finish.Enabled = false;
                 var mcs_cmd = cmdMCSList[selection_index];
 
-                AVEHICLE excute_cmd_of_vh = mainform.BCApp.SCApplication.VehicleBLL.cache.getVehicleByMCSCmdID(mcs_cmd.CMD_ID);
+                //AVEHICLE excute_cmd_of_vh = mainform.BCApp.SCApplication.VehicleBLL.cache.getVehicleByMCSCmdID(mcs_cmd.CMD_ID);
+                AVEHICLE excute_cmd_of_vh = null;
 
                 await Task.Run(() =>
                 {
                     try
                     {
-                        if (excute_cmd_of_vh != null)
+                        ACMD_OHTC cmd_ohtc = mainform.BCApp.SCApplication.CMDBLL.getExcuteCMD_OHTCAndNoInterruptedByMCSID(mcs_cmd.CMD_ID);
+                        excute_cmd_of_vh = mainform.BCApp.SCApplication.VehicleBLL.cache.getVhByID(cmd_ohtc.VH_ID);
+
+                        if (cmd_ohtc != null)
                         {
-                            mainform.BCApp.SCApplication.VehicleBLL.doTransferCommandFinish(excute_cmd_of_vh.VEHICLE_ID, excute_cmd_of_vh.OHTC_CMD, CompleteStatus.CmpStatusForceFinishByOp);
-                            mainform.BCApp.SCApplication.VIDBLL.initialVIDCommandInfo(excute_cmd_of_vh.VEHICLE_ID);
+                            mainform.BCApp.SCApplication.VehicleBLL.doTransferCommandFinish(cmd_ohtc.VH_ID, cmd_ohtc.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp);
+                            mainform.BCApp.SCApplication.VIDBLL.initialVIDCommandInfo(cmd_ohtc.VH_ID);
                         }
                         mainform.BCApp.SCApplication.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd.CMD_ID, E_TRAN_STATUS.Aborted);
                         mainform.BCApp.SCApplication.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd.cmd_mcs, excute_cmd_of_vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
@@ -174,7 +178,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 {
                     ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
                 });
-                
+
                 cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
                 cmsMCS_bindingSource.DataSource = cmdMCSList;
                 dgv_TransferCommand.Refresh();

@@ -1742,19 +1742,25 @@ namespace com.mirle.ibg3k0.sc.BLL
         //public bool doTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus, bool isCommandCompleteByCmdShift = false)
         public bool doTransferCommandFinish(string vh_id, string cmd_id, CompleteStatus completeStatus)
         {
+            AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
+            bool is_mcs_command_and_excuting = IsMcsCommandAndExcuting(vh);
+            return doTransferCommandFinish(vh, cmd_id, completeStatus, is_mcs_command_and_excuting);
+        }
+        public bool doTransferCommandFinish(AVEHICLE vh, string cmd_id, CompleteStatus completeStatus, bool isMCSCommandAndExcuting)
+        {
             bool isSuccess = true;
             //1.
             try
             {
                 E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
-                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
-                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
+                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
                 //TODO 再Update沒有成功這件事情要分成兩個部分，1.沒有找到該筆Command (要回復VH)2.發生Exection(不回復VH)。
                 string mcs_cmd_id = vh.MCS_CMD;
                 isSuccess = initialVhCommandInfoAndFinishCMD_OHTC(vh, cmd_id, ohtc_cmd_status);
 
                 //if (!SCUtility.isEmpty(mcs_cmd_id) && !isCommandCompleteByCmdShift)
-                if (!SCUtility.isEmpty(mcs_cmd_id))
+                //if (!SCUtility.isEmpty(mcs_cmd_id))
+                if (isMCSCommandAndExcuting)
                 {
                     E_TRAN_STATUS mcs_cmd_tran_status = CompleteStatusToETransferStatus(completeStatus);
                     //isSuccess &= scApp.SysExcuteQualityBLL.updateSysExecQity_CmdFinish(vh.MCS_CMD);
@@ -1806,6 +1812,49 @@ namespace com.mirle.ibg3k0.sc.BLL
             //mcsDefaultMapAction.sendS6F11_common(SECSConst.CEID_Vehicle_Unassigned, eq_id);
             //mcsDefaultMapAction.sendS6F11_common(SECSConst.CEID_Transfer_Completed, eq_id);
             //scApp.VIDBLL.initialVIDCommandInfo(eq_id);
+        }
+
+        public bool IsMcsCommandAndExcuting(AVEHICLE vh)
+        {
+            return IsMcsCommandAndExcuting(vh, out bool _);
+        }
+        public bool IsMcsCommandAndExcuting(AVEHICLE vh, out bool isForceInterruptedReply)
+        {
+            //如果原本就不是在執行MCS命令，就直接回false
+            if (SCUtility.isEmpty(vh.MCS_CMD))
+            {
+                isForceInterruptedReply = false;
+                return false;
+            }
+            else
+            {
+                //如果是在執行MCS命令則需要看是否該命令被中斷了
+                ACMD_OHTC cmd_ohtc = scApp.CMDBLL.getCMD_OHTCByID(vh.OHTC_CMD);
+                if (cmd_ohtc == null)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                       Data: $"vh id:{vh.VEHICLE_ID} 正在執行cmd_mcs:{vh.MCS_CMD}，但卻找不到對應的cmd_ohtc",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                    isForceInterruptedReply = false;
+                    return false;
+                }
+                if (cmd_ohtc.INTERRUPTED_REASON.HasValue &&
+                    (cmd_ohtc.INTERRUPTED_REASON.Value == ACMD_OHTC.COMMAND_INTERRUPTED_CANCELLING_FLAG || cmd_ohtc.INTERRUPTED_REASON.Value == ACMD_OHTC.COMMAND_INTERRUPTED_COMPLETE_FLAG))
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                       Data: $"vh id:{vh.VEHICLE_ID} 正在執行cmd_mcs:{vh.MCS_CMD}，但該命令:{cmd_ohtc.CMD_ID} 目前的interrupted valus:{cmd_ohtc.INTERRUPTED_REASON.Value}，代表已被中斷",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                    isForceInterruptedReply = true;
+                    return false;
+                }
+                else
+                {
+                    isForceInterruptedReply = false;
+                    return true;
+                }
+            }
         }
         public bool doTransferCommandFinishWhneCommandShift(string vh_id, string cmd_id, CompleteStatus completeStatus)
         {

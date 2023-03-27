@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using static com.mirle.ibg3k0.sc.App.SCAppConstants;
 
 namespace com.mirle.ibg3k0.sc
@@ -164,10 +165,12 @@ namespace com.mirle.ibg3k0.sc
         public event EventHandler<string> LongTimeInaction;
         public event EventHandler NonLongTimeInaction;
         public event EventHandler CommandStateOutOfSyncHappend;
+        public event EventHandler<string> CommandStateInterruptedTimeout;
 
 
         VehicleTimerAction vehicleTimer = null;
         public Stopwatch CurrentCommandExcuteTime { get; private set; }
+        public Stopwatch CurrentCommandInterruptingIntervalTime { get; private set; }
         private GuideInfo guideInfo { get; set; }
 
         public void onCommandComplete(CompleteStatus cmpStatus)
@@ -200,6 +203,10 @@ namespace com.mirle.ibg3k0.sc
         {
             CommandStateOutOfSyncHappend?.Invoke(this, EventArgs.Empty);
         }
+        public void onCommandStateInterruptedTimeout(string cmdOHTC)
+        {
+            CommandStateInterruptedTimeout?.Invoke(this, cmdOHTC);
+        }
 
         public AVEHICLE()
         {
@@ -210,6 +217,7 @@ namespace com.mirle.ibg3k0.sc
             vhStateMachine.OnUnhandledTrigger(UnhandledTriggerHandler);
 
             CurrentCommandExcuteTime = new Stopwatch();
+            CurrentCommandInterruptingIntervalTime = new Stopwatch();
             LastBlockRequestFailInterval.Restart();
             guideInfo = new GuideInfo(this);
 
@@ -1481,6 +1489,13 @@ namespace com.mirle.ibg3k0.sc
                         {
                             vh.isCommandStateOutOfSyncHappend = false;
                         }
+
+                        var check_command_interrupting_result = hasCommandInterruptingCheck(cmds);
+                        if (check_command_interrupting_result.hasCommandInterripting && check_command_interrupting_result.isOverIntervalTime)
+                        {
+                            vh.onCommandStateInterruptedTimeout(check_command_interrupting_result.cmdOHTC.CMD_ID);
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -1518,11 +1533,49 @@ namespace com.mirle.ibg3k0.sc
                 return has_command_excute;
             }
 
+            private const int SEND_COMMAND_CANCEL_INTERVAL_WHEN_INTERRUPTING_mm = 10_000;
+            private (bool hasCommandInterripting, bool isOverIntervalTime, ACMD_OHTC cmdOHTC) hasCommandInterruptingCheck(List<ACMD_OHTC> cmds)
+            {
+                if (cmds == null) return (false, false, null);
+                var try_get_interrupting_command = tryGetVhCurrentInterruptingCommand(cmds);
+                if (try_get_interrupting_command.hasInterruptingCmd)
+                {
+                    if (!vh.CurrentCommandInterruptingIntervalTime.IsRunning)
+                    {
+                        vh.CurrentCommandInterruptingIntervalTime.Restart();
+                    }
+                    if (vh.CurrentCommandInterruptingIntervalTime.ElapsedMilliseconds > SEND_COMMAND_CANCEL_INTERVAL_WHEN_INTERRUPTING_mm)
+                    {
+                        vh.CurrentCommandInterruptingIntervalTime.Restart();
+                        return (true, true, try_get_interrupting_command.cmdOHTC);
+                    }
+                    else
+                    {
+                        return (true, false, try_get_interrupting_command.cmdOHTC);
+                    }
+                }
+                else
+                {
+                    if (vh.CurrentCommandInterruptingIntervalTime.IsRunning)
+                    {
+                        vh.CurrentCommandInterruptingIntervalTime.Reset();
+                    }
+                    return (false, false, null);
+                }
+            }
+
             private bool getVhCurrentExcuteCommandCount(List<ACMD_OHTC> cmds)
             {
                 return cmds.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vh.VEHICLE_ID) &&
                                          cmd.CMD_STAUS > E_CMD_STATUS.Queue)
                            .Count() > 0;
+            }
+            private (bool hasInterruptingCmd, ACMD_OHTC cmdOHTC) tryGetVhCurrentInterruptingCommand(List<ACMD_OHTC> cmds)
+            {
+                var cmd_ohtc = cmds.Where(cmd => SCUtility.isMatche(cmd.VH_ID, vh.VEHICLE_ID) &&
+                                                 cmd.INTERRUPTED_REASON.HasValue && cmd.INTERRUPTED_REASON.Value == ACMD_OHTC.COMMAND_INTERRUPTED_CANCELLING_FLAG)
+                                   .FirstOrDefault();
+                return (cmd_ohtc != null, cmd_ohtc);
             }
             private string getVhCurrentExcuteCommandID(List<ACMD_OHTC> cmds)
             {

@@ -29,13 +29,22 @@ namespace com.mirle.ibg3k0.sc.ObjectRelay
         {
             get
             {
-                if (VehicleBLL != null)
+                var try_get_cmd_ohtc_result = ACMD_OHTC.tryGetCMD_OHTCNoInterruptedByCmdMCS(CMD_ID);
+                if (try_get_cmd_ohtc_result.isSuccess)
                 {
-                    var vh = VehicleBLL.cache.getVehicleByMCSCmdID(CMD_ID);
-                    return vh == null ? "" : vh.VEHICLE_ID;
+                    return try_get_cmd_ohtc_result.cmdOHTC.VH_ID;
                 }
                 else
+                {
                     return "";
+                }
+                //if (VehicleBLL != null)
+                //{
+                //    var vh = VehicleBLL.cache.getVehicleByMCSCmdID(CMD_ID);
+                //    return vh == null ? "" : vh.VEHICLE_ID;
+                //}
+                //else
+                //    return "";
             }
         }
 

@@ -117,31 +117,33 @@ namespace com.mirle.ibg3k0.sc.WebAPI
 
             Post["TransferManagement/ForceFinish"] = (p) =>
             {
-                var scApp = SCApplication.getInstance();
-                bool isSuccess = true;
-                string result = string.Empty;
-                string mcs_cmd_id = Request.Query.mcs_cmd.Value ?? Request.Form.mcs_cmd.Value ?? string.Empty;
-                AVEHICLE excute_cmd_of_vh = scApp.VehicleBLL.cache.getVehicleByMCSCmdID(mcs_cmd_id);
-                ACMD_MCS mcs_cmd = scApp.CMDBLL.getCMD_MCSByID(mcs_cmd_id);
-                try
-                {
-                    if (excute_cmd_of_vh != null)
-                    {
-                        scApp.VehicleBLL.doTransferCommandFinish(excute_cmd_of_vh.VEHICLE_ID, excute_cmd_of_vh.OHTC_CMD, CompleteStatus.CmpStatusForceFinishByOp);
-                        scApp.VIDBLL.initialVIDCommandInfo(excute_cmd_of_vh.VEHICLE_ID);
-                    }
-                    scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd.CMD_ID, E_TRAN_STATUS.Aborted);
-                    scApp.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd, excute_cmd_of_vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
-                    scApp.SysExcuteQualityBLL.doCommandFinish(mcs_cmd.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
-                    result = "OK";
-                }
-                catch
-                {
-                    result = "ForceFinish failed.";
-                }
+                //var scApp = SCApplication.getInstance();
+                //bool isSuccess = true;
+                //string result = string.Empty;
+                //string mcs_cmd_id = Request.Query.mcs_cmd.Value ?? Request.Form.mcs_cmd.Value ?? string.Empty;
+                //AVEHICLE excute_cmd_of_vh = scApp.VehicleBLL.cache.getVehicleByMCSCmdID(mcs_cmd_id);
+                //ACMD_MCS mcs_cmd = scApp.CMDBLL.getCMD_MCSByID(mcs_cmd_id);
+                //try
+                //{
+                //    if (excute_cmd_of_vh != null)
+                //    {
+                //        scApp.VehicleBLL.doTransferCommandFinish(excute_cmd_of_vh.VEHICLE_ID, excute_cmd_of_vh.OHTC_CMD, CompleteStatus.CmpStatusForceFinishByOp);
+                //        scApp.VIDBLL.initialVIDCommandInfo(excute_cmd_of_vh.VEHICLE_ID);
+                //    }
+                //    scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd.CMD_ID, E_TRAN_STATUS.Aborted);
+                //    scApp.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd, excute_cmd_of_vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
+                //    scApp.SysExcuteQualityBLL.doCommandFinish(mcs_cmd.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
+                //    result = "OK";
+                //}
+                //catch
+                //{
+                //    result = "ForceFinish failed.";
+                //}
 
+                string result = "ForceFinish failed.";
                 var response = (Response)result;
                 response.ContentType = restfulContentType;
+
                 return response;
             };
 
