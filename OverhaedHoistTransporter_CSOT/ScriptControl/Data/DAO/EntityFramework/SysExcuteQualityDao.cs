@@ -1,4 +1,5 @@
-﻿using com.mirle.ibg3k0.sc.Common;
+﻿using com.mirle.ibg3k0.sc.App;
+using com.mirle.ibg3k0.sc.Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -43,7 +44,12 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
             return dicQuality;
 
         }
-
+        public void DeleteByBatch(DBConnection_EF con, DateTime deleteBeforeTime)
+        {
+            string sdelete_before_time = deleteBeforeTime.ToString(SCAppConstants.DateTimeFormat_22);
+            string sql = "DELETE [ASYSEXCUTEQUALITY] WHERE [CMD_INSERT_TIME] < {0}";
+            int result = con.Database.ExecuteSqlCommand(sql, sdelete_before_time);
+        }
 
         #region Redis
         TimeSpan timeSpan_1Hour = new TimeSpan(1, 0, 10);

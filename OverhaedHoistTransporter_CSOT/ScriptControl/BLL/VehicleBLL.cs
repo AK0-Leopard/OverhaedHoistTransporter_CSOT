@@ -2704,7 +2704,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 EventType = vh.VhRecentTranEvent,
                 LeftGuideLockStatus = VhGuideStatus.Unlock,
                 RightGuideLockStatus = VhGuideStatus.Unlock,
-                SecDistance = report_obj.SecDistance == 0 ? (uint)vh.ACC_SEC_DIST : report_obj.SecDistance
+                //SecDistance = report_obj.SecDistance == 0 ? (uint)vh.ACC_SEC_DIST : report_obj.SecDistance
+                SecDistance = report_obj.SecDistance
             };
             setAndPublishPositionReportInfo2Redis(vh_id, id_134_trans_event_rep);
         }

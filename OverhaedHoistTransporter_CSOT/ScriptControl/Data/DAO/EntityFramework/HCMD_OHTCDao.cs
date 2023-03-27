@@ -31,6 +31,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
             con.SaveChanges();
         }
 
+
     }
 
 }

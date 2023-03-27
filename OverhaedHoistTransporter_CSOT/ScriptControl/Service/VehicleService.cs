@@ -3274,29 +3274,37 @@ namespace com.mirle.ibg3k0.sc.Service
         }
         private string tryGetTransferPort(AVEHICLE vh, EventType eventType)
         {
-            if (!SCUtility.isEmpty(vh.MCS_CMD))
+            try
             {
-                var try_get_cmd_mcs = ACMD_MCS.tryMCS_CMDByID(vh.MCS_CMD);
-                if (try_get_cmd_mcs.isSuccess)
+                if (!SCUtility.isEmpty(vh.MCS_CMD))
                 {
-                    switch (eventType)
+                    var try_get_cmd_mcs = ACMD_MCS.tryMCS_CMDByID(vh.MCS_CMD);
+                    if (try_get_cmd_mcs.isSuccess)
                     {
-                        case EventType.LoadArrivals:
-                            return SCUtility.Trim(try_get_cmd_mcs.tranCmd.HOSTSOURCE, true);
-                        case EventType.UnloadArrivals:
-                            return SCUtility.Trim(try_get_cmd_mcs.tranCmd.HOSTDESTINATION, true);
+                        switch (eventType)
+                        {
+                            case EventType.LoadArrivals:
+                                return SCUtility.Trim(try_get_cmd_mcs.tranCmd.HOSTSOURCE, true);
+                            case EventType.UnloadArrivals:
+                                return SCUtility.Trim(try_get_cmd_mcs.tranCmd.HOSTDESTINATION, true);
+                        }
                     }
                 }
+                string current_adr = vh.CUR_ADR_ID;
+                APORTSTATION port_station = scApp.PortStationBLL.OperateCatch.getPortStationByAdrID(current_adr);
+                if (port_station == null)
+                {
+                    return "";
+                }
+                else
+                {
+                    return port_station.PORT_ID;
+                }
             }
-            string current_adr = vh.CUR_ADR_ID;
-            APORTSTATION port_station = scApp.PortStationBLL.OperateCatch.getPortStationByAdrID(current_adr);
-            if (port_station == null)
+            catch(Exception ex)
             {
+                logger.Error(ex, "Exception:");
                 return "";
-            }
-            else
-            {
-                return port_station.PORT_ID;
             }
 
         }
@@ -5244,7 +5252,8 @@ namespace com.mirle.ibg3k0.sc.Service
             {
                 //要確認IDLE的車輛數大於16台的時候，才開始進行Command Shfit才有意義，否則徒增效率負擔
                 int idle_count = scApp.VehicleBLL.cache.loadIdleVhs().Count();
-                if (idle_count < STOP_EXCUTE_COMMAND_SHIFT_IDLE_VH_COUNT)
+                //if (idle_count < STOP_EXCUTE_COMMAND_SHIFT_IDLE_VH_COUNT)
+                if (idle_count < SystemParameter.StopExcuteCommandShiftIdleVhCount)
                 {
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"vh:{commandFinishVh.VEHICLE_ID} 命令結束，but current idle vh conur less than :{STOP_EXCUTE_COMMAND_SHIFT_IDLE_VH_COUNT} ,don't excute command shift.",

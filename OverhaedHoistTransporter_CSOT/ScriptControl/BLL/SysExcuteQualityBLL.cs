@@ -1,6 +1,7 @@
 ﻿using com.mirle.ibg3k0.sc.App;
 using com.mirle.ibg3k0.sc.Common;
 using com.mirle.ibg3k0.sc.Data;
+using com.mirle.ibg3k0.sc.Data.DAO;
 using com.mirle.ibg3k0.sc.Data.DAO.EntityFramework;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.ServiceModel.Channels;
 
 namespace com.mirle.ibg3k0.sc.BLL
 {
@@ -284,18 +286,26 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
         public bool updateSysExecQity_CommandShiftInfo(string mcs_cmd_id, double walkingSavingDistance)
         {
-            bool isSuccess = true;
-            //using (DBConnection_EF con = DBConnection_EF.GetUContext())
-            //{
-            ASYSEXCUTEQUALITY quality = sysExeQualityDAO.getByID(scApp.getRedisCacheManager(), mcs_cmd_id);
-            if (quality != null)
+            try
             {
-                quality.CommandShiftCount += 1;
-                quality.WalkingSavingDistance += walkingSavingDistance;
-                sysExeQualityDAO.update(scApp.getRedisCacheManager(), quality);
+                bool isSuccess = true;
+                //using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                //{
+                ASYSEXCUTEQUALITY quality = sysExeQualityDAO.getByID(scApp.getRedisCacheManager(), mcs_cmd_id);
+                if (quality != null)
+                {
+                    quality.CommandShiftCount += 1;
+                    quality.WalkingSavingDistance += walkingSavingDistance;
+                    sysExeQualityDAO.update(scApp.getRedisCacheManager(), quality);
+                }
+                //}
+                return isSuccess;
             }
-            //}
-            return isSuccess;
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"Exception:");
+                return false;
+            }
         }
 
 
@@ -365,6 +375,23 @@ namespace com.mirle.ibg3k0.sc.BLL
 
             }
             return dicRptidAndVid;
+        }
+
+
+        public void DeleteSysExeQualityBefore6Month()
+        {
+            try
+            {
+                DateTime date_teime_before_6_month = DateTime.Now.AddMonths(-6);
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    sysExeQualityDAO.DeleteByBatch(con, date_teime_before_6_month);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+            }
         }
 
 

@@ -758,7 +758,7 @@
             // 
             this.groupBox14.Controls.Add(this.txt_req_block_id_test);
             this.groupBox14.Controls.Add(this.button11);
-            this.groupBox14.Location = new System.Drawing.Point(863, 599);
+            this.groupBox14.Location = new System.Drawing.Point(831, 589);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Size = new System.Drawing.Size(192, 133);
             this.groupBox14.TabIndex = 54;
@@ -1289,7 +1289,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1441, 749);
+            this.tabControl1.Size = new System.Drawing.Size(1495, 749);
             this.tabControl1.TabIndex = 23;
             // 
             // tabPage1
@@ -1314,7 +1314,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 31);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage1.Size = new System.Drawing.Size(1487, 714);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1331,7 +1331,7 @@
             // label71
             // 
             this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(1075, 234);
+            this.label71.Location = new System.Drawing.Point(1088, 271);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(209, 22);
             this.label71.TabIndex = 58;
@@ -1340,7 +1340,7 @@
             // button12
             // 
             this.button12.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button12.Location = new System.Drawing.Point(1365, 224);
+            this.button12.Location = new System.Drawing.Point(1378, 261);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(84, 39);
             this.button12.TabIndex = 5;
@@ -2693,7 +2693,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(156, 3);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(156, 6);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4662,7 +4662,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1441, 749);
+            this.ClientSize = new System.Drawing.Size(1495, 749);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);

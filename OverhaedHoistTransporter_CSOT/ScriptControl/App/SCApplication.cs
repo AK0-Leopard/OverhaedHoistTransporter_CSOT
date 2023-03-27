@@ -774,6 +774,7 @@ namespace com.mirle.ibg3k0.sc.App
 
             SystemParameter.setIsEnableIDReadFailScenarioFlag(getBoolean("IsEnableIDReadFailScenario", false));
             SystemParameter.setMCSCommandAccumulateTimePriority(getInt("MCSCommandAccumulateTimePriority", 4));
+            SystemParameter.setStopExcuteCommandShiftIdleVhCount(getInt("StopExcuteCommandShiftIdleVhCount", 0));
 
             initDao();      //Initial DAO
             initBLL();      //Initial BLL
@@ -2266,6 +2267,8 @@ namespace com.mirle.ibg3k0.sc.App
 
         public static int MCSCommandAccumulateTimePriority { get; private set; } = 1;
         public static bool IsUsingRemoteReserveModule { get; private set; } = false;
+        //public static int STOP_EXCUTE_COMMAND_SHIFT_IDLE_VH_COUNT { get; private set; } = 1;
+        public static int StopExcuteCommandShiftIdleVhCount { get; private set; } = 0;
 
         /// <summary>
         /// Sets the secs conversaction timeout.
@@ -2331,6 +2334,10 @@ namespace com.mirle.ibg3k0.sc.App
         public static void setIsUsingRemoteReserveModule(bool isUsing)
         {
             IsUsingRemoteReserveModule = isUsing;
+        }
+        public static void setStopExcuteCommandShiftIdleVhCount(int value)
+        {
+            StopExcuteCommandShiftIdleVhCount = value;
         }
 
     }
