@@ -482,7 +482,6 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
         public bool updateCMD_MCS_PauseFlag(string cmd_id, string pauseFlag)
         {
-            bool isSuccess = true;
             //using (DBConnection_EF con = new DBConnection_EF())
             try
             {
@@ -492,13 +491,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                     cmd.PAUSEFLAG = pauseFlag;
                     cmd_mcsDao.update(con, cmd);
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exection:");
-                isSuccess = false;
+                return false;
             }
-            return isSuccess;
         }
 
 
@@ -2433,7 +2432,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             return cmd_ohtc == null ||
                    cmd_ohtc.CMD_STAUS >= E_CMD_STATUS.NormalEnd;
         }
-        public ACMD_OHTC getCMD_OHTCByMCSID(string cmdMCSID)
+        public ACMD_OHTC getExcuteCMD_OHTCByMCSID(string cmdMCSID)
         {
             List<ACMD_OHTC> cmd_ohtcs = null;
             using (DBConnection_EF con = new DBConnection_EF())
@@ -2443,7 +2442,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             if (cmd_ohtcs == null) return null;
 
             var cmd_ohtc = cmd_ohtcs.
-                           Where(cmd => SCUtility.isMatche(cmd.CMD_ID_MCS, cmdMCSID)).
+                           Where(cmd => SCUtility.isMatche(cmd.CMD_ID_MCS, cmdMCSID) && cmd.INTERRUPTED_REASON == null).
                            FirstOrDefault();
             return cmd_ohtc;
         }

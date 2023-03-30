@@ -1287,9 +1287,11 @@ namespace com.mirle.ibg3k0.sc.Service
                         {
                             bool is_transfer_initial_ready =
                                 scApp.CMDBLL.isTransferStatusReady(cmd.CMD_ID_MCS, ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE);
+                            isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
+
                             if (!is_transfer_initial_ready)
                             {
-                                isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
+                                //isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
                                 isSuccess &= scApp.ReportBLL.newReportTransferInitial(cmd.CMD_ID_MCS, null);
                             }
                             else
@@ -5342,6 +5344,8 @@ namespace com.mirle.ibg3k0.sc.Service
                     if (find_result.isFind)
                     {
                         scApp.CMDBLL.updateCMD_MCS_PauseFlag(find_result.suitableCmdShiftCmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_EMPTY);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"Command shift的命令 ID:{find_result.suitableCmdShiftCmd.CMD_ID},取消暫停狀態.");
                     }
                 }
                 catch (Exception ex)
@@ -5406,15 +5410,29 @@ namespace com.mirle.ibg3k0.sc.Service
                             (excuting_current_adr, cmd_source_adr, out excuting_vh_distance);
                         if (excuting_vh_distance > waitting_shift_vh_distance)
                         {
-                            double diff_distance = waitting_shift_vh_distance - excuting_vh_distance;
+                            double diff_distance = excuting_vh_distance - waitting_shift_vh_distance;
                             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                                Data: $"找到適合進行Command shift的命令 ID:{mcs_cmd_id},原OHT:{excuting_vh.VEHICLE_ID} 轉移後OHT:{commandFinishVh.VEHICLE_ID},節省距離:{diff_distance}",
                                VehicleID: commandFinishVh.VEHICLE_ID,
                                CarrierID: commandFinishVh.CST_ID);
 
-                            scApp.CMDBLL.updateCMD_MCS_PauseFlag(mcs_cmd_id, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT);
-
-                            return (true, can_cmd_shift_mcs_cmd, diff_distance);
+                            bool is_update_success = scApp.CMDBLL.updateCMD_MCS_PauseFlag(mcs_cmd_id, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT);
+                            if (is_update_success)
+                            {
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                   Data: $"Command shift的命令 ID:{mcs_cmd_id},已將其暫停.",
+                                   VehicleID: commandFinishVh.VEHICLE_ID,
+                                   CarrierID: commandFinishVh.CST_ID);
+                                return (true, can_cmd_shift_mcs_cmd, diff_distance);
+                            }
+                            else
+                            {
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                   Data: $"Command shift的命令 ID:{mcs_cmd_id}暫停失敗,繼續找下一筆.",
+                                   VehicleID: commandFinishVh.VEHICLE_ID,
+                                   CarrierID: commandFinishVh.CST_ID);
+                                continue;
+                            }
                         }
                     }
                     return (false, null, 0);
@@ -5439,75 +5457,75 @@ namespace com.mirle.ibg3k0.sc.Service
             }
         }
 
-        const int WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS = 300000;
-        private bool startExcuteCommandShift(AVEHICLE commandFinishVh, ACMD_MCS can_cmd_shift_mcs_cmd, double walkingSavingDistance)
-        {
-            try
-            {
-                string shift_mcs_cmd_id = SCUtility.Trim(can_cmd_shift_mcs_cmd.CMD_ID, true);
-                ACMD_OHTC excuting_cmd_ohtc = can_cmd_shift_mcs_cmd.getExcuteCMD_OHTC(scApp.CMDBLL);
-                string excuting_cmd_id = SCUtility.Trim(excuting_cmd_ohtc.CMD_ID, true);
-                string excuting_vh_id = SCUtility.Trim(excuting_cmd_ohtc.VH_ID, true);
-                AVEHICLE excuting_vh = scApp.VehicleBLL.cache.getVhByID(excuting_vh_id);
+        //const int WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS = 300000;
+        //private bool startExcuteCommandShift(AVEHICLE commandFinishVh, ACMD_MCS can_cmd_shift_mcs_cmd, double walkingSavingDistance)
+        //{
+        //    try
+        //    {
+        //        string shift_mcs_cmd_id = SCUtility.Trim(can_cmd_shift_mcs_cmd.CMD_ID, true);
+        //        ACMD_OHTC excuting_cmd_ohtc = can_cmd_shift_mcs_cmd.getExcuteCMD_OHTC(scApp.CMDBLL);
+        //        string excuting_cmd_id = SCUtility.Trim(excuting_cmd_ohtc.CMD_ID, true);
+        //        string excuting_vh_id = SCUtility.Trim(excuting_cmd_ohtc.VH_ID, true);
+        //        AVEHICLE excuting_vh = scApp.VehicleBLL.cache.getVhByID(excuting_vh_id);
 
-                scApp.CMDBLL.updateCMD_MCS_PauseFlag(shift_mcs_cmd_id, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT);
-                //下達 command cancel，若回復OK，則將產生一筆queue的命令給waitting_cmd_shift_vh
-                //並將原本執行的MCS cmd改回pre initial
-                bool is_cnacel_success = doAbortCommand(excuting_vh, excuting_cmd_id, CMDCancelType.CmdCancel);
-                if (!is_cnacel_success)
-                {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} 命令取消失敗，繼續下一筆的檢查 ",
-                       VehicleID: commandFinishVh.VEHICLE_ID,
-                       CarrierID: commandFinishVh.CST_ID);
-                    return false;
-                }
-                else
-                {
-                    //當下達成功以後，便開始等待被cancel的車子是否已經確實結束了命令
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} 命令取消成功，等待vh命令結束(wating {WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS}ms)...",
-                       VehicleID: commandFinishVh.VEHICLE_ID,
-                       CarrierID: commandFinishVh.CST_ID);
-                    bool is_cancel_finish = SpinWait.SpinUntil(() => IsCMD_OHTCFinish(excuting_vh_id, excuting_cmd_id), WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS);
-                    if (is_cancel_finish)
-                    {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} vh 已結束命令，開始下達給 wating vh:{commandFinishVh.VEHICLE_ID}",
-                       VehicleID: commandFinishVh.VEHICLE_ID,
-                       CarrierID: commandFinishVh.CST_ID);
-                        bool is_success = false;
-                        is_success = scApp.CMDBLL.assignCommnadToVehicleByCommandShift(commandFinishVh.VEHICLE_ID, can_cmd_shift_mcs_cmd);
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"搬送命令 ID:{shift_mcs_cmd_id}，下達給 wating vh:{commandFinishVh.VEHICLE_ID} 結果:{is_success}，節省距離:{walkingSavingDistance}",
-                           VehicleID: commandFinishVh.VEHICLE_ID,
-                           CarrierID: commandFinishVh.CST_ID);
-                        if (is_success)
-                        {
-                            scApp.SysExcuteQualityBLL.updateSysExecQity_CommandShiftInfo(shift_mcs_cmd_id, walkingSavingDistance);
-                        }
-                        return is_success;
-                    }
-                    else
-                    {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                           Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} 命令取消成功，但命令一直無法結束(wating {WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS}ms)，取消該次的命令轉移流程",
-                           VehicleID: commandFinishVh.VEHICLE_ID,
-                           CarrierID: commandFinishVh.CST_ID);
-                        return false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Exception:");
-                return false;
-            }
-            finally
-            {
-                scApp.CMDBLL.updateCMD_MCS_PauseFlag(can_cmd_shift_mcs_cmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_EMPTY);
-            }
-        }
+        //        scApp.CMDBLL.updateCMD_MCS_PauseFlag(shift_mcs_cmd_id, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT);
+        //        //下達 command cancel，若回復OK，則將產生一筆queue的命令給waitting_cmd_shift_vh
+        //        //並將原本執行的MCS cmd改回pre initial
+        //        bool is_cnacel_success = doAbortCommand(excuting_vh, excuting_cmd_id, CMDCancelType.CmdCancel);
+        //        if (!is_cnacel_success)
+        //        {
+        //            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+        //               Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} 命令取消失敗，繼續下一筆的檢查 ",
+        //               VehicleID: commandFinishVh.VEHICLE_ID,
+        //               CarrierID: commandFinishVh.CST_ID);
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            //當下達成功以後，便開始等待被cancel的車子是否已經確實結束了命令
+        //            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+        //               Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} 命令取消成功，等待vh命令結束(wating {WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS}ms)...",
+        //               VehicleID: commandFinishVh.VEHICLE_ID,
+        //               CarrierID: commandFinishVh.CST_ID);
+        //            bool is_cancel_finish = SpinWait.SpinUntil(() => IsCMD_OHTCFinish(excuting_vh_id, excuting_cmd_id), WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS);
+        //            if (is_cancel_finish)
+        //            {
+        //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+        //               Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} vh 已結束命令，開始下達給 wating vh:{commandFinishVh.VEHICLE_ID}",
+        //               VehicleID: commandFinishVh.VEHICLE_ID,
+        //               CarrierID: commandFinishVh.CST_ID);
+        //                bool is_success = false;
+        //                is_success = scApp.CMDBLL.assignCommnadToVehicleByCommandShift(commandFinishVh.VEHICLE_ID, can_cmd_shift_mcs_cmd);
+        //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+        //                   Data: $"搬送命令 ID:{shift_mcs_cmd_id}，下達給 wating vh:{commandFinishVh.VEHICLE_ID} 結果:{is_success}，節省距離:{walkingSavingDistance}",
+        //                   VehicleID: commandFinishVh.VEHICLE_ID,
+        //                   CarrierID: commandFinishVh.CST_ID);
+        //                if (is_success)
+        //                {
+        //                    scApp.SysExcuteQualityBLL.updateSysExecQity_CommandShiftInfo(shift_mcs_cmd_id, walkingSavingDistance);
+        //                }
+        //                return is_success;
+        //            }
+        //            else
+        //            {
+        //                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+        //                   Data: $"excuting vh:{excuting_vh.VEHICLE_ID}, 搬送命令 ID:{shift_mcs_cmd_id},CMD_OHTC:{excuting_cmd_id} 命令取消成功，但命令一直無法結束(wating {WAITTING_COMMAND_CANCEL_COMPLETE_TIME_MS}ms)，取消該次的命令轉移流程",
+        //                   VehicleID: commandFinishVh.VEHICLE_ID,
+        //                   CarrierID: commandFinishVh.CST_ID);
+        //                return false;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Error(ex, "Exception:");
+        //        return false;
+        //    }
+        //    finally
+        //    {
+        //        scApp.CMDBLL.updateCMD_MCS_PauseFlag(can_cmd_shift_mcs_cmd.CMD_ID, ACMD_MCS.COMMAND_PAUSE_FLAG_EMPTY);
+        //    }
+        //}
         private bool startExcuteCommandShiftNew(AVEHICLE commandFinishVh, ACMD_MCS can_cmd_shift_mcs_cmd, double walkingSavingDistance)
         {
             try

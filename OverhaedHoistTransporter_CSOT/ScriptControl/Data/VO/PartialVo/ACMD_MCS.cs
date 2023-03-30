@@ -101,7 +101,7 @@ namespace com.mirle.ibg3k0.sc
         }
         public ACMD_OHTC getExcuteCMD_OHTC(BLL.CMDBLL cmdBLL)
         {
-            var excuting_ohtc_cmd = cmdBLL.getCMD_OHTCByMCSID(CMD_ID);
+            var excuting_ohtc_cmd = cmdBLL.getExcuteCMD_OHTCByMCSID(CMD_ID);
             return excuting_ohtc_cmd;
         }
 
