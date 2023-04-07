@@ -31,6 +31,7 @@ using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -2745,6 +2746,9 @@ namespace com.mirle.ibg3k0.sc.BLL
         public void setAndPublishPositionReportInfo2Redis(string vh_id, ID_132_TRANS_COMPLETE_REPORT report_obj)
         {
             AVEHICLE vh = getVehicleByID(vh_id);
+
+            uint check_distance_result = reCheckVhSectionDis(vh_id, report_obj.CurrentSecID, report_obj.CurrentAdrID, report_obj.SecDistance);
+
             ID_134_TRANS_EVENT_REP id_134_trans_event_rep = new ID_134_TRANS_EVENT_REP()
             {
                 //CSTID = report_obj.CSTID,
@@ -2754,9 +2758,55 @@ namespace com.mirle.ibg3k0.sc.BLL
                 LeftGuideLockStatus = VhGuideStatus.Unlock,
                 RightGuideLockStatus = VhGuideStatus.Unlock,
                 //SecDistance = report_obj.SecDistance == 0 ? (uint)vh.ACC_SEC_DIST : report_obj.SecDistance
-                SecDistance = report_obj.SecDistance
+                //SecDistance = report_obj.SecDistance
+                SecDistance = check_distance_result
             };
             setAndPublishPositionReportInfo2Redis(vh_id, id_134_trans_event_rep);
+        }
+        private uint reCheckVhSectionDis(string vhID, string curSectionID, string curAddressID, uint sectionDis)
+        {
+            try
+            {
+                if (!DebugParameter.isOpenID132PositionCheck)
+                {
+                    return sectionDis;
+                }
+                if (sectionDis == 0)
+                {
+                    var sec = scApp.SectionBLL.cache.GetSection(curSectionID);
+                    if (sec == null)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"vh id:{vhID}進行確認section長度，但Section:{curSectionID}不存在",
+                        VehicleID: vhID);
+                        return sectionDis;
+                    }
+                    if (SCUtility.isMatche(curAddressID, sec.FROM_ADR_ID))
+                    {
+                        return 0;
+                    }
+                    else if (SCUtility.isMatche(curAddressID, sec.TO_ADR_ID))
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"vh id:{vhID}進行確認section長度，current adr:{curAddressID} 為section:{curSectionID}的to address，強制將其改成該Section的長度:{sec.SEC_DIS}",
+                        VehicleID: vhID);
+                        return (uint)sec.SEC_DIS;
+                    }
+                    else
+                    {
+                        return sectionDis;
+                    }
+                }
+                else
+                {
+                    return sectionDis;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return sectionDis;
+            }
         }
         public void setAndPublishPositionReportInfo2Redis(string vh_id, ID_134_TRANS_EVENT_REP report_obj)
         {

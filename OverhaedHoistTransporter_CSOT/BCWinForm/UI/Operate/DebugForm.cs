@@ -44,6 +44,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             ck_CycleRunTest.Checked = DebugParameter.IsCycleRun;
             cb_blockReleaseCheckFun.Checked = DebugParameter.isOpenBlockReleaseCheckFun;
             cb_openDoubleCheckBlockReq.Checked = DebugParameter.isOpenDoubleCheckBlockReqFun;
+            cb_isUsingID132PositionCheck.Checked = DebugParameter.isOpenID132PositionCheck;
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
@@ -1679,6 +1680,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void button12_Click(object sender, EventArgs e)
         {
             lbl_value_reserveModule_LorR.Text = bcApp.SCApplication.ReserveBLL.getReserveMoudleSymbol().ToString();
+        }
+
+        private void cb_isUsingID132PositionCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.isOpenID132PositionCheck = cb_isUsingID132PositionCheck.Checked;
         }
     }
 }

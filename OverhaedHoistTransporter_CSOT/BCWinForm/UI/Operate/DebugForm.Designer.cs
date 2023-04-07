@@ -35,7 +35,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.uctl_Send_Fun_71 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -51,7 +50,6 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.uctlButton2 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.num_test_dis = new System.Windows.Forms.NumericUpDown();
             this.txt_sec_id = new System.Windows.Forms.TextBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
@@ -59,24 +57,15 @@
             this.button11 = new System.Windows.Forms.Button();
             this.lbl_listening_status = new System.Windows.Forms.Label();
             this.label42 = new System.Windows.Forms.Label();
-            this.btn_close_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_open_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.lbl_install_status = new System.Windows.Forms.Label();
             this.label73 = new System.Windows.Forms.Label();
             this.cb_test_duplicate = new System.Windows.Forms.CheckBox();
-            this.btn_changeToRemove = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_changeToInstall = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_changeToAutoLocal = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_changeToAutoMTL = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_changeToAutoMTS = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.btn_changeToAutoRemote = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.ck_CycleRunTest = new System.Windows.Forms.CheckBox();
             this.cb_pauseFirst = new System.Windows.Forms.CheckBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.txt_rename_cst_id = new System.Windows.Forms.TextBox();
             this.label40 = new System.Windows.Forms.Label();
             this.btn_rename_cst_id = new System.Windows.Forms.Button();
-            this.uctl_SendFun2 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.btn_cmd_override_test = new System.Windows.Forms.Button();
             this.btn_reset_teach_result = new System.Windows.Forms.Button();
             this.ck_autoTech = new System.Windows.Forms.CheckBox();
@@ -89,18 +78,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.cmb_pauseType = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.btn_pause = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.cmb_pauseEvent = new System.Windows.Forms.ComboBox();
             this.btn_ForceReleaseBlock = new System.Windows.Forms.Button();
-            this.uctl_SendFun1 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendFun15 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendFun13 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendFun11 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendFun17 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendFun19 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendFun21 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendFun23 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.uctl_SendAllFun = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -286,7 +265,6 @@
             this.btn_mtl_car_out_notify = new System.Windows.Forms.Button();
             this.btn_mtl_message_download = new System.Windows.Forms.Button();
             this.btn_mtl_dateTimeSync = new System.Windows.Forms.Button();
-            this.uctlButton1 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.set_Distance_btn = new System.Windows.Forms.Button();
             this.numericUpDown_distance = new System.Windows.Forms.NumericUpDown();
@@ -378,6 +356,29 @@
             this.label83 = new System.Windows.Forms.Label();
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
+            this.cb_isUsingID132PositionCheck = new System.Windows.Forms.CheckBox();
+            this.uctlButton2 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_close_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_open_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_changeToRemove = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_changeToInstall = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_changeToAutoLocal = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_changeToAutoMTL = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_changeToAutoMTS = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_changeToAutoRemote = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun2 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.btn_pause = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun1 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun15 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun13 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun11 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun17 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun19 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun21 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendFun23 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_Send_Fun_71 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctl_SendAllFun = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
+            this.uctlButton1 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -499,18 +500,6 @@
             this.label1.Size = new System.Drawing.Size(90, 22);
             this.label1.TabIndex = 15;
             this.label1.Text = "From Adr";
-            // 
-            // uctl_Send_Fun_71
-            // 
-            this.uctl_Send_Fun_71.Location = new System.Drawing.Point(10, 191);
-            this.uctl_Send_Fun_71.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_Send_Fun_71.Name = "uctl_Send_Fun_71";
-            this.uctl_Send_Fun_71.Size = new System.Drawing.Size(138, 42);
-            this.uctl_Send_Fun_71.TabIndex = 13;
-            this.uctl_Send_Fun_71.Text = "Send Func 71";
-            this.uctl_Send_Fun_71.UseVisualStyleBackColor = true;
-            this.uctl_Send_Fun_71.Visible = false;
-            this.uctl_Send_Fun_71.Click += new System.EventHandler(this.uctl_Send_Fun_71_Click);
             // 
             // button1
             // 
@@ -724,16 +713,6 @@
             this.groupBox4.Text = "Specify Vehicle Action";
             this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
             // 
-            // uctlButton2
-            // 
-            this.uctlButton2.Location = new System.Drawing.Point(828, 202);
-            this.uctlButton2.Name = "uctlButton2";
-            this.uctlButton2.Size = new System.Drawing.Size(169, 43);
-            this.uctlButton2.TabIndex = 57;
-            this.uctlButton2.Text = "Synchonize";
-            this.uctlButton2.UseVisualStyleBackColor = true;
-            this.uctlButton2.Click += new System.EventHandler(this.uctlButton2_Click);
-            // 
             // num_test_dis
             // 
             this.num_test_dis.Location = new System.Drawing.Point(828, 148);
@@ -802,28 +781,6 @@
             this.label42.TabIndex = 52;
             this.label42.Text = "Is Listening:";
             // 
-            // btn_close_tcp_port
-            // 
-            this.btn_close_tcp_port.Location = new System.Drawing.Point(664, 751);
-            this.btn_close_tcp_port.Name = "btn_close_tcp_port";
-            this.btn_close_tcp_port.Size = new System.Drawing.Size(166, 45);
-            this.btn_close_tcp_port.TabIndex = 51;
-            this.btn_close_tcp_port.Text = "Close Tcp Port";
-            this.btn_close_tcp_port.UseVisualStyleBackColor = true;
-            this.btn_close_tcp_port.Visible = false;
-            this.btn_close_tcp_port.Click += new System.EventHandler(this.btn_close_tcp_port_Click);
-            // 
-            // btn_open_tcp_port
-            // 
-            this.btn_open_tcp_port.Location = new System.Drawing.Point(492, 751);
-            this.btn_open_tcp_port.Name = "btn_open_tcp_port";
-            this.btn_open_tcp_port.Size = new System.Drawing.Size(166, 45);
-            this.btn_open_tcp_port.TabIndex = 50;
-            this.btn_open_tcp_port.Text = "Open Tcp Port";
-            this.btn_open_tcp_port.UseVisualStyleBackColor = true;
-            this.btn_open_tcp_port.Visible = false;
-            this.btn_open_tcp_port.Click += new System.EventHandler(this.btn_open_tcp_port_Click);
-            // 
             // lbl_install_status
             // 
             this.lbl_install_status.AutoSize = true;
@@ -855,66 +812,6 @@
             this.cb_test_duplicate.UseVisualStyleBackColor = true;
             this.cb_test_duplicate.Visible = false;
             this.cb_test_duplicate.CheckedChanged += new System.EventHandler(this.cb_test_duplicate_CheckedChanged);
-            // 
-            // btn_changeToRemove
-            // 
-            this.btn_changeToRemove.Location = new System.Drawing.Point(828, 256);
-            this.btn_changeToRemove.Name = "btn_changeToRemove";
-            this.btn_changeToRemove.Size = new System.Drawing.Size(169, 43);
-            this.btn_changeToRemove.TabIndex = 46;
-            this.btn_changeToRemove.Text = "Remove";
-            this.btn_changeToRemove.UseVisualStyleBackColor = true;
-            this.btn_changeToRemove.Click += new System.EventHandler(this.btn_changeToRemove_Click);
-            // 
-            // btn_changeToInstall
-            // 
-            this.btn_changeToInstall.Location = new System.Drawing.Point(828, 308);
-            this.btn_changeToInstall.Name = "btn_changeToInstall";
-            this.btn_changeToInstall.Size = new System.Drawing.Size(169, 43);
-            this.btn_changeToInstall.TabIndex = 45;
-            this.btn_changeToInstall.Text = "Install";
-            this.btn_changeToInstall.UseVisualStyleBackColor = true;
-            this.btn_changeToInstall.Click += new System.EventHandler(this.btn_changeToInstall_Click);
-            // 
-            // btn_changeToAutoLocal
-            // 
-            this.btn_changeToAutoLocal.Location = new System.Drawing.Point(831, 436);
-            this.btn_changeToAutoLocal.Name = "btn_changeToAutoLocal";
-            this.btn_changeToAutoLocal.Size = new System.Drawing.Size(166, 45);
-            this.btn_changeToAutoLocal.TabIndex = 44;
-            this.btn_changeToAutoLocal.Text = "Auto Local";
-            this.btn_changeToAutoLocal.UseVisualStyleBackColor = true;
-            this.btn_changeToAutoLocal.Click += new System.EventHandler(this.btn_changeToAutoLocal_Click_1);
-            // 
-            // btn_changeToAutoMTL
-            // 
-            this.btn_changeToAutoMTL.Location = new System.Drawing.Point(831, 536);
-            this.btn_changeToAutoMTL.Name = "btn_changeToAutoMTL";
-            this.btn_changeToAutoMTL.Size = new System.Drawing.Size(166, 45);
-            this.btn_changeToAutoMTL.TabIndex = 43;
-            this.btn_changeToAutoMTL.Text = "Auto MTL";
-            this.btn_changeToAutoMTL.UseVisualStyleBackColor = true;
-            this.btn_changeToAutoMTL.Click += new System.EventHandler(this.btn_changeToAutoMTL_Click);
-            // 
-            // btn_changeToAutoMTS
-            // 
-            this.btn_changeToAutoMTS.Location = new System.Drawing.Point(831, 485);
-            this.btn_changeToAutoMTS.Name = "btn_changeToAutoMTS";
-            this.btn_changeToAutoMTS.Size = new System.Drawing.Size(166, 45);
-            this.btn_changeToAutoMTS.TabIndex = 42;
-            this.btn_changeToAutoMTS.Text = "Auto MTS";
-            this.btn_changeToAutoMTS.UseVisualStyleBackColor = true;
-            this.btn_changeToAutoMTS.Click += new System.EventHandler(this.btn_changeToAutoLocal_Click);
-            // 
-            // btn_changeToAutoRemote
-            // 
-            this.btn_changeToAutoRemote.Location = new System.Drawing.Point(831, 385);
-            this.btn_changeToAutoRemote.Name = "btn_changeToAutoRemote";
-            this.btn_changeToAutoRemote.Size = new System.Drawing.Size(166, 45);
-            this.btn_changeToAutoRemote.TabIndex = 41;
-            this.btn_changeToAutoRemote.Text = "Auto Remote";
-            this.btn_changeToAutoRemote.UseVisualStyleBackColor = true;
-            this.btn_changeToAutoRemote.Click += new System.EventHandler(this.btn_changeToAutoRemote_Click);
             // 
             // ck_CycleRunTest
             // 
@@ -981,18 +878,6 @@
             this.btn_rename_cst_id.UseVisualStyleBackColor = true;
             this.btn_rename_cst_id.Visible = false;
             this.btn_rename_cst_id.Click += new System.EventHandler(this.btn_rename_cst_id_Click);
-            // 
-            // uctl_SendFun2
-            // 
-            this.uctl_SendFun2.Location = new System.Drawing.Point(8, 112);
-            this.uctl_SendFun2.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun2.Name = "uctl_SendFun2";
-            this.uctl_SendFun2.Size = new System.Drawing.Size(214, 35);
-            this.uctl_SendFun2.TabIndex = 29;
-            this.uctl_SendFun2.Text = "Send Func:2";
-            this.uctl_SendFun2.UseVisualStyleBackColor = true;
-            this.uctl_SendFun2.Visible = false;
-            this.uctl_SendFun2.Click += new System.EventHandler(this.uctl_SendFun2_Click);
             // 
             // btn_cmd_override_test
             // 
@@ -1123,17 +1008,6 @@
             this.label5.TabIndex = 15;
             this.label5.Text = "Event";
             // 
-            // btn_pause
-            // 
-            this.btn_pause.Location = new System.Drawing.Point(8, 171);
-            this.btn_pause.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.btn_pause.Name = "btn_pause";
-            this.btn_pause.Size = new System.Drawing.Size(138, 42);
-            this.btn_pause.TabIndex = 13;
-            this.btn_pause.Text = "Send Func 39";
-            this.btn_pause.UseVisualStyleBackColor = true;
-            this.btn_pause.Click += new System.EventHandler(this.btn_pause_Click);
-            // 
             // cmb_pauseEvent
             // 
             this.cmb_pauseEvent.FormattingEnabled = true;
@@ -1153,114 +1027,6 @@
             this.btn_ForceReleaseBlock.UseVisualStyleBackColor = true;
             this.btn_ForceReleaseBlock.Visible = false;
             this.btn_ForceReleaseBlock.Click += new System.EventHandler(this.btn_ForceReleaseBlock_Click);
-            // 
-            // uctl_SendFun1
-            // 
-            this.uctl_SendFun1.Location = new System.Drawing.Point(8, 69);
-            this.uctl_SendFun1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun1.Name = "uctl_SendFun1";
-            this.uctl_SendFun1.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun1.TabIndex = 8;
-            this.uctl_SendFun1.Text = "Send Func:1";
-            this.uctl_SendFun1.UseVisualStyleBackColor = true;
-            this.uctl_SendFun1.Visible = false;
-            this.uctl_SendFun1.Click += new System.EventHandler(this.uctl_Btn1_Click);
-            // 
-            // uctl_SendFun15
-            // 
-            this.uctl_SendFun15.Location = new System.Drawing.Point(8, 256);
-            this.uctl_SendFun15.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun15.Name = "uctl_SendFun15";
-            this.uctl_SendFun15.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun15.TabIndex = 8;
-            this.uctl_SendFun15.Text = "Send Func:15";
-            this.uctl_SendFun15.UseVisualStyleBackColor = true;
-            this.uctl_SendFun15.Visible = false;
-            this.uctl_SendFun15.Click += new System.EventHandler(this.uctl_SendFun15_Click);
-            // 
-            // uctl_SendFun13
-            // 
-            this.uctl_SendFun13.Location = new System.Drawing.Point(8, 203);
-            this.uctl_SendFun13.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun13.Name = "uctl_SendFun13";
-            this.uctl_SendFun13.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun13.TabIndex = 10;
-            this.uctl_SendFun13.Text = "Send Func:13";
-            this.uctl_SendFun13.UseVisualStyleBackColor = true;
-            this.uctl_SendFun13.Visible = false;
-            this.uctl_SendFun13.Click += new System.EventHandler(this.uctl_SendFun13_Click);
-            // 
-            // uctl_SendFun11
-            // 
-            this.uctl_SendFun11.Location = new System.Drawing.Point(8, 148);
-            this.uctl_SendFun11.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun11.Name = "uctl_SendFun11";
-            this.uctl_SendFun11.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun11.TabIndex = 10;
-            this.uctl_SendFun11.Text = "Send Func:11";
-            this.uctl_SendFun11.UseVisualStyleBackColor = true;
-            this.uctl_SendFun11.Visible = false;
-            this.uctl_SendFun11.Click += new System.EventHandler(this.uctl_SendFun11_Click);
-            // 
-            // uctl_SendFun17
-            // 
-            this.uctl_SendFun17.Location = new System.Drawing.Point(8, 309);
-            this.uctl_SendFun17.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun17.Name = "uctl_SendFun17";
-            this.uctl_SendFun17.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun17.TabIndex = 11;
-            this.uctl_SendFun17.Text = "Send Func:17";
-            this.uctl_SendFun17.UseVisualStyleBackColor = true;
-            this.uctl_SendFun17.Visible = false;
-            this.uctl_SendFun17.Click += new System.EventHandler(this.uctl_SendFun17_Click);
-            // 
-            // uctl_SendFun19
-            // 
-            this.uctl_SendFun19.Location = new System.Drawing.Point(8, 362);
-            this.uctl_SendFun19.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun19.Name = "uctl_SendFun19";
-            this.uctl_SendFun19.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun19.TabIndex = 12;
-            this.uctl_SendFun19.Text = "Send Func:19";
-            this.uctl_SendFun19.UseVisualStyleBackColor = true;
-            this.uctl_SendFun19.Visible = false;
-            this.uctl_SendFun19.Click += new System.EventHandler(this.uctl_SendFun19_Click);
-            // 
-            // uctl_SendFun21
-            // 
-            this.uctl_SendFun21.Location = new System.Drawing.Point(8, 416);
-            this.uctl_SendFun21.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun21.Name = "uctl_SendFun21";
-            this.uctl_SendFun21.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun21.TabIndex = 12;
-            this.uctl_SendFun21.Text = "Send Func:21";
-            this.uctl_SendFun21.UseVisualStyleBackColor = true;
-            this.uctl_SendFun21.Visible = false;
-            this.uctl_SendFun21.Click += new System.EventHandler(this.uctl_SendFun21_Click);
-            // 
-            // uctl_SendFun23
-            // 
-            this.uctl_SendFun23.Location = new System.Drawing.Point(8, 469);
-            this.uctl_SendFun23.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendFun23.Name = "uctl_SendFun23";
-            this.uctl_SendFun23.Size = new System.Drawing.Size(214, 42);
-            this.uctl_SendFun23.TabIndex = 12;
-            this.uctl_SendFun23.Text = "Send Func:23";
-            this.uctl_SendFun23.UseVisualStyleBackColor = true;
-            this.uctl_SendFun23.Visible = false;
-            this.uctl_SendFun23.Click += new System.EventHandler(this.uctl_SendFun23_Click);
-            // 
-            // uctl_SendAllFun
-            // 
-            this.uctl_SendAllFun.Location = new System.Drawing.Point(8, 522);
-            this.uctl_SendAllFun.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.uctl_SendAllFun.Name = "uctl_SendAllFun";
-            this.uctl_SendAllFun.Size = new System.Drawing.Size(214, 99);
-            this.uctl_SendAllFun.TabIndex = 12;
-            this.uctl_SendAllFun.Text = "Send ALL";
-            this.uctl_SendAllFun.UseVisualStyleBackColor = true;
-            this.uctl_SendAllFun.Visible = false;
-            this.uctl_SendAllFun.Click += new System.EventHandler(this.uctl_SendAllFun_Click);
             // 
             // btn_forceReleaseAllBlock
             // 
@@ -1295,6 +1061,7 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.cb_isUsingID132PositionCheck);
             this.tabPage1.Controls.Add(this.lbl_value_reserveModule_LorR);
             this.tabPage1.Controls.Add(this.label71);
             this.tabPage1.Controls.Add(this.button12);
@@ -1595,7 +1362,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 31);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage2.Size = new System.Drawing.Size(1487, 714);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "PLC Control";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -2632,7 +2399,7 @@
             this.table_cache_data_pisplay.Location = new System.Drawing.Point(4, 31);
             this.table_cache_data_pisplay.Name = "table_cache_data_pisplay";
             this.table_cache_data_pisplay.Padding = new System.Windows.Forms.Padding(3);
-            this.table_cache_data_pisplay.Size = new System.Drawing.Size(1433, 714);
+            this.table_cache_data_pisplay.Size = new System.Drawing.Size(1487, 714);
             this.table_cache_data_pisplay.TabIndex = 3;
             this.table_cache_data_pisplay.Text = "Cache Data Display";
             this.table_cache_data_pisplay.UseVisualStyleBackColor = true;
@@ -2652,7 +2419,7 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 4.61165F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 95.38835F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1427, 708);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1481, 717);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
             // dgv_cache_object_data
@@ -2663,12 +2430,12 @@
             this.Column_cst_id});
             this.tableLayoutPanel2.SetColumnSpan(this.dgv_cache_object_data, 2);
             this.dgv_cache_object_data.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_cache_object_data.Location = new System.Drawing.Point(3, 35);
+            this.dgv_cache_object_data.Location = new System.Drawing.Point(3, 36);
             this.dgv_cache_object_data.MultiSelect = false;
             this.dgv_cache_object_data.Name = "dgv_cache_object_data";
             this.dgv_cache_object_data.RowTemplate.Height = 24;
             this.dgv_cache_object_data.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv_cache_object_data.Size = new System.Drawing.Size(1421, 670);
+            this.dgv_cache_object_data.Size = new System.Drawing.Size(1475, 678);
             this.dgv_cache_object_data.TabIndex = 0;
             this.dgv_cache_object_data.EditModeChanged += new System.EventHandler(this.dgv_cache_object_data_EditModeChanged);
             // 
@@ -2693,7 +2460,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(156, 6);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(210, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -2703,9 +2470,9 @@
             // 
             this.label22.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(30, 0);
+            this.label22.Location = new System.Drawing.Point(44, 5);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(120, 32);
+            this.label22.Size = new System.Drawing.Size(160, 22);
             this.label22.TabIndex = 2;
             this.label22.Text = "Cache Data Name";
             // 
@@ -2720,7 +2487,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 31);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage3.Size = new System.Drawing.Size(1487, 714);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -2813,7 +2580,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 31);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage4.Size = new System.Drawing.Size(1487, 714);
             this.tabPage4.TabIndex = 4;
             this.tabPage4.Text = "MTL Test";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -3559,16 +3326,6 @@
             this.btn_mtl_dateTimeSync.UseVisualStyleBackColor = true;
             this.btn_mtl_dateTimeSync.Click += new System.EventHandler(this.btn_mtl_dateTimeSync_Click);
             // 
-            // uctlButton1
-            // 
-            this.uctlButton1.Location = new System.Drawing.Point(35, 578);
-            this.uctlButton1.Name = "uctlButton1";
-            this.uctlButton1.Size = new System.Drawing.Size(203, 35);
-            this.uctlButton1.TabIndex = 16;
-            this.uctlButton1.Text = "Refresh LFT Status";
-            this.uctlButton1.UseVisualStyleBackColor = true;
-            this.uctlButton1.Click += new System.EventHandler(this.uctlButton1_Click);
-            // 
             // tabPage6
             // 
             this.tabPage6.Controls.Add(this.set_Distance_btn);
@@ -3586,7 +3343,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 31);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage6.Size = new System.Drawing.Size(1487, 714);
             this.tabPage6.TabIndex = 6;
             this.tabPage6.Text = "MTL/MTS Simulator";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -3735,7 +3492,7 @@
             this.tabPage5.Controls.Add(this.btn_SendHIDControl);
             this.tabPage5.Location = new System.Drawing.Point(4, 31);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage5.Size = new System.Drawing.Size(1487, 714);
             this.tabPage5.TabIndex = 5;
             this.tabPage5.Text = "HID Test";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -3995,7 +3752,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 31);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage7.Size = new System.Drawing.Size(1487, 714);
             this.tabPage7.TabIndex = 7;
             this.tabPage7.Text = "CV Test";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -4367,7 +4124,7 @@
             this.tabPage8.Location = new System.Drawing.Point(4, 31);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage8.Size = new System.Drawing.Size(1487, 714);
             this.tabPage8.TabIndex = 8;
             this.tabPage8.Text = "Four-color lighthouse";
             this.tabPage8.UseVisualStyleBackColor = true;
@@ -4556,7 +4313,7 @@
             this.tabPage9.Location = new System.Drawing.Point(4, 31);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(1433, 714);
+            this.tabPage9.Size = new System.Drawing.Size(1487, 714);
             this.tabPage9.TabIndex = 9;
             this.tabPage9.Text = "Setting";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -4646,6 +4403,263 @@
             this.label79.Size = new System.Drawing.Size(300, 22);
             this.label79.TabIndex = 53;
             this.label79.Text = "Max Allow Action Time Second:";
+            // 
+            // cb_isUsingID132PositionCheck
+            // 
+            this.cb_isUsingID132PositionCheck.AutoSize = true;
+            this.cb_isUsingID132PositionCheck.Location = new System.Drawing.Point(1100, 220);
+            this.cb_isUsingID132PositionCheck.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_isUsingID132PositionCheck.Name = "cb_isUsingID132PositionCheck";
+            this.cb_isUsingID132PositionCheck.Size = new System.Drawing.Size(257, 26);
+            this.cb_isUsingID132PositionCheck.TabIndex = 60;
+            this.cb_isUsingID132PositionCheck.Text = "開啟ID132-位置修正機制";
+            this.cb_isUsingID132PositionCheck.UseVisualStyleBackColor = true;
+            this.cb_isUsingID132PositionCheck.CheckedChanged += new System.EventHandler(this.cb_isUsingID132PositionCheck_CheckedChanged);
+            // 
+            // uctlButton2
+            // 
+            this.uctlButton2.Location = new System.Drawing.Point(828, 202);
+            this.uctlButton2.Name = "uctlButton2";
+            this.uctlButton2.Size = new System.Drawing.Size(169, 43);
+            this.uctlButton2.TabIndex = 57;
+            this.uctlButton2.Text = "Synchonize";
+            this.uctlButton2.UseVisualStyleBackColor = true;
+            this.uctlButton2.Click += new System.EventHandler(this.uctlButton2_Click);
+            // 
+            // btn_close_tcp_port
+            // 
+            this.btn_close_tcp_port.Location = new System.Drawing.Point(664, 751);
+            this.btn_close_tcp_port.Name = "btn_close_tcp_port";
+            this.btn_close_tcp_port.Size = new System.Drawing.Size(166, 45);
+            this.btn_close_tcp_port.TabIndex = 51;
+            this.btn_close_tcp_port.Text = "Close Tcp Port";
+            this.btn_close_tcp_port.UseVisualStyleBackColor = true;
+            this.btn_close_tcp_port.Visible = false;
+            this.btn_close_tcp_port.Click += new System.EventHandler(this.btn_close_tcp_port_Click);
+            // 
+            // btn_open_tcp_port
+            // 
+            this.btn_open_tcp_port.Location = new System.Drawing.Point(492, 751);
+            this.btn_open_tcp_port.Name = "btn_open_tcp_port";
+            this.btn_open_tcp_port.Size = new System.Drawing.Size(166, 45);
+            this.btn_open_tcp_port.TabIndex = 50;
+            this.btn_open_tcp_port.Text = "Open Tcp Port";
+            this.btn_open_tcp_port.UseVisualStyleBackColor = true;
+            this.btn_open_tcp_port.Visible = false;
+            this.btn_open_tcp_port.Click += new System.EventHandler(this.btn_open_tcp_port_Click);
+            // 
+            // btn_changeToRemove
+            // 
+            this.btn_changeToRemove.Location = new System.Drawing.Point(828, 256);
+            this.btn_changeToRemove.Name = "btn_changeToRemove";
+            this.btn_changeToRemove.Size = new System.Drawing.Size(169, 43);
+            this.btn_changeToRemove.TabIndex = 46;
+            this.btn_changeToRemove.Text = "Remove";
+            this.btn_changeToRemove.UseVisualStyleBackColor = true;
+            this.btn_changeToRemove.Click += new System.EventHandler(this.btn_changeToRemove_Click);
+            // 
+            // btn_changeToInstall
+            // 
+            this.btn_changeToInstall.Location = new System.Drawing.Point(828, 308);
+            this.btn_changeToInstall.Name = "btn_changeToInstall";
+            this.btn_changeToInstall.Size = new System.Drawing.Size(169, 43);
+            this.btn_changeToInstall.TabIndex = 45;
+            this.btn_changeToInstall.Text = "Install";
+            this.btn_changeToInstall.UseVisualStyleBackColor = true;
+            this.btn_changeToInstall.Click += new System.EventHandler(this.btn_changeToInstall_Click);
+            // 
+            // btn_changeToAutoLocal
+            // 
+            this.btn_changeToAutoLocal.Location = new System.Drawing.Point(831, 436);
+            this.btn_changeToAutoLocal.Name = "btn_changeToAutoLocal";
+            this.btn_changeToAutoLocal.Size = new System.Drawing.Size(166, 45);
+            this.btn_changeToAutoLocal.TabIndex = 44;
+            this.btn_changeToAutoLocal.Text = "Auto Local";
+            this.btn_changeToAutoLocal.UseVisualStyleBackColor = true;
+            this.btn_changeToAutoLocal.Click += new System.EventHandler(this.btn_changeToAutoLocal_Click_1);
+            // 
+            // btn_changeToAutoMTL
+            // 
+            this.btn_changeToAutoMTL.Location = new System.Drawing.Point(831, 536);
+            this.btn_changeToAutoMTL.Name = "btn_changeToAutoMTL";
+            this.btn_changeToAutoMTL.Size = new System.Drawing.Size(166, 45);
+            this.btn_changeToAutoMTL.TabIndex = 43;
+            this.btn_changeToAutoMTL.Text = "Auto MTL";
+            this.btn_changeToAutoMTL.UseVisualStyleBackColor = true;
+            this.btn_changeToAutoMTL.Click += new System.EventHandler(this.btn_changeToAutoMTL_Click);
+            // 
+            // btn_changeToAutoMTS
+            // 
+            this.btn_changeToAutoMTS.Location = new System.Drawing.Point(831, 485);
+            this.btn_changeToAutoMTS.Name = "btn_changeToAutoMTS";
+            this.btn_changeToAutoMTS.Size = new System.Drawing.Size(166, 45);
+            this.btn_changeToAutoMTS.TabIndex = 42;
+            this.btn_changeToAutoMTS.Text = "Auto MTS";
+            this.btn_changeToAutoMTS.UseVisualStyleBackColor = true;
+            this.btn_changeToAutoMTS.Click += new System.EventHandler(this.btn_changeToAutoLocal_Click);
+            // 
+            // btn_changeToAutoRemote
+            // 
+            this.btn_changeToAutoRemote.Location = new System.Drawing.Point(831, 385);
+            this.btn_changeToAutoRemote.Name = "btn_changeToAutoRemote";
+            this.btn_changeToAutoRemote.Size = new System.Drawing.Size(166, 45);
+            this.btn_changeToAutoRemote.TabIndex = 41;
+            this.btn_changeToAutoRemote.Text = "Auto Remote";
+            this.btn_changeToAutoRemote.UseVisualStyleBackColor = true;
+            this.btn_changeToAutoRemote.Click += new System.EventHandler(this.btn_changeToAutoRemote_Click);
+            // 
+            // uctl_SendFun2
+            // 
+            this.uctl_SendFun2.Location = new System.Drawing.Point(8, 112);
+            this.uctl_SendFun2.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun2.Name = "uctl_SendFun2";
+            this.uctl_SendFun2.Size = new System.Drawing.Size(214, 35);
+            this.uctl_SendFun2.TabIndex = 29;
+            this.uctl_SendFun2.Text = "Send Func:2";
+            this.uctl_SendFun2.UseVisualStyleBackColor = true;
+            this.uctl_SendFun2.Visible = false;
+            this.uctl_SendFun2.Click += new System.EventHandler(this.uctl_SendFun2_Click);
+            // 
+            // btn_pause
+            // 
+            this.btn_pause.Location = new System.Drawing.Point(8, 171);
+            this.btn_pause.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.btn_pause.Name = "btn_pause";
+            this.btn_pause.Size = new System.Drawing.Size(138, 42);
+            this.btn_pause.TabIndex = 13;
+            this.btn_pause.Text = "Send Func 39";
+            this.btn_pause.UseVisualStyleBackColor = true;
+            this.btn_pause.Click += new System.EventHandler(this.btn_pause_Click);
+            // 
+            // uctl_SendFun1
+            // 
+            this.uctl_SendFun1.Location = new System.Drawing.Point(8, 69);
+            this.uctl_SendFun1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun1.Name = "uctl_SendFun1";
+            this.uctl_SendFun1.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun1.TabIndex = 8;
+            this.uctl_SendFun1.Text = "Send Func:1";
+            this.uctl_SendFun1.UseVisualStyleBackColor = true;
+            this.uctl_SendFun1.Visible = false;
+            this.uctl_SendFun1.Click += new System.EventHandler(this.uctl_Btn1_Click);
+            // 
+            // uctl_SendFun15
+            // 
+            this.uctl_SendFun15.Location = new System.Drawing.Point(8, 256);
+            this.uctl_SendFun15.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun15.Name = "uctl_SendFun15";
+            this.uctl_SendFun15.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun15.TabIndex = 8;
+            this.uctl_SendFun15.Text = "Send Func:15";
+            this.uctl_SendFun15.UseVisualStyleBackColor = true;
+            this.uctl_SendFun15.Visible = false;
+            this.uctl_SendFun15.Click += new System.EventHandler(this.uctl_SendFun15_Click);
+            // 
+            // uctl_SendFun13
+            // 
+            this.uctl_SendFun13.Location = new System.Drawing.Point(8, 203);
+            this.uctl_SendFun13.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun13.Name = "uctl_SendFun13";
+            this.uctl_SendFun13.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun13.TabIndex = 10;
+            this.uctl_SendFun13.Text = "Send Func:13";
+            this.uctl_SendFun13.UseVisualStyleBackColor = true;
+            this.uctl_SendFun13.Visible = false;
+            this.uctl_SendFun13.Click += new System.EventHandler(this.uctl_SendFun13_Click);
+            // 
+            // uctl_SendFun11
+            // 
+            this.uctl_SendFun11.Location = new System.Drawing.Point(8, 148);
+            this.uctl_SendFun11.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun11.Name = "uctl_SendFun11";
+            this.uctl_SendFun11.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun11.TabIndex = 10;
+            this.uctl_SendFun11.Text = "Send Func:11";
+            this.uctl_SendFun11.UseVisualStyleBackColor = true;
+            this.uctl_SendFun11.Visible = false;
+            this.uctl_SendFun11.Click += new System.EventHandler(this.uctl_SendFun11_Click);
+            // 
+            // uctl_SendFun17
+            // 
+            this.uctl_SendFun17.Location = new System.Drawing.Point(8, 309);
+            this.uctl_SendFun17.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun17.Name = "uctl_SendFun17";
+            this.uctl_SendFun17.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun17.TabIndex = 11;
+            this.uctl_SendFun17.Text = "Send Func:17";
+            this.uctl_SendFun17.UseVisualStyleBackColor = true;
+            this.uctl_SendFun17.Visible = false;
+            this.uctl_SendFun17.Click += new System.EventHandler(this.uctl_SendFun17_Click);
+            // 
+            // uctl_SendFun19
+            // 
+            this.uctl_SendFun19.Location = new System.Drawing.Point(8, 362);
+            this.uctl_SendFun19.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun19.Name = "uctl_SendFun19";
+            this.uctl_SendFun19.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun19.TabIndex = 12;
+            this.uctl_SendFun19.Text = "Send Func:19";
+            this.uctl_SendFun19.UseVisualStyleBackColor = true;
+            this.uctl_SendFun19.Visible = false;
+            this.uctl_SendFun19.Click += new System.EventHandler(this.uctl_SendFun19_Click);
+            // 
+            // uctl_SendFun21
+            // 
+            this.uctl_SendFun21.Location = new System.Drawing.Point(8, 416);
+            this.uctl_SendFun21.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun21.Name = "uctl_SendFun21";
+            this.uctl_SendFun21.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun21.TabIndex = 12;
+            this.uctl_SendFun21.Text = "Send Func:21";
+            this.uctl_SendFun21.UseVisualStyleBackColor = true;
+            this.uctl_SendFun21.Visible = false;
+            this.uctl_SendFun21.Click += new System.EventHandler(this.uctl_SendFun21_Click);
+            // 
+            // uctl_SendFun23
+            // 
+            this.uctl_SendFun23.Location = new System.Drawing.Point(8, 469);
+            this.uctl_SendFun23.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendFun23.Name = "uctl_SendFun23";
+            this.uctl_SendFun23.Size = new System.Drawing.Size(214, 42);
+            this.uctl_SendFun23.TabIndex = 12;
+            this.uctl_SendFun23.Text = "Send Func:23";
+            this.uctl_SendFun23.UseVisualStyleBackColor = true;
+            this.uctl_SendFun23.Visible = false;
+            this.uctl_SendFun23.Click += new System.EventHandler(this.uctl_SendFun23_Click);
+            // 
+            // uctl_Send_Fun_71
+            // 
+            this.uctl_Send_Fun_71.Location = new System.Drawing.Point(10, 191);
+            this.uctl_Send_Fun_71.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_Send_Fun_71.Name = "uctl_Send_Fun_71";
+            this.uctl_Send_Fun_71.Size = new System.Drawing.Size(138, 42);
+            this.uctl_Send_Fun_71.TabIndex = 13;
+            this.uctl_Send_Fun_71.Text = "Send Func 71";
+            this.uctl_Send_Fun_71.UseVisualStyleBackColor = true;
+            this.uctl_Send_Fun_71.Visible = false;
+            this.uctl_Send_Fun_71.Click += new System.EventHandler(this.uctl_Send_Fun_71_Click);
+            // 
+            // uctl_SendAllFun
+            // 
+            this.uctl_SendAllFun.Location = new System.Drawing.Point(8, 522);
+            this.uctl_SendAllFun.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uctl_SendAllFun.Name = "uctl_SendAllFun";
+            this.uctl_SendAllFun.Size = new System.Drawing.Size(214, 99);
+            this.uctl_SendAllFun.TabIndex = 12;
+            this.uctl_SendAllFun.Text = "Send ALL";
+            this.uctl_SendAllFun.UseVisualStyleBackColor = true;
+            this.uctl_SendAllFun.Visible = false;
+            this.uctl_SendAllFun.Click += new System.EventHandler(this.uctl_SendAllFun_Click);
+            // 
+            // uctlButton1
+            // 
+            this.uctlButton1.Location = new System.Drawing.Point(35, 578);
+            this.uctlButton1.Name = "uctlButton1";
+            this.uctlButton1.Size = new System.Drawing.Size(203, 35);
+            this.uctlButton1.TabIndex = 16;
+            this.uctlButton1.Text = "Refresh LFT Status";
+            this.uctlButton1.UseVisualStyleBackColor = true;
+            this.uctlButton1.Click += new System.EventHandler(this.uctlButton1_Click);
             // 
             // MaxAllowActionTimeSecond_Set_btn
             // 
@@ -5098,5 +5112,6 @@
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Label label71;
         private System.Windows.Forms.Label lbl_value_reserveModule_LorR;
+        private System.Windows.Forms.CheckBox cb_isUsingID132PositionCheck;
     }
 }

@@ -2438,5 +2438,6 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool isOpenPortGroupLimit = true;
         public static bool isOpenBlockReleaseCheckFun = false;
         public static bool isOpenDoubleCheckBlockReqFun = false;
+        public static bool isOpenID132PositionCheck = true;
     }
 }
