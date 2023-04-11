@@ -98,6 +98,7 @@ namespace com.mirle.ibg3k0.sc.Service
             {
                 try
                 {
+                    interruptingCmdOHTCID = SCUtility.Trim(interruptingCmdOHTCID, true);
                     AVEHICLE vh = (sender as AVEHICLE);
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"vh:{vh.VEHICLE_ID}，命令:{interruptingCmdOHTCID}正在嘗試中斷中，再次發送Cancel指令",
@@ -5379,6 +5380,15 @@ namespace com.mirle.ibg3k0.sc.Service
                                CarrierID: commandFinishVh.CST_ID);
                             continue;
                         }
+                        if (excuting_cmd_ohtc.CMD_STAUS < E_CMD_STATUS.Execution)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"搬送命令 ID:{mcs_cmd_id} 對應的 CMD_OHTC:{excuting_cmd_ohtc.CMD_ID}，OHT尚未開始執行 status:{excuting_cmd_ohtc.CMD_STAUS}，繼續下一筆的檢查",
+                               VehicleID: commandFinishVh.VEHICLE_ID,
+                               CarrierID: commandFinishVh.CST_ID);
+                            continue;
+                        }
+
                         string excuting_cmd_id = SCUtility.Trim(excuting_cmd_ohtc.CMD_ID, true);
                         string excuting_vh_id = SCUtility.Trim(excuting_cmd_ohtc.VH_ID, true);
                         AVEHICLE excuting_vh = scApp.VehicleBLL.cache.getVhByID(excuting_vh_id);

@@ -720,7 +720,7 @@ namespace RouteKit
                             routeDetailAndDistance.Remove(routeDetial);
                             if (routeDetailAndDistance.Count == 0)
                             {
-                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(GuideNew), Device: "OHT",
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
                                    Data: $"Can't find the way on check road is walkable.Because block by error vehicle [{vh.VEHICLE_ID}] on sec [{vh.CUR_SEC_ID}]");
                             }
                         }
