@@ -904,9 +904,11 @@ namespace com.mirle.ibg3k0.sc.BLL
             //3.要過濾掉已經在執行command shift的命令(Pause flag = S)
             cmds_mcs =
                 cmds_mcs.Where(cmd =>
-                cmd.TRANSFERSTATE >= E_TRAN_STATUS.Initial &&
+                //cmd.TRANSFERSTATE >= E_TRAN_STATUS.Initial &&
+                cmd.TRANSFERSTATE == E_TRAN_STATUS.Initial &&
                 cmd.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE &&
-                cmd.COMMANDSTATE <= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE &&
+                //cmd.COMMANDSTATE <= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE &&
+                cmd.COMMANDSTATE < ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_ARRIVE &&
                 !SCUtility.isMatche(cmd.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT)).
                 ToList();
             return cmds_mcs;
