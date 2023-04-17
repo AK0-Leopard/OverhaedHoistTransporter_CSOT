@@ -3819,6 +3819,18 @@ namespace com.mirle.ibg3k0.sc.Service
             ToList();
             if (entry_section_of_previous_section_id.Contains(vh_current_section_id))
             {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"vh:{vh.VEHICLE_ID} is already in req block last section:{vh_current_section_id},it is closest block:{block_entry_section_id}",
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
+                return true;
+            }
+            if (vh.ACC_SEC_DIST == 0 && SCUtility.isMatche(vh.CUR_ADR_ID, block_entry_section.FROM_ADR_ID))
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"vh:{vh.VEHICLE_ID} is already in req block start adr:{vh.CUR_ADR_ID} and distance:{vh.ACC_SEC_DIST},it is closest block:{block_entry_section_id}",
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
                 return true;
             }
 

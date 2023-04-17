@@ -100,6 +100,11 @@ namespace com.mirle.ibg3k0.sc.Common
                 park_zone_master.setParkDetails(ParkZoneDetails);
             }
 
+            foreach(var sec in Sections)
+            {
+                sec.setSectionRealDistance(scApp.ReserveBLL);
+            }
+
             loadPortGroupData();
 
             CommonInfo = new CommonInfo();

@@ -2776,7 +2776,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     var sec = scApp.SectionBLL.cache.GetSection(curSectionID);
                     if (sec == null)
                     {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
                         Data: $"vh id:{vhID}進行確認section長度，但Section:{curSectionID}不存在",
                         VehicleID: vhID);
                         return sectionDis;
@@ -2787,10 +2787,19 @@ namespace com.mirle.ibg3k0.sc.BLL
                     }
                     else if (SCUtility.isMatche(curAddressID, sec.TO_ADR_ID))
                     {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-                        Data: $"vh id:{vhID}進行確認section長度，current adr:{curAddressID} 為section:{curSectionID}的to address，強制將其改成該Section的長度:{sec.SEC_DIS}",
+                        if(sec.SectionRealDistance == double.MaxValue)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+                                          Data: $"vh id:{vhID}進行確認section長度，current adr:{curAddressID} 為section:{curSectionID}的to address，但該Section的長度為無限大，不做任何處理",
+                                          VehicleID: vhID);
+
+                            return sectionDis;
+                        }
+
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+                        Data: $"vh id:{vhID}進行確認section長度，current adr:{curAddressID} 為section:{curSectionID}的to address，強制將其改成該Section的長度:{sec.SectionRealDistance}",
                         VehicleID: vhID);
-                        return (uint)sec.SEC_DIS;
+                        return (uint)sec.SectionRealDistance;
                     }
                     else
                     {

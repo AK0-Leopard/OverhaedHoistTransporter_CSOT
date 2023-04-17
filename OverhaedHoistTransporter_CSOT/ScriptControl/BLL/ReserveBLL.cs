@@ -149,10 +149,20 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
         }
 
-        public virtual (double x, double y, bool isTR50) GetHltMapAddress(string adrID)
+        public virtual (bool isExist, double x, double y, bool isTR50) GetHltMapAddress(string adrID)
         {
-            var adr_obj = mapAPI.GetAddressObjectByID(adrID);
-            return (adr_obj.X, adr_obj.Y, adr_obj.IsTR50);
+            try
+            {
+                var adr_obj = mapAPI.GetAddressObjectByID(adrID);
+                if (adr_obj == null)
+                    return (false, 0, 0, false);
+                return (true, adr_obj.X, adr_obj.Y, adr_obj.IsTR50);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"Exception:get adr id:{adrID}");
+                return (false, 0, 0, false);
+            }
         }
         public virtual HltResult TryAddVehicleOrUpdate(string vhID, string currentSectionID, double vehicleX, double vehicleY, float vehicleAngle, double speedMmPerSecond,
                                                        HltDirection sensorDir, HltDirection forkDir)
