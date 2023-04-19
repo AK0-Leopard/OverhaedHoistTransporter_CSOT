@@ -24,6 +24,7 @@ using com.mirle.ibg3k0.sc.Data.SECS.CSOT;
 using com.mirle.ibg3k0.sc.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
+using com.mirle.ibg3k0.sc.Service;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -3261,8 +3262,21 @@ namespace com.mirle.ibg3k0.sc.BLL
                     {
                         //ReutrnVh2FromAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
                         //(vehicle.CUR_SEC_ID, from_adr.ADR_ID, 1, isIgnoreSegStatus);
-                        ReutrnVh2FromAdr = tryGetDownstreamSearchSection_FromSecToAdr
-                        (vehicle.CUR_SEC_ID, from_adr.ADR_ID, 1, isIgnoreSegStatus);
+                        if (vehicle.ACC_SEC_DIST == 0)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
+                               Data: $"由於Section dist:{vehicle.ACC_SEC_DIST}，因此在計算路徑時，使用Vehicle current adr 計算:{vehicle.CUR_ADR_ID} _1",
+                               VehicleID: vehicle?.VEHICLE_ID,
+                               CarrierID: vehicle?.CST_ID);
+
+                            ReutrnVh2FromAdr = tryGetDownstreamSearchSection
+                            (vehicle.CUR_ADR_ID, from_adr.ADR_ID, 1, isIgnoreSegStatus);
+                        }
+                        else
+                        {
+                            ReutrnVh2FromAdr = tryGetDownstreamSearchSection_FromSecToAdr
+                            (vehicle.CUR_SEC_ID, from_adr.ADR_ID, 1, isIgnoreSegStatus);
+                        }
                     }
                     if (to_adr != null)
                     {
@@ -3274,8 +3288,21 @@ namespace com.mirle.ibg3k0.sc.BLL
                                 {
                                     //ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
                                     //(vehicle.CUR_SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
-                                    ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection_FromSecToAdr
-                                    (vehicle.CUR_SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                    if (vehicle.ACC_SEC_DIST == 0)
+                                    {
+                                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
+                                           Data: $"由於Section dist:{vehicle.ACC_SEC_DIST}，因此在計算路徑時，使用Vehicle current adr 計算:{vehicle.CUR_ADR_ID} _2",
+                                           VehicleID: vehicle?.VEHICLE_ID,
+                                           CarrierID: vehicle?.CST_ID);
+
+                                        ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection
+                                        (vehicle.CUR_ADR_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                    }
+                                    else
+                                    {
+                                        ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection_FromSecToAdr
+                                        (vehicle.CUR_SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                    }
                                 }
                                 else
                                 {
@@ -3403,8 +3430,12 @@ namespace com.mirle.ibg3k0.sc.BLL
             string vh_current_adr = vehicle.CUR_ADR_ID;
             string vh_current_sec = vehicle.CUR_SEC_ID;
             double vh_sec_dist = vehicle.ACC_SEC_DIST;
+
+            //if (SCUtility.isEmpty(acmd_ohtc.SOURCE) ||
+            //    (!SCUtility.isEmpty(acmd_ohtc.SOURCE) && vehicle.HAS_CST == 1))
+
             if (SCUtility.isEmpty(cmd_source_adr)
-                || (!SCUtility.isEmpty(cmd_source_adr) && vehicle.HAS_CST == 1))
+            || (!SCUtility.isEmpty(cmd_source_adr) && vehicle.HAS_CST == 1))
             {
                 is_need = false;
             }
