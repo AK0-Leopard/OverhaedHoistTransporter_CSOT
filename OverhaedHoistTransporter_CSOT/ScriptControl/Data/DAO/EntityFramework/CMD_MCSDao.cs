@@ -48,7 +48,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
         public ACMD_MCS getWatingCMDMCSByFrom(DBConnection_EF con, string hostSource)
         {
             var query = from cmd in con.ACMD_MCS
-                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue && 
+                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue &&
                                cmd.TRANSFERSTATE < E_TRAN_STATUS.Transferring) &&
                                cmd.HOSTSOURCE.Trim() == hostSource.Trim()
                         select cmd;
@@ -57,7 +57,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
         public int getWatingCMDMCSByFromOfCount(DBConnection_EF con, string hostSource)
         {
             var query = from cmd in con.ACMD_MCS
-                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue && 
+                        where (cmd.TRANSFERSTATE >= E_TRAN_STATUS.Queue &&
                                cmd.TRANSFERSTATE < E_TRAN_STATUS.Transferring) &&
                                cmd.HOSTSOURCE.Trim() == hostSource.Trim()
                         select cmd;
@@ -240,6 +240,17 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
                         select cmd.PAUSEFLAG;
             return query.FirstOrDefault();
         }
+
+        public int getQueueCMD_MCSTopPriorityCount(DBConnection_EF con, int topPriority)
+        {
+            var query = from cmd in con.ACMD_MCS
+                        where cmd.PRIORITY_SUM >= topPriority &&
+                              cmd.TRANSFERSTATE == E_TRAN_STATUS.Queue
+                        select cmd;
+            return query.Count();
+        }
+
+
     }
 
 }

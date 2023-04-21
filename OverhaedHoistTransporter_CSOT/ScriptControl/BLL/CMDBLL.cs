@@ -581,6 +581,68 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return isSuccess;
         }
+        const int MAX_TOP_PRIORITY_CMD_MCS_COUNT = 3;
+        public (bool isSuccess, string reeason) tryUpdateCMD_MCS_PrioritySUMBoostToTopPriority(string cmdID)
+        {
+            try
+            {
+                int top_priority_cmd_cmd_count = getQueueCMD_MCSTopPriorityCount();
+                if (top_priority_cmd_cmd_count >= MAX_TOP_PRIORITY_CMD_MCS_COUNT)
+                {
+                    return (false, $"top priority cmd count:{top_priority_cmd_cmd_count} reach max count, can't update priority");
+                }
+
+                var cmd_mcs = getCMD_MCSByID(cmdID);
+                if (cmd_mcs == null)
+                {
+                    return (false, $"can't find mcs cmd:{cmdID}");
+                }
+                if (cmd_mcs.TRANSFERSTATE > E_TRAN_STATUS.Queue)
+                {
+                    return (false, $"currnet state:{cmd_mcs.TRANSFERSTATE} , can't update priority");
+                }
+                if (cmd_mcs.PRIORITY_SUM == CMD_MCS_TOP_PRIORITY)
+                {
+                    return (true, $"already top priority");
+                }
+                if (updateCMD_MCS_PrioritySUM(cmd_mcs, CMD_MCS_TOP_PRIORITY))
+                {
+                    return (true, $"update to top priority success");
+                }
+                else
+                {
+                    return (false, $"update to top priority fail");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return (false, $"update to top priority fail, exception happend");
+            }
+        }
+        public const int CMD_MCS_TOP_PRIORITY = 9999;
+     
+        public bool updateCMD_MCS_PrioritySUMRestoreToOriginalPriority(string cmdID)
+        {
+            bool isSuccess = true;
+            try
+            {
+                using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                {
+                    ACMD_MCS cmd = cmd_mcsDao.getByID(con, cmdID);
+                    int priority_sum = cmd.PRIORITY + cmd.PORT_PRIORITY + cmd.TIME_PRIORITY;
+                    cmd.PRIORITY_SUM = priority_sum;
+                    cmd_mcsDao.update(con, cmd);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
+
         public bool updateCMD_MCS_PrioritySUM(ACMD_MCS mcs_cmd, int priority_sum)
         {
             bool isSuccess = true;
@@ -819,6 +881,13 @@ namespace com.mirle.ibg3k0.sc.BLL
             using (DBConnection_EF con = DBConnection_EF.GetUContext())
             {
                 return cmd_mcsDao.getCMD_MCSIsQueueCount(con);
+            }
+        }
+        public int getQueueCMD_MCSTopPriorityCount()
+        {
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                return cmd_mcsDao.getQueueCMD_MCSTopPriorityCount(con, CMD_MCS_TOP_PRIORITY);
             }
         }
 
@@ -1086,7 +1155,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                                 {
                                     int change_priority = current_time_priority - waitting_excute_mcs_cmd.TIME_PRIORITY;
                                     updateCMD_MCS_TimePriority(waitting_excute_mcs_cmd, current_time_priority);
-                                    updateCMD_MCS_PrioritySUM(waitting_excute_mcs_cmd, waitting_excute_mcs_cmd.PRIORITY_SUM + change_priority);
+                                    if (waitting_excute_mcs_cmd.PRIORITY_SUM < CMDBLL.CMD_MCS_TOP_PRIORITY)
+                                        updateCMD_MCS_PrioritySUM(waitting_excute_mcs_cmd, waitting_excute_mcs_cmd.PRIORITY_SUM + change_priority);
                                 }
                                 continue;
                             }

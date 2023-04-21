@@ -1,5 +1,6 @@
 ﻿using com.mirle.ibg3k0.bcf.Common;
 using com.mirle.ibg3k0.sc;
+using com.mirle.ibg3k0.sc.BLL;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,17 @@ namespace com.mirle.ibg3k0.sc.ObjectRelay
         }
 
         public int PRIORITY { get { return cmd_mcs.PRIORITY; } }
+        public string PRIORITY_SUM
+        {
+            get
+            {
+                if (cmd_mcs.PRIORITY_SUM >= CMDBLL.CMD_MCS_TOP_PRIORITY)
+                {
+                    return "Top";
+                }
+                return cmd_mcs.PRIORITY_SUM.ToString();
+            }
+        }
         public System.DateTime CMD_INSER_TIME { get { return cmd_mcs.CMD_INSER_TIME; } }
         public Nullable<System.DateTime> CMD_START_TIME { get { return cmd_mcs.CMD_START_TIME; } }
         public Nullable<System.DateTime> CMD_FINISH_TIME { get { return cmd_mcs.CMD_FINISH_TIME; } }

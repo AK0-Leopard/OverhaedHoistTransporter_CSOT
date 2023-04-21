@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
 using NLog;
+using com.mirle.ibg3k0.bc.winform.App;
 
 namespace com.mirle.ibg3k0.bc.winform.UI
 {
@@ -188,6 +189,64 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             {
                 btn_force_finish.Enabled = true;
             }
+        }
+
+        private async void btn_priorityUpdate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (selection_index == -1) return;
+                btn_priorityUpdate.Enabled = false;
+                var mcs_cmd = cmdMCSList[selection_index];
+                string mcs_cmd_id = mcs_cmd.CMD_ID;
+
+                string msg = $"Do you want to update the priority of command :{mcs_cmd_id} to top?";
+                DialogResult confirmResult = MessageBox.Show(this, msg,
+                    BCApplication.getMessageString("CONFIRM"), MessageBoxButtons.YesNo);
+                mainform.BCApp.SCApplication.BCSystemBLL.
+                    addOperationHis(mainform.BCApp.LoginUserID, this.Name, $"{msg},confirm result:{confirmResult}");
+                if (confirmResult != System.Windows.Forms.DialogResult.Yes)
+                {
+                    return;
+                }
+                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(TransferCommandQureyListForm), Device: "OHTC",
+                  Data: $" Start update to top priority, mcs cmd id:{SCUtility.Trim(mcs_cmd_id, true)}");
+                (bool is_success, string reason) update_result = default((bool is_success, string reason));
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        update_result = mainform.BCApp.SCApplication.CMDBLL.tryUpdateCMD_MCS_PrioritySUMBoostToTopPriority(mcs_cmd_id);
+                        Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(TransferCommandQureyListForm), Device: "OHTC",
+                          Data: $"update to top priority result:{update_result.is_success}({update_result.reason})");
+                    }
+                    catch { }
+                }
+                );
+
+                bcf.App.BCFApplication.onInfoMsg($"MCS command:{mcs_cmd_id},update to top priority result:{update_result.is_success}({update_result.reason})");
+
+
+                List<ACMD_MCS> ACMD_MCSs = null;
+                await Task.Run(() =>
+                {
+                    ACMD_MCSs = mainform.BCApp.SCApplication.CMDBLL.loadACMD_MCSIsUnfinished();
+                });
+
+                cmdMCSList = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+                cmsMCS_bindingSource.DataSource = cmdMCSList;
+                dgv_TransferCommand.Refresh();
+            }
+            catch { }
+            finally
+            {
+                btn_priorityUpdate.Enabled = true;
+            }
+        }
+
+        private void btn_restoreToOriginalPriority_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

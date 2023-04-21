@@ -32,6 +32,14 @@
             this.cMDMCSObjToShowBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dgv_TransferCommand = new System.Windows.Forms.DataGridView();
+            this.pel_button = new System.Windows.Forms.Panel();
+            this.btn_restoreToOriginalPriority = new System.Windows.Forms.Button();
+            this.btn_priorityUpdate = new System.Windows.Forms.Button();
+            this.lbl_currentCommandCountValue = new System.Windows.Forms.Label();
+            this.lbl_currentCommandCountName = new System.Windows.Forms.Label();
+            this.btn_returnToQueue = new System.Windows.Forms.Button();
+            this.btn_force_finish = new System.Windows.Forms.Button();
+            this.btn_refresh = new System.Windows.Forms.Button();
             this.cMDIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.VEHICLE_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cARRIERIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -39,15 +47,10 @@
             this.hOSTSOURCEDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hOSTDESTINATIONDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pRIORITYDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRIORITY_SUM = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cMDINSERTIMEDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cMDSTARTTIMEDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rEPLACEDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pel_button = new System.Windows.Forms.Panel();
-            this.btn_returnToQueue = new System.Windows.Forms.Button();
-            this.btn_force_finish = new System.Windows.Forms.Button();
-            this.btn_refresh = new System.Windows.Forms.Button();
-            this.lbl_currentCommandCountName = new System.Windows.Forms.Label();
-            this.lbl_currentCommandCountValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.cMDMCSObjToShowBindingSource)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_TransferCommand)).BeginInit();
@@ -89,6 +92,7 @@
             this.hOSTSOURCEDataGridViewTextBoxColumn,
             this.hOSTDESTINATIONDataGridViewTextBoxColumn,
             this.pRIORITYDataGridViewTextBoxColumn,
+            this.PRIORITY_SUM,
             this.cMDINSERTIMEDataGridViewTextBoxColumn,
             this.cMDSTARTTIMEDataGridViewTextBoxColumn,
             this.rEPLACEDataGridViewTextBoxColumn});
@@ -105,6 +109,92 @@
             this.dgv_TransferCommand.Size = new System.Drawing.Size(1596, 635);
             this.dgv_TransferCommand.TabIndex = 8;
             this.dgv_TransferCommand.SelectionChanged += new System.EventHandler(this.dgv_TransferCommand_SelectionChanged);
+            // 
+            // pel_button
+            // 
+            this.pel_button.Controls.Add(this.btn_restoreToOriginalPriority);
+            this.pel_button.Controls.Add(this.btn_priorityUpdate);
+            this.pel_button.Controls.Add(this.lbl_currentCommandCountValue);
+            this.pel_button.Controls.Add(this.lbl_currentCommandCountName);
+            this.pel_button.Controls.Add(this.btn_returnToQueue);
+            this.pel_button.Controls.Add(this.btn_force_finish);
+            this.pel_button.Controls.Add(this.btn_refresh);
+            this.pel_button.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pel_button.Location = new System.Drawing.Point(5, 647);
+            this.pel_button.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.pel_button.Name = "pel_button";
+            this.pel_button.Size = new System.Drawing.Size(1592, 63);
+            this.pel_button.TabIndex = 6;
+            // 
+            // btn_restoreToOriginalPriority
+            // 
+            this.btn_restoreToOriginalPriority.Location = new System.Drawing.Point(548, 12);
+            this.btn_restoreToOriginalPriority.Name = "btn_restoreToOriginalPriority";
+            this.btn_restoreToOriginalPriority.Size = new System.Drawing.Size(306, 42);
+            this.btn_restoreToOriginalPriority.TabIndex = 10;
+            this.btn_restoreToOriginalPriority.Text = "Restore to original priority";
+            this.btn_restoreToOriginalPriority.UseVisualStyleBackColor = true;
+            this.btn_restoreToOriginalPriority.Visible = false;
+            this.btn_restoreToOriginalPriority.Click += new System.EventHandler(this.btn_restoreToOriginalPriority_Click);
+            // 
+            // btn_priorityUpdate
+            // 
+            this.btn_priorityUpdate.Location = new System.Drawing.Point(310, 12);
+            this.btn_priorityUpdate.Name = "btn_priorityUpdate";
+            this.btn_priorityUpdate.Size = new System.Drawing.Size(232, 42);
+            this.btn_priorityUpdate.TabIndex = 9;
+            this.btn_priorityUpdate.Text = "Boost to top priority";
+            this.btn_priorityUpdate.UseVisualStyleBackColor = true;
+            this.btn_priorityUpdate.Click += new System.EventHandler(this.btn_priorityUpdate_Click);
+            // 
+            // lbl_currentCommandCountValue
+            // 
+            this.lbl_currentCommandCountValue.AutoSize = true;
+            this.lbl_currentCommandCountValue.Location = new System.Drawing.Point(1112, 25);
+            this.lbl_currentCommandCountValue.Name = "lbl_currentCommandCountValue";
+            this.lbl_currentCommandCountValue.Size = new System.Drawing.Size(140, 22);
+            this.lbl_currentCommandCountValue.TabIndex = 8;
+            this.lbl_currentCommandCountValue.Text = "             ";
+            // 
+            // lbl_currentCommandCountName
+            // 
+            this.lbl_currentCommandCountName.AutoSize = true;
+            this.lbl_currentCommandCountName.Location = new System.Drawing.Point(876, 25);
+            this.lbl_currentCommandCountName.Name = "lbl_currentCommandCountName";
+            this.lbl_currentCommandCountName.Size = new System.Drawing.Size(230, 22);
+            this.lbl_currentCommandCountName.TabIndex = 7;
+            this.lbl_currentCommandCountName.Text = "Current command count:";
+            // 
+            // btn_returnToQueue
+            // 
+            this.btn_returnToQueue.Location = new System.Drawing.Point(132, 12);
+            this.btn_returnToQueue.Name = "btn_returnToQueue";
+            this.btn_returnToQueue.Size = new System.Drawing.Size(172, 42);
+            this.btn_returnToQueue.TabIndex = 6;
+            this.btn_returnToQueue.Text = "Return To Queue";
+            this.btn_returnToQueue.UseVisualStyleBackColor = true;
+            this.btn_returnToQueue.Click += new System.EventHandler(this.btn_returnToQueue_Click);
+            // 
+            // btn_force_finish
+            // 
+            this.btn_force_finish.Location = new System.Drawing.Point(1320, 15);
+            this.btn_force_finish.Name = "btn_force_finish";
+            this.btn_force_finish.Size = new System.Drawing.Size(140, 42);
+            this.btn_force_finish.TabIndex = 5;
+            this.btn_force_finish.Text = "Force finish";
+            this.btn_force_finish.UseVisualStyleBackColor = true;
+            this.btn_force_finish.Visible = false;
+            this.btn_force_finish.Click += new System.EventHandler(this.btn_force_finish_Click);
+            // 
+            // btn_refresh
+            // 
+            this.btn_refresh.Location = new System.Drawing.Point(7, 12);
+            this.btn_refresh.Name = "btn_refresh";
+            this.btn_refresh.Size = new System.Drawing.Size(119, 42);
+            this.btn_refresh.TabIndex = 4;
+            this.btn_refresh.Text = "Refresh";
+            this.btn_refresh.UseVisualStyleBackColor = true;
+            this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
             // cMDIDDataGridViewTextBoxColumn
             // 
@@ -159,6 +249,13 @@
             this.pRIORITYDataGridViewTextBoxColumn.Name = "pRIORITYDataGridViewTextBoxColumn";
             this.pRIORITYDataGridViewTextBoxColumn.ReadOnly = true;
             // 
+            // PRIORITY_SUM
+            // 
+            this.PRIORITY_SUM.DataPropertyName = "PRIORITY_SUM";
+            this.PRIORITY_SUM.HeaderText = "Priority(Sum)";
+            this.PRIORITY_SUM.Name = "PRIORITY_SUM";
+            this.PRIORITY_SUM.ReadOnly = true;
+            // 
             // cMDINSERTIMEDataGridViewTextBoxColumn
             // 
             this.cMDINSERTIMEDataGridViewTextBoxColumn.DataPropertyName = "CMD_INSER_TIME";
@@ -182,69 +279,6 @@
             this.rEPLACEDataGridViewTextBoxColumn.HeaderText = "Replace";
             this.rEPLACEDataGridViewTextBoxColumn.Name = "rEPLACEDataGridViewTextBoxColumn";
             this.rEPLACEDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // pel_button
-            // 
-            this.pel_button.Controls.Add(this.lbl_currentCommandCountValue);
-            this.pel_button.Controls.Add(this.lbl_currentCommandCountName);
-            this.pel_button.Controls.Add(this.btn_returnToQueue);
-            this.pel_button.Controls.Add(this.btn_force_finish);
-            this.pel_button.Controls.Add(this.btn_refresh);
-            this.pel_button.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pel_button.Location = new System.Drawing.Point(5, 647);
-            this.pel_button.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.pel_button.Name = "pel_button";
-            this.pel_button.Size = new System.Drawing.Size(1592, 63);
-            this.pel_button.TabIndex = 6;
-            // 
-            // btn_returnToQueue
-            // 
-            this.btn_returnToQueue.Location = new System.Drawing.Point(132, 12);
-            this.btn_returnToQueue.Name = "btn_returnToQueue";
-            this.btn_returnToQueue.Size = new System.Drawing.Size(172, 42);
-            this.btn_returnToQueue.TabIndex = 6;
-            this.btn_returnToQueue.Text = "Return To Queue";
-            this.btn_returnToQueue.UseVisualStyleBackColor = true;
-            this.btn_returnToQueue.Click += new System.EventHandler(this.btn_returnToQueue_Click);
-            // 
-            // btn_force_finish
-            // 
-            this.btn_force_finish.Location = new System.Drawing.Point(310, 12);
-            this.btn_force_finish.Name = "btn_force_finish";
-            this.btn_force_finish.Size = new System.Drawing.Size(140, 42);
-            this.btn_force_finish.TabIndex = 5;
-            this.btn_force_finish.Text = "Force finish";
-            this.btn_force_finish.UseVisualStyleBackColor = true;
-            this.btn_force_finish.Visible = false;
-            this.btn_force_finish.Click += new System.EventHandler(this.btn_force_finish_Click);
-            // 
-            // btn_refresh
-            // 
-            this.btn_refresh.Location = new System.Drawing.Point(7, 12);
-            this.btn_refresh.Name = "btn_refresh";
-            this.btn_refresh.Size = new System.Drawing.Size(119, 42);
-            this.btn_refresh.TabIndex = 4;
-            this.btn_refresh.Text = "Refresh";
-            this.btn_refresh.UseVisualStyleBackColor = true;
-            this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
-            // 
-            // lbl_currentCommandCountName
-            // 
-            this.lbl_currentCommandCountName.AutoSize = true;
-            this.lbl_currentCommandCountName.Location = new System.Drawing.Point(516, 22);
-            this.lbl_currentCommandCountName.Name = "lbl_currentCommandCountName";
-            this.lbl_currentCommandCountName.Size = new System.Drawing.Size(230, 22);
-            this.lbl_currentCommandCountName.TabIndex = 7;
-            this.lbl_currentCommandCountName.Text = "Current command count:";
-            // 
-            // lbl_currentCommandCountValue
-            // 
-            this.lbl_currentCommandCountValue.AutoSize = true;
-            this.lbl_currentCommandCountValue.Location = new System.Drawing.Point(752, 22);
-            this.lbl_currentCommandCountValue.Name = "lbl_currentCommandCountValue";
-            this.lbl_currentCommandCountValue.Size = new System.Drawing.Size(140, 22);
-            this.lbl_currentCommandCountValue.TabIndex = 8;
-            this.lbl_currentCommandCountValue.Text = "             ";
             // 
             // TransferCommandQureyListForm
             // 
@@ -273,6 +307,11 @@
         private System.Windows.Forms.DataGridView dgv_TransferCommand;
         private System.Windows.Forms.Button btn_refresh;
         private System.Windows.Forms.Button btn_force_finish;
+        private System.Windows.Forms.Button btn_returnToQueue;
+        private System.Windows.Forms.Label lbl_currentCommandCountValue;
+        private System.Windows.Forms.Label lbl_currentCommandCountName;
+        private System.Windows.Forms.Button btn_priorityUpdate;
+        private System.Windows.Forms.Button btn_restoreToOriginalPriority;
         private System.Windows.Forms.DataGridViewTextBoxColumn cMDIDDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn VEHICLE_ID;
         private System.Windows.Forms.DataGridViewTextBoxColumn cARRIERIDDataGridViewTextBoxColumn;
@@ -280,11 +319,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn hOSTSOURCEDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hOSTDESTINATIONDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pRIORITYDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PRIORITY_SUM;
         private System.Windows.Forms.DataGridViewTextBoxColumn cMDINSERTIMEDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn cMDSTARTTIMEDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rEPLACEDataGridViewTextBoxColumn;
-        private System.Windows.Forms.Button btn_returnToQueue;
-        private System.Windows.Forms.Label lbl_currentCommandCountValue;
-        private System.Windows.Forms.Label lbl_currentCommandCountName;
     }
 }
