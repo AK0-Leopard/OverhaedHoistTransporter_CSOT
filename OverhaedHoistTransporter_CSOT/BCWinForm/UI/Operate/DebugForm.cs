@@ -45,6 +45,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_blockReleaseCheckFun.Checked = DebugParameter.isOpenBlockReleaseCheckFun;
             cb_openDoubleCheckBlockReq.Checked = DebugParameter.isOpenDoubleCheckBlockReqFun;
             cb_isUsingID132PositionCheck.Checked = DebugParameter.isOpenID132PositionCheck;
+            cb_isOpenAutoChangeGuide.Checked = DebugParameter.IsOpneChangeGuideSection;
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
@@ -1685,6 +1686,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void cb_isUsingID132PositionCheck_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.isOpenID132PositionCheck = cb_isUsingID132PositionCheck.Checked;
+        }
+
+        private void cb_isOpenAutoChangeGuide_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.IsOpneChangeGuideSection = cb_isOpenAutoChangeGuide.Checked;
         }
     }
 }

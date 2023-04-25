@@ -24,8 +24,10 @@ using com.mirle.ibg3k0.sc.Data.SECS;
 using com.mirle.ibg3k0.sc.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
+using com.mirle.ibg3k0.sc.Service;
 using com.mirle.iibg3k0.ttc.Common;
 using Mirle.AK0.Hlt.Utils;
+using Mirle.Protos.ReserveModule;
 using NLog;
 using StackExchange.Redis;
 using System;
@@ -1908,8 +1910,80 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return isSuccess;
         }
+        public bool doTransferCommandFinishWhneGuideChangeByCancel
+            (string vh_id, string cmd_id, string mcsCmdID, CompleteStatus completeStatus)
+        {
+            bool isSuccess = true;
+            //1.
+            try
+            {
+                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
+                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
+                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
+                isSuccess = initialVhCommandInfoAndFinishCMD_OHTC(vh, cmd_id, ohtc_cmd_status);
 
+                //如果是Command Interrupt Then Return To Queue，在命令結束後，要將該命令改回Queue
+                if (!SCUtility.isEmpty(mcsCmdID))
+                {
 
+                    bool is_success = scApp.CMDBLL.updateCMD_MCS_TranStatus(mcsCmdID, E_TRAN_STATUS.Queue);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHx",
+                       Data: $"進行MCS command 改派流程(Cancel),mcs cmd id:{mcsCmdID}.result:[{is_success}]",
+                       VehicleID: vh_id);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
+        public bool doTransferCommandFinishWhneGuideChangeByAbort
+            (string vh_id, string cmd_id, string mcsCmdID, CompleteStatus completeStatus)
+        {
+            bool isSuccess = true;
+            //1.
+            try
+            {
+                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
+                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
+                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
+                isSuccess = initialVhCommandInfoAndFinishCMD_OHTC(vh, cmd_id, ohtc_cmd_status);
+
+                //如果是Command Interrupt Then Return To Queue，在命令結束後，要將該命令改回Queue
+                if (!SCUtility.isEmpty(mcsCmdID))
+                {
+                    ACMD_MCS cmd_mcs = scApp.CMDBLL.getCMD_MCSByID(mcsCmdID);
+                    string hostdest = cmd_mcs.HOSTDESTINATION;
+                    scApp.MapBLL.getAddressID(hostdest, out string to_adr);
+                    bool is_creat_success = scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID, cmd_mcs.CMD_ID, cmd_mcs.CARRIER_ID,
+                                       E_CMD_TYPE.Unload,
+                                       "",
+                                       to_adr, cmd_mcs.PRIORITY_SUM, 0);
+                    if (isSuccess)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHx",
+                           Data: $"進行MCS command 改派流程(Abort),mcs cmd id:{mcsCmdID}.result:[改派成功]",
+                           VehicleID: vh_id);
+                        scApp.CMDBLL.updateCMD_MCS_PauseFlag(cmd_mcs.CMD_ID, "");
+                    }
+                    else
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHx",
+                           Data: $"進行MCS command 改派流程(Abort),mcs cmd id:{mcsCmdID}.result:[改派失敗],將該筆命令強制結束",
+                           VehicleID: vh_id);
+                        scApp.TransferService.forceFinishTransferCommand(cmd_mcs, CompleteStatus.CmpStatusChangeGuideFail);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                isSuccess = false;
+            }
+            return isSuccess;
+        }
         private bool initialVhCommandInfoAndFinishCMD_OHTC(AVEHICLE vh, string cmd_id, E_CMD_STATUS ohtc_cmd_status)
         {
             try
@@ -2787,7 +2861,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     }
                     else if (SCUtility.isMatche(curAddressID, sec.TO_ADR_ID))
                     {
-                        if(sec.SectionRealDistance == double.MaxValue)
+                        if (sec.SectionRealDistance == double.MaxValue)
                         {
                             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
                                           Data: $"vh id:{vhID}進行確認section長度，current adr:{curAddressID} 為section:{curSectionID}的to address，但該Section的長度為無限大，不做任何處理",
@@ -3103,7 +3177,12 @@ namespace com.mirle.ibg3k0.sc.BLL
                 vhs = vhs.Where(vh => cmdIDs.Contains(SCUtility.Trim(vh.OHTC_CMD, true))).ToList();
                 return vhs;
             }
-
+            public List<AVEHICLE> loadErrorVhs()
+            {
+                var vhs = eqObjCacheManager.getAllVehicle();
+                vhs = vhs.Where(vh => vh.IsError).ToList();
+                return vhs;
+            }
             public AVEHICLE getVehicleByMCSCmdID(string mcsCmdID)
             {
                 var vhs = eqObjCacheManager.getAllVehicle();

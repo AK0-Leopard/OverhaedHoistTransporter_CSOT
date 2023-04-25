@@ -39,7 +39,25 @@ namespace com.mirle.ibg3k0.sc
         {
             onSectinoEntry(vh_id);
         }
+        public string RealEntrySectionID
+        {
+            get
+            {
+                try
+                {
+                    string entry_sec_id = ENTRY_SEC_ID;
+                    if (entry_sec_id.Length > 5)
+                        entry_sec_id = entry_sec_id.Substring(0, 5);
+                    return entry_sec_id;
+                }
+                catch (Exception ex)
+                {
+                    NLog.LogManager.GetCurrentClassLogger().Error(ex, "Exception:");
+                    return ENTRY_SEC_ID;
+                }
+            }
 
+        }
 
         List<string> BlockZoneDetailSectionIDs;
         public void SetBlockDetailList(BLL.MapBLL mapBLL)

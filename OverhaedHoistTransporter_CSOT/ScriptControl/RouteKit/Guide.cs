@@ -1649,14 +1649,18 @@ namespace RouteKit
         //public bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance)
         public bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance)
         {
-            return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance);
+            return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance, out var route_sections);
+        }
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
+        {
+            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out route_distance, out var route_sections);
         }
         //public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance, out string[] routeSections)
         {
             //route_distance = default(KeyValuePair<string[], double>);
             route_distance = double.MaxValue;
-
+            routeSections = new string[0];
             string[] route = DownstreamSearchSection
                                  (from_adr, to_adr, 1);
             if (SCUtility.isEmpty(route[0]))
@@ -1722,7 +1726,9 @@ namespace RouteKit
             }
             if (routeDetailAndDistance.Count > 0)
             {
-                route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
+                var route_detail_and_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                route_distance = route_detail_and_distance.Value;
+                routeSections = route_detail_and_distance.Key;
                 isWalkable = true;
             }
             //else

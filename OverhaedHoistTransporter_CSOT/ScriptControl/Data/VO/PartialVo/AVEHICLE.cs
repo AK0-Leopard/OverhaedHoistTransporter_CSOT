@@ -260,6 +260,7 @@ namespace com.mirle.ibg3k0.sc
 
         public virtual bool IsProcessingCommandFinish { get; set; }
         public virtual bool IsProcessingCommandSend { get; set; }
+        public virtual bool IsProcessingGuideChange { get; set; }
 
         public virtual string VhCurrentExcuteOhtcCmdID { get; set; }
 

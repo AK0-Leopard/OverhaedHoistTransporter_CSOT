@@ -18,6 +18,7 @@ namespace RouteKit
         bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance);
         //bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance);
         bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance);
+        bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance, out string[] guideSections);
         bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr);
         bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand);
         //bool checkRoadIsWalkableForMCSCommand(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance);

@@ -608,79 +608,79 @@ namespace com.mirle.ibg3k0.sc.BLL
             return bestParkDetailTemp;
         }
 
-        public bool tryFindCycleRunVhToParking(out AVEHICLE cycling_vh, out APARKZONEDETAIL bsetParkDetail)
-        {
-            cycling_vh = null;
-            bsetParkDetail = null;
-            bool isSuccess = false;
-            List<APARKZONEMASTER> parkZoneMasters = null;
-            List<KeyValuePair<object, double>> lstParkZoneMasterVhAndDis = null;
-            using (DBConnection_EF con = new DBConnection_EF())
-            {
-                //packZoneMasters = packZoneMasterDao.loadByPackTypeIDAndHasPackSpace(con
-                //    , scApp.getEQObjCacheManager().getLine().Currnet_Pack_Type);
-                parkZoneMasters = loadByParkTypeIDAndHasParkSpaceByCount
-                     (scApp.getEQObjCacheManager().getLine().Currnet_Park_Type);
-                if (parkZoneMasters != null && parkZoneMasters.Count > 0)
-                {
-                    List<AVEHICLE> cyclingVhs = scApp.VehicleBLL.loadFirstCyclingVhInEachCycleZone();
-                    if (cyclingVhs != null && cyclingVhs.Count > 0)
-                    {
-                        lstParkZoneMasterVhAndDis =
-                            new List<KeyValuePair<object, double>>();
-                        foreach (APARKZONEMASTER zone_master in parkZoneMasters)
-                        {
-                            foreach (AVEHICLE vh in cyclingVhs)
-                            {
-                                if (zone_master.VEHICLE_TYPE != E_VH_TYPE.None &&
-                                    vh.VEHICLE_TYPE != E_VH_TYPE.None)
-                                {
-                                    if (zone_master.VEHICLE_TYPE != E_VH_TYPE.None &&
-                                        vh.VEHICLE_TYPE != E_VH_TYPE.None)
-                                    {
-                                        if (zone_master.VEHICLE_TYPE != vh.VEHICLE_TYPE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
-                                ACYCLEZONEMASTER cycMaster = scApp.CycleBLL.getCycleZoneMasterByZoneID(vh.CYCLERUN_ID);
-                                if (cycMaster != null)
-                                {
-                                    //string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchRoute
-                                    string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
-                                             (cycMaster.ENTRY_ADR_ID, zone_master.ENTRY_ADR_ID, 1);
-                                    string[] minRoute_From2To = ReutrnFromAdr2ToAdr[0].Split('=');
+        //public bool tryFindCycleRunVhToParking(out AVEHICLE cycling_vh, out APARKZONEDETAIL bsetParkDetail)
+        //{
+        //    cycling_vh = null;
+        //    bsetParkDetail = null;
+        //    bool isSuccess = false;
+        //    List<APARKZONEMASTER> parkZoneMasters = null;
+        //    List<KeyValuePair<object, double>> lstParkZoneMasterVhAndDis = null;
+        //    using (DBConnection_EF con = new DBConnection_EF())
+        //    {
+        //        //packZoneMasters = packZoneMasterDao.loadByPackTypeIDAndHasPackSpace(con
+        //        //    , scApp.getEQObjCacheManager().getLine().Currnet_Pack_Type);
+        //        parkZoneMasters = loadByParkTypeIDAndHasParkSpaceByCount
+        //             (scApp.getEQObjCacheManager().getLine().Currnet_Park_Type);
+        //        if (parkZoneMasters != null && parkZoneMasters.Count > 0)
+        //        {
+        //            List<AVEHICLE> cyclingVhs = scApp.VehicleBLL.loadFirstCyclingVhInEachCycleZone();
+        //            if (cyclingVhs != null && cyclingVhs.Count > 0)
+        //            {
+        //                lstParkZoneMasterVhAndDis =
+        //                    new List<KeyValuePair<object, double>>();
+        //                foreach (APARKZONEMASTER zone_master in parkZoneMasters)
+        //                {
+        //                    foreach (AVEHICLE vh in cyclingVhs)
+        //                    {
+        //                        if (zone_master.VEHICLE_TYPE != E_VH_TYPE.None &&
+        //                            vh.VEHICLE_TYPE != E_VH_TYPE.None)
+        //                        {
+        //                            if (zone_master.VEHICLE_TYPE != E_VH_TYPE.None &&
+        //                                vh.VEHICLE_TYPE != E_VH_TYPE.None)
+        //                            {
+        //                                if (zone_master.VEHICLE_TYPE != vh.VEHICLE_TYPE)
+        //                                {
+        //                                    continue;
+        //                                }
+        //                            }
+        //                        }
+        //                        ACYCLEZONEMASTER cycMaster = scApp.CycleBLL.getCycleZoneMasterByZoneID(vh.CYCLERUN_ID);
+        //                        if (cycMaster != null)
+        //                        {
+        //                            //string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchRoute
+        //                            string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
+        //                                     (cycMaster.ENTRY_ADR_ID, zone_master.ENTRY_ADR_ID, 1);
+        //                            string[] minRoute_From2To = ReutrnFromAdr2ToAdr[0].Split('=');
 
-                                    double distance = 0;
-                                    if (double.TryParse(minRoute_From2To[1], out distance))
-                                    {
-                                        lstParkZoneMasterVhAndDis.Add
-                                            (new KeyValuePair<object, double>(new object[2] { vh, zone_master }, distance));
-                                    }
-                                    else
-                                    {
-                                        lstParkZoneMasterVhAndDis.Add
-                                            (new KeyValuePair<object, double>(new object[2] { vh, zone_master }, double.MaxValue));
-                                    }
+        //                            double distance = 0;
+        //                            if (double.TryParse(minRoute_From2To[1], out distance))
+        //                            {
+        //                                lstParkZoneMasterVhAndDis.Add
+        //                                    (new KeyValuePair<object, double>(new object[2] { vh, zone_master }, distance));
+        //                            }
+        //                            else
+        //                            {
+        //                                lstParkZoneMasterVhAndDis.Add
+        //                                    (new KeyValuePair<object, double>(new object[2] { vh, zone_master }, double.MaxValue));
+        //                            }
 
-                                }
-                            }
-                        }
-                        if (lstParkZoneMasterVhAndDis.Count > 0)
-                        {
-                            lstParkZoneMasterVhAndDis = lstParkZoneMasterVhAndDis.OrderBy(o => o.Value).ToList();
-                            object[] arrayobj = lstParkZoneMasterVhAndDis.First().Key as object[];
-                            APARKZONEMASTER zone_master_temp = arrayobj[1] as APARKZONEMASTER;
-                            cycling_vh = arrayobj[0] as AVEHICLE;
-                            bsetParkDetail = findFitParkZoneDetailInParkMater(zone_master_temp);
-                            isSuccess = true;
-                        }
-                    }
-                }
-            }
-            return isSuccess;
-        }
+        //                        }
+        //                    }
+        //                }
+        //                if (lstParkZoneMasterVhAndDis.Count > 0)
+        //                {
+        //                    lstParkZoneMasterVhAndDis = lstParkZoneMasterVhAndDis.OrderBy(o => o.Value).ToList();
+        //                    object[] arrayobj = lstParkZoneMasterVhAndDis.First().Key as object[];
+        //                    APARKZONEMASTER zone_master_temp = arrayobj[1] as APARKZONEMASTER;
+        //                    cycling_vh = arrayobj[0] as AVEHICLE;
+        //                    bsetParkDetail = findFitParkZoneDetailInParkMater(zone_master_temp);
+        //                    isSuccess = true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return isSuccess;
+        //}
 
         public void updateVhEntryParkingAdr(string vh_id, string parkAdrID)
         {

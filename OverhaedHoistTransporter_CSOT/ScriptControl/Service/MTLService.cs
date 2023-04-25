@@ -38,7 +38,7 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             scApp = app;
             List<AEQPT> eqpts = app.getEQObjCacheManager().getAllEquipment();
-           
+
             //由於7/1更新完OHTC版本後，現場有發生一直跳Nats的例外導致最後程序也無法進行位置更新的問題
             //因此先取消該部分的Nats事件通知 //20210802 Kevin Wei
 
@@ -221,7 +221,8 @@ namespace com.mirle.ibg3k0.sc.Service
             //要判斷目前到車子所在位置到目的地(MTL/MTS)路徑是不是通的
             //KeyValuePair<string[], double> route_distance;
             double route_distance;
-            if (isSuccess && !scApp.RouteGuide.checkRoadIsWalkable(car_out_vh.CUR_ADR_ID, mtx.DeviceAddress, true, out route_distance))
+            //if (isSuccess && !scApp.RouteGuide.checkRoadIsWalkable(car_out_vh.CUR_ADR_ID, mtx.DeviceAddress, true, out route_distance, out string[] route_sections))
+            if (isSuccess && !scApp.RouteGuide.checkRoadIsWalkable(car_out_vh.CUR_ADR_ID, mtx.DeviceAddress, true))
             {
                 isSuccess = false;
                 result = $"vh id:{vh_id}, current address:{car_out_vh.CUR_ADR_ID} to device:{mtx.DeviceID} of address id:{mtx.DeviceAddress} not walkable.";

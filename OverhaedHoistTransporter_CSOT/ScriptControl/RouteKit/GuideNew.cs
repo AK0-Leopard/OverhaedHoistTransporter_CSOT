@@ -172,7 +172,21 @@ namespace RouteKit
         #region Application Interface
 
         object searchSafe_lockObj = new object();
+        public string[] tryGetDownstreamSearchSection
+           (string startAdr, string endAdr, int flag, bool isIgnoreStatus = false)
+        {
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            string[] route = DownstreamSearchSection
+                             (startAdr, endAdr, flag, isIgnoreStatus, busy_segment);
 
+            if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
+            {
+                route = DownstreamSearchSection
+                             (startAdr, endAdr, flag, isIgnoreStatus);
+            }
+            return route;
+        }
         public string[] DownstreamSearchSection(string startAdr, string endAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
@@ -421,6 +435,7 @@ namespace RouteKit
 
         }
 
+
         public string[] DownstreamSearchSection_FromSecToAdr(string fromSec, string toAdr, int flag, bool isIgnoreStatus = false, List<string> banSegmentIDList = null)//A0.01
         {
             lock (searchSafe_lockObj)
@@ -559,6 +574,7 @@ namespace RouteKit
         {
             try
             {
+
                 if (from_addr != to_addr)//如果沒有From To Address相同的情況，就直接呼叫路徑查找。
                 {
                     return getFromToRoutesAddrToAddr(from_addr, to_addr, isIgnoreStatus, banSegmentIDList);
@@ -642,10 +658,12 @@ namespace RouteKit
         {
             public bool isWalker;
             public double totalCost;
-            public GuideQuickSearch(bool _isWalker, double _totalCost)
+            public string[] GuideSections;
+            public GuideQuickSearch(bool _isWalker, double _totalCost, string[] guideSections)
             {
                 isWalker = _isWalker;
                 totalCost = _totalCost;
+                GuideSections = guideSections;
             }
         }
 
@@ -657,16 +675,23 @@ namespace RouteKit
         public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand)
         {
             //KeyValuePair<string[], double> route_distance;
-            double route_distance;
-            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out route_distance);
+            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out double route_distance, out var guideSections);
         }
         //public bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance)
         public bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance)
         {
-            return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance);
+            return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance, out var guideSections);
+        }
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance, out string[] route_sections)
+        {
+            return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance, out route_sections);
+        }
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
+        {
+            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out route_distance, out var route_sections);
         }
         //public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance, out string[] guideSections)
         {
             //route_distance = double.MaxValue;
             string key = $"{SCUtility.Trim(from_adr, true)},{SCUtility.Trim(to_adr, true)}";
@@ -674,17 +699,21 @@ namespace RouteKit
             if (isMaintainDeviceCommand != true && is_exist)
             {
                 route_distance = guideQuickSearch.totalCost;
+                guideSections = guideQuickSearch.GuideSections;
                 //DebugParameter.GuideQuickSearchTimes++;
                 return guideQuickSearch.isWalker;
             }
             else
             {
 
-                string[] route = DownstreamSearchSection
+                //string[] route = DownstreamSearchSection
+                //                     (from_adr, to_adr, 1);
+                string[] route = tryGetDownstreamSearchSection
                                      (from_adr, to_adr, 1);
                 if (SCUtility.isEmpty(route[0]))
                 {
                     route_distance = double.MaxValue;
+                    guideSections = new string[0];
                     return false;
                 }
                 string[] AllRoute = route[1].Split(';');
@@ -747,13 +776,16 @@ namespace RouteKit
                 if (routeDetailAndDistance.Count > 0)
                 {
                     //route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
-                    route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
+                    var route_detail_and_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                    route_distance = route_detail_and_distance.Value;
+                    guideSections = route_detail_and_distance.Key;
                     isWalkable = true;
-                    dicGuideQuickSearch.TryAdd(key, new GuideQuickSearch(isWalkable, route_distance));
+                    dicGuideQuickSearch.TryAdd(key, new GuideQuickSearch(isWalkable, route_distance, guideSections));
                 }
                 else
                 {
                     route_distance = double.MaxValue;
+                    guideSections = new string[0];
                     isWalkable = false;
                 }
                 //else
@@ -844,9 +876,12 @@ namespace RouteKit
                 if (routeDetailAndDistance.Count > 0)
                 {
                     //route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
-                    route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
+                    //route_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault().Value;
+                    var route_detail_and_distance = routeDetailAndDistance.OrderBy(keyValue => keyValue.Value).FirstOrDefault();
+                    route_distance = route_detail_and_distance.Value;
+                    var guideSections = route_detail_and_distance.Key;
                     isWalkable = true;
-                    dicGuideQuickSearchForMCS.TryAdd(key, new GuideQuickSearch(isWalkable, route_distance));
+                    dicGuideQuickSearchForMCS.TryAdd(key, new GuideQuickSearch(isWalkable, route_distance, guideSections));
                 }
                 else
                 {

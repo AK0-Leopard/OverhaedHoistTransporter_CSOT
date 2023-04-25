@@ -499,11 +499,14 @@ namespace com.mirle.ibg3k0.sc.BLL
             isSuccsess = isSuccsess && iBSEMDriver.S6F11SendTransferAbortFailed(cmdID, reportqueues);
             return isSuccsess;
         }
-        public bool newReportTransferCommandAbortFinish(string vhID, List<AMCSREPORTQUEUE> reportqueues)
+        public bool newReportTransferCommandAbortFinish(string vhID, List<AMCSREPORTQUEUE> reportqueues, bool isCommandCompleteBySpecialCancel)
         {
             bool isSuccsess = true;
-            isSuccsess = isSuccsess && iBSEMDriver.S6F11SendTransferAbortCompleted(vhID, reportqueues);
-            isSuccsess = isSuccsess && iBSEMDriver.S6F11SendVehicleUnassinged(vhID, reportqueues);
+            if (!isCommandCompleteBySpecialCancel)
+            {
+                isSuccsess = isSuccsess && iBSEMDriver.S6F11SendTransferAbortCompleted(vhID, reportqueues);
+                isSuccsess = isSuccsess && iBSEMDriver.S6F11SendVehicleUnassinged(vhID, reportqueues);
+            }
             return isSuccsess;
         }
         public bool newReportTransferCommandPaused(string vhID, List<AMCSREPORTQUEUE> reportqueues)

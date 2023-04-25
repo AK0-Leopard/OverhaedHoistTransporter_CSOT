@@ -57,51 +57,51 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
 
 
-        public bool tryFindCycleZone(AVEHICLE vh, out ACYCLEZONEMASTER bestCycleZone)
-        {
-            bestCycleZone = null;
-            bool isFind = false;
-            //DBConnection_EF con = DBConnection_EF.GetContext();
-            //using (DBConnection_EF con = new DBConnection_EF())
-            using (DBConnection_EF con = DBConnection_EF.GetUContext())
-            {
-                //List<ACYCLEZONEMASTER> HasCycleSpaceZoneMaster = cycleZoneMasterDao.loadByCycleTypeIDAndHasCycleSpace
-                //    (con, scApp.getEQObjCacheManager().getLine().Currnet_Cycle_Type);
-                List<ACYCLEZONEMASTER> HasCycleSpaceZoneMaster = loadByCycleTypeIDAndHasCycleSpace
-                    (scApp.getEQObjCacheManager().getLine().Currnet_Cycle_Type);
-                if (HasCycleSpaceZoneMaster != null)
-                {
-                    List<KeyValuePair<ACYCLEZONEMASTER, double>> lstCycleZoneMasterAndDis =
-                        new List<KeyValuePair<ACYCLEZONEMASTER, double>>();
+        //public bool tryFindCycleZone(AVEHICLE vh, out ACYCLEZONEMASTER bestCycleZone)
+        //{
+        //    bestCycleZone = null;
+        //    bool isFind = false;
+        //    //DBConnection_EF con = DBConnection_EF.GetContext();
+        //    //using (DBConnection_EF con = new DBConnection_EF())
+        //    using (DBConnection_EF con = DBConnection_EF.GetUContext())
+        //    {
+        //        //List<ACYCLEZONEMASTER> HasCycleSpaceZoneMaster = cycleZoneMasterDao.loadByCycleTypeIDAndHasCycleSpace
+        //        //    (con, scApp.getEQObjCacheManager().getLine().Currnet_Cycle_Type);
+        //        List<ACYCLEZONEMASTER> HasCycleSpaceZoneMaster = loadByCycleTypeIDAndHasCycleSpace
+        //            (scApp.getEQObjCacheManager().getLine().Currnet_Cycle_Type);
+        //        if (HasCycleSpaceZoneMaster != null)
+        //        {
+        //            List<KeyValuePair<ACYCLEZONEMASTER, double>> lstCycleZoneMasterAndDis =
+        //                new List<KeyValuePair<ACYCLEZONEMASTER, double>>();
 
-                    foreach (ACYCLEZONEMASTER park_zone_master in HasCycleSpaceZoneMaster)
-                    {
+        //            foreach (ACYCLEZONEMASTER park_zone_master in HasCycleSpaceZoneMaster)
+        //            {
 
-                        string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
-                            (vh.NODE_ADR, park_zone_master.ENTRY_ADR_ID, 1);
-                        string[] minRoute_From2To = ReutrnFromAdr2ToAdr[0].Split('=');
+        //                string[] ReutrnFromAdr2ToAdr = scApp.RouteGuide.DownstreamSearchSection
+        //                    (vh.NODE_ADR, park_zone_master.ENTRY_ADR_ID, 1);
+        //                string[] minRoute_From2To = ReutrnFromAdr2ToAdr[0].Split('=');
 
-                        double distance = 0;
-                        if (double.TryParse(minRoute_From2To[1], out distance))
-                        {
-                            lstCycleZoneMasterAndDis.Add
-                                (new KeyValuePair<ACYCLEZONEMASTER, double>(park_zone_master, distance));
-                        }
-                        else
-                        {
-                            lstCycleZoneMasterAndDis.Add
-                                (new KeyValuePair<ACYCLEZONEMASTER, double>(park_zone_master, double.MaxValue));
-                        }
-                    }
-                    if (lstCycleZoneMasterAndDis.Count > 0)
-                    {
-                        bestCycleZone = lstCycleZoneMasterAndDis.OrderBy(o => o.Value).First().Key;
-                        isFind = true;
-                    }
-                }
-            }
-            return isFind;
-        }
+        //                double distance = 0;
+        //                if (double.TryParse(minRoute_From2To[1], out distance))
+        //                {
+        //                    lstCycleZoneMasterAndDis.Add
+        //                        (new KeyValuePair<ACYCLEZONEMASTER, double>(park_zone_master, distance));
+        //                }
+        //                else
+        //                {
+        //                    lstCycleZoneMasterAndDis.Add
+        //                        (new KeyValuePair<ACYCLEZONEMASTER, double>(park_zone_master, double.MaxValue));
+        //                }
+        //            }
+        //            if (lstCycleZoneMasterAndDis.Count > 0)
+        //            {
+        //                bestCycleZone = lstCycleZoneMasterAndDis.OrderBy(o => o.Value).First().Key;
+        //                isFind = true;
+        //            }
+        //        }
+        //    }
+        //    return isFind;
+        //}
 
         public List<ACYCLEZONEMASTER> loadCycleRunMasterByCurrentCycleTypeID(string cyc_zone_type_id)
         {

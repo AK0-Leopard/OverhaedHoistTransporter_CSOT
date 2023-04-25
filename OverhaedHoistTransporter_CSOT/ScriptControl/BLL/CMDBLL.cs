@@ -25,6 +25,7 @@ using com.mirle.ibg3k0.sc.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using com.mirle.ibg3k0.sc.Service;
+using Mirle.Protos.ReserveModule;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -621,7 +622,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
         }
         public const int CMD_MCS_TOP_PRIORITY = 9999;
-     
+
         public bool updateCMD_MCS_PrioritySUMRestoreToOriginalPriority(string cmdID)
         {
             bool isSuccess = true;
@@ -979,7 +980,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 cmd.COMMANDSTATE >= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE &&
                 //cmd.COMMANDSTATE <= ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_COMPLETE &&
                 cmd.COMMANDSTATE < ACMD_MCS.COMMAND_STATUS_BIT_INDEX_LOAD_ARRIVE &&
-                !SCUtility.isMatche(cmd.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT)).
+                //!SCUtility.isMatche(cmd.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_SHIFT)).
+                SCUtility.isEmpty(cmd.PAUSEFLAG)).
                 ToList();
             return cmds_mcs;
         }
@@ -3454,7 +3456,8 @@ namespace com.mirle.ibg3k0.sc.BLL
         private string[] tryGetDownstreamSearchSection_FromSecToAdr
             (string fromSec, string toAdr, int flag, bool isIgnoreStatus = false)
         {
-            List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
             string[] route = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
                              (fromSec, toAdr, flag, isIgnoreStatus, busy_segment);
             if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
@@ -3467,7 +3470,8 @@ namespace com.mirle.ibg3k0.sc.BLL
         private string[] tryGetDownstreamSearchSection
            (string startAdr, string endAdr, int flag, bool isIgnoreStatus = false)
         {
-            List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
             string[] route = scApp.RouteGuide.DownstreamSearchSection
                              (startAdr, endAdr, flag, isIgnoreStatus, busy_segment);
 
@@ -3481,7 +3485,8 @@ namespace com.mirle.ibg3k0.sc.BLL
         private string[] tryGetDownstreamSearchSection_FromSecToSec
            (string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false)
         {
-            List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
+            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
             string[] route = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
                              (fromSec, toSec, flag, false, isIgnoreStatus, busy_segment);
 
@@ -4036,7 +4041,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 app = _app;
             }
             const int CAN_PASS_VH_LIMIT_COUNT = 3;
-            public List<string> loadBusySection()
+            private List<string> loadBusySection()
             {
                 SegmentBLL segmentBLL = app.SegmentBLL;
                 PortStationBLL portStationBLL = app.PortStationBLL;
@@ -4082,6 +4087,44 @@ namespace com.mirle.ibg3k0.sc.BLL
                     return seg.Sections[0].SEC_ID;
                 }).ToList();
                 return busy_section;
+            }
+            private List<string> loadErrorVhSections()
+            {
+                var error_vhs = app.VehicleBLL.cache.loadErrorVhs();
+                recordCurrentErrorVhAndSection(error_vhs);
+                var error_vh_on_sections = error_vhs.Select(v => SCUtility.Trim(v.CUR_SEC_ID, true)).ToList();
+                return error_vh_on_sections;
+            }
+
+            private void recordCurrentErrorVhAndSection(List<AVEHICLE> error_vhs)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (AVEHICLE errorVh in error_vhs)
+                {
+                    sb.AppendLine($"error vh:{errorVh.VEHICLE_ID} on section:{errorVh.CUR_SEC_ID}");
+                }
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
+                Data: $"目前異常車輛與所在Section:{sb.ToString()}");
+            }
+
+            public List<string> loadUnwalkableSections()
+            {
+                List<string> unwalkable_sections = new List<string>();
+                if (DebugParameter.IsOpneChangeGuideSection)
+                {
+                    var error_vh_on_sections = loadErrorVhSections();
+                    if (error_vh_on_sections.Any())
+                    {
+                        unwalkable_sections.AddRange(error_vh_on_sections);
+                    }
+                }
+
+                var busy_sections = loadBusySection();
+                if (busy_sections.Any())
+                {
+                    unwalkable_sections.AddRange(busy_sections);
+                }
+                return unwalkable_sections;
             }
 
 
