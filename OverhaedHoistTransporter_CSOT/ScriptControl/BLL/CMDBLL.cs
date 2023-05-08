@@ -3328,7 +3328,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 case E_ADR_TYPE.Address:
                 case E_ADR_TYPE.Port:
                     //if (!SCUtility.isEmpty(acmd_ohtc.SOURCE) && !SCUtility.isMatche(acmd_ohtc.SOURCE, vehicle.CUR_ADR_ID))
-                    if (needVh2FromAddressOfGuide(acmd_ohtc, vehicle))
+                    //if (needVh2FromAddressOfGuide(acmd_ohtc, vehicle))
+                    if (needVh2FromAddressOfGuideNew(acmd_ohtc, vehicle))
                     //if (!SCUtility.isMatche(acmd_ohtc.SOURCE, vehicle.CUR_ADR_ID) ||
                     //    (!SCUtility.isEmpty(acmd_ohtc.SOURCE) && vehicle.HAS_CST == 0))
                     {
@@ -3384,6 +3385,36 @@ namespace com.mirle.ibg3k0.sc.BLL
                                         //(from_adr.ADR_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
                                         ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection
                                         (from_adr.ADR_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                    }
+                                    else
+                                    {
+                                        //如果to adr 剛好是vh的current adr，則需要判斷車子的距離是否為0
+                                        //是的話才可以下達原地unload，不然就需要規劃繞一圈的命令
+                                        if (SCUtility.isMatche(vehicle.CUR_ADR_ID, to_adr.ADR_ID))
+                                        {
+                                            if (vehicle.ACC_SEC_DIST == 0)
+                                            {
+                                                //不用規劃From 到 To的路線
+                                            }
+                                            else
+                                            {
+                                                ASECTION vh_on_section_of_obj = scApp.SectionBLL.cache.GetSection(vehicle.CUR_SEC_ID);
+                                                if(vh_on_section_of_obj!= null && SCUtility.isMatche(vh_on_section_of_obj.TO_ADR_ID, to_adr.ADR_ID))
+                                                {
+                                                    //不用規劃From 到 To的路線
+                                                }
+                                                else
+                                                {
+                                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
+                                                       Data: $"由於Section dist:{vehicle.ACC_SEC_DIST}，因此在計算路徑時，使用Vehicle current section 計算:{vehicle.CUR_SEC_ID} _3",
+                                                       VehicleID: vehicle?.VEHICLE_ID,
+                                                       CarrierID: vehicle?.CST_ID);
+
+                                                    ReutrnFromAdr2ToAdr = tryGetDownstreamSearchSection_FromSecToAdr
+                                                    (vehicle.CUR_SEC_ID, to_adr.ADR_ID, 1, isIgnoreSegStatus);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 //if (vehicle.HAS_CST == 0)
@@ -3453,6 +3484,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 , sFromAdr2ToAdr));
 
         }
+
+
         private string[] tryGetDownstreamSearchSection_FromSecToAdr
             (string fromSec, string toAdr, int flag, bool isIgnoreStatus = false)
         {
@@ -3533,6 +3566,35 @@ namespace com.mirle.ibg3k0.sc.BLL
                 //}
             }
             return is_need;
+        }
+        private bool needVh2FromAddressOfGuideNew(ACMD_OHTC acmd_ohtc, AVEHICLE vehicle)
+        {
+            string cmd_source_adr = acmd_ohtc.SOURCE;
+            string vh_current_adr = vehicle.CUR_ADR_ID;
+            double vh_sec_dist = vehicle.ACC_SEC_DIST;
+
+
+            if (SCUtility.isEmpty(cmd_source_adr)
+           || (!SCUtility.isEmpty(cmd_source_adr) && vehicle.HAS_CST == 1))
+            {
+                return false;
+            }
+
+            if (SCUtility.isMatche(cmd_source_adr, vh_current_adr))
+            {
+                if (vh_sec_dist == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
         //private bool isVhInSectionStartingPoint(AVEHICLE vh)
         //{
