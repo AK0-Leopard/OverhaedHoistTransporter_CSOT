@@ -395,7 +395,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 HOSTDESTINATION = HostDestination,
                 PRIORITY = Priority,
                 CHECKCODE = checkcode,
-                PAUSEFLAG = "0",
+                //PAUSEFLAG = "0",
+                PAUSEFLAG = string.Empty,
                 CMD_INSER_TIME = DateTime.Now,
                 TIME_PRIORITY = 0,
                 PORT_PRIORITY = port_priority,
@@ -4148,8 +4149,20 @@ namespace com.mirle.ibg3k0.sc.BLL
                     if (seg.Sections == null || seg.Sections.Count == 0) return "";
                     return seg.Sections[0].SEC_ID;
                 }).ToList();
+                recordCurrentBusySection(busy_section);
                 return busy_section;
             }
+            private void recordCurrentBusySection(List<string> busySections)
+            {
+                if (busySections == null || !busySections.Any())
+                {
+                    return;
+                }
+                string s_busy_section_ids= string.Join(",", busySections);
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
+                Data: $"目前busy Section:{s_busy_section_ids}");
+            }
+
             private List<string> loadErrorVhSections()
             {
                 var error_vhs = app.VehicleBLL.cache.loadErrorVhs();
@@ -4160,6 +4173,10 @@ namespace com.mirle.ibg3k0.sc.BLL
 
             private void recordCurrentErrorVhAndSection(List<AVEHICLE> error_vhs)
             {
+                if (error_vhs == null || !error_vhs.Any())
+                {
+                    return;
+                }
                 StringBuilder sb = new StringBuilder();
                 foreach (AVEHICLE errorVh in error_vhs)
                 {

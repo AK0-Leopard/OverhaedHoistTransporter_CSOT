@@ -2762,7 +2762,7 @@ namespace com.mirle.ibg3k0.sc.Service
             {
                 if (!DebugParameter.IsOpneChangeGuideSection)
                 {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"change guide section funcion is close.",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);
@@ -2777,7 +2777,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 //if (original_pass_section_ids == null || original_pass_section_ids.Count == 0)
                 if (!try_get_current_guide_section.hasInfo)
                 {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"Want to check guide section has change,but wiil pass section is null.",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);
@@ -2788,7 +2788,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 ASECTION will_pass_final_sec = scApp.SectionBLL.cache.GetSection(will_pass_final_sec_id);
                 if (will_pass_final_sec == null)
                 {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"Want to check guide section has change,but final section:{will_pass_final_sec_id} not exist.",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);
@@ -2803,7 +2803,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     List<string> exceptResult = new_guide_section_ids.Except(try_get_current_guide_section.currentGuideSection).ToList();
                     if (exceptResult.Count == 0)
                     {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                            Data: $"Want to check guide section has change,result:[No change].",
                            VehicleID: vh.VEHICLE_ID,
                            CarrierID: vh.CST_ID);
@@ -2816,7 +2816,7 @@ namespace com.mirle.ibg3k0.sc.Service
                         //string s_except_guide_section = string.Join(",", original_pass_section_ids);
                         string s_original_guide_section = string.Join(",", try_get_current_guide_section.currentGuideSection);
                         string s_except_guide_section = string.Join(",", exceptResult);
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                            Data: $"Want to check guide section has change,result:[Is diff]." +
                                  $"new:{s_new_guide_section},original:{s_original_guide_section},except:{s_except_guide_section}",
                            VehicleID: vh.VEHICLE_ID,
@@ -2826,7 +2826,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 else
                 {
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"Want to check guide section has change,result:[No guide section to go].",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);

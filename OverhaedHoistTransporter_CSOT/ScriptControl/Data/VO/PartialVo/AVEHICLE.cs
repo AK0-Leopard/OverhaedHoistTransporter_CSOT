@@ -371,7 +371,6 @@ namespace com.mirle.ibg3k0.sc
                     case EventType.Vhunloading:
                         sw_speed.Restart();
                         break;
-
                 }
             }
         }
