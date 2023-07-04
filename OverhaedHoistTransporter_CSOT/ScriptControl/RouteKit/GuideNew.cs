@@ -675,28 +675,28 @@ namespace RouteKit
         public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand)
         {
             //KeyValuePair<string[], double> route_distance;
-            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out double route_distance, out var guideSections);
+            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, isRecalculate: false, out double route_distance, out var guideSections);
         }
         //public bool checkRoadIsWalkable(string from_adr, string to_adr, out KeyValuePair<string[], double> route_distance)
         public bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance)
         {
-            return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance, out var guideSections);
+            return checkRoadIsWalkable(from_adr, to_adr, false, isRecalculate: false, out route_distance, out var guideSections);
         }
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, out double route_distance, out string[] route_sections)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isRecalculate, out double route_distance, out string[] route_sections)
         {
-            return checkRoadIsWalkable(from_adr, to_adr, false, out route_distance, out route_sections);
+            return checkRoadIsWalkable(from_adr, to_adr, false, isRecalculate: isRecalculate, out route_distance, out route_sections);
         }
         public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance)
         {
-            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, out route_distance, out var route_sections);
+            return checkRoadIsWalkable(from_adr, to_adr, isMaintainDeviceCommand, isRecalculate: false, out route_distance, out var route_sections);
         }
         //public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out KeyValuePair<string[], double> route_distance)
-        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, out double route_distance, out string[] guideSections)
+        public bool checkRoadIsWalkable(string from_adr, string to_adr, bool isMaintainDeviceCommand, bool isRecalculate, out double route_distance, out string[] guideSections)
         {
             //route_distance = double.MaxValue;
             string key = $"{SCUtility.Trim(from_adr, true)},{SCUtility.Trim(to_adr, true)}";
             bool is_exist = dicGuideQuickSearch.TryGetValue(key, out GuideQuickSearch guideQuickSearch);
-            if (isMaintainDeviceCommand != true && is_exist)
+            if (isMaintainDeviceCommand != true && is_exist && !isRecalculate)
             {
                 route_distance = guideQuickSearch.totalCost;
                 guideSections = guideQuickSearch.GuideSections;
@@ -1067,7 +1067,7 @@ namespace RouteKit
             if (from_addr == to_addr)
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(GuideNew), Device: "OHT",
-Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] is the same ，return empty result");
+        Data: $"Dijkstra algorithm find path. From Adr: [{from_addr}] To Adr: [{to_addr}] is the same ，return empty result");
                 return new List<RouteInfo>();
             }
 

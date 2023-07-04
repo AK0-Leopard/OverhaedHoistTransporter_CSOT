@@ -2796,7 +2796,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 string req_sec_form_adr = req_sec.FROM_ADR_ID;
                 string target_adr = will_pass_final_sec.TO_ADR_ID;
-                bool is_walkable = scApp.RouteGuide.checkRoadIsWalkable(req_sec_form_adr, target_adr, out var route_distance, out string[] routeSection);
+                bool is_walkable = scApp.RouteGuide.checkRoadIsWalkable(req_sec_form_adr, target_adr, false, out var route_distance, out string[] routeSection);
                 if (is_walkable)
                 {
                     List<string> new_guide_section_ids = routeSection.ToList();
@@ -2821,7 +2821,16 @@ namespace com.mirle.ibg3k0.sc.Service
                                  $"new:{s_new_guide_section},original:{s_original_guide_section},except:{s_except_guide_section}",
                            VehicleID: vh.VEHICLE_ID,
                            CarrierID: vh.CST_ID);
-                        return true;
+
+                        if (DoubleCheckGuideSectionHasChange(vh, try_get_current_guide_section.currentGuideSection, req_sec_form_adr, target_adr))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+
                     }
                 }
                 else
@@ -2839,6 +2848,45 @@ namespace com.mirle.ibg3k0.sc.Service
                 return false;
             }
         }
+
+        private bool DoubleCheckGuideSectionHasChange(AVEHICLE vh, IEnumerable<string> currentGuideSection, string reqSecFormAdr, string targetAdr)
+        {
+            bool is_walkable = scApp.RouteGuide.checkRoadIsWalkable(reqSecFormAdr, targetAdr, true, out var route_distance, out string[] routeSection);
+            if (is_walkable)
+            {
+                List<string> new_guide_section_ids = routeSection.ToList();
+                List<string> exceptResult = new_guide_section_ids.Except(currentGuideSection).ToList();
+                if (exceptResult.Count == 0)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"Double check guide section has change,result:[No change].",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                    return false;
+                }
+                else
+                {
+                    string s_new_guide_section = string.Join(",", new_guide_section_ids);
+                    string s_original_guide_section = string.Join(",", currentGuideSection);
+                    string s_except_guide_section = string.Join(",", exceptResult);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"Double check guide section has change,result:[Is diff]." +
+                             $"new:{s_new_guide_section},original:{s_original_guide_section},except:{s_except_guide_section}",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                    return true;
+                }
+            }
+            else
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"Double check guide section has change,result:[No guide section to go].",
+                   VehicleID: vh.VEHICLE_ID,
+                   CarrierID: vh.CST_ID);
+                return false;
+            }
+        }
+
         private bool StartProcessCommandInterruptByChangeGuideSection(AVEHICLE eqpt)
         {
             try
@@ -5199,7 +5247,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     {
                         //isSuccess = scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id);
                         //isSuccess &= scApp.VehicleBLL.doTransferCommandFinish(eqpt.VEHICLE_ID, cmd_id, completeStatus);
-                        if (chcek_is_special_cancel_command_result.isSpecial)
+                        if (is_mcs_command_and_excuting && chcek_is_special_cancel_command_result.isSpecial)
                         {
                             switch (chcek_is_special_cancel_command_result.cancelType)
                             {
