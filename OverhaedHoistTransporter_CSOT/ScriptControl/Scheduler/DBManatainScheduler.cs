@@ -143,19 +143,22 @@ namespace com.mirle.ibg3k0.sc.Scheduler
         }
         private void DeleteHCMD_MCS()
         {
-            var hcmd_mcs_list = scApp.CMDBLL.loadHCMD_MCSBefore6Months();
-            if (hcmd_mcs_list != null && hcmd_mcs_list.Count > 0)
-            {
-                scApp.CMDBLL.RemoteHCMD_MCSByBatch(hcmd_mcs_list); ;
-            }
+            //var hcmd_mcs_list = scApp.CMDBLL.loadHCMD_MCSBefore6Months();
+            //if (hcmd_mcs_list != null && hcmd_mcs_list.Count > 0)
+            //{
+            //    scApp.CMDBLL.RemoteHCMD_MCSByBatch(hcmd_mcs_list); ;
+            //}
+            scApp.CMDBLL.RemoteHCMD_MCSBefore6MonthByBatch();
         }
         private void DeleteHCMD_OHTC()
         {
-            var hcmd_ohtc_list = scApp.CMDBLL.loadHCMD_OHTCBefore6Months();
-            if (hcmd_ohtc_list != null && hcmd_ohtc_list.Count > 0)
-            {
-                scApp.CMDBLL.RemoteHCMD_OHTCByBatch(hcmd_ohtc_list); ;
-            }
+            //var hcmd_ohtc_list = scApp.CMDBLL.loadHCMD_OHTCBefore6Months();
+            //if (hcmd_ohtc_list != null && hcmd_ohtc_list.Count > 0)
+            //{
+            //    scApp.CMDBLL.RemoteHCMD_OHTCByBatch(hcmd_ohtc_list); ;
+            //}
+            scApp.CMDBLL.RemoteHCMD_OHTCBefore6MonthByBatch();
+
         }
 
     }

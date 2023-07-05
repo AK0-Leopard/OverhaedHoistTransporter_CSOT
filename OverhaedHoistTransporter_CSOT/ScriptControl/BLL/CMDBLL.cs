@@ -4066,6 +4066,14 @@ namespace com.mirle.ibg3k0.sc.BLL
                 hcmd_mcsDao.RemoteByBatch(con, hCmdMcs);
             }
         }
+        public void RemoteHCMD_MCSBefore6MonthByBatch()
+        {
+            DateTime date_teime_before_6_month = DateTime.Now.AddMonths(-6);
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                hcmd_mcsDao.RemoteByBatch(con, date_teime_before_6_month);
+            }
+        }
         #endregion HCMD_MCS
         #region HCMD_OHTC
         public void CreatHCMD_OHTCs(List<HCMD_OHTC> HCMD_OHTC)
@@ -4092,6 +4100,19 @@ namespace com.mirle.ibg3k0.sc.BLL
                 hcmd_ohtcDao.RemoteByBatch(con, hcmdOHTC);
             }
         }
+
+        public void RemoteHCMD_OHTCBefore6MonthByBatch()
+        {
+            DateTime date_teime_before_6_month = DateTime.Now.AddMonths(-6);
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                hcmd_ohtcDao.RemoteByBatch(con, date_teime_before_6_month);
+            }
+        }
+
+
+
+
 
         #endregion HCMD_OHTC
 

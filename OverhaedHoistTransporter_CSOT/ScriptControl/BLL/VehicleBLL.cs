@@ -1965,7 +1965,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     scApp.MapBLL.getAddressID(hostdest, out string to_adr);
 
                     bool is_creat_success = SpinWait.SpinUntil(() => vh.ACT_STATUS == VHActionStatus.NoCommand, MAX_WAIT_VH_NO_COMMAND_TIME_MS);
-                    if(is_creat_success)
+                    if (is_creat_success)
                     {
                         is_creat_success = scApp.CMDBLL.doCreatTransferCommand(vh.VEHICLE_ID, cmd_mcs.CMD_ID, cmd_mcs.CARRIER_ID,
                                          E_CMD_TYPE.Unload,
@@ -3216,6 +3216,12 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return vh;
             }
 
+            public List<AVEHICLE> loadCommandingVhs()
+            {
+                var vhs = eqObjCacheManager.getAllVehicle();
+                vhs = vhs.Where(vh => vh.isTcpIpConnect && vh.ACT_STATUS == VHActionStatus.Commanding).ToList();
+                return vhs;
+            }
 
 
 

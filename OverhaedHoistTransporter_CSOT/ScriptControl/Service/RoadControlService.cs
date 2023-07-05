@@ -379,24 +379,77 @@ namespace com.mirle.ibg3k0.sc.Service
             doEnableDisableSegment(segment_location, E_PORT_STATUS.OutOfService, ASEGMENT.DisableType.Safety, Data.SECS.CSOT.SECSConst.LANECUTTYPE_LaneCutOnHMI);
 
             //當CV的門突然被開啟時，要即將經過該CV所在的VH下達Pause的命令
-            List<string> will_be_pass_cmd_ids = null;
-            bool has_cmd_will_pass = CMDBLL.HasCmdWillPassSegment(segment_location, out will_be_pass_cmd_ids);
-            if (has_cmd_will_pass)
+            var find_result = FindWillPassVhBySegment(segment_location);
+            if (!find_result.isFind)
             {
-                foreach (string cmd_id in will_be_pass_cmd_ids)
-                {
-                    ACMD_OHTC cmd_obj = CMDBLL.getExcuteCMD_OHTCByCmdID(cmd_id);
-                    if (cmd_obj != null)
-                    {
-                        //要改成一直下達pause命令，直到OHT回復成功為止。
-                        Task.Run(() => ProcessUrgentPauseBySafty(cmd_obj.VH_ID));
-                    }
-                }
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(RoadControlService), Device: "OHxC",
+                         Data: $"Start process ohcv node id:{node?.NODE_ID} abnormal scenario,no find will pass vh.",
+                         VehicleID: node?.NODE_ID);
+                return;
             }
+            foreach (var v in find_result.willPassVh)
+            {
+                Task.Run(() => ProcessUrgentPauseBySafty(v.VEHICLE_ID));
+            }
+
+            //List<string> will_be_pass_cmd_ids = null;
+            //bool has_cmd_will_pass = CMDBLL.HasCmdWillPassSegment(segment_location, out will_be_pass_cmd_ids);
+            //if (has_cmd_will_pass)
+            //{
+            //    foreach (string cmd_id in will_be_pass_cmd_ids)
+            //    {
+            //        ACMD_OHTC cmd_obj = CMDBLL.getExcuteCMD_OHTCByCmdID(cmd_id);
+            //        if (cmd_obj != null)
+            //        {
+            //            //要改成一直下達pause命令，直到OHT回復成功為止。
+            //            Task.Run(() => ProcessUrgentPauseBySafty(cmd_obj.VH_ID));
+            //        }
+            //    }
+            //}
             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(RoadControlService), Device: "OHxC",
                      Data: $"End process ohcv node id:{node?.NODE_ID} abnormal scenario.",
                      VehicleID: node?.NODE_ID);
 
+        }
+        private (bool isFind, List<AVEHICLE> willPassVh) FindWillPassVhBySegment(string segment_id)
+        {
+            try
+            {
+                List<AVEHICLE> all_commanding_vhs = VehicleBLL.cache.loadCommandingVhs();
+                var on_segment_sections = SectionBLL.cache.GetSectionsByToSegment(segment_id);
+                var will_pass_vh_list = all_commanding_vhs.Where(v => IsVhWillPass(v, on_segment_sections)).ToList();
+                return (will_pass_vh_list.Any(), will_pass_vh_list);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return (false, null);
+            }
+        }
+        private bool IsVhWillPass(AVEHICLE vh, List<ASECTION> sections)
+        {
+            var get_cur_guide_section_result = vh.tryGetCurrentGuideSection();
+            if (!get_cur_guide_section_result.hasInfo)
+            {
+                return false;
+            }
+            var current_guide_section = get_cur_guide_section_result.currentGuideSection;
+            int cur_section_index = current_guide_section.IndexOf(vh.CUR_SEC_ID);
+            if (cur_section_index < -1)
+            {
+                return false;
+            }
+
+            var sec_ids = sections.Select(sec => sec.SEC_ID).ToList();
+            for (int i = cur_section_index + 1; i < current_guide_section.Count; i++)
+            {
+                string sec_id = current_guide_section[i];
+                if (sec_ids.Contains(sec_id))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void ProcessUrgentPauseBySafty(string vhID)
@@ -498,7 +551,7 @@ namespace com.mirle.ibg3k0.sc.Service
                                 {
                                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(RoadControlService), Device: "OHTC",
                                        Data: $"vh id:{pre_drive_away_vh.VEHICLE_ID} in pre-disable segment:{pre_disable_seg_id} ,but current status not allowed drive away." +
-                                       $"is connect:{pre_drive_away_vh.isTcpIpConnect },is error:{pre_drive_away_vh.IsError }, current assign ohtc cmd id:{pre_drive_away_vh.OHTC_CMD}.");
+                                       $"is connect:{pre_drive_away_vh.isTcpIpConnect},is error:{pre_drive_away_vh.IsError}, current assign ohtc cmd id:{pre_drive_away_vh.OHTC_CMD}.");
                                     continue;
                                 }
                                 else

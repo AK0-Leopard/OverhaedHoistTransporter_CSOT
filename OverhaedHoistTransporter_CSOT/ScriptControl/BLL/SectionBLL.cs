@@ -101,6 +101,14 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return result_sections;
             }
 
+            public List<ASECTION> GetSectionsByToSegment(string segmentID)
+            {
+                List<ASECTION> result_sections = CommObjCacheManager.getSections().
+                                                 Where(sec => SCUtility.isMatche(sec.SEG_NUM, segmentID)).
+                                                 ToList();
+                return result_sections;
+            }
+
 
 
             //public void VehicleEntrySection(string vhID, string secID)

@@ -1,4 +1,5 @@
-﻿using com.mirle.ibg3k0.sc.Data.SECS;
+﻿using com.mirle.ibg3k0.sc.App;
+using com.mirle.ibg3k0.sc.Data.SECS;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -29,6 +30,12 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
             hCmdMcss.ForEach(entity => con.Entry(entity).State = EntityState.Deleted);
             con.HCMD_MCS.RemoveRange(hCmdMcss);
             con.SaveChanges();
+        }
+        public void RemoteByBatch(DBConnection_EF con, DateTime deleteBeforeTime)
+        {
+            string sdelete_before_time = deleteBeforeTime.ToString(SCAppConstants.DateTimeFormat_22);
+            string sql = "DELETE [HCMD_MCS] WHERE [CMD_INSER_TIME] < {0}";
+            int result = con.Database.ExecuteSqlCommand(sql, sdelete_before_time);
         }
 
     }
