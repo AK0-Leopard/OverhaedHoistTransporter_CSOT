@@ -3400,7 +3400,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                                             else
                                             {
                                                 ASECTION vh_on_section_of_obj = scApp.SectionBLL.cache.GetSection(vehicle.CUR_SEC_ID);
-                                                if(vh_on_section_of_obj!= null && SCUtility.isMatche(vh_on_section_of_obj.TO_ADR_ID, to_adr.ADR_ID))
+                                                if (vh_on_section_of_obj != null && SCUtility.isMatche(vh_on_section_of_obj.TO_ADR_ID, to_adr.ADR_ID))
                                                 {
                                                     //不用規劃From 到 To的路線
                                                 }
@@ -3491,13 +3491,14 @@ namespace com.mirle.ibg3k0.sc.BLL
             (string fromSec, string toAdr, int flag, bool isIgnoreStatus = false)
         {
             //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
-            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            var unwalkable_sections = scApp.CMDBLL.cache.loadUnwalkableSections();
             string[] route = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
-                             (fromSec, toAdr, flag, isIgnoreStatus, busy_segment);
+                             (fromSec, toAdr, flag, isIgnoreStatus, unwalkable_sections.errorVhAndBusySections);
             if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
             {
                 route = scApp.RouteGuide.DownstreamSearchSection_FromSecToAdr
-                             (fromSec, toAdr, flag, isIgnoreStatus);
+                             (fromSec, toAdr, flag, isIgnoreStatus, unwalkable_sections.errorVhSections);
             }
             return route;
         }
@@ -3505,14 +3506,15 @@ namespace com.mirle.ibg3k0.sc.BLL
            (string startAdr, string endAdr, int flag, bool isIgnoreStatus = false)
         {
             //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
-            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            var unwalkable_sections = scApp.CMDBLL.cache.loadUnwalkableSections();
             string[] route = scApp.RouteGuide.DownstreamSearchSection
-                             (startAdr, endAdr, flag, isIgnoreStatus, busy_segment);
+                             (startAdr, endAdr, flag, isIgnoreStatus, unwalkable_sections.errorVhAndBusySections);
 
             if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
             {
                 route = scApp.RouteGuide.DownstreamSearchSection
-                             (startAdr, endAdr, flag, isIgnoreStatus);
+                             (startAdr, endAdr, flag, isIgnoreStatus, unwalkable_sections.errorVhSections);
             }
             return route;
         }
@@ -3520,14 +3522,16 @@ namespace com.mirle.ibg3k0.sc.BLL
            (string fromSec, string toSec, int flag, bool isIncludeLastSec, bool isIgnoreStatus = false)
         {
             //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
-            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            var unwalkable_sections = scApp.CMDBLL.cache.loadUnwalkableSections();
+
             string[] route = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
-                             (fromSec, toSec, flag, false, isIgnoreStatus, busy_segment);
+                             (fromSec, toSec, flag, false, isIgnoreStatus, unwalkable_sections.errorVhAndBusySections);
 
             if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
             {
                 route = scApp.RouteGuide.DownstreamSearchSection_FromSecToSec
-                             (fromSec, toSec, flag, false, isIgnoreStatus);
+                             (fromSec, toSec, flag, false, isIgnoreStatus, unwalkable_sections.errorVhSections);
             }
             return route;
         }
@@ -4179,7 +4183,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     return;
                 }
-                string s_busy_section_ids= string.Join(",", busySections);
+                string s_busy_section_ids = string.Join(",", busySections);
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: "OHx",
                 Data: $"目前busy Section:{s_busy_section_ids}");
             }
@@ -4207,8 +4211,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                 Data: $"目前異常車輛與所在Section:{sb.ToString()}");
             }
 
-            public List<string> loadUnwalkableSections()
+            public (List<string> errorVhAndBusySections, List<string> errorVhSections) loadUnwalkableSections()
             {
+                List<string> error_vh_sections = new List<string>();
                 List<string> unwalkable_sections = new List<string>();
                 if (DebugParameter.IsOpneChangeGuideSection)
                 {
@@ -4216,6 +4221,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     if (error_vh_on_sections.Any())
                     {
                         unwalkable_sections.AddRange(error_vh_on_sections);
+                        error_vh_sections.AddRange(error_vh_on_sections);
                     }
                 }
 
@@ -4224,8 +4230,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     unwalkable_sections.AddRange(busy_sections);
                 }
-                return unwalkable_sections;
+                return (unwalkable_sections, error_vh_sections);
             }
+
 
 
             public bool hasCMD_OHTC_Excute(string vhID)

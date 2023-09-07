@@ -176,14 +176,16 @@ namespace RouteKit
            (string startAdr, string endAdr, int flag, bool isIgnoreStatus = false)
         {
             //List<string> busy_segment = scApp.CMDBLL.cache.loadBusySection();
-            List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            //List<string> busy_segment = scApp.CMDBLL.cache.loadUnwalkableSections();
+            var unwalkable_sections = scApp.CMDBLL.cache.loadUnwalkableSections();
+
             string[] route = DownstreamSearchSection
-                             (startAdr, endAdr, flag, isIgnoreStatus, busy_segment);
+                             (startAdr, endAdr, flag, isIgnoreStatus, unwalkable_sections.errorVhAndBusySections);
 
             if (route == null || route.Count() == 0 || SCUtility.isEmpty(route[0]))
             {
                 route = DownstreamSearchSection
-                             (startAdr, endAdr, flag, isIgnoreStatus);
+                             (startAdr, endAdr, flag, isIgnoreStatus, unwalkable_sections.errorVhSections);
             }
             return route;
         }

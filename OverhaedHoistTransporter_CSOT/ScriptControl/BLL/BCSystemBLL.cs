@@ -192,10 +192,10 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     SystemParameter.setInitialHostMode(val);
                 }
-                else if (BCFUtility.isMatche(ecid, SCAppConstants.ECID_MAX_ALLOW_ACTION_TIME_SECOND))
-                {
-                    SystemParameter.setMaxAllowActionTime(Convert.ToInt16(val));
-                }
+                //else if (BCFUtility.isMatche(ecid, SCAppConstants.ECID_MAX_ALLOW_ACTION_TIME_SECOND))
+                //{
+                //    SystemParameter.setMaxAllowActionTime(Convert.ToInt16(val));
+                //}
                 else if (BCFUtility.isMatche(ecid, SCAppConstants.ECID_HEARTBEAT))
                 {
                     SystemParameter.setHeartBeatSec(Convert.ToInt32(val));

@@ -115,7 +115,8 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
                 //}
                 //var cmds = scApp.CMDBLL.loadUnfinishCMD_OHT();
                 var cmds = ACMD_OHTC.tryGetCMD_OHTCSList();
-                if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > AVEHICLE.MAX_ALLOW_ACTION_TIME_MILLISECOND)
+                //if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > AVEHICLE.MAX_ALLOW_ACTION_TIME_MILLISECOND)
+                if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > SystemParameter.MaxAllowActionTimeMilliSecond)
                 {
                     var currnet_excute_ids = getVhCurrentExcuteCommandID(vh, cmds);
                     Task.Run(() => vh.onLongTimeInaction(currnet_excute_ids));

@@ -775,6 +775,7 @@ namespace com.mirle.ibg3k0.sc.App
             SystemParameter.setIsEnableIDReadFailScenarioFlag(getBoolean("IsEnableIDReadFailScenario", false));
             SystemParameter.setMCSCommandAccumulateTimePriority(getInt("MCSCommandAccumulateTimePriority", 4));
             SystemParameter.setStopExcuteCommandShiftIdleVhCount(getInt("StopExcuteCommandShiftIdleVhCount", 0));
+            SystemParameter.setMaxAllowActionTime(getInt("MaxAllowActionTime", 1200000));
 
             initDao();      //Initial DAO
             initBLL();      //Initial BLL
@@ -982,13 +983,13 @@ namespace com.mirle.ibg3k0.sc.App
                         SystemParameter.setSECSConversactionTimeout(Convert.ToInt32(item.ECV));
                     }
                 }
-                else if (BCFUtility.isMatche(item.ECID, SCAppConstants.ECID_MAX_ALLOW_ACTION_TIME_SECOND))
-                {
-                    if (SystemParameter.MaxAllowActionTimeSec != Convert.ToInt32(item.ECV))
-                    {
-                        SystemParameter.setMaxAllowActionTime(Convert.ToInt32(item.ECV));
-                    }
-                }
+                //else if (BCFUtility.isMatche(item.ECID, SCAppConstants.ECID_MAX_ALLOW_ACTION_TIME_SECOND))
+                //{
+                //    if (SystemParameter.MaxAllowActionTimeSec != Convert.ToInt32(item.ECV))
+                //    {
+                //        SystemParameter.setMaxAllowActionTime(Convert.ToInt32(item.ECV));
+                //    }
+                //}
                 else if (BCFUtility.isMatche(item.ECID, SCAppConstants.ECID_HEARTBEAT))
                 {
                     try
@@ -2251,7 +2252,7 @@ namespace com.mirle.ibg3k0.sc.App
         /// <summary>
         /// The control state keep time sec
         /// </summary>
-        public static int MaxAllowActionTimeSec = 1200;
+        public static int MaxAllowActionTimeMilliSecond { get; private set; } = 1200_000;
         public static int ControlStateKeepTimeSec = 0;
 
         /// <summary>
@@ -2294,7 +2295,7 @@ namespace com.mirle.ibg3k0.sc.App
         /// <param name="allowTimeSec">The keep time sec.</param>
         public static void setMaxAllowActionTime(int allowTimeSec)
         {
-            MaxAllowActionTimeSec = allowTimeSec;
+            MaxAllowActionTimeMilliSecond = allowTimeSec;
         }
 
         /// <summary>
