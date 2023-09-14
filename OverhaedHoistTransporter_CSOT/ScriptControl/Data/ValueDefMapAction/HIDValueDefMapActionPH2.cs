@@ -149,25 +149,24 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 hid_info.WT_Source = function.WT_Source;
                 hid_info.Sigma_W_Source = function.Sigma_W_Source;
 
-        //hid_info.WR_Converted = function.WR_Converted;
-        //        hid_info.WS_Converted = function.WS_Converted;
-        //        hid_info.WT_Converted = function.WT_Converted;
-        //        hid_info.AR_Converted = function.AR_Converted;
-        //        hid_info.AS_Converted = function.AS_Converted;
-        //        hid_info.AT_Converted = function.AT_Converted;
-        //        hid_info.VR_Converted = function.VR_Converted;
-        //        hid_info.VS_Converted = function.VS_Converted;
-        //        hid_info.VT_Converted = function.VT_Converted;
-        //        hid_info.Hour_Negative_Converted = function.Hour_Negative_Converted;
-        //        hid_info.Hour_Positive_Converted = function.Hour_Positive_Converted;
-        //        hid_info.Hour_Sigma_Converted = function.Hour_Sigma_Converted;
-        //        hid_info.Sigma_W_Converted = function.Sigma_W_Converted;
-        //        hid_info.Sigma_A_Converted = function.Sigma_A_Converted;
-        //        hid_info.Sigma_V_Converted = function.Sigma_V_Converted;
+                //hid_info.WR_Converted = function.WR_Converted;
+                //        hid_info.WS_Converted = function.WS_Converted;
+                //        hid_info.WT_Converted = function.WT_Converted;
+                //        hid_info.AR_Converted = function.AR_Converted;
+                //        hid_info.AS_Converted = function.AS_Converted;
+                //        hid_info.AT_Converted = function.AT_Converted;
+                //        hid_info.VR_Converted = function.VR_Converted;
+                //        hid_info.VS_Converted = function.VS_Converted;
+                //        hid_info.VT_Converted = function.VT_Converted;
+                //        hid_info.Hour_Negative_Converted = function.Hour_Negative_Converted;
+                //        hid_info.Hour_Positive_Converted = function.Hour_Positive_Converted;
+                //        hid_info.Hour_Sigma_Converted = function.Hour_Sigma_Converted;
+                //        hid_info.Sigma_W_Converted = function.Sigma_W_Converted;
+                //        hid_info.Sigma_A_Converted = function.Sigma_A_Converted;
+                //        hid_info.Sigma_V_Converted = function.Sigma_V_Converted;
 
-        eqpt.HID_Info = hid_info;
+                eqpt.HID_Info = hid_info;
 
-                eqpt.Eq_Alive_Last_Change_time = DateTime.Now;
 
                 //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(EQStatusReport), Device: DEVICE_NAME_MTL,
                 //    XID: eqpt.EQPT_ID, Data: function.ToString());
@@ -183,17 +182,26 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 scApp.putFunBaseObj<HIDToOHxC_ChargeInfoPH2>(function);
             }
         }
-        //const string HID_IGBT_A_ALARM_CODE = "1";
-        //const string HID_IGBT_B_ALARM_CODE = "2";
-        //const string HID_TEMPERATURE_ALARM_CODE = "3";
-        //const string HID_POWER_ALARM_CODE = "4";
-        //const string HID_EMI_ALARM_CODE = "5";
-        //const string HID_SMOKE_ALARM_CODE = "6";
-        //const string HID_SAFE_CIRCUIT_ALARM_CODE = "7";
-        //const string HID_FAN_1_ALARM_CODE = "8";
-        //const string HID_FAN_2_ALARM_CODE = "9";
-        //const string HID_FAN_3_ALARM_CODE = "10";
-        //const string HID_TIMEOUT_ALARM_CODE = "11";
+        public virtual void HID_Alive(object sender, ValueChangedEventArgs args)
+        {
+            var function = scApp.getFunBaseObj<HIDToOHxC_AlivePH2>(eqpt.EQPT_ID) as HIDToOHxC_AlivePH2;
+            try
+            {
+                //1.建立各個Function物件
+                function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+
+                eqpt.Eq_Alive_Last_Change_time = DateTime.Now;
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<HIDToOHxC_AlivePH2>(function);
+            }
+        }
 
 
         const string HID_ALARM_1_CODE = "1";
@@ -600,6 +608,10 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             try
             {
                 ValueRead vr = null;
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "HID_TO_OHXC_ALIVE_PH2", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => HID_Alive(_sender, _e);
+                }
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "HID_TO_OHXC_TRIGGER_PH2", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => HID_ChargeInfo(_sender, _e);

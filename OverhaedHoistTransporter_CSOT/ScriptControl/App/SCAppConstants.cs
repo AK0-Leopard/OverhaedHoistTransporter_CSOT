@@ -516,6 +516,11 @@ namespace com.mirle.ibg3k0.sc.App
                 public const string OHTBlockingRelaseTimeout = "10001";
                 public const string OHTDisconnection = "10002";
             }
+            public class HID_Issue
+            {
+                public const string HIDOfAliveAbnormal = "10002";
+            }
+
         }
         #endregion Alarm
 

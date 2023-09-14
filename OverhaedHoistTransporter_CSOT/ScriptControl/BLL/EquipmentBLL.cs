@@ -274,6 +274,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                             FirstOrDefault();
                 return eqpt;
             }
+            public List<AEQPT> loadHIDEqpts()
+            {
+                var eqpts = eqObjCacheManager.getAllEquipment().
+                            Where(eq => eq.EQPT_ID.StartsWith("HID")).
+                            ToList();
+                return eqpts;
+            }
 
 
         }

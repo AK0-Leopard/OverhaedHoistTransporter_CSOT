@@ -594,6 +594,8 @@
     <Compile Include="Data\PLC_Functions\HIDToOHxC_Alarm_7.cs" />
     <Compile Include="Data\PLC_Functions\HIDToOHxC_Alarm_8.cs" />
     <Compile Include="Data\PLC_Functions\HIDToOHxC_Alarm_10.cs" />
+    <Compile Include="Data\PLC_Functions\HIDToOHxC_AlivePH2.cs" />
+    <Compile Include="Data\PLC_Functions\HIDToOHxC_Alive.cs" />
     <Compile Include="Data\PLC_Functions\HIDToOHxC_Alarm_9.cs" />
     <Compile Include="Data\PLC_Functions\HIDToOHxC_Alarm_2.cs" />
     <Compile Include="Data\PLC_Functions\HIDToOHxC_ChargeInfoPH2.cs" />

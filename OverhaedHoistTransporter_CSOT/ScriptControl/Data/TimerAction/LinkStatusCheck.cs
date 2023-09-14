@@ -87,13 +87,13 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
         /// <param name="obj">The object.</param>
         public override void doProcess(object obj)
         {
+            Task.Run(() => doCheckEQAliveStatus());
+
             if (System.Threading.Interlocked.Exchange(ref synPoint, 1) == 0)
             {
-
                 try
                 {
                     doCheckIPLinkStatus();
-                    doCheckEQAliveStatus();
                     scApp.CheckSystemEventHandler.CheckCheckSystemIsExist();
 
                     ALINE line = scApp.getEQObjCacheManager().getLine();

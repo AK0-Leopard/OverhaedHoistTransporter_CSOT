@@ -2959,8 +2959,22 @@ namespace com.mirle.ibg3k0.sc.Service
                     }
                     else
                     {
-                        doAbortCommand(eqpt, excute_ohtc_cmd_id, getResult.cancelType); //A0.01
-                        return true;
+                        //doAbortCommand(eqpt, excute_ohtc_cmd_id, getResult.cancelType); //A0.01
+                        bool is_success = doAbortCommand(eqpt, excute_ohtc_cmd_id, getResult.cancelType); //A0.01
+                        if (is_success)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $" cmd:{cmd_ohtc} 的改派流程成功(Only move)",
+                               VehicleID: eqpt.VEHICLE_ID);
+                            return true;
+                        }
+                        else
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $" cmd:{cmd_ohtc} 的改派流程失敗(Only move)",
+                               VehicleID: eqpt.VEHICLE_ID);
+                            return false;
+                        }
                     }
                 }
                 else
@@ -5338,6 +5352,8 @@ namespace com.mirle.ibg3k0.sc.Service
                        Data: $"vh id:{vh_id} vehicle abort happned,not excute remove all reserved section on command complete.",
                        VehicleID: eqpt.VEHICLE_ID,
                        CarrierID: eqpt.CST_ID);
+                    eqpt.PRE_SEC_ID = "";//如果車子是異常結束，不確定人員會如何移動車子，甚至可能將車子往後移
+                                         //因此需要將此欄位清空
                 }
                 else
                 {
@@ -6656,18 +6672,40 @@ namespace com.mirle.ibg3k0.sc.Service
                 if (is_success)
                 {
                     vh_vo.VechileRemove();
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"vh id:{vhID} remove success. start release reserved control...",
-                       VehicleID: vhID);
-                    scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_vo.VEHICLE_ID);
-                    scApp.ReserveBLL.RemoveVehicle(vh_vo.VEHICLE_ID);
-                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-                       Data: $"vh id:{vhID} remove success. end release reserved control.",
-                       VehicleID: vhID);
-                    scApp.LineService.ProcessAlarmReport(
-                        vh_vo.NODE_ID, vh_vo.VEHICLE_ID, vh_vo.Real_ID, "",
-                        SCAppConstants.SystemAlarmCode.OHT_Issue.OHTDisconnection,
-                        ProtocolFormat.OHTMessage.ErrorStatus.ErrReset);
+
+                    if (!vh_vo.isTcpIpConnect)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh id:{vhID} remove success. start try release reserved control...",
+                           VehicleID: vhID);
+                        initialVhPosition(vh_vo);
+
+                        scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_vo.VEHICLE_ID);
+                        scApp.ReserveBLL.RemoveVehicle(vh_vo.VEHICLE_ID);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh id:{vhID} remove success. end release reserved control.",
+                           VehicleID: vhID);
+                        scApp.LineService.ProcessAlarmReport(
+                            vh_vo.NODE_ID, vh_vo.VEHICLE_ID, vh_vo.Real_ID, "",
+                            SCAppConstants.SystemAlarmCode.OHT_Issue.OHTDisconnection,
+                            ProtocolFormat.OHTMessage.ErrorStatus.ErrReset);
+                    }
+                    else
+                    {
+                        if (vh_vo.isAuto)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                                          Data: $"vh id:{vhID} remove success. 但由於是Auto狀態，不進行路權及位置處理",
+                                                                                    VehicleID: vhID);
+                        }
+                        else
+                        {
+                            scApp.ReserveBLL.RemoveAllReservedSectionsByVehicleID(vh_vo.VEHICLE_ID);
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                                          Data: $"vh id:{vhID} remove success. 由於是非在AutoRemote中，進行路權清除",
+                                                                                    VehicleID: vhID);
+                        }
+                    }
                 }
                 List<AMCSREPORTQUEUE> reportqueues = new List<AMCSREPORTQUEUE>();
                 is_success = is_success && scApp.ReportBLL.newReportVehicleRemoved(vhID, reportqueues);
@@ -6680,6 +6718,23 @@ namespace com.mirle.ibg3k0.sc.Service
                    Data: ex,
                    VehicleID: vhID);
                 return (false, "");
+            }
+        }
+
+        private void initialVhPosition(AVEHICLE vh)
+        {
+            try
+            {
+                ID_134_TRANS_EVENT_REP recive_str = new ID_134_TRANS_EVENT_REP()
+                {
+                    CurrentAdrID = "",
+                    CurrentSecID = "",
+                };
+                scApp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, recive_str);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
             }
         }
 

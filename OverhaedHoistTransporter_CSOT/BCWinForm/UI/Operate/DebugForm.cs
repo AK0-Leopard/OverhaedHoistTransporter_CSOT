@@ -22,6 +22,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 {
     public partial class DebugForm : Form
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         BCMainForm mainForm;
         BCApplication bcApp;
@@ -1119,12 +1120,15 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         {
             try
             {
+                LogHelper.Log(logger: logger, LogLevel: NLog.LogLevel.Info, Class: nameof(DebugForm), Device: "OHx",
+                    Data: $"vh id:{vh_id} OP remove start.",
+                    VehicleID: vh_id);
 
-                if (!noticeCar.IS_INSTALLED)
-                {
-                    MessageBox.Show($"{vh_id} is removed ready!");
-                    return;
-                }
+                //if (!noticeCar.IS_INSTALLED)
+                //{
+                //    MessageBox.Show($"{vh_id} is removed ready!");
+                //    return;
+                //}
                 btn_changeToRemove.Enabled = false;
                 //await Task.Run(() => bcApp.SCApplication.VehicleService.Remove(vh_id));
                 (bool isSuccess, string result) check_result = default((bool isSuccess, string result));
@@ -1132,10 +1136,17 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 //MessageBox.Show($"{vh_id} remove ok");
                 if (check_result.isSuccess)
                 {
+                    LogHelper.Log(logger: logger, LogLevel: NLog.LogLevel.Info, Class: nameof(DebugForm), Device: "OHx",
+                        Data: $"vh id:{vh_id} OP remove success.",
+                        VehicleID: vh_id);
+
                     MessageBox.Show($"{vh_id} remove ok");
                 }
                 else
                 {
+                    LogHelper.Log(logger: logger, LogLevel: NLog.LogLevel.Info, Class: nameof(DebugForm), Device: "OHx",
+                        Data: $"vh id:{vh_id} OP remove fail,result:{check_result.result}.",
+                        VehicleID: vh_id);
                     MessageBox.Show($"{vh_id} remove fail.{Environment.NewLine}" +
                                     $"result:{check_result.result}");
                 }

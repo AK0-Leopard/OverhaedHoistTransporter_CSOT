@@ -121,11 +121,6 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
                 eqpt.HID_Info = function;
 
-                eqpt.Eq_Alive_Last_Change_time = DateTime.Now;
-
-                //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(EQStatusReport), Device: DEVICE_NAME_MTL,
-                //    XID: eqpt.EQPT_ID, Data: function.ToString());
-                //3.logical (include db save)
 
             }
             catch (Exception ex)
@@ -135,6 +130,26 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
             finally
             {
                 scApp.putFunBaseObj<HIDToOHxC_ChargeInfo>(function);
+            }
+        }
+        public virtual void HID_Alive(object sender, ValueChangedEventArgs args)
+        {
+            var function = scApp.getFunBaseObj<HIDToOHxC_Alive>(eqpt.EQPT_ID) as HIDToOHxC_Alive;
+            try
+            {
+                //1.建立各個Function物件
+                function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+
+                eqpt.Eq_Alive_Last_Change_time = DateTime.Now;
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<HIDToOHxC_Alive>(function);
             }
         }
         const string HID_IGBT_A_ALARM_CODE = "1";
@@ -538,6 +553,10 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "HID_TO_OHXC_TRIGGER", out vr))
                 {
                     vr.afterValueChange += (_sender, _e) => HID_ChargeInfo(_sender, _e);
+                }
+                if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "HID_TO_OHXC_ALIVE", out vr))
+                {
+                    vr.afterValueChange += (_sender, _e) => HID_Alive(_sender, _e);
                 }
 
                 if (bcfApp.tryGetReadValueEventstring(eqpt.EqptObjectCate, eqpt.EQPT_ID, "HID_TO_OHXC_IGBT_A_ALARM", out vr))

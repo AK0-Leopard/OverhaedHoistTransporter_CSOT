@@ -6,6 +6,8 @@ using com.mirle.ibg3k0.sc.Data;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using com.mirle.ibg3k0.Utility.ul.Data.VO;
+using Microsoft.Win32;
+using NetMQ;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
@@ -55,6 +57,50 @@ namespace com.mirle.ibg3k0.sc.Service
             line.addEventHandler(nameof(LineService), nameof(line.SCStats), CheckRedLightAndBuzzer);
             line.addEventHandler(nameof(LineService), nameof(line.HasSeriousAlarmHappend), CheckRedLightAndBuzzer);
             line.addEventHandler(nameof(LineService), nameof(line.HasSpecifySeriousAlarmHappend), CheckRedLightAndBuzzer);
+
+            RegisterHIDAliveStatus();
+        }
+
+        private void RegisterHIDAliveStatus()
+        {
+            var hids = scApp.EquipmentBLL.cache.loadHIDEqpts();
+            foreach (var hid in hids)
+            {
+                hid.addEventHandler(nameof(LineService), nameof(hid.Is_Eq_Alive), HidAliveStatusChange);
+            }
+        }
+
+        private void HidAliveStatusChange(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+
+                var hid = sender as AEQPT;
+                if (hid.Is_Eq_Alive)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(LineService), Device: "OHxC",
+                       Data: $"hid:{hid.EQPT_ID} of alive is resume.");
+
+                    scApp.LineService.ProcessAlarmReport(
+                        hid.NODE_ID, hid.EQPT_ID, hid.Real_ID, "",
+                        SCAppConstants.SystemAlarmCode.HID_Issue.HIDOfAliveAbnormal,
+                        ProtocolFormat.OHTMessage.ErrorStatus.ErrReset);
+                }
+                else
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(LineService), Device: "OHxC",
+                       Data: $"hid:{hid.EQPT_ID} of alive is dead.");
+
+                    scApp.LineService.ProcessAlarmReport(
+                        hid.NODE_ID, hid.EQPT_ID, hid.Real_ID, "",
+                        SCAppConstants.SystemAlarmCode.HID_Issue.HIDOfAliveAbnormal,
+                        ProtocolFormat.OHTMessage.ErrorStatus.ErrSet);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
         }
 
         public void startHostCommunication()
