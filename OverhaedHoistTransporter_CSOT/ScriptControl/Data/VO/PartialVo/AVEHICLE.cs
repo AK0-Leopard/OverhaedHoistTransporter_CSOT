@@ -1444,6 +1444,17 @@ namespace com.mirle.ibg3k0.sc
                     try
                     {
                         if (!vh.isTcpIpConnect) return;
+
+                        var cmds = ACMD_OHTC.tryGetCMD_OHTCSList();
+                        var check_command_interrupting_result = hasCommandInterruptingCheck(cmds);
+                        if (check_command_interrupting_result.hasCommandInterripting && check_command_interrupting_result.isOverIntervalTime)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(AVEHICLE), Device: "OHTC",
+                               Data: "onCommandStateInterruptedTimeout happend  ",
+                               VehicleID: vh.VEHICLE_ID,
+                               CarrierID: vh.CST_ID);
+                            vh.onCommandStateInterruptedTimeout(check_command_interrupting_result.cmdOHTC.CMD_ID);
+                        }
                         //如果車子沒有installed就也不用幫忙檢查是否有通訊
                         if (!vh.IS_INSTALLED) return;
                         //1.檢查是否已經大於一定時間沒有進行通訊
@@ -1459,7 +1470,6 @@ namespace com.mirle.ibg3k0.sc
                         //    vh.onLongTimeInaction(vh.OHTC_CMD);
                         //}
                         //var cmds = scApp.CMDBLL.loadUnfinishCMD_OHT();
-                        var cmds = ACMD_OHTC.tryGetCMD_OHTCSList();
                         //if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > AVEHICLE.MAX_ALLOW_ACTION_TIME_MILLISECOND)
                         if (!vh.isLongTimeInaction && vh.CurrentCommandExcuteTime.ElapsedMilliseconds > SystemParameter.MaxAllowActionTimeMilliSecond)
                         {
@@ -1489,12 +1499,6 @@ namespace com.mirle.ibg3k0.sc
                         else
                         {
                             vh.isCommandStateOutOfSyncHappend = false;
-                        }
-
-                        var check_command_interrupting_result = hasCommandInterruptingCheck(cmds);
-                        if (check_command_interrupting_result.hasCommandInterripting && check_command_interrupting_result.isOverIntervalTime)
-                        {
-                            vh.onCommandStateInterruptedTimeout(check_command_interrupting_result.cmdOHTC.CMD_ID);
                         }
 
                     }
@@ -1537,30 +1541,43 @@ namespace com.mirle.ibg3k0.sc
             private const int SEND_COMMAND_CANCEL_INTERVAL_WHEN_INTERRUPTING_mm = 10_000;
             private (bool hasCommandInterripting, bool isOverIntervalTime, ACMD_OHTC cmdOHTC) hasCommandInterruptingCheck(List<ACMD_OHTC> cmds)
             {
-                if (cmds == null) return (false, false, null);
-                var try_get_interrupting_command = tryGetVhCurrentInterruptingCommand(cmds);
-                if (try_get_interrupting_command.hasInterruptingCmd)
+                try
                 {
-                    if (!vh.CurrentCommandInterruptingIntervalTime.IsRunning)
+                    if (cmds == null) return (false, false, null);
+                    var try_get_interrupting_command = tryGetVhCurrentInterruptingCommand(cmds);
+                    if (try_get_interrupting_command.hasInterruptingCmd)
                     {
-                        vh.CurrentCommandInterruptingIntervalTime.Restart();
-                    }
-                    if (vh.CurrentCommandInterruptingIntervalTime.ElapsedMilliseconds > SEND_COMMAND_CANCEL_INTERVAL_WHEN_INTERRUPTING_mm)
-                    {
-                        vh.CurrentCommandInterruptingIntervalTime.Restart();
-                        return (true, true, try_get_interrupting_command.cmdOHTC);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(AVEHICLE), Device: "OHTC",
+                           Data: $"Has command need Interrupt,id:{SCUtility.Trim(try_get_interrupting_command.cmdOHTC.CMD_ID)},interrupt interval :{vh.CurrentCommandInterruptingIntervalTime.ElapsedMilliseconds}",
+                           VehicleID: vh.VEHICLE_ID,
+                           CarrierID: vh.CST_ID);
+
+                        if (!vh.CurrentCommandInterruptingIntervalTime.IsRunning)
+                        {
+                            vh.CurrentCommandInterruptingIntervalTime.Restart();
+                        }
+                        if (vh.CurrentCommandInterruptingIntervalTime.ElapsedMilliseconds > SEND_COMMAND_CANCEL_INTERVAL_WHEN_INTERRUPTING_mm)
+                        {
+                            vh.CurrentCommandInterruptingIntervalTime.Restart();
+                            return (true, true, try_get_interrupting_command.cmdOHTC);
+                        }
+                        else
+                        {
+                            return (true, false, try_get_interrupting_command.cmdOHTC);
+                        }
                     }
                     else
                     {
-                        return (true, false, try_get_interrupting_command.cmdOHTC);
+                        if (vh.CurrentCommandInterruptingIntervalTime.IsRunning)
+                        {
+                            vh.CurrentCommandInterruptingIntervalTime.Reset();
+                        }
+                        return (false, false, null);
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    if (vh.CurrentCommandInterruptingIntervalTime.IsRunning)
-                    {
-                        vh.CurrentCommandInterruptingIntervalTime.Reset();
-                    }
+                    logger.Error(ex, "Exception:");
                     return (false, false, null);
                 }
             }

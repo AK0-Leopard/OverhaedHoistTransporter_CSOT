@@ -3017,24 +3017,25 @@ namespace com.mirle.ibg3k0.sc.BLL
                     }
                 }
             }
-            foreach (var routeDetial in routeDetailAndDistance.ToList())
-            {
-                List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
-                List<AVEHICLE> vhs = scApp.VehicleBLL.loadAllErrorVehicle();
-                foreach (AVEHICLE vh in vhs)
-                {
-                    bool IsErrorVhOnPassSection = lstSec.Where(sec => sec.SEC_ID.Trim() == vh.CUR_SEC_ID.Trim()).Count() > 0;
-                    if (IsErrorVhOnPassSection)
-                    {
-                        routeDetailAndDistance.Remove(routeDetial);
-                        if (routeDetailAndDistance.Count == 0)
-                        {
-                            throw new VehicleBLL.BlockedByTheErrorVehicleException
-                                ($"Can't find the way to transfer.Because block by error vehicle [{vh.VEHICLE_ID}] on sec [{vh.CUR_SEC_ID}]");
-                        }
-                    }
-                }
-            }
+
+            //foreach (var routeDetial in routeDetailAndDistance.ToList())
+            //{
+            //    List<ASECTION> lstSec = scApp.MapBLL.loadSectionBySecIDs(routeDetial.Key.ToList());
+            //    List<AVEHICLE> vhs = scApp.VehicleBLL.loadAllErrorVehicle();
+            //    foreach (AVEHICLE vh in vhs)
+            //    {
+            //        bool IsErrorVhOnPassSection = lstSec.Where(sec => sec.SEC_ID.Trim() == vh.CUR_SEC_ID.Trim()).Count() > 0;
+            //        if (IsErrorVhOnPassSection)
+            //        {
+            //            routeDetailAndDistance.Remove(routeDetial);
+            //            if (routeDetailAndDistance.Count == 0)
+            //            {
+            //                throw new VehicleBLL.BlockedByTheErrorVehicleException
+            //                    ($"Can't find the way to transfer.Because block by error vehicle [{vh.VEHICLE_ID}] on sec [{vh.CUR_SEC_ID}]");
+            //            }
+            //        }
+            //    }
+            //}
             //}
 
             if (routeDetailAndDistance.Count == 0)
