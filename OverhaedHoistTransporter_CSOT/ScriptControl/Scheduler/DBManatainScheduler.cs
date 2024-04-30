@@ -148,7 +148,7 @@ namespace com.mirle.ibg3k0.sc.Scheduler
             //{
             //    scApp.CMDBLL.RemoteHCMD_MCSByBatch(hcmd_mcs_list); ;
             //}
-            scApp.CMDBLL.RemoteHCMD_MCSBefore6MonthByBatch();
+            scApp.CMDBLL.RemoteHCMD_MCSBeforeNMonthByBatch(2);
         }
         private void DeleteHCMD_OHTC()
         {
@@ -157,7 +157,7 @@ namespace com.mirle.ibg3k0.sc.Scheduler
             //{
             //    scApp.CMDBLL.RemoteHCMD_OHTCByBatch(hcmd_ohtc_list); ;
             //}
-            scApp.CMDBLL.RemoteHCMD_OHTCBefore6MonthByBatch();
+            scApp.CMDBLL.RemoteHCMD_OHTCBeforeNMonthByBatch(2);
 
         }
 

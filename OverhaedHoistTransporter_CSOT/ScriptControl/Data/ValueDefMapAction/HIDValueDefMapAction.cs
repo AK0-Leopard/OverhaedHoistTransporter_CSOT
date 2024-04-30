@@ -118,10 +118,30 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 //2.read log
                 function.Timestamp = DateTime.Now;
                 //LogManager.GetLogger("com.mirle.ibg3k0.sc.Common.LogHelper").Info(function.ToString());
-                NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
+                //NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
                 eqpt.HID_Info = function;
 
 
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<HIDToOHxC_ChargeInfo>(function);
+            }
+        }
+        public void RecordHID_ChargeInfo()
+        {
+            var function = scApp.getFunBaseObj<HIDToOHxC_ChargeInfo>(eqpt.EQPT_ID) as HIDToOHxC_ChargeInfo;
+            try
+            {
+                //1.建立各個Function物件
+                function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                //2.read log
+                function.Timestamp = DateTime.Now;
+                NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
             }
             catch (Exception ex)
             {
@@ -388,7 +408,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 scApp.putFunBaseObj<HIDToOHxC_Fan_1_Alarm>(recevie_function);
             }
         }
-       
+
         public virtual void Fan_2_Alarm(object sender, ValueChangedEventArgs args)
         {
             var recevie_function = scApp.getFunBaseObj<HIDToOHxC_Fan_2_Alarm>(eqpt.EQPT_ID) as HIDToOHxC_Fan_2_Alarm;
@@ -472,7 +492,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 scApp.putFunBaseObj<HIDToOHxC_TimeoutAlarm>(recevie_function);
             }
         }
-       
+
         public virtual void HID_Control(bool control)
         {
             var function = scApp.getFunBaseObj<OHxCToHID_Control>(eqpt.EQPT_ID) as OHxCToHID_Control;

@@ -14,6 +14,7 @@ using com.mirle.ibg3k0.bcf.Controller;
 using com.mirle.ibg3k0.bcf.Data.TimerAction;
 using com.mirle.ibg3k0.sc.App;
 using com.mirle.ibg3k0.sc.Common;
+using com.mirle.ibg3k0.sc.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using com.mirle.ibg3k0.stc.Common.SECS;
@@ -29,7 +30,7 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
 {
     public class TaskCommandTimerAction : ITimerAction
     {
-        const string CALL_CONTEXT_KEY_WORD_SERVICE_ID_TaskCmdTimerAction= "TaskCommandTimerAction Service";
+        const string CALL_CONTEXT_KEY_WORD_SERVICE_ID_TaskCmdTimerAction = "TaskCommandTimerAction Service";
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
         protected SCApplication scApp = null;
@@ -52,10 +53,47 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
             {
                 LogHelper.setCallContextKey_ServiceID(CALL_CONTEXT_KEY_WORD_SERVICE_ID_TaskCmdTimerAction);
                 scApp.CMDBLL.checkOHxC_TransferCommand();
+                RecordHIDInfo();
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exection:");
+            }
+        }
+        private long hid_record_SyncPoint = 0;
+        private void RecordHIDInfo()
+        {
+            if (System.Threading.Interlocked.Exchange(ref hid_record_SyncPoint, 1) == 0)
+            {
+                try
+                {
+                    var hids = scApp.EquipmentBLL.cache.loadHIDEqpts();
+                    foreach (var hid in hids)
+                    {
+                        HIDValueDefMapAction mapAction =
+                        hid.getMapActionByIdentityKey(nameof(HIDValueDefMapAction)) as HIDValueDefMapAction;
+                        if (mapAction != null)
+                        {
+                            mapAction.RecordHID_ChargeInfo();
+                            continue;
+                        }
+                        HIDValueDefMapActionPH2 mapActionPH2 =
+                        hid.getMapActionByIdentityKey(nameof(HIDValueDefMapActionPH2)) as HIDValueDefMapActionPH2;
+                        if (mapActionPH2 != null)
+                        {
+                            mapActionPH2.RecordHID_ChargeInfo();
+                            continue;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Exection:");
+                }
+                finally
+                {
+                    System.Threading.Interlocked.Exchange(ref hid_record_SyncPoint, 0);
+                }
             }
         }
 

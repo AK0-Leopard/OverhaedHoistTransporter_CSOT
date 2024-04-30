@@ -4071,12 +4071,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                 hcmd_mcsDao.RemoteByBatch(con, hCmdMcs);
             }
         }
-        public void RemoteHCMD_MCSBefore6MonthByBatch()
+
+        public void RemoteHCMD_MCSBeforeNMonthByBatch(int n = 6)
         {
-            DateTime date_teime_before_6_month = DateTime.Now.AddMonths(-6);
+            DateTime date_teime_before_n_month = DateTime.Now.AddMonths(-n);
             using (DBConnection_EF con = DBConnection_EF.GetUContext())
             {
-                hcmd_mcsDao.RemoteByBatch(con, date_teime_before_6_month);
+                hcmd_mcsDao.RemoteByBatch(con, date_teime_before_n_month);
             }
         }
         #endregion HCMD_MCS
@@ -4106,12 +4107,12 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
         }
 
-        public void RemoteHCMD_OHTCBefore6MonthByBatch()
+        public void RemoteHCMD_OHTCBeforeNMonthByBatch(int n = 6)
         {
-            DateTime date_teime_before_6_month = DateTime.Now.AddMonths(-6);
+            DateTime date_teime_before_n_month = DateTime.Now.AddMonths(-n);
             using (DBConnection_EF con = DBConnection_EF.GetUContext())
             {
-                hcmd_ohtcDao.RemoteByBatch(con, date_teime_before_6_month);
+                hcmd_ohtcDao.RemoteByBatch(con, date_teime_before_n_month);
             }
         }
 

@@ -118,7 +118,7 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 //2.read log
                 function.Timestamp = DateTime.Now;
                 //LogManager.GetLogger("com.mirle.ibg3k0.sc.Common.LogHelper").Info(function.ToString());
-                NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
+                //NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
                 HIDToOHxC_ChargeInfo hid_info = new HIDToOHxC_ChargeInfo();
                 hid_info.Alive = function.Alive;
                 hid_info.HID_ID = function.HID_ID;
@@ -172,6 +172,27 @@ namespace com.mirle.ibg3k0.sc.Data.ValueDefMapAction
                 //    XID: eqpt.EQPT_ID, Data: function.ToString());
                 //3.logical (include db save)
 
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception");
+            }
+            finally
+            {
+                scApp.putFunBaseObj<HIDToOHxC_ChargeInfoPH2>(function);
+            }
+        }
+        public  void RecordHID_ChargeInfo()
+        {
+            var function = scApp.getFunBaseObj<HIDToOHxC_ChargeInfoPH2>(eqpt.EQPT_ID) as HIDToOHxC_ChargeInfoPH2;
+            try
+            {
+                //1.建立各個Function物件
+                function.Read(bcfApp, eqpt.EqptObjectCate, eqpt.EQPT_ID);
+                //2.read log
+                function.Timestamp = DateTime.Now;
+                //LogManager.GetLogger("com.mirle.ibg3k0.sc.Common.LogHelper").Info(function.ToString());
+                NLog.LogManager.GetCurrentClassLogger().Info(function.ToString());
             }
             catch (Exception ex)
             {
