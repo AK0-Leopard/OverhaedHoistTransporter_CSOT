@@ -3,12 +3,14 @@ using com.mirle.ibg3k0.bcf.Common;
 using com.mirle.ibg3k0.bcf.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.bcf.Data.VO;
 using com.mirle.ibg3k0.sc.App;
+using com.mirle.ibg3k0.sc.BLL;
 using com.mirle.ibg3k0.sc.Common;
 using com.mirle.ibg3k0.sc.Data.SECS;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.Data.VO.Interface;
 using com.mirle.ibg3k0.sc.ObjectRelay;
 using NLog;
+using RouteKit;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -61,7 +63,7 @@ namespace com.mirle.ibg3k0.sc
 
 
         public long segment_prepare_control_SyncPoint = 0;
-        public List<ASECTION> Sections { get; private set; }
+        public List<ASECTION> Sections { get; private set; } = new List<ASECTION>();
 
         public string CVID { get; set; }
 
@@ -466,6 +468,40 @@ namespace com.mirle.ibg3k0.sc
             this.DISABLE_FLAG_SYSTEM = newSegmentObject.DISABLE_FLAG_SYSTEM;
         }
 
+        internal (bool IsEnough, List<AVEHICLE> OnSegVhs) IsCapacityEnough(VehicleBLL.Cache cache, GuideNew guideNew)
+        {
+            var on_segment_vhs = cache.loadVhsBySegmentID(SEG_NUM);
+            if (on_segment_vhs.Count < SystemParameter.MaxVhCountPerSegment)
+            {
+                return (true, null);
+            }
+            else
+            {
+                var on_seg_vhs_by_order = TryGetOnSegVhsByOrder(on_segment_vhs, guideNew);
+                return (false, on_seg_vhs_by_order);
+            }
+        }
+
+        private List<AVEHICLE> TryGetOnSegVhsByOrder(List<AVEHICLE> onSegVhs, GuideNew guideNew)
+        {
+            int vhs_count = onSegVhs.Count;
+            if (vhs_count == 0)
+                return new List<AVEHICLE>();
+            if (vhs_count == 1)
+                return onSegVhs;
+            if (vhs_count > 1)
+            {
+                List<(double distance, AVEHICLE vh)> values = new List<(double distance, AVEHICLE vh)>();
+                ASECTION first_section = Sections.First();
+                foreach (var vh in onSegVhs)
+                {
+                    guideNew.checkRoadIsWalkable(vh.CUR_ADR_ID, first_section.FROM_ADR_ID, out var route_distance); //離入口越遠的代表越後面
+                    values.Add((route_distance, vh));
+                }
+                return values.OrderBy(v => v.distance).Select(v => v.vh).ToList();
+            }
+            return null;
+        }
     }
 
 

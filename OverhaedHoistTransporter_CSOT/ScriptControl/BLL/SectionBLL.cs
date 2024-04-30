@@ -58,7 +58,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             {
                 return CommObjCacheManager.getSections().
                        Where(sec => sec.SEG_NUM.Trim() == id.Trim()).
-                       OrderBy(sec => sec.SEG_ORDER_NUM).
+                       OrderBy(sec => sec.SEC_ID).
                        ToList();
             }
 

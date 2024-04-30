@@ -47,6 +47,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_openDoubleCheckBlockReq.Checked = DebugParameter.isOpenDoubleCheckBlockReqFun;
             cb_isUsingID132PositionCheck.Checked = DebugParameter.isOpenID132PositionCheck;
             cb_isOpenAutoChangeGuide.Checked = DebugParameter.IsOpneChangeGuideSection;
+            cb_openSegmentEnoughControl.Checked = DebugParameter.IsOpenSegmentCapacityControl;
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
@@ -55,6 +56,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
             ch_force_pass_red_light_with_buzzer.Checked = DebugParameter.isForcePassFourColorLightRedWithBuzzerSignal;
             num_ChangePathCommandPath.Value = sc.App.SystemParameter.ChangePathCommandCount;
+
+            num_vhCountLimit.Value = sc.App.SystemParameter.MaxVhCountPerSegment;
+
             List<string> lstVh = new List<string>();
             lstVh.Add(string.Empty);
             lstVh.AddRange(bcApp.SCApplication.getEQObjCacheManager().getAllVehicle().Select(vh => vh.VEHICLE_ID).ToList());
@@ -1702,6 +1706,16 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void cb_isOpenAutoChangeGuide_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.IsOpneChangeGuideSection = cb_isOpenAutoChangeGuide.Checked;
+        }
+
+        private void cb_openSegmentEnoughControl_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.IsOpenSegmentCapacityControl = cb_openSegmentEnoughControl.Checked;
+        }
+
+        private void num_vhCountLimit_ValueChanged(object sender, EventArgs e)
+        {
+            sc.App.SystemParameter.setMaxVhCountPerSegment((int)num_vhCountLimit.Value);
         }
     }
 }

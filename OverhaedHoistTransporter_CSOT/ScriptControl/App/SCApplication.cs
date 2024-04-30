@@ -2271,6 +2271,9 @@ namespace com.mirle.ibg3k0.sc.App
         //public static int STOP_EXCUTE_COMMAND_SHIFT_IDLE_VH_COUNT { get; private set; } = 1;
         public static int StopExcuteCommandShiftIdleVhCount { get; private set; } = 0;
 
+        //各段Segment最大的車輛容許數量
+        public static int MaxVhCountPerSegment { get; private set; } = 5;
+
         /// <summary>
         /// Sets the secs conversaction timeout.
         /// </summary>
@@ -2339,6 +2342,10 @@ namespace com.mirle.ibg3k0.sc.App
         public static void setStopExcuteCommandShiftIdleVhCount(int value)
         {
             StopExcuteCommandShiftIdleVhCount = value;
+        }
+        public static void setMaxVhCountPerSegment(int value)
+        {
+            MaxVhCountPerSegment = value;
         }
 
     }
@@ -2442,6 +2449,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool isOpenDoubleCheckBlockReqFun = false;
         public static bool isOpenID132PositionCheck = true;
         public static bool IsOpneChangeGuideSection = true;
+        public static bool IsOpenSegmentCapacityControl = true;
 
     }
 }

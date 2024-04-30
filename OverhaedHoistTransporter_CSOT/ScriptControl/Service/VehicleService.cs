@@ -52,6 +52,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using static com.mirle.ibg3k0.sc.App.SCAppConstants;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace com.mirle.ibg3k0.sc.Service
 {
@@ -2643,8 +2644,8 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             string vhID = request_block_vh.VEHICLE_ID;
             request_block_vh.CurrentRequestBlockID = req_block_id;
-            LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-               Data: $"Process block request,request block id:{req_block_id}",
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"Process block request,request block id:{req_block_id}, IsOpenSegmentCapacityControl:{DebugParameter.IsOpenSegmentCapacityControl}",
                VehicleID: request_block_vh.VEHICLE_ID,
                CarrierID: request_block_vh.CST_ID);
             ALINE line = scApp.getEQObjCacheManager().getLine();
@@ -2717,6 +2718,14 @@ namespace com.mirle.ibg3k0.sc.Service
 
                     foreach (var detail in block_detail_section)
                     {
+                        var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnough(request_block_vh, detail);
+                        if (!check_segment_capacity_enough_result.isEnough)
+                        {
+                            if (check_segment_capacity_enough_result.avoidVh != null)
+                                Task.Run(() => scApp.VehicleBLL.whenVhObstacle(check_segment_capacity_enough_result.avoidVh.VEHICLE_ID, vhID));
+                            return false;
+                        }
+
                         HltDirection hltDirection = HltDirection.None;
                         //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                         LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
@@ -2756,6 +2765,87 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
         }
+        //用於確認該Segment的容量是否還足夠
+        private (bool isEnough, AVEHICLE avoidVh) TryCheckWillEntrySegmentCapacityEnough(AVEHICLE vh, string reserveSectionID)
+        {
+            try
+            {
+                if (!DebugParameter.IsOpenSegmentCapacityControl)
+                {
+                    return (true, null);
+                }
+                //1.判斷要求的Reserve Section是否為Segment要行走的路線且為該segment的第一段(代表即將進入)
+                var current_guide_section = vh.tryGetCurrentGuideSection();
+                if (!current_guide_section.hasInfo)
+                {
+                    //如果找不到要走的路線可以進行確認，一律當作可以通過
+                    return (true, null);
+                }
+                if (!current_guide_section.currentGuideSection.Contains(reserveSectionID))
+                {
+                    //如果不是在即將行走的路線，一律當作可以通過
+                    return (true, null);
+                }
+                ASECTION sec = scApp.SectionBLL.cache.GetSection(reserveSectionID);
+                ASEGMENT segment = scApp.SegmentBLL.cache.GetSegment(sec.SEG_NUM);
+                if (segment == null)
+                {
+                    //如果找不到Segment可以進行確認，一律當作可以通過
+                    return (true, null);
+                }
+                if (!segment.Sections.Any())
+                {
+                    return (true, null);
+                }
+                if (segment.Sections.First() != sec)
+                {
+                    //由於確認的section不是該Segment第一段(即為入口處)，因此不進行確認
+                    return (true, null);
+                }
+                var check_is_enough_result = segment.IsCapacityEnough(scApp.VehicleBLL.cache, scApp.RouteGuide);
+                if (check_is_enough_result.IsEnough)
+                    return (true, null);
+                else
+                {
+                    var check_is_need_avoid_result = IsNeedAvoidVhWhenSegmentNotEnough(check_is_enough_result.OnSegVhs);
+                    string on_seg_vhs_id = "";
+                    if (check_is_enough_result.OnSegVhs != null)
+                        on_seg_vhs_id = string.Join(",", check_is_enough_result.OnSegVhs.Select(v => v.VEHICLE_ID));
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"segment:{segment.SEG_NUM} capacity not enough,on segment vhs:{on_seg_vhs_id} ,is need avoid last:{check_is_need_avoid_result.isNeedAvoid}");
+                    if (check_is_need_avoid_result.isNeedAvoid)
+                    {
+                        return (false, check_is_need_avoid_result.avoidVh);
+                    }
+                    else
+                    {
+                        return (false, null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return (true, null);
+            }
+        }
+        private (bool isNeedAvoid, AVEHICLE avoidVh) IsNeedAvoidVhWhenSegmentNotEnough(List<AVEHICLE> OnSegVhs)
+        {
+            //1.如果所有車都是NoCommand時，才進行將最靠近路口的車趕走
+            //2.如果有車有命令時，則不進行趕走
+            if (OnSegVhs == null)
+            {
+                return (false, null);
+            }
+            //如果有車子在命令中，則不進行趕車
+            if (OnSegVhs.Any(v => v.ACT_STATUS == VHActionStatus.Commanding))
+            {
+                return (false, null);
+            }
+            return (true, OnSegVhs.Last());
+        }
+
+
         private bool checkGuideSectionHasChange(AVEHICLE vh, string requsetSecID)
         {
             try

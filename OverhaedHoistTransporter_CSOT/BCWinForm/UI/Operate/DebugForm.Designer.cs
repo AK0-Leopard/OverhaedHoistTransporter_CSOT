@@ -104,6 +104,7 @@
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.cb_isOpenAutoChangeGuide = new System.Windows.Forms.CheckBox();
             this.cb_isUsingID132PositionCheck = new System.Windows.Forms.CheckBox();
             this.lbl_value_reserveModule_LorR = new System.Windows.Forms.Label();
             this.label71 = new System.Windows.Forms.Label();
@@ -380,7 +381,9 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.cb_isOpenAutoChangeGuide = new System.Windows.Forms.CheckBox();
+            this.cb_openSegmentEnoughControl = new System.Windows.Forms.CheckBox();
+            this.num_vhCountLimit = new System.Windows.Forms.NumericUpDown();
+            this.label72 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -420,6 +423,7 @@
             this.tableLayoutPanel6.SuspendLayout();
             this.tabPage9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).BeginInit();
             this.SuspendLayout();
             // 
             // cb_FroceBlockPass
@@ -1266,7 +1270,7 @@
             // 
             // btn_forceReleaseAllBlock
             // 
-            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1100, 369);
+            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1103, 427);
             this.btn_forceReleaseAllBlock.Name = "btn_forceReleaseAllBlock";
             this.btn_forceReleaseAllBlock.Size = new System.Drawing.Size(284, 41);
             this.btn_forceReleaseAllBlock.TabIndex = 22;
@@ -1297,6 +1301,9 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.label72);
+            this.tabPage1.Controls.Add(this.num_vhCountLimit);
+            this.tabPage1.Controls.Add(this.cb_openSegmentEnoughControl);
             this.tabPage1.Controls.Add(this.cb_isOpenAutoChangeGuide);
             this.tabPage1.Controls.Add(this.cb_isUsingID132PositionCheck);
             this.tabPage1.Controls.Add(this.lbl_value_reserveModule_LorR);
@@ -1323,6 +1330,18 @@
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // cb_isOpenAutoChangeGuide
+            // 
+            this.cb_isOpenAutoChangeGuide.AutoSize = true;
+            this.cb_isOpenAutoChangeGuide.Location = new System.Drawing.Point(1100, 234);
+            this.cb_isOpenAutoChangeGuide.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_isOpenAutoChangeGuide.Name = "cb_isOpenAutoChangeGuide";
+            this.cb_isOpenAutoChangeGuide.Size = new System.Drawing.Size(218, 26);
+            this.cb_isOpenAutoChangeGuide.TabIndex = 61;
+            this.cb_isOpenAutoChangeGuide.Text = "開啟自動改路徑功能";
+            this.cb_isOpenAutoChangeGuide.UseVisualStyleBackColor = true;
+            this.cb_isOpenAutoChangeGuide.CheckedChanged += new System.EventHandler(this.cb_isOpenAutoChangeGuide_CheckedChanged);
+            // 
             // cb_isUsingID132PositionCheck
             // 
             this.cb_isUsingID132PositionCheck.AutoSize = true;
@@ -1347,7 +1366,7 @@
             // label71
             // 
             this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(1088, 271);
+            this.label71.Location = new System.Drawing.Point(1091, 329);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(209, 22);
             this.label71.TabIndex = 58;
@@ -1356,7 +1375,7 @@
             // button12
             // 
             this.button12.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button12.Location = new System.Drawing.Point(1378, 261);
+            this.button12.Location = new System.Drawing.Point(1380, 321);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(84, 39);
             this.button12.TabIndex = 5;
@@ -1507,9 +1526,9 @@
             this.groupBox6.Controls.Add(this.label16);
             this.groupBox6.Controls.Add(this.label12);
             this.groupBox6.Controls.Add(this.cb_block_section);
-            this.groupBox6.Location = new System.Drawing.Point(1100, 416);
+            this.groupBox6.Location = new System.Drawing.Point(1100, 465);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(284, 251);
+            this.groupBox6.Size = new System.Drawing.Size(284, 219);
             this.groupBox6.TabIndex = 24;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Block Manager";
@@ -1529,7 +1548,7 @@
             // 
             // btn_release_block
             // 
-            this.btn_release_block.Location = new System.Drawing.Point(9, 200);
+            this.btn_release_block.Location = new System.Drawing.Point(7, 172);
             this.btn_release_block.Name = "btn_release_block";
             this.btn_release_block.Size = new System.Drawing.Size(156, 39);
             this.btn_release_block.TabIndex = 4;
@@ -1542,7 +1561,7 @@
             // 
             this.lbl_BlockedVh.AutoSize = true;
             this.lbl_BlockedVh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbl_BlockedVh.Location = new System.Drawing.Point(9, 154);
+            this.lbl_BlockedVh.Location = new System.Drawing.Point(9, 142);
             this.lbl_BlockedVh.Name = "lbl_BlockedVh";
             this.lbl_BlockedVh.Size = new System.Drawing.Size(122, 24);
             this.lbl_BlockedVh.TabIndex = 3;
@@ -1552,7 +1571,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(5, 132);
+            this.label16.Location = new System.Drawing.Point(5, 120);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(160, 22);
             this.label16.TabIndex = 2;
@@ -1561,7 +1580,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(5, 69);
+            this.label12.Location = new System.Drawing.Point(5, 64);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(160, 22);
             this.label12.TabIndex = 1;
@@ -1570,7 +1589,7 @@
             // cb_block_section
             // 
             this.cb_block_section.FormattingEnabled = true;
-            this.cb_block_section.Location = new System.Drawing.Point(9, 95);
+            this.cb_block_section.Location = new System.Drawing.Point(9, 90);
             this.cb_block_section.Name = "cb_block_section";
             this.cb_block_section.Size = new System.Drawing.Size(251, 30);
             this.cb_block_section.TabIndex = 0;
@@ -1581,7 +1600,7 @@
             // 
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockReject);
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockPass);
-            this.gb_blockControl.Location = new System.Drawing.Point(1100, 298);
+            this.gb_blockControl.Location = new System.Drawing.Point(1103, 356);
             this.gb_blockControl.Name = "gb_blockControl";
             this.gb_blockControl.Size = new System.Drawing.Size(257, 71);
             this.gb_blockControl.TabIndex = 23;
@@ -2709,7 +2728,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(210, 6);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(210, 3);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4674,17 +4693,39 @@
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
-            // cb_isOpenAutoChangeGuide
+            // cb_openSegmentEnoughControl
             // 
-            this.cb_isOpenAutoChangeGuide.AutoSize = true;
-            this.cb_isOpenAutoChangeGuide.Location = new System.Drawing.Point(1100, 234);
-            this.cb_isOpenAutoChangeGuide.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cb_isOpenAutoChangeGuide.Name = "cb_isOpenAutoChangeGuide";
-            this.cb_isOpenAutoChangeGuide.Size = new System.Drawing.Size(218, 26);
-            this.cb_isOpenAutoChangeGuide.TabIndex = 61;
-            this.cb_isOpenAutoChangeGuide.Text = "開啟自動改路徑功能";
-            this.cb_isOpenAutoChangeGuide.UseVisualStyleBackColor = true;
-            this.cb_isOpenAutoChangeGuide.CheckedChanged += new System.EventHandler(this.cb_isOpenAutoChangeGuide_CheckedChanged);
+            this.cb_openSegmentEnoughControl.AutoSize = true;
+            this.cb_openSegmentEnoughControl.Location = new System.Drawing.Point(1100, 262);
+            this.cb_openSegmentEnoughControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_openSegmentEnoughControl.Name = "cb_openSegmentEnoughControl";
+            this.cb_openSegmentEnoughControl.Size = new System.Drawing.Size(197, 26);
+            this.cb_openSegmentEnoughControl.TabIndex = 62;
+            this.cb_openSegmentEnoughControl.Text = "開啟道路總量管制";
+            this.cb_openSegmentEnoughControl.UseVisualStyleBackColor = true;
+            this.cb_openSegmentEnoughControl.CheckedChanged += new System.EventHandler(this.cb_openSegmentEnoughControl_CheckedChanged);
+            // 
+            // num_vhCountLimit
+            // 
+            this.num_vhCountLimit.Location = new System.Drawing.Point(1100, 293);
+            this.num_vhCountLimit.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.num_vhCountLimit.Name = "num_vhCountLimit";
+            this.num_vhCountLimit.Size = new System.Drawing.Size(68, 30);
+            this.num_vhCountLimit.TabIndex = 58;
+            this.num_vhCountLimit.ValueChanged += new System.EventHandler(this.num_vhCountLimit_ValueChanged);
+            // 
+            // label72
+            // 
+            this.label72.AutoSize = true;
+            this.label72.Location = new System.Drawing.Point(1174, 295);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(178, 22);
+            this.label72.TabIndex = 4;
+            this.label72.Text = "道路管制車輛上限";
             // 
             // DebugForm
             // 
@@ -4769,6 +4810,7 @@
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -5128,5 +5170,8 @@
         private System.Windows.Forms.Label lbl_value_reserveModule_LorR;
         private System.Windows.Forms.CheckBox cb_isUsingID132PositionCheck;
         private System.Windows.Forms.CheckBox cb_isOpenAutoChangeGuide;
+        private System.Windows.Forms.CheckBox cb_openSegmentEnoughControl;
+        private System.Windows.Forms.NumericUpDown num_vhCountLimit;
+        private System.Windows.Forms.Label label72;
     }
 }
