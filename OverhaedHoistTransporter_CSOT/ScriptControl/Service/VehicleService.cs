@@ -2715,16 +2715,23 @@ namespace com.mirle.ibg3k0.sc.Service
                             return false;
                         }
                     }
+                    var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnough(request_block_vh, req_block_id);
+                    if (!check_segment_capacity_enough_result.isEnough)
+                    {
+                        if (check_segment_capacity_enough_result.avoidVh != null)
+                            Task.Run(() => scApp.VehicleBLL.whenVhObstacle(check_segment_capacity_enough_result.avoidVh.VEHICLE_ID, vhID));
+                        return false;
+                    }
 
                     foreach (var detail in block_detail_section)
                     {
-                        var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnough(request_block_vh, detail);
-                        if (!check_segment_capacity_enough_result.isEnough)
-                        {
-                            if (check_segment_capacity_enough_result.avoidVh != null)
-                                Task.Run(() => scApp.VehicleBLL.whenVhObstacle(check_segment_capacity_enough_result.avoidVh.VEHICLE_ID, vhID));
-                            return false;
-                        }
+                        //var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnoughOld(request_block_vh, detail);
+                        //if (!check_segment_capacity_enough_result.isEnough)
+                        //{
+                        //    if (check_segment_capacity_enough_result.avoidVh != null)
+                        //        Task.Run(() => scApp.VehicleBLL.whenVhObstacle(check_segment_capacity_enough_result.avoidVh.VEHICLE_ID, vhID));
+                        //    return false;
+                        //}
 
                         HltDirection hltDirection = HltDirection.None;
                         //LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
@@ -2765,8 +2772,81 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
         }
+
+        const int MAX_FIND_ENTRY_SEGMENT_COUNT = 3;
+        private (bool isEnough, AVEHICLE avoidVh) TryCheckWillEntrySegmentCapacityEnough(AVEHICLE vh, string req_block_id)
+        {
+            try
+            {
+                if (!DebugParameter.IsOpenSegmentCapacityControl)
+                {
+                    return (true, null);
+                }
+                var get_next_entry_segment_result = TryGetNextEntrySegment(vh, req_block_id);
+                if (!get_next_entry_segment_result.isSuccess)
+                    return (true, null);
+                var segment = get_next_entry_segment_result.segment;
+                var check_is_enough_result = segment.IsCapacityEnough(scApp.VehicleBLL.cache, scApp.RouteGuide);
+                if (check_is_enough_result.IsEnough)
+                    return (true, null);
+                else
+                {
+                    var check_is_need_avoid_result = IsNeedAvoidVhWhenSegmentNotEnough(check_is_enough_result.OnSegVhs);
+                    string on_seg_vhs_id = "";
+                    if (check_is_enough_result.OnSegVhs != null)
+                        on_seg_vhs_id = string.Join(",", check_is_enough_result.OnSegVhs.Select(v => v.VEHICLE_ID));
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                          Data: $"segment:{SCUtility.Trim(segment.SEG_NUM, true)} capacity not enough(capacity:{SystemParameter.MaxVhCountPerSegment}),on segment vhs:{on_seg_vhs_id} ,is need avoid last:{check_is_need_avoid_result.isNeedAvoid}");
+                    if (check_is_need_avoid_result.isNeedAvoid)
+                    {
+                        return (false, check_is_need_avoid_result.avoidVh);
+                    }
+                    else
+                    {
+                        return (false, null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return (true, null);
+            }
+        }
+        private (bool isSuccess, ASEGMENT segment) TryGetNextEntrySegment(AVEHICLE vh, string req_block_id)
+        {
+            string block_entry_section_id = SCUtility.Trim(req_block_id, true);
+            if (block_entry_section_id.Length > 5)
+                block_entry_section_id = block_entry_section_id.Substring(0, 5);
+            var current_guide_section_result = vh.tryGetCurrentGuideSection();
+            if (!current_guide_section_result.hasInfo)
+                return (false, null);
+            var current_guide_section = current_guide_section_result.currentGuideSection;
+            int index_of_entry_section = current_guide_section.IndexOf(block_entry_section_id);
+            if (index_of_entry_section < 0)
+                return (false, null);
+
+            for (int i = index_of_entry_section; i < current_guide_section.Count && i < (index_of_entry_section + MAX_FIND_ENTRY_SEGMENT_COUNT); i++)
+            {
+                var sec_obj = scApp.SectionBLL.cache.GetSection(current_guide_section[i]);
+                if (sec_obj.IsFirstOnSegment)
+                {
+                    var segment = scApp.SegmentBLL.cache.GetSegment(sec_obj.SEG_NUM);
+                    if (segment == null)
+                    {
+                        return (false, null);
+                    }
+                    else
+                    {
+                        return (true, segment);
+                    }
+                }
+            }
+            return (false, null);
+        }
+
         //用於確認該Segment的容量是否還足夠
-        private (bool isEnough, AVEHICLE avoidVh) TryCheckWillEntrySegmentCapacityEnough(AVEHICLE vh, string reserveSectionID)
+        private (bool isEnough, AVEHICLE avoidVh) TryCheckWillEntrySegmentCapacityEnoughOld(AVEHICLE vh, string reserveSectionID)
         {
             try
             {

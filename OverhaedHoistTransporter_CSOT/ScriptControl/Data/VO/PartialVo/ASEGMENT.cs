@@ -79,6 +79,7 @@ namespace com.mirle.ibg3k0.sc
         {
             var sections_on_segment = sectionBLL.cache.loadSectionsBySegmentID(SEG_NUM);
             Sections = sections_on_segment;
+            Sections?.FirstOrDefault()?.setFirstOnSegment();
         }
 
         public void NotifyControlInitial()
@@ -495,7 +496,7 @@ namespace com.mirle.ibg3k0.sc
                 ASECTION first_section = Sections.First();
                 foreach (var vh in onSegVhs)
                 {
-                    guideNew.checkRoadIsWalkable(vh.CUR_ADR_ID, first_section.FROM_ADR_ID, out var route_distance); //離入口越遠的代表越後面
+                    guideNew.checkRoadIsWalkable(first_section.FROM_ADR_ID, vh.CUR_ADR_ID, out var route_distance); //離入口越遠的代表越後面
                     values.Add((route_distance, vh));
                 }
                 return values.OrderBy(v => v.distance).Select(v => v.vh).ToList();

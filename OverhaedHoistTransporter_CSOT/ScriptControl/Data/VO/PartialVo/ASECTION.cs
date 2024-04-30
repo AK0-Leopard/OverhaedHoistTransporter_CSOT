@@ -15,7 +15,11 @@ namespace com.mirle.ibg3k0.sc
 
         public event EventHandler<string> VehicleLeave;
         public event EventHandler<string> VehicleEntry;
-
+        public bool IsFirstOnSegment { get; private set; } = false;
+        public void setFirstOnSegment()
+        {
+            IsFirstOnSegment = true;
+        }
         public double SectionRealDistance { get; private set; }
         public void setSectionRealDistance(BLL.ReserveBLL reserveBLL)
         {
