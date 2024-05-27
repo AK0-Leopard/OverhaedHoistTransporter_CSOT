@@ -95,27 +95,8 @@
             this.aCCSECDIST2ShowDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uPDTIMEDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.vehicleObjToShowBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.tapTrace = new System.Windows.Forms.TabPage();
-            this.listTrace = new System.Windows.Forms.ListBox();
             this.tapTransferCmd = new System.Windows.Forms.TabPage();
             this.dgv_TransferCommand = new System.Windows.Forms.DataGridView();
-            this.cMDMCSObjToShowBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tapDetail = new System.Windows.Forms.TabPage();
-            this.dgv_TaskCommand = new System.Windows.Forms.DataGridView();
-            this.tapCurrentAlarm = new System.Windows.Forms.TabPage();
-            this.tlp_crtAlarm = new System.Windows.Forms.TableLayoutPanel();
-            this.dgv_Alarm = new System.Windows.Forms.DataGridView();
-            this.eqpt_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.alarm_code = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.alarm_lvl = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.report_time = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.alarm_desc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabPLC = new System.Windows.Forms.TabPage();
-            this.utilityLog1 = new com.mirle.ibg3k0.bc.winform.UI.Components.UtilityLog();
-            this.tab_SECS = new System.Windows.Forms.TabPage();
-            this.utilityLog_SECS = new com.mirle.ibg3k0.bc.winform.UI.Components.UtilityLog();
-            this.timer_TimedUpdates = new System.Windows.Forms.Timer(this.components);
-            this.vehicleObjToShowBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cMDIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.VEHICLE_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cARRIERIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -129,6 +110,19 @@
             this.GroupID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Describe = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cMDMCSObjToShowBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tapDetail = new System.Windows.Forms.TabPage();
+            this.dgv_TaskCommand = new System.Windows.Forms.DataGridView();
+            this.tapCurrentAlarm = new System.Windows.Forms.TabPage();
+            this.tlp_crtAlarm = new System.Windows.Forms.TableLayoutPanel();
+            this.dgv_Alarm = new System.Windows.Forms.DataGridView();
+            this.eqpt_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.alarm_code = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.alarm_lvl = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.report_time = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.alarm_desc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timer_TimedUpdates = new System.Windows.Forms.Timer(this.components);
+            this.vehicleObjToShowBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -142,7 +136,6 @@
             this.tab_vhStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_vhStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vehicleObjToShowBindingSource1)).BeginInit();
-            this.tapTrace.SuspendLayout();
             this.tapTransferCmd.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_TransferCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cMDMCSObjToShowBindingSource)).BeginInit();
@@ -151,8 +144,6 @@
             this.tapCurrentAlarm.SuspendLayout();
             this.tlp_crtAlarm.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Alarm)).BeginInit();
-            this.tabPLC.SuspendLayout();
-            this.tab_SECS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.vehicleObjToShowBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -663,12 +654,9 @@
             // tbcList
             // 
             this.tbcList.Controls.Add(this.tab_vhStatus);
-            this.tbcList.Controls.Add(this.tapTrace);
             this.tbcList.Controls.Add(this.tapTransferCmd);
             this.tbcList.Controls.Add(this.tapDetail);
             this.tbcList.Controls.Add(this.tapCurrentAlarm);
-            this.tbcList.Controls.Add(this.tabPLC);
-            this.tbcList.Controls.Add(this.tab_SECS);
             this.tbcList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbcList.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
             this.tbcList.ItemSize = new System.Drawing.Size(160, 23);
@@ -875,29 +863,6 @@
             // 
             this.vehicleObjToShowBindingSource1.DataSource = typeof(com.mirle.ibg3k0.sc.ObjectRelay.VehicleObjToShow);
             // 
-            // tapTrace
-            // 
-            this.tapTrace.Controls.Add(this.listTrace);
-            this.tapTrace.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold);
-            this.tapTrace.Location = new System.Drawing.Point(4, 27);
-            this.tapTrace.Name = "tapTrace";
-            this.tapTrace.Size = new System.Drawing.Size(1916, 99);
-            this.tapTrace.TabIndex = 3;
-            this.tapTrace.Text = "System Log            ";
-            this.tapTrace.UseVisualStyleBackColor = true;
-            // 
-            // listTrace
-            // 
-            this.listTrace.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listTrace.Font = new System.Drawing.Font("Arial", 12F);
-            this.listTrace.FormattingEnabled = true;
-            this.listTrace.HorizontalScrollbar = true;
-            this.listTrace.ItemHeight = 18;
-            this.listTrace.Location = new System.Drawing.Point(0, 0);
-            this.listTrace.Name = "listTrace";
-            this.listTrace.Size = new System.Drawing.Size(1916, 99);
-            this.listTrace.TabIndex = 0;
-            // 
             // tapTransferCmd
             // 
             this.tapTransferCmd.BackColor = System.Drawing.SystemColors.Control;
@@ -942,6 +907,117 @@
             this.dgv_TransferCommand.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgv_TransferCommand.Size = new System.Drawing.Size(1916, 99);
             this.dgv_TransferCommand.TabIndex = 1;
+            // 
+            // cMDIDDataGridViewTextBoxColumn
+            // 
+            this.cMDIDDataGridViewTextBoxColumn.DataPropertyName = "CMD_ID";
+            this.cMDIDDataGridViewTextBoxColumn.HeaderText = "ID";
+            this.cMDIDDataGridViewTextBoxColumn.Name = "cMDIDDataGridViewTextBoxColumn";
+            this.cMDIDDataGridViewTextBoxColumn.ReadOnly = true;
+            this.cMDIDDataGridViewTextBoxColumn.Width = 54;
+            // 
+            // VEHICLE_ID
+            // 
+            this.VEHICLE_ID.DataPropertyName = "VEHICLE_ID";
+            this.VEHICLE_ID.HeaderText = "Vh";
+            this.VEHICLE_ID.MinimumWidth = 100;
+            this.VEHICLE_ID.Name = "VEHICLE_ID";
+            this.VEHICLE_ID.ReadOnly = true;
+            // 
+            // cARRIERIDDataGridViewTextBoxColumn
+            // 
+            this.cARRIERIDDataGridViewTextBoxColumn.DataPropertyName = "CARRIER_ID";
+            this.cARRIERIDDataGridViewTextBoxColumn.HeaderText = "Carrier ID";
+            this.cARRIERIDDataGridViewTextBoxColumn.Name = "cARRIERIDDataGridViewTextBoxColumn";
+            this.cARRIERIDDataGridViewTextBoxColumn.ReadOnly = true;
+            this.cARRIERIDDataGridViewTextBoxColumn.Width = 124;
+            // 
+            // tRANSFERSTATEDataGridViewTextBoxColumn
+            // 
+            this.tRANSFERSTATEDataGridViewTextBoxColumn.DataPropertyName = "TRANSFERSTATE";
+            this.tRANSFERSTATEDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.tRANSFERSTATEDataGridViewTextBoxColumn.HeaderText = "State";
+            this.tRANSFERSTATEDataGridViewTextBoxColumn.Name = "tRANSFERSTATEDataGridViewTextBoxColumn";
+            this.tRANSFERSTATEDataGridViewTextBoxColumn.ReadOnly = true;
+            this.tRANSFERSTATEDataGridViewTextBoxColumn.Width = 82;
+            // 
+            // hOSTSOURCEDataGridViewTextBoxColumn
+            // 
+            this.hOSTSOURCEDataGridViewTextBoxColumn.DataPropertyName = "HOSTSOURCE";
+            this.hOSTSOURCEDataGridViewTextBoxColumn.FillWeight = 150F;
+            this.hOSTSOURCEDataGridViewTextBoxColumn.HeaderText = "L Port";
+            this.hOSTSOURCEDataGridViewTextBoxColumn.Name = "hOSTSOURCEDataGridViewTextBoxColumn";
+            this.hOSTSOURCEDataGridViewTextBoxColumn.ReadOnly = true;
+            this.hOSTSOURCEDataGridViewTextBoxColumn.Width = 91;
+            // 
+            // hOSTDESTINATIONDataGridViewTextBoxColumn
+            // 
+            this.hOSTDESTINATIONDataGridViewTextBoxColumn.DataPropertyName = "HOSTDESTINATION";
+            this.hOSTDESTINATIONDataGridViewTextBoxColumn.FillWeight = 150F;
+            this.hOSTDESTINATIONDataGridViewTextBoxColumn.HeaderText = "U Port";
+            this.hOSTDESTINATIONDataGridViewTextBoxColumn.Name = "hOSTDESTINATIONDataGridViewTextBoxColumn";
+            this.hOSTDESTINATIONDataGridViewTextBoxColumn.ReadOnly = true;
+            this.hOSTDESTINATIONDataGridViewTextBoxColumn.Width = 92;
+            // 
+            // pRIORITYDataGridViewTextBoxColumn
+            // 
+            this.pRIORITYDataGridViewTextBoxColumn.DataPropertyName = "PRIORITY";
+            this.pRIORITYDataGridViewTextBoxColumn.FillWeight = 70F;
+            this.pRIORITYDataGridViewTextBoxColumn.HeaderText = "Priority";
+            this.pRIORITYDataGridViewTextBoxColumn.Name = "pRIORITYDataGridViewTextBoxColumn";
+            this.pRIORITYDataGridViewTextBoxColumn.ReadOnly = true;
+            this.pRIORITYDataGridViewTextBoxColumn.Width = 103;
+            // 
+            // PRIORITY_SUM
+            // 
+            this.PRIORITY_SUM.DataPropertyName = "PRIORITY_SUM";
+            this.PRIORITY_SUM.HeaderText = "Priority(Sum)";
+            this.PRIORITY_SUM.Name = "PRIORITY_SUM";
+            this.PRIORITY_SUM.ReadOnly = true;
+            this.PRIORITY_SUM.Width = 157;
+            // 
+            // cMDINSERTIMEDataGridViewTextBoxColumn
+            // 
+            this.cMDINSERTIMEDataGridViewTextBoxColumn.DataPropertyName = "CMD_INSER_TIME";
+            this.cMDINSERTIMEDataGridViewTextBoxColumn.FillWeight = 120F;
+            this.cMDINSERTIMEDataGridViewTextBoxColumn.HeaderText = "Inser Time";
+            this.cMDINSERTIMEDataGridViewTextBoxColumn.Name = "cMDINSERTIMEDataGridViewTextBoxColumn";
+            this.cMDINSERTIMEDataGridViewTextBoxColumn.ReadOnly = true;
+            this.cMDINSERTIMEDataGridViewTextBoxColumn.Width = 133;
+            // 
+            // cMDSTARTTIMEDataGridViewTextBoxColumn
+            // 
+            this.cMDSTARTTIMEDataGridViewTextBoxColumn.DataPropertyName = "CMD_START_TIME";
+            this.cMDSTARTTIMEDataGridViewTextBoxColumn.FillWeight = 120F;
+            this.cMDSTARTTIMEDataGridViewTextBoxColumn.HeaderText = "Start Time";
+            this.cMDSTARTTIMEDataGridViewTextBoxColumn.Name = "cMDSTARTTIMEDataGridViewTextBoxColumn";
+            this.cMDSTARTTIMEDataGridViewTextBoxColumn.ReadOnly = true;
+            this.cMDSTARTTIMEDataGridViewTextBoxColumn.Width = 130;
+            // 
+            // GroupID
+            // 
+            this.GroupID.DataPropertyName = "GroupID";
+            this.GroupID.HeaderText = "GroupID";
+            this.GroupID.MinimumWidth = 150;
+            this.GroupID.Name = "GroupID";
+            this.GroupID.ReadOnly = true;
+            this.GroupID.Width = 150;
+            // 
+            // Describe
+            // 
+            this.Describe.DataPropertyName = "Describe";
+            this.Describe.HeaderText = "Desc.";
+            this.Describe.MinimumWidth = 600;
+            this.Describe.Name = "Describe";
+            this.Describe.ReadOnly = true;
+            this.Describe.Width = 600;
+            // 
+            // Column1
+            // 
+            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column1.HeaderText = "";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
             // 
             // cMDMCSObjToShowBindingSource
             // 
@@ -1058,49 +1134,6 @@
             this.alarm_desc.Name = "alarm_desc";
             this.alarm_desc.ReadOnly = true;
             // 
-            // tabPLC
-            // 
-            this.tabPLC.Controls.Add(this.utilityLog1);
-            this.tabPLC.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold);
-            this.tabPLC.Location = new System.Drawing.Point(4, 27);
-            this.tabPLC.Name = "tabPLC";
-            this.tabPLC.Size = new System.Drawing.Size(1916, 99);
-            this.tabPLC.TabIndex = 4;
-            this.tabPLC.Text = "PLC Communication      ";
-            this.tabPLC.UseVisualStyleBackColor = true;
-            // 
-            // utilityLog1
-            // 
-            this.utilityLog1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.utilityLog1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.utilityLog1.ForeColor = System.Drawing.Color.Black;
-            this.utilityLog1.Location = new System.Drawing.Point(0, 0);
-            this.utilityLog1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.utilityLog1.Name = "utilityLog1";
-            this.utilityLog1.Size = new System.Drawing.Size(1916, 99);
-            this.utilityLog1.TabIndex = 0;
-            // 
-            // tab_SECS
-            // 
-            this.tab_SECS.Controls.Add(this.utilityLog_SECS);
-            this.tab_SECS.Location = new System.Drawing.Point(4, 27);
-            this.tab_SECS.Name = "tab_SECS";
-            this.tab_SECS.Padding = new System.Windows.Forms.Padding(3);
-            this.tab_SECS.Size = new System.Drawing.Size(1916, 99);
-            this.tab_SECS.TabIndex = 6;
-            this.tab_SECS.Text = "SECS Communcation    ";
-            this.tab_SECS.UseVisualStyleBackColor = true;
-            // 
-            // utilityLog_SECS
-            // 
-            this.utilityLog_SECS.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.utilityLog_SECS.Font = new System.Drawing.Font("Consolas", 12F);
-            this.utilityLog_SECS.Location = new System.Drawing.Point(3, 3);
-            this.utilityLog_SECS.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.utilityLog_SECS.Name = "utilityLog_SECS";
-            this.utilityLog_SECS.Size = new System.Drawing.Size(1910, 93);
-            this.utilityLog_SECS.TabIndex = 0;
-            // 
             // timer_TimedUpdates
             // 
             this.timer_TimedUpdates.Interval = 2000;
@@ -1109,117 +1142,6 @@
             // vehicleObjToShowBindingSource
             // 
             this.vehicleObjToShowBindingSource.DataSource = typeof(com.mirle.ibg3k0.sc.ObjectRelay.VehicleObjToShow);
-            // 
-            // cMDIDDataGridViewTextBoxColumn
-            // 
-            this.cMDIDDataGridViewTextBoxColumn.DataPropertyName = "CMD_ID";
-            this.cMDIDDataGridViewTextBoxColumn.HeaderText = "ID";
-            this.cMDIDDataGridViewTextBoxColumn.Name = "cMDIDDataGridViewTextBoxColumn";
-            this.cMDIDDataGridViewTextBoxColumn.ReadOnly = true;
-            this.cMDIDDataGridViewTextBoxColumn.Width = 54;
-            // 
-            // VEHICLE_ID
-            // 
-            this.VEHICLE_ID.DataPropertyName = "VEHICLE_ID";
-            this.VEHICLE_ID.HeaderText = "Vh";
-            this.VEHICLE_ID.MinimumWidth = 100;
-            this.VEHICLE_ID.Name = "VEHICLE_ID";
-            this.VEHICLE_ID.ReadOnly = true;
-            // 
-            // cARRIERIDDataGridViewTextBoxColumn
-            // 
-            this.cARRIERIDDataGridViewTextBoxColumn.DataPropertyName = "CARRIER_ID";
-            this.cARRIERIDDataGridViewTextBoxColumn.HeaderText = "Carrier ID";
-            this.cARRIERIDDataGridViewTextBoxColumn.Name = "cARRIERIDDataGridViewTextBoxColumn";
-            this.cARRIERIDDataGridViewTextBoxColumn.ReadOnly = true;
-            this.cARRIERIDDataGridViewTextBoxColumn.Width = 124;
-            // 
-            // tRANSFERSTATEDataGridViewTextBoxColumn
-            // 
-            this.tRANSFERSTATEDataGridViewTextBoxColumn.DataPropertyName = "TRANSFERSTATE";
-            this.tRANSFERSTATEDataGridViewTextBoxColumn.FillWeight = 60F;
-            this.tRANSFERSTATEDataGridViewTextBoxColumn.HeaderText = "State";
-            this.tRANSFERSTATEDataGridViewTextBoxColumn.Name = "tRANSFERSTATEDataGridViewTextBoxColumn";
-            this.tRANSFERSTATEDataGridViewTextBoxColumn.ReadOnly = true;
-            this.tRANSFERSTATEDataGridViewTextBoxColumn.Width = 82;
-            // 
-            // hOSTSOURCEDataGridViewTextBoxColumn
-            // 
-            this.hOSTSOURCEDataGridViewTextBoxColumn.DataPropertyName = "HOSTSOURCE";
-            this.hOSTSOURCEDataGridViewTextBoxColumn.FillWeight = 150F;
-            this.hOSTSOURCEDataGridViewTextBoxColumn.HeaderText = "L Port";
-            this.hOSTSOURCEDataGridViewTextBoxColumn.Name = "hOSTSOURCEDataGridViewTextBoxColumn";
-            this.hOSTSOURCEDataGridViewTextBoxColumn.ReadOnly = true;
-            this.hOSTSOURCEDataGridViewTextBoxColumn.Width = 91;
-            // 
-            // hOSTDESTINATIONDataGridViewTextBoxColumn
-            // 
-            this.hOSTDESTINATIONDataGridViewTextBoxColumn.DataPropertyName = "HOSTDESTINATION";
-            this.hOSTDESTINATIONDataGridViewTextBoxColumn.FillWeight = 150F;
-            this.hOSTDESTINATIONDataGridViewTextBoxColumn.HeaderText = "U Port";
-            this.hOSTDESTINATIONDataGridViewTextBoxColumn.Name = "hOSTDESTINATIONDataGridViewTextBoxColumn";
-            this.hOSTDESTINATIONDataGridViewTextBoxColumn.ReadOnly = true;
-            this.hOSTDESTINATIONDataGridViewTextBoxColumn.Width = 92;
-            // 
-            // pRIORITYDataGridViewTextBoxColumn
-            // 
-            this.pRIORITYDataGridViewTextBoxColumn.DataPropertyName = "PRIORITY";
-            this.pRIORITYDataGridViewTextBoxColumn.FillWeight = 70F;
-            this.pRIORITYDataGridViewTextBoxColumn.HeaderText = "Priority";
-            this.pRIORITYDataGridViewTextBoxColumn.Name = "pRIORITYDataGridViewTextBoxColumn";
-            this.pRIORITYDataGridViewTextBoxColumn.ReadOnly = true;
-            this.pRIORITYDataGridViewTextBoxColumn.Width = 103;
-            // 
-            // PRIORITY_SUM
-            // 
-            this.PRIORITY_SUM.DataPropertyName = "PRIORITY_SUM";
-            this.PRIORITY_SUM.HeaderText = "Priority(Sum)";
-            this.PRIORITY_SUM.Name = "PRIORITY_SUM";
-            this.PRIORITY_SUM.ReadOnly = true;
-            this.PRIORITY_SUM.Width = 157;
-            // 
-            // cMDINSERTIMEDataGridViewTextBoxColumn
-            // 
-            this.cMDINSERTIMEDataGridViewTextBoxColumn.DataPropertyName = "CMD_INSER_TIME";
-            this.cMDINSERTIMEDataGridViewTextBoxColumn.FillWeight = 120F;
-            this.cMDINSERTIMEDataGridViewTextBoxColumn.HeaderText = "Inser Time";
-            this.cMDINSERTIMEDataGridViewTextBoxColumn.Name = "cMDINSERTIMEDataGridViewTextBoxColumn";
-            this.cMDINSERTIMEDataGridViewTextBoxColumn.ReadOnly = true;
-            this.cMDINSERTIMEDataGridViewTextBoxColumn.Width = 133;
-            // 
-            // cMDSTARTTIMEDataGridViewTextBoxColumn
-            // 
-            this.cMDSTARTTIMEDataGridViewTextBoxColumn.DataPropertyName = "CMD_START_TIME";
-            this.cMDSTARTTIMEDataGridViewTextBoxColumn.FillWeight = 120F;
-            this.cMDSTARTTIMEDataGridViewTextBoxColumn.HeaderText = "Start Time";
-            this.cMDSTARTTIMEDataGridViewTextBoxColumn.Name = "cMDSTARTTIMEDataGridViewTextBoxColumn";
-            this.cMDSTARTTIMEDataGridViewTextBoxColumn.ReadOnly = true;
-            this.cMDSTARTTIMEDataGridViewTextBoxColumn.Width = 130;
-            // 
-            // GroupID
-            // 
-            this.GroupID.DataPropertyName = "GroupID";
-            this.GroupID.HeaderText = "GroupID";
-            this.GroupID.MinimumWidth = 150;
-            this.GroupID.Name = "GroupID";
-            this.GroupID.ReadOnly = true;
-            this.GroupID.Width = 150;
-            // 
-            // Describe
-            // 
-            this.Describe.DataPropertyName = "Describe";
-            this.Describe.HeaderText = "Desc.";
-            this.Describe.MinimumWidth = 600;
-            this.Describe.Name = "Describe";
-            this.Describe.ReadOnly = true;
-            this.Describe.Width = 600;
-            // 
-            // Column1
-            // 
-            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column1.HeaderText = "";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
             // 
             // OHT_Form
             // 
@@ -1253,7 +1175,6 @@
             this.tab_vhStatus.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_vhStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vehicleObjToShowBindingSource1)).EndInit();
-            this.tapTrace.ResumeLayout(false);
             this.tapTransferCmd.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_TransferCommand)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cMDMCSObjToShowBindingSource)).EndInit();
@@ -1262,8 +1183,6 @@
             this.tapCurrentAlarm.ResumeLayout(false);
             this.tlp_crtAlarm.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Alarm)).EndInit();
-            this.tabPLC.ResumeLayout(false);
-            this.tab_SECS.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.vehicleObjToShowBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -1273,15 +1192,11 @@
 
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TabControl tbcList;
-        private System.Windows.Forms.TabPage tapTrace;
-        private System.Windows.Forms.ListBox listTrace;
         private System.Windows.Forms.TabPage tapDetail;
         private System.Windows.Forms.DataGridView dgv_TaskCommand;
         private System.Windows.Forms.TabPage tapCurrentAlarm;
         private System.Windows.Forms.TableLayoutPanel tlp_crtAlarm;
         private System.Windows.Forms.DataGridView dgv_Alarm;
-        private System.Windows.Forms.TabPage tabPLC;
-        private Components.UtilityLog utilityLog1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel pnl_Map;
         private System.Windows.Forms.Panel panel1;
@@ -1301,8 +1216,6 @@
         private System.Windows.Forms.Button btn_continuous;
         private System.Windows.Forms.Button btn_pause;
         private System.Windows.Forms.CheckBox cb_autoTip;
-        private System.Windows.Forms.TabPage tab_SECS;
-        private Components.UtilityLog utilityLog_SECS;
         private System.Windows.Forms.ComboBox cbm_Action;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cmb_cycRunZone;
