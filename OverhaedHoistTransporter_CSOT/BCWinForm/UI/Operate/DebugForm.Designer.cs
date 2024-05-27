@@ -104,6 +104,9 @@
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label72 = new System.Windows.Forms.Label();
+            this.num_vhCountLimit = new System.Windows.Forms.NumericUpDown();
+            this.cb_openSegmentEnoughControl = new System.Windows.Forms.CheckBox();
             this.cb_isOpenAutoChangeGuide = new System.Windows.Forms.CheckBox();
             this.cb_isUsingID132PositionCheck = new System.Windows.Forms.CheckBox();
             this.lbl_value_reserveModule_LorR = new System.Windows.Forms.Label();
@@ -381,9 +384,6 @@
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
             this.MaxAllowActionTimeSecond_Set_btn = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
-            this.cb_openSegmentEnoughControl = new System.Windows.Forms.CheckBox();
-            this.num_vhCountLimit = new System.Windows.Forms.NumericUpDown();
-            this.label72 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -395,6 +395,7 @@
             this.groupBox5.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).BeginInit();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.gb_blockControl.SuspendLayout();
@@ -423,7 +424,6 @@
             this.tableLayoutPanel6.SuspendLayout();
             this.tabPage9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).BeginInit();
             this.SuspendLayout();
             // 
             // cb_FroceBlockPass
@@ -1330,6 +1330,40 @@
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label72
+            // 
+            this.label72.AutoSize = true;
+            this.label72.Location = new System.Drawing.Point(1174, 295);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(178, 22);
+            this.label72.TabIndex = 4;
+            this.label72.Text = "道路管制車輛上限";
+            // 
+            // num_vhCountLimit
+            // 
+            this.num_vhCountLimit.Location = new System.Drawing.Point(1100, 293);
+            this.num_vhCountLimit.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.num_vhCountLimit.Name = "num_vhCountLimit";
+            this.num_vhCountLimit.Size = new System.Drawing.Size(68, 30);
+            this.num_vhCountLimit.TabIndex = 58;
+            this.num_vhCountLimit.ValueChanged += new System.EventHandler(this.num_vhCountLimit_ValueChanged);
+            // 
+            // cb_openSegmentEnoughControl
+            // 
+            this.cb_openSegmentEnoughControl.AutoSize = true;
+            this.cb_openSegmentEnoughControl.Location = new System.Drawing.Point(1100, 262);
+            this.cb_openSegmentEnoughControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_openSegmentEnoughControl.Name = "cb_openSegmentEnoughControl";
+            this.cb_openSegmentEnoughControl.Size = new System.Drawing.Size(197, 26);
+            this.cb_openSegmentEnoughControl.TabIndex = 62;
+            this.cb_openSegmentEnoughControl.Text = "開啟道路總量管制";
+            this.cb_openSegmentEnoughControl.UseVisualStyleBackColor = true;
+            this.cb_openSegmentEnoughControl.CheckedChanged += new System.EventHandler(this.cb_openSegmentEnoughControl_CheckedChanged);
+            // 
             // cb_isOpenAutoChangeGuide
             // 
             this.cb_isOpenAutoChangeGuide.AutoSize = true;
@@ -1357,7 +1391,7 @@
             // lbl_value_reserveModule_LorR
             // 
             this.lbl_value_reserveModule_LorR.AutoSize = true;
-            this.lbl_value_reserveModule_LorR.Location = new System.Drawing.Point(1280, 220);
+            this.lbl_value_reserveModule_LorR.Location = new System.Drawing.Point(1294, 329);
             this.lbl_value_reserveModule_LorR.Name = "lbl_value_reserveModule_LorR";
             this.lbl_value_reserveModule_LorR.Size = new System.Drawing.Size(80, 22);
             this.lbl_value_reserveModule_LorR.TabIndex = 59;
@@ -2728,7 +2762,7 @@
             // 
             this.cb_Cache_data_Name.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cb_Cache_data_Name.FormattingEnabled = true;
-            this.cb_Cache_data_Name.Location = new System.Drawing.Point(210, 3);
+            this.cb_Cache_data_Name.Location = new System.Drawing.Point(210, 6);
             this.cb_Cache_data_Name.Name = "cb_Cache_data_Name";
             this.cb_Cache_data_Name.Size = new System.Drawing.Size(193, 30);
             this.cb_Cache_data_Name.TabIndex = 1;
@@ -4693,40 +4727,6 @@
             this.MaxAllowActionTimeSecond_Set_btn.UseVisualStyleBackColor = true;
             this.MaxAllowActionTimeSecond_Set_btn.Click += new System.EventHandler(this.MaxAllowActionTimeSecond_Set_btn_Click);
             // 
-            // cb_openSegmentEnoughControl
-            // 
-            this.cb_openSegmentEnoughControl.AutoSize = true;
-            this.cb_openSegmentEnoughControl.Location = new System.Drawing.Point(1100, 262);
-            this.cb_openSegmentEnoughControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cb_openSegmentEnoughControl.Name = "cb_openSegmentEnoughControl";
-            this.cb_openSegmentEnoughControl.Size = new System.Drawing.Size(197, 26);
-            this.cb_openSegmentEnoughControl.TabIndex = 62;
-            this.cb_openSegmentEnoughControl.Text = "開啟道路總量管制";
-            this.cb_openSegmentEnoughControl.UseVisualStyleBackColor = true;
-            this.cb_openSegmentEnoughControl.CheckedChanged += new System.EventHandler(this.cb_openSegmentEnoughControl_CheckedChanged);
-            // 
-            // num_vhCountLimit
-            // 
-            this.num_vhCountLimit.Location = new System.Drawing.Point(1100, 293);
-            this.num_vhCountLimit.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.num_vhCountLimit.Name = "num_vhCountLimit";
-            this.num_vhCountLimit.Size = new System.Drawing.Size(68, 30);
-            this.num_vhCountLimit.TabIndex = 58;
-            this.num_vhCountLimit.ValueChanged += new System.EventHandler(this.num_vhCountLimit_ValueChanged);
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(1174, 295);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(178, 22);
-            this.label72.TabIndex = 4;
-            this.label72.Text = "道路管制車輛上限";
-            // 
             // DebugForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -4759,6 +4759,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).EndInit();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -4810,7 +4811,6 @@
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).EndInit();
             this.ResumeLayout(false);
 
         }
