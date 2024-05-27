@@ -9,6 +9,7 @@ using com.mirle.ibg3k0.sc.Data.VO.Interface;
 using com.mirle.ibg3k0.sc.ObjectRelay;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace com.mirle.ibg3k0.sc
         public event EventHandler<string> VehicleLeave;
         public event EventHandler<string> VehicleEntry;
         public string CurrentRequestVhID { get; private set; }
-
+        public List<ControlZoneInfo> ControlZone { get; private set; }
 
         private void onSectinoLeave(string vh_id)
         {
@@ -64,6 +65,10 @@ namespace com.mirle.ibg3k0.sc
         {
             BlockZoneDetailSectionIDs = mapBLL.loadBlockZoneDetailSecIDsByEntrySecID(ENTRY_SEC_ID);
         }
+        public void SetControlZoneInfo(List<ControlZoneInfo> controlZone)
+        {
+            ControlZone = controlZone;
+        }
         public List<string> GetBlockZoneDetailSectionIDs()
         {
             if (BlockZoneDetailSectionIDs == null)
@@ -88,17 +93,16 @@ namespace com.mirle.ibg3k0.sc
         {
             lock (block_reserve_release_lock_obj)
             {
-                if(sc.Common.SCUtility.isMatche(releaseVhID, CurrentRequestVhID))
+                if (sc.Common.SCUtility.isMatche(releaseVhID, CurrentRequestVhID))
                 {
                     CurrentRequestVhID = "";
                 }
                 else
                 {
-                    
+
                 }
             }
         }
-
     }
 
 }

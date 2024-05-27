@@ -47,6 +47,7 @@ namespace com.mirle.ibg3k0.sc.Common
         private List<APARKZONEDETAIL> ParkZoneDetails;
         private List<APARKZONEMASTER> ParkZoneMasters;
         private List<PortGroupInfo> PortGroupInfos;
+        private List<ControlZoneInfo> ControlZoneInfos;
 
 
         private CommonInfo CommonInfo;
@@ -83,9 +84,11 @@ namespace com.mirle.ibg3k0.sc.Common
             BlockZoneMasters = scApp.MapBLL.loadAllBlockZoneMaster();
             ParkZoneDetails = scApp.ParkBLL.LoadAllParkZoneDetails();
             ParkZoneMasters = scApp.ParkBLL.LoadAllParkZoneMaster();
-
             ParkZoneDetails.ForEach(detail => SCUtility.TrimAllParameter(detail));
             ParkZoneMasters.ForEach(master => SCUtility.TrimAllParameter(master));
+            ControlZoneInfos = scApp.ControlZoneDataDao.loadControlZoneDatas(scApp).Select
+                (data => new ControlZoneInfo(data.ID, data.Points, data.BlockSectionIDs, data.VhLimitCount)).ToList();
+
             foreach (ASEGMENT segment in Segments)
             {
                 segment.SetSectionList(scApp.SectionBLL);
@@ -94,13 +97,15 @@ namespace com.mirle.ibg3k0.sc.Common
             foreach (ABLOCKZONEMASTER block_zone_master in BlockZoneMasters)
             {
                 block_zone_master.SetBlockDetailList(scApp.MapBLL);
+
+                block_zone_master.SetControlZoneInfo(TryGetControlZoneInfo(block_zone_master.ENTRY_SEC_ID));
             }
             foreach (var park_zone_master in ParkZoneMasters)
             {
                 park_zone_master.setParkDetails(ParkZoneDetails);
             }
 
-            foreach(var sec in Sections)
+            foreach (var sec in Sections)
             {
                 sec.setSectionRealDistance(scApp.ReserveBLL);
             }
@@ -109,6 +114,17 @@ namespace com.mirle.ibg3k0.sc.Common
 
             CommonInfo = new CommonInfo();
         }
+
+        private List<ControlZoneInfo> TryGetControlZoneInfo(string entrySectionID)
+        {
+            if (SCUtility.isEmpty(entrySectionID))
+                return new List<ControlZoneInfo>();
+            if (ControlZoneInfos == null || !ControlZoneInfos.Any())
+                return new List<ControlZoneInfo>();
+            return ControlZoneInfos.Where(info => info.RelatedBlockIDs.Contains(entrySectionID.Trim())).ToList();
+        }
+
+
 
         private void loadPortGroupData()
         {
@@ -189,6 +205,10 @@ namespace com.mirle.ibg3k0.sc.Common
             return PortGroupInfos.ToList();
         }
 
+        public List<ControlZoneInfo> LoadControlZoneInfo()
+        {
+            return ControlZoneInfos.ToList();
+        }
         #endregion
 
 

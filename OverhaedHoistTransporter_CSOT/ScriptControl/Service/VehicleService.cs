@@ -2715,11 +2715,16 @@ namespace com.mirle.ibg3k0.sc.Service
                             return false;
                         }
                     }
-                    var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnough(request_block_vh, req_block_id);
-                    if (!check_segment_capacity_enough_result.isEnough)
+                    //var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnough(request_block_vh, req_block_id);
+                    //if (!check_segment_capacity_enough_result.isEnough)
+                    //{
+                    //    if (check_segment_capacity_enough_result.avoidVh != null)
+                    //        Task.Run(() => scApp.VehicleBLL.whenVhObstacle(check_segment_capacity_enough_result.avoidVh.VEHICLE_ID, vhID));
+                    //    return false;
+                    //}
+                    bool is_control_zone_enough = TryCheckWillEntryZoneCapacityEnough(request_block_vh, block_master);
+                    if (!is_control_zone_enough)
                     {
-                        if (check_segment_capacity_enough_result.avoidVh != null)
-                            Task.Run(() => scApp.VehicleBLL.whenVhObstacle(check_segment_capacity_enough_result.avoidVh.VEHICLE_ID, vhID));
                         return false;
                     }
 
@@ -2811,6 +2816,37 @@ namespace com.mirle.ibg3k0.sc.Service
             {
                 logger.Error(ex, "Exception:");
                 return (true, null);
+            }
+        }
+
+        private bool TryCheckWillEntryZoneCapacityEnough(AVEHICLE vh, ABLOCKZONEMASTER blockZoneMaster)
+        {
+            try
+            {
+                if (!DebugParameter.IsOpenSegmentCapacityControl)
+                {
+                    return true;
+                }
+                if (blockZoneMaster.ControlZone == null || !blockZoneMaster.ControlZone.Any())
+                {
+                    return true;
+                }
+                foreach (var control_zone in blockZoneMaster.ControlZone)
+                {
+                    if (control_zone.VhCount >= control_zone.VhLimitCount)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{vh.VEHICLE_ID} requset id:{blockZoneMaster.ENTRY_SEC_ID} ,zone capacity not enough. current count:{control_zone.VhCount} (max count:{control_zone.VhLimitCount})",
+                           VehicleID: vh.VEHICLE_ID);
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return false;
             }
         }
         private (bool isSuccess, ASEGMENT segment) TryGetNextEntrySegment(AVEHICLE vh, string req_block_id)

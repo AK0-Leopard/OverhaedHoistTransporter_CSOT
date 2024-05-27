@@ -93,6 +93,8 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
 
             scApp.VehicleService.CheckObstacleStatusByVehicleView();
 
+            RefreshControlZoneVhCount();
+
             //if (System.Threading.Interlocked.Exchange(ref checkSyncPoint, 1) == 0)
             //{
             //    try
@@ -135,6 +137,31 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
             //        System.Threading.Interlocked.Exchange(ref checkSyncPoint, 0);
             //    }
             //}
+        }
+
+        private long syncRefresh = 0;
+        private void RefreshControlZoneVhCount()
+        {
+            if (System.Threading.Interlocked.Exchange(ref syncRefresh, 1) == 0)
+            {
+                try
+                {
+                    var control_zone_infos = scApp.getCommObjCacheManager().LoadControlZoneInfo();
+                    var vhs = scApp.VehicleBLL.cache.loadVhs();
+                    foreach (var info in control_zone_infos)
+                    {
+                        info.RefreshControlZoneSectionVhCount(vhs);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Exception:");
+                }
+                finally
+                {
+                    System.Threading.Interlocked.Exchange(ref syncRefresh, 0);
+                }
+            }
         }
 
 

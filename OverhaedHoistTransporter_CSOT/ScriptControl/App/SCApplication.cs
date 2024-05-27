@@ -445,6 +445,9 @@ namespace com.mirle.ibg3k0.sc.App
         private PortGroupDao portGroupDao = null;
         public PortGroupDao PortGroupDao { get { return portGroupDao; } }
 
+        private ControlZoneDataDao controlZoneDataDao = null;
+        public ControlZoneDataDao ControlZoneDataDao { get { return controlZoneDataDao; } }
+
         //BLL
         /// <summary>
         /// The user BLL
@@ -1254,6 +1257,7 @@ namespace com.mirle.ibg3k0.sc.App
             hcmd_ohtcDao = new HCMD_OHTCDao();
             flexsimcommandDao = new FlexsimCommandDao();
             portGroupDao = new PortGroupDao();
+            controlZoneDataDao = new ControlZoneDataDao();
         }
 
         /// <summary>
@@ -1275,6 +1279,7 @@ namespace com.mirle.ibg3k0.sc.App
 
                 loadCSVToDataset(ohxcConfig, "PORTGROUPMAP");
                 loadCSVToDataset(ohxcConfig, "PORTGROUPINFO");
+                loadCSVToDataset(ohxcConfig, "CONTROLZONEINFO");
 
                 loadMapInfoCSVToDataset(ohxcConfig, "AADDRESS");
                 loadMapInfoCSVToDataset(ohxcConfig, "ASECTION");

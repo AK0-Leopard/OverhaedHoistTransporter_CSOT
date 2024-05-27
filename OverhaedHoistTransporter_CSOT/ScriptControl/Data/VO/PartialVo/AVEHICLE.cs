@@ -19,6 +19,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -1042,7 +1043,13 @@ namespace com.mirle.ibg3k0.sc
         [JsonIgnore]
         [BaseElement(NonChangeFromOtherVO = true)]
         public int Num { get; set; }
-
+        public Point Point
+        {
+            get
+            {
+                return new Point((int)X_Axis, (int)Y_Axis);
+            }
+        }
 
         void TransitionedHandler(Stateless.StateMachine<VehicleState, VehicleTrigger>.Transition transition)
         {

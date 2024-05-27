@@ -674,6 +674,9 @@
     <None Include="Config\CSOT_T4_PH1PH2\CSV\MapInfo\ASECTION.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Config\CSOT_T4_PH1PH2\CSV\CONTROLZONEINFO.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Config\CSOT_T4_PH1PH2\CSV\PORTGROUPINFO.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
