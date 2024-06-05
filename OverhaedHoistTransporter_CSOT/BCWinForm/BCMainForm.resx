@@ -501,6 +501,15 @@
   <data name="alarmToolStripMenuItem.Text" xml:space="preserve">
     <value>Alarm History Query</value>
   </data>
+  <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>303, 6</value>
+  </data>
+  <data name="alarmCurrentQueryToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>306, 26</value>
+  </data>
+  <data name="alarmCurrentQueryToolStripMenuItem.Text" xml:space="preserve">
+    <value>Alarm Current Query</value>
+  </data>
   <data name="queryToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>73, 26</value>
   </data>
@@ -1355,6 +1364,12 @@
   <data name="&gt;&gt;reserveInfoToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;bufferPortToolStripMenuItem.Name" xml:space="preserve">
+    <value>bufferPortToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;bufferPortToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;languageToolStripMenuItem.Name" xml:space="preserve">
     <value>languageToolStripMenuItem</value>
   </data>
@@ -1433,10 +1448,16 @@
   <data name="&gt;&gt;alarmToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;bufferPortToolStripMenuItem.Name" xml:space="preserve">
-    <value>bufferPortToolStripMenuItem</value>
+  <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
+    <value>toolStripSeparator2</value>
   </data>
-  <data name="&gt;&gt;bufferPortToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;alarmCurrentQueryToolStripMenuItem.Name" xml:space="preserve">
+    <value>alarmCurrentQueryToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;alarmCurrentQueryToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

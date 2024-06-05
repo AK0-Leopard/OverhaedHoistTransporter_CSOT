@@ -169,6 +169,7 @@ namespace com.mirle.ibg3k0.sc.App
         /// </summary>
         public static readonly string DateTimeFormat_11 = "HH:mm:ss.ff";//A0.11
         public static readonly string DateTimeFormat_23 = "yyyy-MM-dd HH:mm:ss.fff";
+        public static readonly string DateTimeFormat_27 = "yyyy-MM-dd HH:mm:ss.fffffff";
 
         //Sequence Name
         /// <summary>

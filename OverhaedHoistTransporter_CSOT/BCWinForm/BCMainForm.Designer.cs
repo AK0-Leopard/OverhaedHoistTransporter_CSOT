@@ -94,6 +94,7 @@ namespace com.mirle.ibg3k0.bc.winform
             this.transferCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.reserveInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bufferPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zh_twToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,7 +108,8 @@ namespace com.mirle.ibg3k0.bc.winform
             this.queryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferCommandHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alarmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bufferPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.alarmCurrentQueryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.CMS_OnLineMode.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -404,6 +406,12 @@ namespace com.mirle.ibg3k0.bc.winform
             resources.ApplyResources(this.reserveInfoToolStripMenuItem, "reserveInfoToolStripMenuItem");
             this.reserveInfoToolStripMenuItem.Click += new System.EventHandler(this.reserveInfoToolStripMenuItem_Click);
             // 
+            // bufferPortToolStripMenuItem
+            // 
+            this.bufferPortToolStripMenuItem.Name = "bufferPortToolStripMenuItem";
+            resources.ApplyResources(this.bufferPortToolStripMenuItem, "bufferPortToolStripMenuItem");
+            this.bufferPortToolStripMenuItem.Click += new System.EventHandler(this.bufferPortToolStripMenuItem_Click);
+            // 
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -474,7 +482,9 @@ namespace com.mirle.ibg3k0.bc.winform
             // 
             this.queryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.transferCommandHistoryToolStripMenuItem,
-            this.alarmToolStripMenuItem});
+            this.alarmToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.alarmCurrentQueryToolStripMenuItem});
             this.queryToolStripMenuItem.Name = "queryToolStripMenuItem";
             resources.ApplyResources(this.queryToolStripMenuItem, "queryToolStripMenuItem");
             // 
@@ -489,11 +499,16 @@ namespace com.mirle.ibg3k0.bc.winform
             resources.ApplyResources(this.alarmToolStripMenuItem, "alarmToolStripMenuItem");
             this.alarmToolStripMenuItem.Click += new System.EventHandler(this.alarmToolStripMenuItem_Click);
             // 
-            // bufferPortToolStripMenuItem
+            // toolStripSeparator2
             // 
-            this.bufferPortToolStripMenuItem.Name = "bufferPortToolStripMenuItem";
-            resources.ApplyResources(this.bufferPortToolStripMenuItem, "bufferPortToolStripMenuItem");
-            this.bufferPortToolStripMenuItem.Click += new System.EventHandler(this.bufferPortToolStripMenuItem_Click);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
+            // 
+            // alarmCurrentQueryToolStripMenuItem
+            // 
+            this.alarmCurrentQueryToolStripMenuItem.Name = "alarmCurrentQueryToolStripMenuItem";
+            resources.ApplyResources(this.alarmCurrentQueryToolStripMenuItem, "alarmCurrentQueryToolStripMenuItem");
+            this.alarmCurrentQueryToolStripMenuItem.Click += new System.EventHandler(this.alarmCurrentQueryToolStripMenuItem_Click);
             // 
             // BCMainForm
             // 
@@ -664,6 +679,8 @@ namespace com.mirle.ibg3k0.bc.winform
         private System.Windows.Forms.ToolStripMenuItem alarmToolStripMenuItem;
         [AuthorityCheck(FUNCode = BCAppConstants.Maintenance_Function.FUNC_ADVANCED_SETTINGS)]
         private System.Windows.Forms.ToolStripMenuItem bufferPortToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem alarmCurrentQueryToolStripMenuItem;
     }
 
     /// <summary>

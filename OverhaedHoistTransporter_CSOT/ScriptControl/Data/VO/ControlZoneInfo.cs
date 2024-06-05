@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,13 +23,25 @@ namespace com.mirle.ibg3k0.sc.Data.VO
             RelatedBlockIDs = _relateBlockIDs;
             VhLimitCount = vhLimitCount;
         }
-
+        Stopwatch Stopwatch = new Stopwatch();
         public void RefreshControlZoneSectionVhCount(List<AVEHICLE> vhs)
         {
             var get_result = GetInControlZoneSectionVh(vhs);
             VhCount = get_result.vhCount;
             Vhs = get_result.vhs;
+
+            if (!Stopwatch.IsRunning || Stopwatch.ElapsedMilliseconds > 5_000)
+            {
+                LogControlZoneSectionVhInfo();
+                Stopwatch.Restart();
+            }
         }
+        private void LogControlZoneSectionVhInfo()
+        {
+            string vh_num = string.Join(",", Vhs.Select(vh => vh.Num));
+            NLog.LogManager.GetCurrentClassLogger().Debug($"ID:{ID},Count:{VhCount},vhs:{vh_num}");
+        }
+
         private (int vhCount, IEnumerable<AVEHICLE> vhs) GetInControlZoneSectionVh(List<AVEHICLE> vhs)
         {
             var in_control_zone_vhs = vhs.Where(vh => IsInControlZone(vh.Point));

@@ -149,13 +149,14 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     alarm.ALAM_DESC = alarm.ALAM_DESC.Substring(0, 80);
                 }
+                List<ALARM> alarms = null;
                 using (DBConnection_EF con = DBConnection_EF.GetUContext())
                 {
                     alarmDao.insertAlarm(con, alarm);
 
-                    CheckSetAlarm();
+                    alarms = CheckSetAlarm();
                 }
-
+                ALARM.refreshAlarmInfoList(alarms);
                 return alarm;
             }
         }
@@ -270,7 +271,9 @@ namespace com.mirle.ibg3k0.sc.BLL
 
                         alarmDao.updateAlarm(con, alarm);
 
-                        CheckSetAlarm();
+                        var alarms = CheckSetAlarm();
+                        ALARM.refreshAlarmInfoList(alarms);
+
                     }
                     return alarm;
                 }
@@ -304,7 +307,9 @@ namespace com.mirle.ibg3k0.sc.BLL
                             alarmDao.updateAlarm(con, alarm);
                         }
 
-                        CheckSetAlarm();
+                        var check_alarms = CheckSetAlarm();
+                        ALARM.refreshAlarmInfoList(check_alarms);
+
                     }
                 }
             }
@@ -410,7 +415,8 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
 
         object lock_obj_alarm_happen = new object();
-        public void CheckSetAlarm()
+        //public void CheckSetAlarm()
+        public List<ALARM> CheckSetAlarm()
         {
             lock (lock_obj_alarm_happen)
             {
@@ -427,6 +433,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     {
                         line.IsAlarmHappened = false;
                     }
+                    return alarmLst;
                 }
             }
         }

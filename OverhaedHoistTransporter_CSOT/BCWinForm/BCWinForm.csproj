@@ -476,6 +476,12 @@
     <Compile Include="UI\Operate\VehicleDataSettingForm.Designer.cs">
       <DependentUpon>VehicleDataSettingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Query\CurrentAlarmForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Query\CurrentAlarmForm.Designer.cs">
+      <DependentUpon>CurrentAlarmForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Query\HistoryAlarmsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1296,6 +1302,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Operate\VehicleDataSettingForm.resx">
       <DependentUpon>VehicleDataSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Query\CurrentAlarmForm.resx">
+      <DependentUpon>CurrentAlarmForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Query\TransferCommandQureyListForm.resx">
       <DependentUpon>TransferCommandQureyListForm.cs</DependentUpon>

@@ -35,10 +35,8 @@ using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using KingAOP;
 using Mirle.AK0.Hlt.Utils;
-using Mirle.Protos.ReserveModule;
 using Newtonsoft.Json.Linq;
 using NLog;
-using RouteKit;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -52,7 +50,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using static com.mirle.ibg3k0.sc.App.SCAppConstants;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace com.mirle.ibg3k0.sc.Service
 {
@@ -2645,7 +2642,7 @@ namespace com.mirle.ibg3k0.sc.Service
             string vhID = request_block_vh.VEHICLE_ID;
             request_block_vh.CurrentRequestBlockID = req_block_id;
             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
-               Data: $"Process block request,request block id:{req_block_id}, IsOpenSegmentCapacityControl:{DebugParameter.IsOpenSegmentCapacityControl}",
+               Data: $"Process block request,request block id:{req_block_id}, IsOpenSegmentCapacityControl:{DebugParameter.IsOpenZoneCapacityControl}",
                VehicleID: request_block_vh.VEHICLE_ID,
                CarrierID: request_block_vh.CST_ID);
             ALINE line = scApp.getEQObjCacheManager().getLine();
@@ -2783,7 +2780,7 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             try
             {
-                if (!DebugParameter.IsOpenSegmentCapacityControl)
+                if (!DebugParameter.IsOpenZoneCapacityControl)
                 {
                     return (true, null);
                 }
@@ -2823,7 +2820,7 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             try
             {
-                if (!DebugParameter.IsOpenSegmentCapacityControl)
+                if (!DebugParameter.IsOpenZoneCapacityControl)
                 {
                     return true;
                 }
@@ -2886,7 +2883,7 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             try
             {
-                if (!DebugParameter.IsOpenSegmentCapacityControl)
+                if (!DebugParameter.IsOpenZoneCapacityControl)
                 {
                     return (true, null);
                 }

@@ -1969,7 +1969,8 @@ namespace com.mirle.ibg3k0.sc.App
                 }
                 //}
 
-                alarmBLL.CheckSetAlarm();
+                var current_alarms = alarmBLL.CheckSetAlarm();
+                ALARM.refreshAlarmInfoList(current_alarms);
             }
             catch (Exception ex)
             {
@@ -2454,7 +2455,7 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool isOpenDoubleCheckBlockReqFun = false;
         public static bool isOpenID132PositionCheck = true;
         public static bool IsOpneChangeGuideSection = true;
-        public static bool IsOpenSegmentCapacityControl = true;
+        public static bool IsOpenZoneCapacityControl = true;
 
     }
 }

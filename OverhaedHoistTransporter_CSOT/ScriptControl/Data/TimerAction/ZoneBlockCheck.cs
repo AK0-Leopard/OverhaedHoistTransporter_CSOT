@@ -142,6 +142,11 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
         private long syncRefresh = 0;
         private void RefreshControlZoneVhCount()
         {
+            if (!DebugParameter.IsOpenZoneCapacityControl)
+            {
+                return;
+            }
+
             if (System.Threading.Interlocked.Exchange(ref syncRefresh, 1) == 0)
             {
                 try

@@ -799,6 +799,7 @@
     <Compile Include="Data\VO\AlarmHisList.cs" />
     <Compile Include="Data\VO\ControlZoneData.cs" />
     <Compile Include="Data\VO\ControlZoneInfo.cs" />
+    <Compile Include="Data\VO\PartialVo\ALARM.cs" />
     <Compile Include="Data\VO\PortGroupInfo.cs" />
     <Compile Include="Data\VO\PortGroupMap.cs" />
     <Compile Include="Data\VO\Interface\IConnectionStatusChange.cs" />

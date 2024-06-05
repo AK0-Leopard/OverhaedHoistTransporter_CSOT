@@ -38,6 +38,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         BindingSource cmsMCS_bindingSource = new BindingSource();
 
         List<ALARM> aLARMs = new List<ALARM>();
+        BindingSource alarmBindingSource = new BindingSource();
 
         public OHT_Form(BCMainForm _form)
         {
@@ -55,7 +56,6 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             scApp.getEQObjCacheManager().CommonInfo.ObjectToShow_list.Clear();
 
             uctl_Map.BackColor = Color.FromArgb(29, 36, 60);
-            dgv_TransferCommand.AutoGenerateColumns = false;
 
 
 
@@ -178,7 +178,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                         SetHostControlState(line);
                     }
                     );
-            scApp.getNatsManager().Subscriber(SCAppConstants.NATS_SUBJECT_CURRENT_ALARM, SetCurrentAlarm);
+            //scApp.getNatsManager().Subscriber(SCAppConstants.NATS_SUBJECT_CURRENT_ALARM, SetCurrentAlarm);
         }
 
         private void SetCurrentAlarm(object sender, EventArgs e)
@@ -320,9 +320,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void initialDataGreadView()
         {
-            aLARMs.Add(new ALARM());
+            dgv_TransferCommand.AutoGenerateColumns = false;
+
+            //aLARMs.Add(new ALARM());
             dgv_Alarm.AutoGenerateColumns = false;
-            dgv_Alarm.DataSource = aLARMs;
+            //dgv_Alarm.DataSource = aLARMs;
         }
 
 
@@ -777,19 +779,40 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         {
             try
             {
-                //List<ACMD_MCS> ACMD_MCSs = line.CurrentExcuteMCSCommands;
-                List<ACMD_MCS> ACMD_MCSs = ACMD_MCS.MCS_CMD_InfoList.Values.ToList();
-                if (ACMD_MCSs == null) return;
-                //cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
-                //cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
-                refreshACMD_MCSInfoList(ACMD_MCSs);
-                dgv_TransferCommand.Refresh();
+                RefreshCMD_MCS();
+
+                RefreshAlarm();
             }
             catch (Exception ex)
             {
                 Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Error, Class: nameof(OHT_Form), Device: "OHTC",
                 Data: $"Update Transfer Command Failed, Exception:{ex.Message}");
             }
+        }
+
+        private void RefreshAlarm()
+        {
+            var alarms = ALARM.AlarmInfoList.Values.ToList();
+            if (alarms == null)
+            {
+                refreshAlarmList(new List<ALARM>());
+            }
+            else
+            {
+                refreshAlarmList(alarms);
+            }
+            dgv_Alarm.Refresh();
+        }
+
+        private void RefreshCMD_MCS()
+        {
+            //List<ACMD_MCS> ACMD_MCSs = line.CurrentExcuteMCSCommands;
+            List<ACMD_MCS> ACMD_MCSs = ACMD_MCS.MCS_CMD_InfoList.Values.ToList();
+            if (ACMD_MCSs == null) return;
+            //cmd_mcs_obj_to_show = ACMD_MCSs.Select(cmd => new CMD_MCSObjToShow(mainform.BCApp.SCApplication.VehicleBLL, cmd)).ToList();
+            //cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
+            refreshACMD_MCSInfoList(ACMD_MCSs);
+            dgv_TransferCommand.Refresh();
         }
 
         private void refreshACMD_MCSInfoList(List<ACMD_MCS> currentExcuteTranCmd)
@@ -824,6 +847,38 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                         continue;
                     }
                     tran_obj_show_item.setVTRANSFER(cmd_obj);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                NLog.LogManager.GetCurrentClassLogger().Error(ex, "Exception");
+            }
+        }
+        private void refreshAlarmList(List<ALARM> currentAlarms)
+        {
+            try
+            {
+                List<string> new_current_alarm = currentAlarms.Select(alarm => alarm.CompositeKey).ToList();
+                List<string> old_current_alarm = aLARMs.Select(alarm => alarm.CompositeKey).ToList();
+
+                List<string> new_add_alarm = new_current_alarm.Except(old_current_alarm).ToList();
+                //1.新增多出來的命令
+                foreach (string new_alarm_key in new_add_alarm)
+                {
+                    ALARM new_alarm_obj = new ALARM();
+                    var current_cmd = currentAlarms.Where(alarm => SCUtility.isMatche(alarm.CompositeKey, new_alarm_key)).FirstOrDefault();
+                    if (current_cmd == null) continue;
+                    new_alarm_obj.put(current_cmd);
+                    alarmBindingSource.Add(new_alarm_obj);
+                    ALARM.AlarmInfoList.TryAdd(new_alarm_key, new_alarm_obj);
+                }
+                //2.刪除已經結束的命令
+                List<string> will_del_mcs_cmds = old_current_alarm.Except(new_current_alarm).ToList();
+                foreach (string old_key in will_del_mcs_cmds)
+                {
+                    var alarm_obj = aLARMs.Where(alarm => SCUtility.isMatche(alarm.CompositeKey, old_key)).FirstOrDefault();
+                    alarmBindingSource.Remove(alarm_obj);
                 }
 
             }
@@ -1201,7 +1256,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                 btn_continuous.Enabled = false;
                 string vh_id = cmb_Vehicle.Text.Trim();
                 AVEHICLE noticeCar = scApp.getEQObjCacheManager().getVehicletByVHID(vh_id);
-                if(noticeCar == null)
+                if (noticeCar == null)
                 {
                     bcf.App.BCFApplication.onWarningMsg("請選擇欲下達[Continue]的車號");
                     return;
@@ -1447,6 +1502,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             ck_montor_vh.Checked = true;
             cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
             dgv_TransferCommand.DataSource = cmsMCS_bindingSource;
+
+            alarmBindingSource.DataSource = aLARMs;
+            dgv_Alarm.DataSource = alarmBindingSource;
         }
 
         private void btn_st1_Click(object sender, EventArgs e)
@@ -1519,6 +1577,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                     this.ResetSpecifySegmentSelected(seg.SEG_NUM);
                 }
             }
+        }
+
+        private void lbl_HasErrorHappend_Click(object sender, EventArgs e)
+        {
+            mainform.openForm(typeof(CurrentAlarmForm).Name, true, false);
         }
     }
 }

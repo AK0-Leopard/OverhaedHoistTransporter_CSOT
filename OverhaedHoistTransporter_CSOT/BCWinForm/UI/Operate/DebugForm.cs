@@ -47,7 +47,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_openDoubleCheckBlockReq.Checked = DebugParameter.isOpenDoubleCheckBlockReqFun;
             cb_isUsingID132PositionCheck.Checked = DebugParameter.isOpenID132PositionCheck;
             cb_isOpenAutoChangeGuide.Checked = DebugParameter.IsOpneChangeGuideSection;
-            cb_openSegmentEnoughControl.Checked = DebugParameter.IsOpenSegmentCapacityControl;
+            cb_openSegmentEnoughControl.Checked = DebugParameter.IsOpenZoneCapacityControl;
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
@@ -1710,7 +1710,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void cb_openSegmentEnoughControl_CheckedChanged(object sender, EventArgs e)
         {
-            DebugParameter.IsOpenSegmentCapacityControl = cb_openSegmentEnoughControl.Checked;
+            DebugParameter.IsOpenZoneCapacityControl = cb_openSegmentEnoughControl.Checked;
         }
 
         private void num_vhCountLimit_ValueChanged(object sender, EventArgs e)

@@ -1002,5 +1002,10 @@ namespace com.mirle.ibg3k0.bc.winform
         {
             openForm(typeof(BufferPortMaintenanceForm).Name, true, false);
         }
+
+        private void alarmCurrentQueryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openForm(typeof(CurrentAlarmForm).Name, true, false);
+        }
     }
 }
