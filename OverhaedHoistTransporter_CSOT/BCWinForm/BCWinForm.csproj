@@ -488,6 +488,12 @@
     <Compile Include="UI\Query\HistoryAlarmsForm.Designer.cs">
       <DependentUpon>HistoryAlarmsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Query\HistoryTransferForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Query\HistoryTransferForm.Designer.cs">
+      <DependentUpon>HistoryTransferForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Query\TransferCommandQureyListForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1037,6 +1043,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\com.mirle.ibg3k0.bc.winform.ObjectRelay.SectionObjToShow.datasource" />
+    <None Include="Properties\DataSources\com.mirle.ibg3k0.sc.ObjectRelay.CMDObjToShow.datasource" />
     <None Include="Properties\DataSources\com.mirle.ibg3k0.sc.ObjectRelay.CMD_MCSObjToShow.datasource" />
     <None Include="Properties\DataSources\com.mirle.ibg3k0.sc.ObjectRelay.SectionObjToShow.datasource" />
     <None Include="Properties\DataSources\com.mirle.ibg3k0.sc.ObjectRelay.VehicleObjToShow.datasource" />
@@ -1305,6 +1312,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Query\CurrentAlarmForm.resx">
       <DependentUpon>CurrentAlarmForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Query\HistoryAlarmsForm.resx">
+      <DependentUpon>HistoryAlarmsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Query\HistoryTransferForm.resx">
+      <DependentUpon>HistoryTransferForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Query\TransferCommandQureyListForm.resx">
       <DependentUpon>TransferCommandQureyListForm.cs</DependentUpon>

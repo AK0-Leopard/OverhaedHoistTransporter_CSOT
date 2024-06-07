@@ -25,6 +25,14 @@ namespace com.mirle.ibg3k0.sc.Data.DAO.EntityFramework
                         select queue;
             return query.ToList();
         }
+        public List<HCMD_MCS> getHCMD_MCS(DBConnection_EF con, DateTime startTime, DateTime endTime)
+        {
+            var query = from queue in con.HCMD_MCS
+                        where queue.CMD_INSER_TIME >= startTime &&
+                         queue.CMD_INSER_TIME <= endTime
+                        select queue;
+            return query.ToList();
+        }
         public void RemoteByBatch(DBConnection_EF con, List<HCMD_MCS> hCmdMcss)
         {
             hCmdMcss.ForEach(entity => con.Entry(entity).State = EntityState.Deleted);

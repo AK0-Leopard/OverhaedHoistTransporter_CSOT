@@ -1007,5 +1007,10 @@ namespace com.mirle.ibg3k0.bc.winform
         {
             openForm(typeof(CurrentAlarmForm).Name, true, false);
         }
+
+        private void transferCommandHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openForm(typeof(HistoryTransferForm).Name);
+        }
     }
 }

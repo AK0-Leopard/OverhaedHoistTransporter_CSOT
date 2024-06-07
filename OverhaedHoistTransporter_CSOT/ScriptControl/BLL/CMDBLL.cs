@@ -4063,6 +4063,15 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return AMCSREPORTQUEUEs;
         }
+        public List<HCMD_MCS> GetCmds(DateTime startTime, DateTime endTime)
+        {
+            List<HCMD_MCS> cmd = null;
+            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+            {
+                cmd = hcmd_mcsDao.getHCMD_MCS(con, startTime, endTime);
+            }
+            return cmd;
+        }
 
         public void RemoteHCMD_MCSByBatch(List<HCMD_MCS> hCmdMcs)
         {

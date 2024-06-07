@@ -492,6 +492,7 @@ namespace com.mirle.ibg3k0.bc.winform
             // 
             this.transferCommandHistoryToolStripMenuItem.Name = "transferCommandHistoryToolStripMenuItem";
             resources.ApplyResources(this.transferCommandHistoryToolStripMenuItem, "transferCommandHistoryToolStripMenuItem");
+            this.transferCommandHistoryToolStripMenuItem.Click += new System.EventHandler(this.transferCommandHistoryToolStripMenuItem_Click);
             // 
             // alarmToolStripMenuItem
             // 
