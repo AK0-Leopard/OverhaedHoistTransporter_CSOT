@@ -72,6 +72,22 @@ namespace com.mirle.ibg3k0.sc.Common
             new VEHICLEMAP(){  ID ="OHx34",REAL_ID="M134"},
             new VEHICLEMAP(){  ID ="OHx35",REAL_ID="M135"},
             new VEHICLEMAP(){  ID ="OHx36",REAL_ID="M136"},
+            new VEHICLEMAP(){  ID ="OHx37",REAL_ID="M137"},
+            new VEHICLEMAP(){  ID ="OHx38",REAL_ID="M138"},
+            new VEHICLEMAP(){  ID ="OHx39",REAL_ID="M139"},
+            new VEHICLEMAP(){  ID ="OHx40",REAL_ID="M140"},
+            new VEHICLEMAP(){  ID ="OHx41",REAL_ID="M141"},
+            new VEHICLEMAP(){  ID ="OHx42",REAL_ID="M142"},
+            new VEHICLEMAP(){  ID ="OHx43",REAL_ID="M143"},
+            new VEHICLEMAP(){  ID ="OHx44",REAL_ID="M144"},
+            new VEHICLEMAP(){  ID ="OHx45",REAL_ID="M145"},
+            new VEHICLEMAP(){  ID ="OHx46",REAL_ID="M146"},
+            new VEHICLEMAP(){  ID ="OHx47",REAL_ID="M147"},
+            new VEHICLEMAP(){  ID ="OHx48",REAL_ID="M148"},
+            new VEHICLEMAP(){  ID ="OHx49",REAL_ID="M149"},
+            new VEHICLEMAP(){  ID ="OHx50",REAL_ID="M150"},
+            new VEHICLEMAP(){  ID ="OHx51",REAL_ID="M151"},
+            new VEHICLEMAP(){  ID ="OHx52",REAL_ID="M152"}
         };
         private List<MTSSetting> MTSSettings = new List<MTSSetting>()
         {
