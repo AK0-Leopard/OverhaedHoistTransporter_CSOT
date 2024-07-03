@@ -116,7 +116,7 @@ namespace com.mirle.ibg3k0.sc.Data
                             //lock (eqpt.PositionRefresh_Sync)
                             //{
                             need_process_position = checkPositionSeqNum(current_seq_num, pre_position_seq_num);
-                            vh.PrePositionSeqNum = current_seq_num;
+                            //vh.PrePositionSeqNum = current_seq_num;
                         }
                         if (!need_process_position)
                         {
@@ -126,6 +126,7 @@ namespace com.mirle.ibg3k0.sc.Data
                                CarrierID: vh.CST_ID);
                             return;
                         }
+                        vh.PrePositionSeqNum = current_seq_num;
                         scapp.VehicleBLL.setAndPublishPositionReportInfo2Redis(vh.VEHICLE_ID, recive_str);
                     }
                     else
