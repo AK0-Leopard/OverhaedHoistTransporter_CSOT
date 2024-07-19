@@ -5769,7 +5769,73 @@ namespace com.mirle.ibg3k0.sc.Service
             }
             finally
             {
+                ActionStatusCheck(eqpt);
                 eqpt.IsProcessingCommandFinish = false;
+            }
+        }
+
+        private void ActionStatusCheck(AVEHICLE eqpt)
+        {
+            try
+            {
+                bool is_no_command_ready = SpinWait.SpinUntil(() => eqpt.ACT_STATUS == VHActionStatus.NoCommand, 5_000);
+                if (!is_no_command_ready)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"vh:{eqpt.VEHICLE_ID}命令結束，但由於狀態尚未變成Nocommand，開始嘗試用43詢問",
+                       VehicleID: eqpt.VEHICLE_ID,
+                       CarrierID: eqpt.CST_ID);
+
+                    //scApp.VehicleService.Send.StatusRequest(vh.VEHICLE_ID, true, false);
+                    Task.Run(() => TrySyncVhActStatus(eqpt));
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+        }
+
+        private long TrySyncVhActStatusPoint = 0;
+        private void TrySyncVhActStatus(AVEHICLE vh)
+        {
+            if (System.Threading.Interlocked.Exchange(ref TrySyncVhActStatusPoint, 1) == 0)
+            {
+                try
+                {
+                    bool is_success = false;
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"vh:{vh.VEHICLE_ID} 命令結束，嘗試用43詢問狀態...",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                    do
+                    {
+                        if (!vh.isTcpIpConnect || vh.MODE_STATUS == VHModeStatus.Manual)
+                        {
+                            break;
+                        }
+                        is_success = VehicleStatusRequest(vh.VEHICLE_ID, true);
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{vh.VEHICLE_ID} 命令結束，嘗試用43詢問狀態，結果:{is_success}",
+                           VehicleID: vh.VEHICLE_ID,
+                           CarrierID: vh.CST_ID);
+                        if (!is_success)
+                            SpinWait.SpinUntil(() => false, 10_000);
+                    }
+                    while (!is_success);
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"vh:{vh.VEHICLE_ID} 命令結束，嘗試用43詢問狀態，狀態確認完成",
+                       VehicleID: vh.VEHICLE_ID,
+                       CarrierID: vh.CST_ID);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Exception");
+                }
+                finally
+                {
+                    System.Threading.Interlocked.Exchange(ref TrySyncVhActStatusPoint, 0);
+                }
             }
         }
 

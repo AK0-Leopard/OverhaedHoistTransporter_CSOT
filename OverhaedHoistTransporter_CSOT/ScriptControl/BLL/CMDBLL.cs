@@ -2566,11 +2566,14 @@ namespace com.mirle.ibg3k0.sc.BLL
                         AVEHICLE assignVH = scApp.VehicleBLL.getVehicleByID(vehicle_id);
                         if (cmd.CMD_TPYE != E_CMD_TYPE.Override)
                         {
-                            if (!assignVH.isTcpIpConnect || assignVH.IsError || !SCUtility.isEmpty(assignVH.OHTC_CMD))
+                            if (!assignVH.isTcpIpConnect ||
+                                assignVH.IsError ||
+                                assignVH.ACT_STATUS != VHActionStatus.NoCommand ||
+                                !SCUtility.isEmpty(assignVH.OHTC_CMD))
                             {
                                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: string.Empty,
                                    Data: $"can't send command ,id:{SCUtility.Trim(cmd.CMD_ID)},vh id:{SCUtility.Trim(cmd.VH_ID)} current status not allowed." +
-                                   $"is connect:{assignVH.isTcpIpConnect},is error:{assignVH.IsError}, current assign ohtc cmd id:{assignVH.OHTC_CMD}.");
+                                   $"is connect:{assignVH.isTcpIpConnect},is error:{assignVH.IsError},act status:{assignVH.ACT_STATUS}, current assign ohtc cmd id:{assignVH.OHTC_CMD}.");
                                 continue;
                             }
 
