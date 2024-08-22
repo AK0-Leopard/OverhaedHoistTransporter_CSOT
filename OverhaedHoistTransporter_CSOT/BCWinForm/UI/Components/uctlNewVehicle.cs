@@ -558,6 +558,10 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             {
                 AlertStatus = E_ALERT_STATUS.PAUSE;
             }
+            else if (vh.IsSafety)
+            {
+                AlertStatus = E_ALERT_STATUS.PAUSE_SAFETY;
+            }
             else
             {
                 AlertStatus = E_ALERT_STATUS.NOTHING;

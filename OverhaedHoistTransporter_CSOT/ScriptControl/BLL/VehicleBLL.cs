@@ -354,11 +354,11 @@ namespace com.mirle.ibg3k0.sc.BLL
         //}
         public bool doUpdateVehicleStatus(AVEHICLE vh, string cstID,
                                  VHModeStatus mode_status, VHActionStatus act_status,
-                                 VhStopSingle block_pause, VhStopSingle cmd_pause, VhStopSingle obs_pause, VhStopSingle hid_pause, VhStopSingle error_status, VhLoadCSTStatus load_cst_status)
+                                 VhStopSingle block_pause, VhStopSingle cmd_pause, VhStopSingle obs_pause, VhStopSingle hid_pause, VhStopSingle error_status, VhStopSingle safety_status, VhLoadCSTStatus load_cst_status)
         {
             if (updateVehicleStatus(vh.VEHICLE_ID, cstID,
                                      mode_status, act_status,
-                                     block_pause, cmd_pause, obs_pause, hid_pause, error_status, load_cst_status))
+                                     block_pause, cmd_pause, obs_pause, hid_pause, error_status, safety_status, load_cst_status))
             {
                 //updateVehicleStatus_CacheMangerExceptAct(vh,
                 //                       mode_status,
@@ -371,7 +371,7 @@ namespace com.mirle.ibg3k0.sc.BLL
         }
         private bool updateVehicleStatus(string vh_id, string cstID,
                           VHModeStatus mode_status, VHActionStatus act_status,
-                          VhStopSingle block_pause, VhStopSingle cmd_pause, VhStopSingle obs_pause, VhStopSingle hid_pause, VhStopSingle error_status, VhLoadCSTStatus load_cst_status)
+                          VhStopSingle block_pause, VhStopSingle cmd_pause, VhStopSingle obs_pause, VhStopSingle hid_pause, VhStopSingle error_status, VhStopSingle safety_status, VhLoadCSTStatus load_cst_status)
         {
             bool isSuccess = false;
             AVEHICLE vh = scApp.VehiclPool.GetObject();
@@ -389,6 +389,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     vh.OBS_PAUSE = obs_pause;
                     vh.HID_PAUSE = hid_pause;
                     vh.ERROR = error_status;
+                    vh.SAFETY_DOOR_PAUSE = safety_status;
                     vh.HAS_CST = (int)load_cst_status;
                     con.Entry(vh).Property(p => p.CST_ID).IsModified = true;
                     con.Entry(vh).Property(p => p.MODE_STATUS).IsModified = true;

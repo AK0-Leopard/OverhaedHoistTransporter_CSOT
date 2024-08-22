@@ -36,6 +36,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         string[] allPortID = null;
         List<CMD_MCSObjToShow> cmd_mcs_obj_to_show = new List<CMD_MCSObjToShow>();
         BindingSource cmsMCS_bindingSource = new BindingSource();
+        BindingSource controlZoneBindingSource = new BindingSource();
+
+        List<ControlZoneToShow> controlZoneInfo = new List<ControlZoneToShow>();
 
         List<ALARM> aLARMs = new List<ALARM>();
         BindingSource alarmBindingSource = new BindingSource();
@@ -290,10 +293,10 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
 
             string[] allSec = scApp.MapBLL.loadAllSectionID().ToArray();
-            cmb_fromSection.DataSource = allSec;
-            cmb_fromSection.AutoCompleteCustomSource.AddRange(allSec);
-            cmb_fromSection.AutoCompleteMode = AutoCompleteMode.Suggest;
-            cmb_fromSection.AutoCompleteSource = AutoCompleteSource.ListItems;
+            //cmb_fromSection.DataSource = allSec;
+            //cmb_fromSection.AutoCompleteCustomSource.AddRange(allSec);
+            //cmb_fromSection.AutoCompleteMode = AutoCompleteMode.Suggest;
+            //cmb_fromSection.AutoCompleteSource = AutoCompleteSource.ListItems;
 
 
             List<string> lstVh = new List<string>();
@@ -321,7 +324,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void initialDataGreadView()
         {
             dgv_TransferCommand.AutoGenerateColumns = false;
-
+            dgv_zoneVhCount.AutoGenerateColumns = false;
             //aLARMs.Add(new ALARM());
             dgv_Alarm.AutoGenerateColumns = false;
             //dgv_Alarm.DataSource = aLARMs;
@@ -413,8 +416,8 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private async void excuteLoadUnloadCommand()
         {
-            string fromSection = cmb_fromSection.Text;
-            ASECTION asection = scApp.MapBLL.getSectiontByID(fromSection);
+            //string fromSection = cmb_fromSection.Text;
+            //ASECTION asection = scApp.MapBLL.getSectiontByID(fromSection);
 
             string hostsource = cmb_fromAddress.Text;
             string hostdest = cmb_toAddress.Text;
@@ -813,6 +816,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
             refreshACMD_MCSInfoList(ACMD_MCSs);
             dgv_TransferCommand.Refresh();
+            dgv_zoneVhCount.Refresh();
         }
 
         private void refreshACMD_MCSInfoList(List<ACMD_MCS> currentExcuteTranCmd)
@@ -1310,7 +1314,6 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                             return;
                         }
                     }
-
                 }
                 var send_result = await Task.Run(() => sendContinueToVh(vh_id));
 
@@ -1391,7 +1394,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cmb_cycRunZone.Visible = false;
             btn_start.Enabled = false;
             dgv_TaskCommand.Enabled = false;
-            btn_AutoMove.Enabled = false;
+            //btn_AutoMove.Enabled = false;
             lbl_destinationName.Text = "To Address";
             E_CMD_TYPE cmd_type;
             Enum.TryParse<E_CMD_TYPE>(cbm_Action.SelectedValue.ToString(), out cmd_type);
@@ -1404,7 +1407,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                     cmb_toAddress.Visible = true;
                     btn_start.Enabled = true;
                     dgv_TaskCommand.Enabled = true;
-                    btn_AutoMove.Enabled = true;
+                    //btn_AutoMove.Enabled = true;
                     break;
                 case E_CMD_TYPE.Round:
                     cmb_cycRunZone.Visible = true;
@@ -1485,14 +1488,14 @@ namespace com.mirle.ibg3k0.bc.winform.UI
 
         private void cb_sectionThroughTimes_Click(object sender, EventArgs e)
         {
-            if (cb_sectionThroughTimes.Checked)
-            {
-                entryMonitorMode_SectionThroughTimesAsync();
-            }
-            else
-            {
-                LeaveMonitorMode_SectionThroughTimes();
-            }
+            //if (cb_sectionThroughTimes.Checked)
+            //{
+            //    entryMonitorMode_SectionThroughTimesAsync();
+            //}
+            //else
+            //{
+            //    LeaveMonitorMode_SectionThroughTimes();
+            //}
 
         }
 
@@ -1503,8 +1506,23 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cmsMCS_bindingSource.DataSource = cmd_mcs_obj_to_show;
             dgv_TransferCommand.DataSource = cmsMCS_bindingSource;
 
+            controlZoneBindingSource.DataSource = controlZoneInfo;
+            dgv_zoneVhCount.DataSource = controlZoneBindingSource;
+
+
             alarmBindingSource.DataSource = aLARMs;
             dgv_Alarm.DataSource = alarmBindingSource;
+
+            initialControlZoneInfo();
+        }
+
+        private void initialControlZoneInfo()
+        {
+            var infos = scApp.getCommObjCacheManager().LoadControlZoneInfo();
+            foreach (var info in infos)
+            {
+                controlZoneBindingSource.Add(new ControlZoneToShow(info));
+            }
         }
 
         private void btn_st1_Click(object sender, EventArgs e)
@@ -1582,6 +1600,62 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void lbl_HasErrorHappend_Click(object sender, EventArgs e)
         {
             mainform.openForm(typeof(CurrentAlarmForm).Name, true, false);
+        }
+
+        const int CONTROL_ZONE_INDEX_ZONE_ID = 0;
+        const int CONTROL_ZONE_INDEX_VH_COUNT = 1;
+        private void dgv_zoneVhCount_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+
+            try
+            {
+                if (dgv_zoneVhCount.Rows.Count <= e.RowIndex) return;
+                if (e.RowIndex < 0) return;
+                var zone_id = dgv_zoneVhCount.Rows[e.RowIndex].Cells[CONTROL_ZONE_INDEX_ZONE_ID].Value;
+                if (!(zone_id is string))
+                    return;
+                string s_zone_id = zone_id as string;
+                var control_obj = controlZoneInfo.Where(c => SCUtility.isMatche(c.ID, s_zone_id)).FirstOrDefault();
+                if (control_obj == null)
+                    return;
+
+                var vh_count = dgv_zoneVhCount.Rows[e.RowIndex].Cells[CONTROL_ZONE_INDEX_VH_COUNT].Value;
+                if (!(vh_count is string))
+                    return;
+                string s_vh_count = vh_count as string;
+                if (!int.TryParse(s_vh_count, out int i_vh_count))
+                    return;
+
+                DataGridViewRow row = dgv_zoneVhCount.Rows[e.RowIndex];
+
+                if (i_vh_count >= control_obj.VhLimitCount)
+                {
+                    row.DefaultCellStyle.BackColor = Color.Red;
+                    row.DefaultCellStyle.ForeColor = Color.White;
+
+                    SelectedRowCheck(row);
+                }
+                else if (i_vh_count > control_obj.WarnWaterLevel)
+                {
+                    row.DefaultCellStyle.BackColor = Color.Yellow;
+                    row.DefaultCellStyle.ForeColor = Color.Red;
+
+                    SelectedRowCheck(row);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+
+        private void SelectedRowCheck(DataGridViewRow row)
+        {
+            if (row.Selected)
+            {
+                row.DefaultCellStyle.SelectionBackColor = Color.SkyBlue;
+                row.DefaultCellStyle.SelectionForeColor = Color.Red;
+            }
         }
     }
 }

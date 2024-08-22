@@ -910,6 +910,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 VhStopSingle pauseStat = receive_gpp.PauseStatus;
                 VhStopSingle hidStat = receive_gpp.HIDStatus;
                 VhStopSingle errorStat = receive_gpp.ErrorStatus;
+                VhStopSingle safetyStat = receive_gpp.SafetyPauseStatus;
                 VhLoadCSTStatus loadCSTStatus = receive_gpp.HasCST;
                 string vh_current_excute_cmd_id = receive_gpp.CmdID;
                 //VhGuideStatus leftGuideStat = recive_str.LeftGuideLockStatus;
@@ -936,7 +937,7 @@ namespace com.mirle.ibg3k0.sc.Service
 
                 if (!scApp.VehicleBLL.doUpdateVehicleStatus(vh, cstID,
                                        modeStat, actionStat,
-                                       blockingStat, pauseStat, obstacleStat, hidStat, errorStat, loadCSTStatus))
+                                       blockingStat, pauseStat, obstacleStat, hidStat, errorStat, safetyStat, loadCSTStatus))
                 {
                     isSuccess = false;
                 }
@@ -981,6 +982,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     VhStopSingle pauseStat = receive_gpp.PauseStatus;
                     VhStopSingle hidStat = receive_gpp.HIDStatus;
                     VhStopSingle errorStat = receive_gpp.ErrorStatus;
+                    VhStopSingle safetyStat = receive_gpp.SafetyPauseStatus;
                     VhLoadCSTStatus loadCSTStatus = receive_gpp.HasCST;
                     //VhGuideStatus leftGuideStat = recive_str.LeftGuideLockStatus;
                     //VhGuideStatus rightGuideStat = recive_str.RightGuideLockStatus;
@@ -998,7 +1000,7 @@ namespace com.mirle.ibg3k0.sc.Service
                     //A0.04 scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh.VEHICLE_ID);
                     if (!scApp.VehicleBLL.doUpdateVehicleStatus(vh, cstID,
                                            modeStat, actionStat,
-                                           blockingStat, pauseStat, obstacleStat, hidStat, errorStat, loadCSTStatus))
+                                           blockingStat, pauseStat, obstacleStat, hidStat, errorStat, safetyStat, loadCSTStatus))
                     {
                         isSuccess = false;
                     }
@@ -4947,6 +4949,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 VhStopSingle pauseStat = recive_str.PauseStatus;
                 VhStopSingle hidStat = recive_str.HIDStatus;
                 VhStopSingle errorStat = recive_str.ErrorStatus;
+                VhStopSingle safetyStat = recive_str.SafetyPauseStatus;
                 VhLoadCSTStatus loadCSTStatus = recive_str.HasCST;
                 string vh_current_excute_cmd_id = recive_str.CmdID;
 
@@ -4962,6 +4965,7 @@ namespace com.mirle.ibg3k0.sc.Service
                         eqpt.PauseStatus != pauseStat ||
                         eqpt.HIDStatus != hidStat ||
                         eqpt.ERROR != errorStat ||
+                        eqpt.SAFETY_DOOR_PAUSE != safetyStat ||
                         eqpt.HAS_CST != (int)loadCSTStatus;
 
                 eqpt.VhCurrentExcuteOhtcCmdID = vh_current_excute_cmd_id;
@@ -5115,7 +5119,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 string obstacleVhID = recive_str.ObstVehicleID;
                 if (hasdifferent && !scApp.VehicleBLL.doUpdateVehicleStatus(eqpt, cstID,
                                        modeStat, actionStat,
-                                       blockingStat, pauseStat, obstacleStat, hidStat, errorStat, loadCSTStatus))
+                                       blockingStat, pauseStat, obstacleStat, hidStat, errorStat, safetyStat, loadCSTStatus))
                 {
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Warn, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                        Data: $"update vhicle status fail!",

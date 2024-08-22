@@ -928,6 +928,7 @@
     <Compile Include="MQTTControl\MQTTControl.cs" />
     <Compile Include="ObjectRelay\ALARMObjToShow.cs" />
     <Compile Include="ObjectRelay\CMDObjToShow.cs" />
+    <Compile Include="ObjectRelay\ControlZoneToShow.cs" />
     <Compile Include="ObjectRelay\CMD_MCSObjToShow.cs" />
     <Compile Include="ObjectRelay\IDataGridUpdateNotify.cs" />
     <Compile Include="ObjectRelay\VehicleObjToShow.cs" />

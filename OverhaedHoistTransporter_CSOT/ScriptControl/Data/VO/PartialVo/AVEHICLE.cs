@@ -562,6 +562,12 @@ namespace com.mirle.ibg3k0.sc
             get { return ERROR == VhStopSingle.StopSingleOn; }
             set { }
         }
+        [JsonIgnore]
+        public virtual bool IsSafety
+        {
+            get { return SAFETY_DOOR_PAUSE == VhStopSingle.StopSingleOn; }
+            set { }
+        }
 
         public Stopwatch watchHIDTime = new Stopwatch();
         [JsonIgnore]
