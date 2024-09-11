@@ -542,6 +542,14 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             {
                 AlertStatus = E_ALERT_STATUS.ERROR;
             }
+            else if (vh.IsSafety)
+            {
+                AlertStatus = E_ALERT_STATUS.PAUSE_SAFETY;
+            }
+            else if (vh.IsObstacle)
+            {
+                AlertStatus = E_ALERT_STATUS.OBS;
+            }
             else if (vh.IsBlocking)
             {
                 AlertStatus = E_ALERT_STATUS.BLOCK;
@@ -550,17 +558,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components
             {
                 AlertStatus = E_ALERT_STATUS.HID;
             }
-            else if (vh.IsObstacle)
-            {
-                AlertStatus = E_ALERT_STATUS.OBS;
-            }
             else if (vh.IsPause)
             {
                 AlertStatus = E_ALERT_STATUS.PAUSE;
-            }
-            else if (vh.IsSafety)
-            {
-                AlertStatus = E_ALERT_STATUS.PAUSE_SAFETY;
             }
             else
             {
