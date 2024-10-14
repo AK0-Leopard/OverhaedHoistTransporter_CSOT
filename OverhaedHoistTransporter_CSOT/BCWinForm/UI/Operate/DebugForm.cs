@@ -53,11 +53,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
 
 
-
             ch_force_pass_red_light_with_buzzer.Checked = DebugParameter.isForcePassFourColorLightRedWithBuzzerSignal;
             num_ChangePathCommandPath.Value = sc.App.SystemParameter.ChangePathCommandCount;
 
             num_vhCountLimit.Value = sc.App.SystemParameter.MaxVhCountPerSegment;
+            numIdleVhWaitTime.Value = sc.App.SystemParameter.AllowVhIdleTime_ms;
 
             List<string> lstVh = new List<string>();
             lstVh.Add(string.Empty);
@@ -557,33 +557,33 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //});
         }
 
-        private void btn_blocked_sec_refresh_Click(object sender, EventArgs e)
-        {
-            cb_block_section.Text = "";
-            blocked_queues = bcApp.SCApplication.MapBLL.loadAllUsingBlockQueue();
+        //private void btn_blocked_sec_refresh_Click(object sender, EventArgs e)
+        //{
+        //    cb_block_section.Text = "";
+        //    blocked_queues = bcApp.SCApplication.MapBLL.loadAllUsingBlockQueue();
 
-            cb_block_section.DataSource = blocked_queues;
-            cb_block_section.DisplayMember = "DisplayMember";
-        }
+        //    cb_block_section.DataSource = blocked_queues;
+        //    cb_block_section.DisplayMember = "DisplayMember";
+        //}
 
-        private void btn_release_block_Click(object sender, EventArgs e)
-        {
-            int index = cb_block_section.SelectedIndex;
-            if (blocked_queues == null || blocked_queues.Count == 0) return;
-            BLOCKZONEQUEUE queue = blocked_queues[index];
-            if (queue != null)
-            {
-                Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(DebugForm), Device: "OHTC",
-                  Data: $"Recheck block control to release:{queue.ToString()}");
-            }
-            Task.Run(() => bcApp.SCApplication.VehicleService.reCheckBlockControl(queue));
-        }
+        //private void btn_release_block_Click(object sender, EventArgs e)
+        //{
+        //    int index = cb_block_section.SelectedIndex;
+        //    if (blocked_queues == null || blocked_queues.Count == 0) return;
+        //    BLOCKZONEQUEUE queue = blocked_queues[index];
+        //    if (queue != null)
+        //    {
+        //        Common.LogHelper.Log(logger: NLog.LogManager.GetCurrentClassLogger(), LogLevel: LogLevel.Info, Class: nameof(DebugForm), Device: "OHTC",
+        //          Data: $"Recheck block control to release:{queue.ToString()}");
+        //    }
+        //    Task.Run(() => bcApp.SCApplication.VehicleService.reCheckBlockControl(queue));
+        //}
 
-        private void cb_block_section_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int index = cb_block_section.SelectedIndex;
-            lbl_BlockedVh.Text = blocked_queues[index].CAR_ID;
-        }
+        //private void cb_block_section_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    int index = cb_block_section.SelectedIndex;
+        //    lbl_BlockedVh.Text = blocked_queues[index].CAR_ID;
+        //}
 
         private void btn_portInServeice_Click(object sender, EventArgs e)
         {
@@ -1716,6 +1716,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void num_vhCountLimit_ValueChanged(object sender, EventArgs e)
         {
             sc.App.SystemParameter.setMaxVhCountPerSegment((int)num_vhCountLimit.Value);
+        }
+
+        private void numIdleVhWaitTime_ValueChanged(object sender, EventArgs e)
+        {
+            sc.App.SystemParameter.setAllowIdleTime_ms((int)numIdleVhWaitTime.Value);
         }
     }
 }

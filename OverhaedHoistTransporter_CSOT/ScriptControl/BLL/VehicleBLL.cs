@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SQLite;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1521,11 +1522,11 @@ namespace com.mirle.ibg3k0.sc.BLL
         //    }
         //}
         #region DoSomeThing
-        public void DoIdleVehicleHandle_NoAction(string vh_id)
+        public void DoIdleVehicleHandle_NoAction(string vh_id, [CallerMemberName] string Method = "")
         {
             AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
             LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
-            Data: $"vh id:{vh.VEHICLE_ID} start excute idle vehicle handle.",
+            Data: $"vh id:{vh.VEHICLE_ID} start excute idle vehicle handle.fun:[{Method}]",
             VehicleID: vh.VEHICLE_ID,
             CarrierID: vh.CST_ID);
             //如果是停在Maintain space的位置，則不執行Idle vh的處理
@@ -1574,8 +1575,14 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             else
             {
-                //只有在Auto Remote才進行自動找停車位的功能
-                if (vh.MODE_STATUS != VHModeStatus.AutoRemote)
+                //只有在Auto Remote/Auto Local才進行自動找停車位的功能
+                //if (vh.MODE_STATUS != VHModeStatus.AutoRemote)
+                if (vh.MODE_STATUS == VHModeStatus.AutoRemote ||
+                    vh.MODE_STATUS == VHModeStatus.AutoLocal)
+                {
+                    //Not thing...
+                }
+                else
                 {
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleBLL), Device: "OHxC",
                     Data: $"vh id:{vh.VEHICLE_ID}  mode status is :{vh.MODE_STATUS}, " +

@@ -172,6 +172,8 @@ namespace com.mirle.ibg3k0.sc
         VehicleTimerAction vehicleTimer = null;
         public Stopwatch CurrentCommandExcuteTime { get; private set; }
         public Stopwatch CurrentCommandInterruptingIntervalTime { get; private set; }
+        public Stopwatch IdleTimer { get; private set; }
+
         private GuideInfo guideInfo { get; set; }
 
         public void onCommandComplete(CompleteStatus cmpStatus)
@@ -219,6 +221,7 @@ namespace com.mirle.ibg3k0.sc
 
             CurrentCommandExcuteTime = new Stopwatch();
             CurrentCommandInterruptingIntervalTime = new Stopwatch();
+            IdleTimer = new Stopwatch();
             LastBlockRequestFailInterval.Restart();
             guideInfo = new GuideInfo(this);
 
@@ -228,6 +231,14 @@ namespace com.mirle.ibg3k0.sc
         {
             vehicleTimer = new VehicleTimerAction(this, "VehicleTimerAction", 1000);
             vehicleTimer.start();
+        }
+
+        public event EventHandler Idling;
+
+        public void onVehicleIdle()
+        {
+            isIdling = true;
+            Idling?.Invoke(this, EventArgs.Empty);
         }
 
         public override string ToString()
@@ -312,6 +323,7 @@ namespace com.mirle.ibg3k0.sc
 
         [JsonIgnore]
         public virtual E_CMD_TYPE CmdType { get; set; } = default(E_CMD_TYPE);
+        public virtual bool isIdling { get; private set; }
 
         [JsonIgnore]
         public virtual E_CMD_STATUS vh_CMD_Status { get; set; }
@@ -1468,6 +1480,12 @@ namespace com.mirle.ibg3k0.sc
                                CarrierID: vh.CST_ID);
                             vh.onCommandStateInterruptedTimeout(check_command_interrupting_result.cmdOHTC.CMD_ID);
                         }
+                        IdleTimeCheck();
+                        if (!vh.isIdling && vh.IdleTimer.ElapsedMilliseconds > SystemParameter.AllowVhIdleTime_ms)
+                        {
+                            vh.onVehicleIdle();
+                        }
+
                         //如果車子沒有installed就也不用幫忙檢查是否有通訊
                         if (!vh.IS_INSTALLED) return;
                         //1.檢查是否已經大於一定時間沒有進行通訊
@@ -1529,6 +1547,27 @@ namespace com.mirle.ibg3k0.sc
 
                 }
             }
+            private void IdleTimeCheck()
+            {
+                if (vh.isTcpIpConnect &&
+                    !vh.IsError &&
+                    vh.ACT_STATUS == VHActionStatus.NoCommand)
+                {
+                    if (!vh.IdleTimer.IsRunning)
+                    {
+                        vh.IdleTimer.Restart();
+                    }
+                }
+                else
+                {
+                    if (vh.IdleTimer.IsRunning)
+                    {
+                        vh.IdleTimer.Reset();
+                    }
+                    vh.isIdling = false;
+                }
+            }
+
 
             private bool hasCommandActionTimeCheck(List<ACMD_OHTC> cmds)
             {
