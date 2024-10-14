@@ -83,7 +83,9 @@
             this.btn_forceReleaseAllBlock = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
             this.label72 = new System.Windows.Forms.Label();
+            this.numIdleVhWaitTime = new System.Windows.Forms.NumericUpDown();
             this.num_vhCountLimit = new System.Windows.Forms.NumericUpDown();
             this.cb_openSegmentEnoughControl = new System.Windows.Forms.CheckBox();
             this.cb_isOpenAutoChangeGuide = new System.Windows.Forms.CheckBox();
@@ -354,8 +356,6 @@
             this.label83 = new System.Windows.Forms.Label();
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
-            this.numIdleVhWaitTime = new System.Windows.Forms.NumericUpDown();
-            this.label12 = new System.Windows.Forms.Label();
             this.uctlButton2 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.btn_close_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.btn_open_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
@@ -390,6 +390,7 @@
             this.groupBox5.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numIdleVhWaitTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).BeginInit();
             this.groupBox7.SuspendLayout();
             this.gb_blockControl.SuspendLayout();
@@ -418,7 +419,6 @@
             this.tableLayoutPanel6.SuspendLayout();
             this.tabPage9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numIdleVhWaitTime)).BeginInit();
             this.SuspendLayout();
             // 
             // cb_FroceBlockPass
@@ -624,7 +624,7 @@
             // cb_StartGenAntoCmd
             // 
             this.cb_StartGenAntoCmd.AutoSize = true;
-            this.cb_StartGenAntoCmd.Location = new System.Drawing.Point(1100, 112);
+            this.cb_StartGenAntoCmd.Location = new System.Drawing.Point(1099, 19);
             this.cb_StartGenAntoCmd.Name = "cb_StartGenAntoCmd";
             this.cb_StartGenAntoCmd.Size = new System.Drawing.Size(349, 26);
             this.cb_StartGenAntoCmd.TabIndex = 18;
@@ -705,7 +705,7 @@
             this.groupBox4.Controls.Add(this.uctl_SendFun23);
             this.groupBox4.Controls.Add(this.groupBox1);
             this.groupBox4.Controls.Add(this.uctl_SendAllFun);
-            this.groupBox4.Location = new System.Drawing.Point(6, 119);
+            this.groupBox4.Location = new System.Drawing.Point(9, 6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(1076, 806);
             this.groupBox4.TabIndex = 21;
@@ -1030,7 +1030,7 @@
             // 
             // btn_forceReleaseAllBlock
             // 
-            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1103, 602);
+            this.btn_forceReleaseAllBlock.Location = new System.Drawing.Point(1102, 509);
             this.btn_forceReleaseAllBlock.Name = "btn_forceReleaseAllBlock";
             this.btn_forceReleaseAllBlock.Size = new System.Drawing.Size(284, 41);
             this.btn_forceReleaseAllBlock.TabIndex = 22;
@@ -1091,18 +1091,45 @@
             this.tabPage1.Text = "TcpIp Control";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(1214, 313);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(218, 22);
+            this.label12.TabIndex = 4;
+            this.label12.Text = "閒置車輛等待時間(ms)";
+            // 
             // label72
             // 
             this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(1174, 438);
+            this.label72.Location = new System.Drawing.Point(1173, 345);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(178, 22);
             this.label72.TabIndex = 4;
             this.label72.Text = "道路管制車輛上限";
             // 
+            // numIdleVhWaitTime
+            // 
+            this.numIdleVhWaitTime.Increment = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numIdleVhWaitTime.Location = new System.Drawing.Point(1099, 307);
+            this.numIdleVhWaitTime.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.numIdleVhWaitTime.Name = "numIdleVhWaitTime";
+            this.numIdleVhWaitTime.Size = new System.Drawing.Size(109, 30);
+            this.numIdleVhWaitTime.TabIndex = 58;
+            this.numIdleVhWaitTime.ValueChanged += new System.EventHandler(this.numIdleVhWaitTime_ValueChanged);
+            // 
             // num_vhCountLimit
             // 
-            this.num_vhCountLimit.Location = new System.Drawing.Point(1100, 436);
+            this.num_vhCountLimit.Location = new System.Drawing.Point(1099, 343);
             this.num_vhCountLimit.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -1116,7 +1143,7 @@
             // cb_openSegmentEnoughControl
             // 
             this.cb_openSegmentEnoughControl.AutoSize = true;
-            this.cb_openSegmentEnoughControl.Location = new System.Drawing.Point(1100, 375);
+            this.cb_openSegmentEnoughControl.Location = new System.Drawing.Point(1099, 282);
             this.cb_openSegmentEnoughControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_openSegmentEnoughControl.Name = "cb_openSegmentEnoughControl";
             this.cb_openSegmentEnoughControl.Size = new System.Drawing.Size(197, 26);
@@ -1128,7 +1155,7 @@
             // cb_isOpenAutoChangeGuide
             // 
             this.cb_isOpenAutoChangeGuide.AutoSize = true;
-            this.cb_isOpenAutoChangeGuide.Location = new System.Drawing.Point(1100, 347);
+            this.cb_isOpenAutoChangeGuide.Location = new System.Drawing.Point(1099, 254);
             this.cb_isOpenAutoChangeGuide.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_isOpenAutoChangeGuide.Name = "cb_isOpenAutoChangeGuide";
             this.cb_isOpenAutoChangeGuide.Size = new System.Drawing.Size(218, 26);
@@ -1140,7 +1167,7 @@
             // cb_isUsingID132PositionCheck
             // 
             this.cb_isUsingID132PositionCheck.AutoSize = true;
-            this.cb_isUsingID132PositionCheck.Location = new System.Drawing.Point(1100, 319);
+            this.cb_isUsingID132PositionCheck.Location = new System.Drawing.Point(1099, 226);
             this.cb_isUsingID132PositionCheck.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_isUsingID132PositionCheck.Name = "cb_isUsingID132PositionCheck";
             this.cb_isUsingID132PositionCheck.Size = new System.Drawing.Size(257, 26);
@@ -1152,7 +1179,7 @@
             // lbl_value_reserveModule_LorR
             // 
             this.lbl_value_reserveModule_LorR.AutoSize = true;
-            this.lbl_value_reserveModule_LorR.Location = new System.Drawing.Point(1294, 504);
+            this.lbl_value_reserveModule_LorR.Location = new System.Drawing.Point(1293, 411);
             this.lbl_value_reserveModule_LorR.Name = "lbl_value_reserveModule_LorR";
             this.lbl_value_reserveModule_LorR.Size = new System.Drawing.Size(80, 22);
             this.lbl_value_reserveModule_LorR.TabIndex = 59;
@@ -1161,7 +1188,7 @@
             // label71
             // 
             this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(1091, 504);
+            this.label71.Location = new System.Drawing.Point(1090, 411);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(209, 22);
             this.label71.TabIndex = 58;
@@ -1170,7 +1197,7 @@
             // button12
             // 
             this.button12.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button12.Location = new System.Drawing.Point(1380, 496);
+            this.button12.Location = new System.Drawing.Point(1379, 403);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(84, 39);
             this.button12.TabIndex = 5;
@@ -1182,7 +1209,7 @@
             // 
             this.cb_isUsingRemoveReserveModule.AutoSize = true;
             this.cb_isUsingRemoveReserveModule.Enabled = false;
-            this.cb_isUsingRemoveReserveModule.Location = new System.Drawing.Point(1100, 291);
+            this.cb_isUsingRemoveReserveModule.Location = new System.Drawing.Point(1099, 198);
             this.cb_isUsingRemoveReserveModule.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_isUsingRemoveReserveModule.Name = "cb_isUsingRemoveReserveModule";
             this.cb_isUsingRemoveReserveModule.Size = new System.Drawing.Size(197, 26);
@@ -1194,7 +1221,7 @@
             // cb_openDoubleCheckBlockReq
             // 
             this.cb_openDoubleCheckBlockReq.AutoSize = true;
-            this.cb_openDoubleCheckBlockReq.Location = new System.Drawing.Point(1100, 236);
+            this.cb_openDoubleCheckBlockReq.Location = new System.Drawing.Point(1099, 143);
             this.cb_openDoubleCheckBlockReq.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_openDoubleCheckBlockReq.Name = "cb_openDoubleCheckBlockReq";
             this.cb_openDoubleCheckBlockReq.Size = new System.Drawing.Size(259, 26);
@@ -1206,7 +1233,7 @@
             // cb_PassObstacleFlagWhenSendContinueRequest
             // 
             this.cb_PassObstacleFlagWhenSendContinueRequest.AutoSize = true;
-            this.cb_PassObstacleFlagWhenSendContinueRequest.Location = new System.Drawing.Point(1100, 208);
+            this.cb_PassObstacleFlagWhenSendContinueRequest.Location = new System.Drawing.Point(1099, 115);
             this.cb_PassObstacleFlagWhenSendContinueRequest.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_PassObstacleFlagWhenSendContinueRequest.Name = "cb_PassObstacleFlagWhenSendContinueRequest";
             this.cb_PassObstacleFlagWhenSendContinueRequest.Size = new System.Drawing.Size(319, 26);
@@ -1218,7 +1245,7 @@
             // cb_blockReleaseCheckFun
             // 
             this.cb_blockReleaseCheckFun.AutoSize = true;
-            this.cb_blockReleaseCheckFun.Location = new System.Drawing.Point(1100, 262);
+            this.cb_blockReleaseCheckFun.Location = new System.Drawing.Point(1099, 169);
             this.cb_blockReleaseCheckFun.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_blockReleaseCheckFun.Name = "cb_blockReleaseCheckFun";
             this.cb_blockReleaseCheckFun.Size = new System.Drawing.Size(333, 26);
@@ -1230,7 +1257,7 @@
             // cb_IsOpenPortGroupLimit
             // 
             this.cb_IsOpenPortGroupLimit.AutoSize = true;
-            this.cb_IsOpenPortGroupLimit.Location = new System.Drawing.Point(1100, 176);
+            this.cb_IsOpenPortGroupLimit.Location = new System.Drawing.Point(1099, 83);
             this.cb_IsOpenPortGroupLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_IsOpenPortGroupLimit.Name = "cb_IsOpenPortGroupLimit";
             this.cb_IsOpenPortGroupLimit.Size = new System.Drawing.Size(269, 26);
@@ -1242,7 +1269,7 @@
             // cb_isOpenAdjustmentParkingZone
             // 
             this.cb_isOpenAdjustmentParkingZone.AutoSize = true;
-            this.cb_isOpenAdjustmentParkingZone.Location = new System.Drawing.Point(1100, 154);
+            this.cb_isOpenAdjustmentParkingZone.Location = new System.Drawing.Point(1099, 61);
             this.cb_isOpenAdjustmentParkingZone.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cb_isOpenAdjustmentParkingZone.Name = "cb_isOpenAdjustmentParkingZone";
             this.cb_isOpenAdjustmentParkingZone.Size = new System.Drawing.Size(339, 26);
@@ -1254,7 +1281,7 @@
             // ck_is_open_command_shift
             // 
             this.ck_is_open_command_shift.AutoSize = true;
-            this.ck_is_open_command_shift.Location = new System.Drawing.Point(1100, 133);
+            this.ck_is_open_command_shift.Location = new System.Drawing.Point(1099, 40);
             this.ck_is_open_command_shift.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ck_is_open_command_shift.Name = "ck_is_open_command_shift";
             this.ck_is_open_command_shift.Size = new System.Drawing.Size(239, 26);
@@ -1269,7 +1296,7 @@
             this.groupBox7.Controls.Add(this.btn_portInServeice);
             this.groupBox7.Controls.Add(this.label18);
             this.groupBox7.Controls.Add(this.cb_PortID);
-            this.groupBox7.Location = new System.Drawing.Point(1100, 793);
+            this.groupBox7.Location = new System.Drawing.Point(1102, 564);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(257, 147);
             this.groupBox7.TabIndex = 25;
@@ -1317,7 +1344,7 @@
             // 
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockReject);
             this.gb_blockControl.Controls.Add(this.cb_FroceBlockPass);
-            this.gb_blockControl.Location = new System.Drawing.Point(1103, 531);
+            this.gb_blockControl.Location = new System.Drawing.Point(1102, 438);
             this.gb_blockControl.Name = "gb_blockControl";
             this.gb_blockControl.Size = new System.Drawing.Size(257, 71);
             this.gb_blockControl.TabIndex = 23;
@@ -4389,43 +4416,6 @@
             this.label79.TabIndex = 53;
             this.label79.Text = "Max Allow Action Time Second:";
             // 
-            // numIdleVhWaitTime
-            // 
-            this.numIdleVhWaitTime.Increment = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numIdleVhWaitTime.Location = new System.Drawing.Point(1100, 400);
-            this.numIdleVhWaitTime.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numIdleVhWaitTime.Minimum = new decimal(new int[] {
-            30000,
-            0,
-            0,
-            0});
-            this.numIdleVhWaitTime.Name = "numIdleVhWaitTime";
-            this.numIdleVhWaitTime.Size = new System.Drawing.Size(109, 30);
-            this.numIdleVhWaitTime.TabIndex = 58;
-            this.numIdleVhWaitTime.Value = new decimal(new int[] {
-            30000,
-            0,
-            0,
-            0});
-            this.numIdleVhWaitTime.ValueChanged += new System.EventHandler(this.numIdleVhWaitTime_ValueChanged);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(1215, 406);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(218, 22);
-            this.label12.TabIndex = 4;
-            this.label12.Text = "閒置車輛等待時間(ms)";
-            // 
             // uctlButton2
             // 
             this.uctlButton2.Location = new System.Drawing.Point(828, 202);
@@ -4714,6 +4704,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numIdleVhWaitTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_vhCountLimit)).EndInit();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
@@ -4764,7 +4755,6 @@
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ChangePathCommandPath)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numIdleVhWaitTime)).EndInit();
             this.ResumeLayout(false);
 
         }

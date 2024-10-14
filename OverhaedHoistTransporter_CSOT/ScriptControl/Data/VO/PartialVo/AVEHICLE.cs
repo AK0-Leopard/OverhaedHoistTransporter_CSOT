@@ -1481,11 +1481,13 @@ namespace com.mirle.ibg3k0.sc
                             vh.onCommandStateInterruptedTimeout(check_command_interrupting_result.cmdOHTC.CMD_ID);
                         }
                         IdleTimeCheck();
-                        if (!vh.isIdling && vh.IdleTimer.ElapsedMilliseconds > SystemParameter.AllowVhIdleTime_ms)
+                        if (SystemParameter.AllowVhIdleTime_ms != 0)
                         {
-                            vh.onVehicleIdle();
+                            if (!vh.isIdling && vh.IdleTimer.ElapsedMilliseconds > SystemParameter.AllowVhIdleTime_ms)
+                            {
+                                vh.onVehicleIdle();
+                            }
                         }
-
                         //如果車子沒有installed就也不用幫忙檢查是否有通訊
                         if (!vh.IS_INSTALLED) return;
                         //1.檢查是否已經大於一定時間沒有進行通訊
