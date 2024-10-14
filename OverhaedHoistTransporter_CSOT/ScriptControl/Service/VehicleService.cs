@@ -86,9 +86,25 @@ namespace com.mirle.ibg3k0.sc.Service
                 vh.NonLongTimeInaction += Vh_NonLongTimeInaction;
                 vh.CommandStateOutOfSyncHappend += Vh_CommandStateOutOfSyncHappend;
                 vh.CommandStateInterruptedTimeout += Vh_CommandStateInterruptedTimeout;
+                vh.Idling += Vh_Idling;
                 vh.TimerActionStart();
             }
         }
+
+        private void Vh_Idling(object sender, EventArgs e)
+        {
+            try
+            {
+                AVEHICLE vh = sender as AVEHICLE;
+                if (vh == null) return;
+                scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(vh.VEHICLE_ID);
+            }
+            catch(Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+            }
+        }
+
         private long cmdOHTCCancelSyncPoint = 0;
         private void Vh_CommandStateInterruptedTimeout(object sender, string interruptingCmdOHTCID)
         {

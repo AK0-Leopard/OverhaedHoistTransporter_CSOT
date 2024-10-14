@@ -2279,6 +2279,7 @@ namespace com.mirle.ibg3k0.sc.App
 
         //各段Segment最大的車輛容許數量
         public static int MaxVhCountPerSegment { get; private set; } = 5;
+        public static int AllowVhIdleTime_ms { get; private set; } = 60_000;
 
         /// <summary>
         /// Sets the secs conversaction timeout.
@@ -2353,7 +2354,10 @@ namespace com.mirle.ibg3k0.sc.App
         {
             MaxVhCountPerSegment = value;
         }
-
+        public static void setAllowIdleTime_ms(int allowIdleTime_ms)
+        {
+            AllowVhIdleTime_ms = allowIdleTime_ms;
+        }
     }
 
     public class HAProxyConnectionTest
