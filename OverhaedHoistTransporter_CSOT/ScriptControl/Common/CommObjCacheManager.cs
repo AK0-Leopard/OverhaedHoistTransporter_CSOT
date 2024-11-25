@@ -99,6 +99,8 @@ namespace com.mirle.ibg3k0.sc.Common
                 block_zone_master.SetBlockDetailList(scApp.MapBLL);
 
                 block_zone_master.SetControlZoneInfo(TryGetControlZoneInfo(block_zone_master.ENTRY_SEC_ID));
+
+                block_zone_master.setEntrySectionToAdrObj(Sections, Addresses);
             }
             foreach (var park_zone_master in ParkZoneMasters)
             {
@@ -108,6 +110,11 @@ namespace com.mirle.ibg3k0.sc.Common
             foreach (var sec in Sections)
             {
                 sec.setSectionRealDistance(scApp.ReserveBLL);
+            }
+            foreach (var adr in Addresses)
+            {
+                //關聯合流處相同的BlockMaster
+                adr.SetAssociatedBlockMasterAtMergePoint(BlockZoneMasters, Sections);
             }
 
             loadPortGroupData();

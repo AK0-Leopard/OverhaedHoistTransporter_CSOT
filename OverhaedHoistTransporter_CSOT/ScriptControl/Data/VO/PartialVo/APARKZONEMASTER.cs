@@ -19,6 +19,7 @@ namespace com.mirle.ibg3k0.sc
     public partial class APARKZONEMASTER
     {
         private List<APARKZONEDETAIL> ParkDetails;
+
         public void setParkDetails(List<APARKZONEDETAIL> allParkZoneDetail)
         {
             ParkDetails = allParkZoneDetail.Where(detail => SCUtility.isMatche(detail.PARK_ZONE_ID, PARK_ZONE_ID)).

@@ -3,12 +3,14 @@ using com.mirle.ibg3k0.bcf.Common;
 using com.mirle.ibg3k0.bcf.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.bcf.Data.VO;
 using com.mirle.ibg3k0.sc.App;
+using com.mirle.ibg3k0.sc.Common;
 using com.mirle.ibg3k0.sc.Data.SECS;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.Data.VO.Interface;
 using com.mirle.ibg3k0.sc.ObjectRelay;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,6 +24,32 @@ namespace com.mirle.ibg3k0.sc
         public event EventHandler<string> VehicleEntry;
         public string CurrentRequestVhID { get; private set; }
         public List<ControlZoneInfo> ControlZone { get; private set; }
+        public AADDRESS EntrySectionToAdrObj { get; set; }
+        public Stopwatch LastRequestTime { get; private set; } = new Stopwatch();
+        public Stopwatch StartPausedContinuePassTime { get; private set; } = new Stopwatch();
+        public int CurrentContinuePassTimes { get; private set; } = 0;
+
+        public void RestartRequestTime()
+        {
+            LastRequestTime.Restart();
+        }
+        public void ResetContinuePassTimes()
+        {
+            CurrentContinuePassTimes = 0;
+        }
+        public void AddContinuePassTimes()
+        {
+            CurrentContinuePassTimes++;
+        }
+        public void RestartStartPausedContinuePassTimeWhenNoRunning()
+        {
+            if (!StartPausedContinuePassTime.IsRunning)
+                StartPausedContinuePassTime.Restart();
+        }
+        public void ResetStartPausedContinuePassTime()
+        {
+            StartPausedContinuePassTime.Reset();
+        }
 
         private void onSectinoLeave(string vh_id)
         {
@@ -69,6 +97,16 @@ namespace com.mirle.ibg3k0.sc
         {
             ControlZone = controlZone;
         }
+        public void setEntrySectionToAdrObj(List<ASECTION> sections, List<AADDRESS> addresses)
+        {
+            ASECTION entry_section_obj = sections.Where(section => SCUtility.isMatche(section.SEC_ID, RealEntrySectionID)).FirstOrDefault();
+            if (entry_section_obj == null) return;
+            AADDRESS entrySectionToAdrObj = addresses.Where(address => SCUtility.isMatche(address.ADR_ID, entry_section_obj.TO_ADR_ID)).FirstOrDefault();
+            if (entrySectionToAdrObj == null) return;
+
+            EntrySectionToAdrObj = entrySectionToAdrObj;
+        }
+
         public List<string> GetBlockZoneDetailSectionIDs()
         {
             if (BlockZoneDetailSectionIDs == null)

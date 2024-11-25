@@ -99,7 +99,7 @@ namespace com.mirle.ibg3k0.sc.Service
                 if (vh == null) return;
                 scApp.VehicleBLL.DoIdleVehicleHandle_NoAction(vh.VEHICLE_ID);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Error(ex, "Exception:");
             }
@@ -2742,7 +2742,16 @@ namespace com.mirle.ibg3k0.sc.Service
                     {
                         return false;
                     }
-
+                    block_master.RestartRequestTime();
+                    //確認目前在要的路段，是否有同一組的合流路段也正在要求中
+                    //如果有的話，則確認是否該路段已經連續給過多次
+                    //如果是的話，則暫時不再給予該路段通行權
+                    if (AuthorizeVehiclesFromOtherSegments(block_master))
+                    {
+                        block_master.RestartStartPausedContinuePassTimeWhenNoRunning();
+                        return false;
+                    }
+                    block_master.ResetStartPausedContinuePassTime();
                     foreach (var detail in block_detail_section)
                     {
                         //var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnoughOld(request_block_vh, detail);
@@ -2776,6 +2785,7 @@ namespace com.mirle.ibg3k0.sc.Service
 
                             if (!SCUtility.isEmpty(result.VehicleID))
                                 Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
+                            block_master.ResetContinuePassTimes();
                             return false;
                         }
                     }
@@ -2788,9 +2798,29 @@ namespace com.mirle.ibg3k0.sc.Service
                     }
                     block_master.BlockReserve(vhID);
                     request_block_vh.CurrentRequestBlockID = "";
+                    block_master.AddContinuePassTimes();
                     return true;
                 }
             }
+        }
+        const int RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS = 5_000;
+        const int MAX_ALLOW_CONTINUE_PASS_TIMES = 5_000;
+        const int MAX_ALLOW_AUTHORIZE_VH_PASS_FROM_ORTHER_SECTION_TIME_MS = 60_000;
+        private bool AuthorizeVehiclesFromOtherSegments(ABLOCKZONEMASTER block_master)
+        {
+            AADDRESS to_adr = block_master.EntrySectionToAdrObj;
+            if (to_adr == null) return false;
+            var associated_block_master = to_adr.AssociatedBlockMaster;
+            if (associated_block_master == null || associated_block_master.Count() != 2)
+                return false;
+            var other_block_master = associated_block_master.Where(master => master != block_master).FirstOrDefault();
+            if (other_block_master.LastRequestTime.ElapsedMilliseconds > RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS)
+                return false;
+            if (block_master.CurrentContinuePassTimes < MAX_ALLOW_CONTINUE_PASS_TIMES)
+                return false;
+            if (block_master.StartPausedContinuePassTime.ElapsedMilliseconds > MAX_ALLOW_AUTHORIZE_VH_PASS_FROM_ORTHER_SECTION_TIME_MS)
+                return false;
+            return true;
         }
 
         const int MAX_FIND_ENTRY_SEGMENT_COUNT = 3;

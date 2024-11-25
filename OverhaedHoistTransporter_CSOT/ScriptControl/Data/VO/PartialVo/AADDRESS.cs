@@ -8,6 +8,9 @@ using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using com.mirle.ibg3k0.sc.BLL;
 using System.Collections;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using com.mirle.ibg3k0.sc.Common;
 
 namespace com.mirle.ibg3k0.sc
 {
@@ -16,7 +19,7 @@ namespace com.mirle.ibg3k0.sc
         private const int BIT_INDEX_CONTROL = 1;
         private const int BIT_INDEX_PORT = 2;
         private const int BIT_INDEX_SEGMENT = 5;
-
+        public ReadOnlyCollection<ABLOCKZONEMASTER> AssociatedBlockMaster = null;
         public Boolean[] AddressTypeFlags { get; set; }
         public string[] SegmentIDs { get; set; }
 
@@ -94,5 +97,23 @@ namespace com.mirle.ibg3k0.sc
 
             }
         }
+
+        internal void SetAssociatedBlockMasterAtMergePoint(List<ABLOCKZONEMASTER> blockZoneMasters, List<ASECTION> sections)
+        {
+            //取得該Address所屬的BlockMaster
+            AssociatedBlockMaster = new ReadOnlyCollection<ABLOCKZONEMASTER>(blockZoneMasters.Where(block => IsAddressBlockZoneMasterEntrySecToAdr(block, sections)).ToList());
+        }
+        private bool IsAddressBlockZoneMasterEntrySecToAdr(ABLOCKZONEMASTER blockZoneMaster, List<ASECTION> sections)
+        {
+            string real_entry_sec_id = blockZoneMaster.RealEntrySectionID;
+            ASECTION entry_sec_obj = sections.Where(s => SCUtility.isMatche(s.SEC_ID, real_entry_sec_id)).FirstOrDefault();
+            if (entry_sec_obj == null)
+                return false;
+            if (!SCUtility.isMatche(entry_sec_obj.TO_ADR_ID, this.ADR_ID))
+                return false;
+            return true;
+        }
+
+
     }
 }
