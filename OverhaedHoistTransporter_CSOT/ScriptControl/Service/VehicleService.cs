@@ -2804,17 +2804,16 @@ namespace com.mirle.ibg3k0.sc.Service
             }
         }
         const int RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS = 5_000;
-        const int MAX_ALLOW_CONTINUE_PASS_TIMES = 5_000;
+        const int MAX_ALLOW_CONTINUE_PASS_TIMES = 5;
         const int MAX_ALLOW_AUTHORIZE_VH_PASS_FROM_ORTHER_SECTION_TIME_MS = 60_000;
         private bool AuthorizeVehiclesFromOtherSegments(ABLOCKZONEMASTER block_master)
         {
             AADDRESS to_adr = block_master.EntrySectionToAdrObj;
             if (to_adr == null) return false;
             var associated_block_master = to_adr.AssociatedBlockMaster;
-            if (associated_block_master == null || associated_block_master.Count() != 2)
-                return false;
-            var other_block_master = associated_block_master.Where(master => master != block_master).FirstOrDefault();
-            if (other_block_master.LastRequestTime.ElapsedMilliseconds > RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS)
+            //if (associated_block_master == null || associated_block_master.Count() != 2)
+            //    return false;
+            if (!HasOrtherBlockMasterRequesting(associated_block_master, block_master))
                 return false;
             if (block_master.CurrentContinuePassTimes < MAX_ALLOW_CONTINUE_PASS_TIMES)
                 return false;
@@ -2822,7 +2821,18 @@ namespace com.mirle.ibg3k0.sc.Service
                 return false;
             return true;
         }
-
+        private bool HasOrtherBlockMasterRequesting(ReadOnlyCollection<ABLOCKZONEMASTER> associatedBlockMaster, ABLOCKZONEMASTER currentReqBlockMaster)
+        {
+            foreach (var block_zone_master in associatedBlockMaster)
+            {
+                if (block_zone_master == currentReqBlockMaster) continue;
+                if (block_zone_master.LastRequestTime.ElapsedMilliseconds > RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         const int MAX_FIND_ENTRY_SEGMENT_COUNT = 3;
         private (bool isEnough, AVEHICLE avoidVh) TryCheckWillEntrySegmentCapacityEnough(AVEHICLE vh, string req_block_id)
         {
