@@ -148,7 +148,8 @@ namespace com.mirle.ibg3k0.sc.Scheduler
             //{
             //    scApp.CMDBLL.RemoteHCMD_MCSByBatch(hcmd_mcs_list); ;
             //}
-            scApp.CMDBLL.RemoteHCMD_MCSBeforeNMonthByBatch(2);
+            //scApp.CMDBLL.RemoteHCMD_MCSBeforeNMonthByBatch(2);
+            scApp.CMDBLL.RemoteHCMD_MCSBeforeNMonthByBatch();
         }
         private void DeleteHCMD_OHTC()
         {

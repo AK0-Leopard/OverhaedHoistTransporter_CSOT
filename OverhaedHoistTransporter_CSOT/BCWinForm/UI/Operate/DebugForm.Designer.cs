@@ -356,6 +356,7 @@
             this.label83 = new System.Windows.Forms.Label();
             this.label81 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection = new System.Windows.Forms.CheckBox();
             this.uctlButton2 = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.btn_close_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
             this.btn_open_tcp_port = new com.mirle.ibg3k0.bc.winform.UI.Components.uctlButton();
@@ -1061,6 +1062,7 @@
             // tabPage1
             // 
             this.tabPage1.AutoScroll = true;
+            this.tabPage1.Controls.Add(this.cb_IsOpenAuthorizeVehiclesFromOtherSection);
             this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.label72);
             this.tabPage1.Controls.Add(this.numIdleVhWaitTime);
@@ -1094,7 +1096,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(1214, 313);
+            this.label12.Location = new System.Drawing.Point(1214, 345);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(218, 22);
             this.label12.TabIndex = 4;
@@ -1103,7 +1105,7 @@
             // label72
             // 
             this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(1173, 345);
+            this.label72.Location = new System.Drawing.Point(1173, 377);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(178, 22);
             this.label72.TabIndex = 4;
@@ -1116,7 +1118,7 @@
             0,
             0,
             0});
-            this.numIdleVhWaitTime.Location = new System.Drawing.Point(1099, 307);
+            this.numIdleVhWaitTime.Location = new System.Drawing.Point(1099, 339);
             this.numIdleVhWaitTime.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -1129,7 +1131,7 @@
             // 
             // num_vhCountLimit
             // 
-            this.num_vhCountLimit.Location = new System.Drawing.Point(1099, 343);
+            this.num_vhCountLimit.Location = new System.Drawing.Point(1099, 375);
             this.num_vhCountLimit.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -4416,6 +4418,18 @@
             this.label79.TabIndex = 53;
             this.label79.Text = "Max Allow Action Time Second:";
             // 
+            // cb_IsOpenAuthorizeVehiclesFromOtherSection
+            // 
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.AutoSize = true;
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.Location = new System.Drawing.Point(1099, 309);
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.Name = "cb_IsOpenAuthorizeVehiclesFromOtherSection";
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.Size = new System.Drawing.Size(239, 26);
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.TabIndex = 63;
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.Text = "開啟合流路口輪流通行";
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.UseVisualStyleBackColor = true;
+            this.cb_IsOpenAuthorizeVehiclesFromOtherSection.CheckedChanged += new System.EventHandler(this.cb_IsOpenAuthorizeVehiclesFromOtherSection_CheckedChanged);
+            // 
             // uctlButton2
             // 
             this.uctlButton2.Location = new System.Drawing.Point(828, 202);
@@ -5112,5 +5126,6 @@
         private System.Windows.Forms.Label label72;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.NumericUpDown numIdleVhWaitTime;
+        private System.Windows.Forms.CheckBox cb_IsOpenAuthorizeVehiclesFromOtherSection;
     }
 }

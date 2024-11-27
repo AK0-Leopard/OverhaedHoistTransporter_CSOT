@@ -2456,10 +2456,11 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool isOpenAdjustmentParkingZone = false;
         public static bool isOpenPortGroupLimit = true;
         public static bool isOpenBlockReleaseCheckFun = false;
-        public static bool isOpenDoubleCheckBlockReqFun = false;
+        public static bool isOpenDoubleCheckBlockReqFun = true;
         public static bool isOpenID132PositionCheck = true;
         public static bool IsOpneChangeGuideSection = true;
         public static bool IsOpenZoneCapacityControl = true;
+        public static bool IsOpenAuthorizeVehiclesFromOtherSection = true;
 
     }
 }

@@ -25,13 +25,13 @@ namespace com.mirle.ibg3k0.sc
         public string CurrentRequestVhID { get; private set; }
         public List<ControlZoneInfo> ControlZone { get; private set; }
         public AADDRESS EntrySectionToAdrObj { get; set; }
-        public Stopwatch LastRequestTime { get; private set; } = new Stopwatch();
+        public Stopwatch LastRequestFailTime { get; private set; } = new Stopwatch();
         public Stopwatch StartPausedContinuePassTime { get; private set; } = new Stopwatch();
         public int CurrentContinuePassTimes { get; private set; } = 0;
 
-        public void RestartRequestTime()
+        public void RestartRequestFailTime()
         {
-            LastRequestTime.Restart();
+            LastRequestFailTime.Restart();
         }
         public void ResetContinuePassTimes()
         {

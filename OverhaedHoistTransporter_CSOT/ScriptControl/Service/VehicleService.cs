@@ -35,6 +35,7 @@ using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using KingAOP;
 using Mirle.AK0.Hlt.Utils;
+using Mirle.Protos.ReserveModule;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
@@ -50,6 +51,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using static com.mirle.ibg3k0.sc.App.SCAppConstants;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace com.mirle.ibg3k0.sc.Service
 {
@@ -2655,6 +2657,7 @@ namespace com.mirle.ibg3k0.sc.Service
             }
             return canBlockPass;
         }
+        const string DUPLICATE_CONST = "Duplicate";
         public bool ProcessBlockReqByReserveModule(BCFApplication bcfApp, AVEHICLE request_block_vh, string req_block_id)
         {
             string vhID = request_block_vh.VEHICLE_ID;
@@ -2742,15 +2745,17 @@ namespace com.mirle.ibg3k0.sc.Service
                     {
                         return false;
                     }
-                    block_master.RestartRequestTime();
                     //確認目前在要的路段，是否有同一組的合流路段也正在要求中
                     //如果有的話，則確認是否該路段已經連續給過多次
                     //如果是的話，則暫時不再給予該路段通行權
-                    if (AuthorizeVehiclesFromOtherSegments(block_master))
+                    if (AuthorizeVehiclesFromOtherSection(block_master))
                     {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"Access denied due to exceeding consecutive pass limit({MAX_ALLOW_CONTINUE_PASS_TIMES} times)");
                         block_master.RestartStartPausedContinuePassTimeWhenNoRunning();
                         return false;
                     }
+                    bool is_duplicate_request_success = false;
                     block_master.ResetStartPausedContinuePassTime();
                     foreach (var detail in block_detail_section)
                     {
@@ -2785,9 +2790,11 @@ namespace com.mirle.ibg3k0.sc.Service
 
                             if (!SCUtility.isEmpty(result.VehicleID))
                                 Task.Run(() => scApp.VehicleBLL.whenVhObstacle(result.VehicleID, vhID));
-                            block_master.ResetContinuePassTimes();
+                            block_master.RestartRequestFailTime();
                             return false;
                         }
+                        if (!is_duplicate_request_success)
+                            is_duplicate_request_success = result.Description.Contains(DUPLICATE_CONST);
                     }
                     foreach (var detail in block_detail_section)
                     {
@@ -2798,16 +2805,40 @@ namespace com.mirle.ibg3k0.sc.Service
                     }
                     block_master.BlockReserve(vhID);
                     request_block_vh.CurrentRequestBlockID = "";
-                    block_master.AddContinuePassTimes();
+                    AddAndResetContinuePassTimes(block_master, is_duplicate_request_success);
                     return true;
                 }
             }
         }
+        private void AddAndResetContinuePassTimes(ABLOCKZONEMASTER blockZoneMaster, bool isDuplicateRequestSuccess)
+        {
+            if (!isDuplicateRequestSuccess)
+                blockZoneMaster.AddContinuePassTimes();
+            AADDRESS to_adr = blockZoneMaster.EntrySectionToAdrObj;
+            if (to_adr == null) return;
+            var associated_block_master = to_adr.AssociatedBlockMaster;
+            if (associated_block_master == null || !associated_block_master.Any())
+                return;
+            foreach (var relation_block_master in associated_block_master)
+            {
+                if (relation_block_master == blockZoneMaster)
+                    continue;
+                relation_block_master.ResetContinuePassTimes();
+            }
+        }
+
         const int RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS = 5_000;
         const int MAX_ALLOW_CONTINUE_PASS_TIMES = 5;
         const int MAX_ALLOW_AUTHORIZE_VH_PASS_FROM_ORTHER_SECTION_TIME_MS = 60_000;
-        private bool AuthorizeVehiclesFromOtherSegments(ABLOCKZONEMASTER block_master)
+        private bool AuthorizeVehiclesFromOtherSection(ABLOCKZONEMASTER block_master)
         {
+            if (!DebugParameter.IsOpenAuthorizeVehiclesFromOtherSection)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"IsOpenAuthorizeVehiclesFromOtherSection:{DebugParameter.IsOpenAuthorizeVehiclesFromOtherSection}");
+                return false;
+            }
+
             AADDRESS to_adr = block_master.EntrySectionToAdrObj;
             if (to_adr == null) return false;
             var associated_block_master = to_adr.AssociatedBlockMaster;
@@ -2816,7 +2847,11 @@ namespace com.mirle.ibg3k0.sc.Service
             if (!HasOrtherBlockMasterRequesting(associated_block_master, block_master))
                 return false;
             if (block_master.CurrentContinuePassTimes < MAX_ALLOW_CONTINUE_PASS_TIMES)
+            {
                 return false;
+            }
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"block master entry section:{block_master.ENTRY_SEC_ID} continue pass times is over {MAX_ALLOW_CONTINUE_PASS_TIMES}");
             if (block_master.StartPausedContinuePassTime.ElapsedMilliseconds > MAX_ALLOW_AUTHORIZE_VH_PASS_FROM_ORTHER_SECTION_TIME_MS)
                 return false;
             return true;
@@ -2826,8 +2861,11 @@ namespace com.mirle.ibg3k0.sc.Service
             foreach (var block_zone_master in associatedBlockMaster)
             {
                 if (block_zone_master == currentReqBlockMaster) continue;
-                if (block_zone_master.LastRequestTime.ElapsedMilliseconds > RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS)
+                if (block_zone_master.LastRequestFailTime.IsRunning &&
+                    block_zone_master.LastRequestFailTime.ElapsedMilliseconds < RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS)
                 {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"Has orther block entry section, last request time over {RECENT_RIGHT_OF_WAY_REQUEST_THRESHOLD_TIME_MS}sec,block entry section id:{block_zone_master.ENTRY_SEC_ID}");
                     return true;
                 }
             }

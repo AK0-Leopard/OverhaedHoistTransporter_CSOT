@@ -48,6 +48,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_isUsingID132PositionCheck.Checked = DebugParameter.isOpenID132PositionCheck;
             cb_isOpenAutoChangeGuide.Checked = DebugParameter.IsOpneChangeGuideSection;
             cb_openSegmentEnoughControl.Checked = DebugParameter.IsOpenZoneCapacityControl;
+            cb_IsOpenAuthorizeVehiclesFromOtherSection.Checked = DebugParameter.IsOpenAuthorizeVehiclesFromOtherSection;
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
@@ -1721,6 +1722,12 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void numIdleVhWaitTime_ValueChanged(object sender, EventArgs e)
         {
             sc.App.SystemParameter.setAllowIdleTime_ms((int)numIdleVhWaitTime.Value);
+        }
+
+        private void cb_IsOpenAuthorizeVehiclesFromOtherSection_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.IsOpenAuthorizeVehiclesFromOtherSection = cb_IsOpenAuthorizeVehiclesFromOtherSection.Checked;
+
         }
     }
 }
