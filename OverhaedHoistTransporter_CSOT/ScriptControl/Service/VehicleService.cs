@@ -279,10 +279,11 @@ namespace com.mirle.ibg3k0.sc.Service
                    Data: $"Over {AVEHICLE.MAX_STATUS_REQUEST_FAIL_TIMES} times request status fail, begin restart tcpip server port:{port_num}...",
                    VehicleID: vh.VEHICLE_ID,
                    CarrierID: vh.CST_ID);
+                vh.StopTcpIpConnection(scApp.getBCFApplication());
 
-                stopVehicleTcpIpServer(vh);
-                SpinWait.SpinUntil(() => false, 2000);
-                startVehicleTcpIpServer(vh);
+                //stopVehicleTcpIpServer(vh);
+                //SpinWait.SpinUntil(() => false, 2000);
+                //startVehicleTcpIpServer(vh);
             }
             catch (Exception ex)
             {
