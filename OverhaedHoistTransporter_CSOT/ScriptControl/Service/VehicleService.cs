@@ -490,8 +490,8 @@ namespace com.mirle.ibg3k0.sc.Service
                 byte[] vh_Serialize = BLL.VehicleBLL.Convert2GPB_VehicleInfo(vh);
                 RecoderVehicleObjInfoLog(vh_id, vh_Serialize);
 
-                scApp.getNatsManager().PublishAsync
-                    (string.Format(SCAppConstants.NATS_SUBJECT_VH_INFO_0, vh.VEHICLE_ID.Trim()), vh_Serialize);
+                //scApp.getNatsManager().PublishAsync
+                //    (string.Format(SCAppConstants.NATS_SUBJECT_VH_INFO_0, vh.VEHICLE_ID.Trim()), vh_Serialize);
 
 
                 //var vh_Serialize = ZeroFormatter.ZeroFormatterSerializer.Serialize(vh);
