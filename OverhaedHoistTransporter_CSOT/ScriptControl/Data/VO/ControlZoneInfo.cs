@@ -106,12 +106,13 @@ namespace com.mirle.ibg3k0.sc.Data.VO
         public bool IsInControlZone(App.SCApplication app, AVEHICLE vh, bool IsIncludeReserved)
         {
             Point p = vh.Point;
-            if (Scope.Count != 4)
-            {
-                return false;
-            }
+            //if (Scope.Count < 4)
+            //{
+            //    return false;
+            //}
             //1.確認位置是否在範圍內
-            if (IsControlZone(p, Scope[0], Scope[1], Scope[2], Scope[3]))
+            //if (IsControlZone(p, Scope[0], Scope[1], Scope[2], Scope[3]))
+            if (IsPointInPolygon(p, Scope))
             {
                 return true;
             }
@@ -129,6 +130,64 @@ namespace com.mirle.ibg3k0.sc.Data.VO
                     }
                 }
             }
+            return false;
+        }
+        public static bool IsPointInPolygon(Point point, List<Point> vertices)
+        {
+            int x = point.X;
+            int y = point.Y;
+
+            int numVertices = vertices.Count;
+            bool isInside = false;
+
+            for (int i = 0, j = numVertices - 1; i < numVertices; j = i++)
+            {
+                Point pi = vertices[i];
+                Point pj = vertices[j];
+
+                double xi = pi.X, yi = pi.Y;
+                double xj = pj.X, yj = pj.Y;
+
+                // 检查射线是否穿过边
+                bool intersect = ((yi > y) != (yj > y)) &&
+                                 (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+                // 检查点是否在边上
+                if (IsPointOnLineSegment(x, y, xi, yi, xj, yj))
+                {
+                    return true; // 点在边上
+                }
+
+                if (intersect)
+                {
+                    isInside = !isInside;
+                }
+            }
+
+            return isInside;
+        }
+        private static bool IsPointOnLineSegment(double px, double py, double x1, double y1, double x2, double y2)
+        {
+            // 检查是否在线段上
+            double minX = Math.Min(x1, x2);
+            double maxX = Math.Max(x1, x2);
+            double minY = Math.Min(y1, y2);
+            double maxY = Math.Max(y1, y2);
+
+            // 检查点是否在 x 和 y 的范围内
+            if (px >= minX && px <= maxX && py >= minY && py <= maxY)
+            {
+                // 计算斜率
+                double dx = x2 - x1;
+                double dy = y2 - y1;
+                double crossProduct = (px - x1) * dy - (py - y1) * dx;
+
+                if (Math.Abs(crossProduct) < 1e-10)
+                {
+                    return true; // 点在边上
+                }
+            }
+
             return false;
         }
         private bool HasIntersection(List<string> list1, List<string> list2)

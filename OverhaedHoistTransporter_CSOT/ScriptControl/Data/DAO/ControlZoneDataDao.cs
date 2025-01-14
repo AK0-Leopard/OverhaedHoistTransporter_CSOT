@@ -47,11 +47,7 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                             select new ControlZoneData
                             {
                                 ID = c.Field<string>("ID"),
-                                Points = GetPoints(c.Field<string>("X1"), c.Field<string>("Y1"),
-                                                   c.Field<string>("X2"), c.Field<string>("Y2"),
-                                                   c.Field<string>("X3"), c.Field<string>("Y3"),
-                                                   c.Field<string>("X4"), c.Field<string>("Y4")
-                                                   ),
+                                Points = GetScope(c.Field<string>("AXIS_GROUP")),
                                 BlockSectionIDs = GetBlockIDs(c.Field<string>("BLOCKIDS")),
                                 VhLimitCount = stringToInt(c.Field<string>("VHLIMITCOUNT"))
                             };
@@ -63,6 +59,37 @@ namespace com.mirle.ibg3k0.sc.Data.DAO
                 throw;
             }
         }
+        List<Point> GetScope(string sAsixGroup)
+        {
+            List<Point> points = new List<Point>();
+            var asix_array = sAsixGroup.Split('#');
+            foreach (var asix in asix_array)
+            {
+                points.Add(StringToPoint(asix));
+            }
+            return points;
+        }
+        Point StringToPoint(string s)
+        {
+            try
+            {
+                s = s.Replace("(", "").Replace(")", "");
+                string[] parts = s.Split(',');
+                if (parts.Length != 2)
+                {
+                    throw new FormatException("Input string is not in the correct format.");
+                }
+
+                int x = int.Parse(parts[0]);
+                int y = int.Parse(parts[1]);
+                return new Point(x, y);
+            }
+            catch (Exception ex)
+            {
+                throw new FormatException("Failed to convert string to Point.", ex);
+            }
+        }
+
         int stringToInt(string value)
         {
             int i_value = 0;
