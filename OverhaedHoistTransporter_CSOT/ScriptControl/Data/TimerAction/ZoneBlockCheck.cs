@@ -155,7 +155,8 @@ namespace com.mirle.ibg3k0.sc.Data.TimerAction
                     var vhs = scApp.VehicleBLL.cache.loadVhs();
                     foreach (var info in control_zone_infos)
                     {
-                        info.RefreshControlZoneSectionVhCount(vhs);
+                        info.RefreshControlZoneSectionVhCount(scApp, vhs);
+                        info.RefreshZoneFullFallOhtList(scApp);
                     }
                 }
                 catch (Exception ex)

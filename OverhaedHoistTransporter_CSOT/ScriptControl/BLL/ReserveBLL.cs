@@ -7,6 +7,7 @@ using Mirle.AK0.Hlt.Utils;
 using Mirle.AK0.Hlt.ReserveSection.Map.ViewModels;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using com.mirle.ibg3k0.sc.Common.Interface;
+using System.Collections.Generic;
 
 namespace com.mirle.ibg3k0.sc.BLL
 {
@@ -207,6 +208,19 @@ namespace com.mirle.ibg3k0.sc.BLL
                 sb.AppendLine($"section id:{reserve_section.SectionID} vh id:{reserve_section.VehicleID}");
             }
             return sb.ToString();
+        }
+
+        public virtual List<string> GetCurrentReserveSectionIDs(string vhID)
+        {
+            StringBuilder sb = new StringBuilder();
+            //var current_reserve_sections = mapAPI.HltReservedSections;
+            var current_reserve_sections = GetUsingReserveModule().GetCurrentReserveSections(vhID);
+            sb.AppendLine("Current reserve section");
+            foreach (var reserve_section in current_reserve_sections)
+            {
+                sb.AppendLine($"section id:{reserve_section.SectionID} vh id:{reserve_section.VehicleID}");
+            }
+            return current_reserve_sections.Select(block => block.SectionID).ToList();
         }
 
 

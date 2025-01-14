@@ -2794,6 +2794,11 @@ namespace com.mirle.ibg3k0.sc.Service
                             block_master.RestartRequestFailTime();
                             return false;
                         }
+                        else
+                        {
+                            //拿到路權後就先預備+1
+                            block_master.ControlZone.ForEach(bk => bk.IncrementVhCount());
+                        }
                         if (!is_duplicate_request_success)
                             is_duplicate_request_success = result.Description.Contains(DUPLICATE_CONST);
                     }
@@ -2927,11 +2932,35 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
                 foreach (var control_zone in blockZoneMaster.ControlZone)
                 {
+                    var hasReserveControlZone = control_zone.HasActiveInterlockZoneReserve();
+                    if (hasReserveControlZone.Has)
+                    {
+                        var vh_current_zones = GetVhCurrentControlZones(vh);
+                        var vh_current_zone = vh_current_zones.Where(zone => zone != control_zone).FirstOrDefault();//找出目前可能在的Zone
+                        if (vh_current_zone == null)
+                            continue;
+                        if (!hasReserveControlZone.ReserveControlZone.Contains(vh_current_zone))
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"vh:{vh.VEHICLE_ID} requset id:{blockZoneMaster.ENTRY_SEC_ID} ,zone:{control_zone.ID} has reserve zone:{string.Join(",", hasReserveControlZone.ReserveControlZone.Select(zone => zone.ID))} ,but vh current zone:{vh_current_zone.ID} not in reserve zone.",
+                               VehicleID: vh.VEHICLE_ID);
+                            return false;
+                        }
+                    }
+
                     if (control_zone.VhCount >= control_zone.VhLimitCount)
                     {
-                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
                            Data: $"vh:{vh.VEHICLE_ID} requset id:{blockZoneMaster.ENTRY_SEC_ID} ,zone capacity not enough. current count:{control_zone.VhCount} (max count:{control_zone.VhLimitCount})",
                            VehicleID: vh.VEHICLE_ID);
+                        control_zone.AddVhToZoneFullFallOhtList(vh);
+
+                        var (OK, vhCurrentControlZone) = IsCanForcePassByZoneFullDeadlockHappend(control_zone, vh);
+                        if (OK)
+                        {
+                            control_zone.AddInterlockZoneReserveTime(vhCurrentControlZone);
+                            continue;
+                        }
                         return false;
                     }
                 }
@@ -2943,6 +2972,60 @@ namespace com.mirle.ibg3k0.sc.Service
                 return false;
             }
         }
+
+        private (bool OK, ControlZoneInfo vhCurrentControlZone) IsCanForcePassByZoneFullDeadlockHappend(ControlZoneInfo NgfullZone, AVEHICLE NgVehicle)
+        {
+            var ng_vh_current_zones = GetVhCurrentControlZones(NgVehicle);
+            var ng_vh_current_zone = ng_vh_current_zones.Where(zone => zone != NgfullZone).FirstOrDefault();
+            if (ng_vh_current_zone == null)
+            {
+                //找不到目前車子所在的Zone，則不進行Deadlock的解除
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                   Data: $"vh:{NgVehicle.VEHICLE_ID} ,can't find vh current zone ,no check can forece pass full zone.",
+                   VehicleID: NgVehicle.VEHICLE_ID);
+                return (false, null);
+            }
+            //目前Ng Vh所在的Zone，是否有別的Zone要過來但也因為Zone Full而無法進入的Vh
+            foreach (var orther_vh_sw in ng_vh_current_zone.ZoneFullFallOhtList)
+            {
+                //看看自己Zone是否有車子也因為這個Zone滿了進不來的
+                if (orther_vh_sw.Key == NgVehicle)
+                {
+                    //如果是自己，則不進行Deadlock的解除
+                    continue;
+                }
+                var orther_vh_current_zones = GetVhCurrentControlZones(orther_vh_sw.Key);
+                var orther_vh_current_zone = orther_vh_current_zones.Where(zone => zone != ng_vh_current_zone).FirstOrDefault();
+                if (orther_vh_current_zone == NgfullZone)
+                {
+                    //代表發生了互鎖，因此要進行解除
+                    //比較兩台在在ZoneFullFallOhtList 要求的時間 找出先要求的那筆
+                    if (!NgfullZone.ZoneFullFallOhtList.TryGetValue(NgVehicle, out var current_zone_request_sw))
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"vh:{NgVehicle.VEHICLE_ID} ,can't find vh current zone request time ,no check can forece pass full zone.",
+                           VehicleID: NgVehicle.VEHICLE_ID);
+                        return (false, null);
+                    }
+
+                    if (current_zone_request_sw.ElapsedMilliseconds > orther_vh_sw.Value.ElapsedMilliseconds)
+                    {
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                            Data: $"vh:{NgVehicle.VEHICLE_ID} ,can force pass full zone:{NgfullZone.ID} ,compared to another waiting OHT:{orther_vh_sw.Key.VEHICLE_ID},request time it is earlier.",
+                            VehicleID: NgVehicle.VEHICLE_ID);
+                        return (true, ng_vh_current_zone);
+                    }
+                }
+            }
+            return (false, null);
+        }
+        private List<ControlZoneInfo> GetVhCurrentControlZones(AVEHICLE NgVehicle)
+        {
+            var control_zone_infos = scApp.getCommObjCacheManager().LoadControlZoneInfo();
+            var ng_vh_current_zones = control_zone_infos.Where(zone => zone.Vhs.Contains(NgVehicle)).ToList();
+            return ng_vh_current_zones;
+        }
+
         private (bool isSuccess, ASEGMENT segment) TryGetNextEntrySegment(AVEHICLE vh, string req_block_id)
         {
             string block_entry_section_id = SCUtility.Trim(req_block_id, true);
