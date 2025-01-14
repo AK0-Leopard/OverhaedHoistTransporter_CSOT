@@ -49,6 +49,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cb_isOpenAutoChangeGuide.Checked = DebugParameter.IsOpneChangeGuideSection;
             cb_openSegmentEnoughControl.Checked = DebugParameter.IsOpenZoneCapacityControl;
             cb_IsOpenAuthorizeVehiclesFromOtherSection.Checked = DebugParameter.IsOpenAuthorizeVehiclesFromOtherSection;
+            cb_ZoneControlForcePassWhenDeadlock.Checked = DebugParameter.IsOpenZoneControlInterlockReleaseFunction;
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
@@ -1728,6 +1729,11 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         {
             DebugParameter.IsOpenAuthorizeVehiclesFromOtherSection = cb_IsOpenAuthorizeVehiclesFromOtherSection.Checked;
 
+        }
+
+        private void cb_ZoneControlForcePassWhenDeadlock_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.IsOpenZoneControlInterlockReleaseFunction = cb_ZoneControlForcePassWhenDeadlock.Checked;
         }
     }
 }

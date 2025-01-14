@@ -2958,7 +2958,7 @@ namespace com.mirle.ibg3k0.sc.Service
                         var (OK, vhCurrentControlZone) = IsCanForcePassByZoneFullDeadlockHappend(control_zone, vh);
                         if (OK)
                         {
-                            control_zone.AddInterlockZoneReserveTime(vhCurrentControlZone);
+                            vhCurrentControlZone.AddInterlockZoneReserveTime(control_zone);
                             continue;
                         }
                         return false;
@@ -2975,6 +2975,10 @@ namespace com.mirle.ibg3k0.sc.Service
 
         private (bool OK, ControlZoneInfo vhCurrentControlZone) IsCanForcePassByZoneFullDeadlockHappend(ControlZoneInfo NgfullZone, AVEHICLE NgVehicle)
         {
+            if (!DebugParameter.IsOpenZoneControlInterlockReleaseFunction)
+            {
+                return (false, null);
+            }
             var ng_vh_current_zones = GetVhCurrentControlZones(NgVehicle);
             var ng_vh_current_zone = ng_vh_current_zones.Where(zone => zone != NgfullZone).FirstOrDefault();
             if (ng_vh_current_zone == null)

@@ -228,6 +228,10 @@ namespace com.mirle.ibg3k0.sc.Data.VO
         }
         public (bool Has, List<ControlZoneInfo> ReserveControlZone) HasActiveInterlockZoneReserve()
         {
+            if (!DebugParameter.IsOpenZoneControlInterlockReleaseFunction)
+            {
+                return (false, null);
+            }
             if (!InterlockZoneReserveTime.Any())
                 return (false, null);
             var in_reserve_time = InterlockZoneReserveTime.Where(pair => pair.Value.ElapsedMilliseconds < 15_000).ToList();
