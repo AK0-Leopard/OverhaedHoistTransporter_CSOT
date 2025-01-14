@@ -506,6 +506,25 @@ namespace com.mirle.ibg3k0.sc.WebAPI
                 return response;
             };
 
+            Post["ConnectionInfo/ThisExist"] = (p) =>
+            {
+                bool isSuccess = true;
+                string result = string.Empty;
+
+                try
+                {
+                    result = "OK";
+                }
+                catch (Exception ex)
+                {
+                    isSuccess = false;
+                    result = "Execption happend!";
+                    logger.Error(ex, "Execption:");
+                }
+                var response = (Response)result;
+                response.ContentType = restfulContentType;
+                return response;
+            };
         }
     }
 }
