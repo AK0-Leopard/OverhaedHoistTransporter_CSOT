@@ -22,7 +22,10 @@
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto">
             <Viewbox Width="{Binding ElementName=ImageWidthSlider, Path=Value}">
-                <Image Source="{Binding MapBitmapSource}"/>
+                <Grid>
+                    <Image Source="{Binding MapBitmapSource}" />
+                    <Image Source="{Binding MapBitmapSource_label}" />
+                </Grid>
             </Viewbox>
         </ScrollViewer>
     </DockPanel>

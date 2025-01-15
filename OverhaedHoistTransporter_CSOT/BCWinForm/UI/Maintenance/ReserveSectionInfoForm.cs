@@ -5,9 +5,12 @@ using Mirle.AK0.Hlt.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace com.mirle.ibg3k0.bc.winform.UI
 {
@@ -22,6 +25,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             //uctlReserveSectionView1.Start(form.BCApp);
             bcApp = _form.BCApp;
             uctlReserveSectionView1.Start(bcApp);
+            uctlReserveSectionView1.RefreshMapBitmapSourceLabel(Drawlabel());
 
             List<string> lstVh = new List<string>();
             lstVh.Add(string.Empty);
@@ -45,6 +49,52 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             cmb_vh_fork_dir.DataSource = Enum.GetValues(typeof(HltDirection)).Cast<HltDirection>();
             cmb_vh_sensor_dir.DataSource = Enum.GetValues(typeof(HltDirection)).Cast<HltDirection>();
             //bcApp.SCApplication.ReserveBLL.ReserveStatusChange += ReserveBLL_ReserveStatusChange;
+        }
+        private BitmapSource Drawlabel()
+        {
+            var bitmap = bcApp.SCApplication.ReserveBLL.GetCurrentReserveInfoMap();
+            var CBSPoints = bcApp.SCApplication.getCommObjCacheManager().LoadControlZoneInfo();
+
+            Bitmap bm = new Bitmap(bitmap.PixelWidth, bitmap.PixelHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            Graphics graphics = Graphics.FromImage(bm);
+            graphics.Clear(System.Drawing.Color.Transparent);
+
+            foreach (var c in CBSPoints)
+            {
+                var tmp = PointConverter(c.Scope.ToArray());
+
+                graphics.DrawPolygon(new System.Drawing.Pen(System.Drawing.Color.Yellow, 5), tmp);
+                //graphics.DrawPolygon(new System.Drawing.Pen(System.Drawing.Color.Yellow, 2), new PointF[]
+                //      { new PointF(50.0F, 50.0F), new PointF(9290, -25350), new PointF(9260,   5.0F), new PointF(9260,  50.0F)});
+            }
+            //bm.MakeTransparent(System.Drawing.Color.Transparent);
+
+            return Convert(bm);
+        }
+        private System.Drawing.PointF[] PointConverter(System.Drawing.Point[] input)
+        {
+            List<System.Drawing.PointF> output = new List<PointF>();
+            foreach (System.Drawing.Point p in input)
+            {
+                var tmpp = bcApp.SCApplication.ReserveBLL.GetImageXY(p);
+                output.Add(new PointF((float)tmpp.X, (float)tmpp.Y));
+            }
+            return output.ToArray();
+        }
+
+        private static BitmapSource Convert(System.Drawing.Bitmap bitmap)
+        {
+            var bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+
+            var bitmapSource = BitmapSource.Create(
+                bitmapData.Width, bitmapData.Height,
+                bitmap.HorizontalResolution, bitmap.VerticalResolution,
+                PixelFormats.Pbgra32, null,
+                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+            bitmap.UnlockBits(bitmapData);
+            return bitmapSource;
         }
 
         private void ReserveBLL_ReserveStatusChange(object sender, EventArgs e)

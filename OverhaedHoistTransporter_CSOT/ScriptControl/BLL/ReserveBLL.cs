@@ -126,6 +126,22 @@ namespace com.mirle.ibg3k0.sc.BLL
             //return mapAPI.MapBitmapSource;
             return GetUsingReserveModule().GetCurrentReserveInfoMap();
         }
+        public System.Windows.Point GetImageXY(System.Drawing.Point input)
+        {
+            var tmp = ConvertToImageXY(input.X, input.Y);
+            tmp.X *= mapAPI.MapBitmapScale;
+            tmp.Y *= mapAPI.MapBitmapScale;
+            tmp.X += mapAPI.MapBitmapBorderWidth;
+            tmp.Y += mapAPI.MapBitmapBorderWidth;
+            return tmp;
+        }
+        public virtual System.Windows.Point ConvertToImageXY(double x, double y)
+        {
+            double x2 = x - mapAPI.RealMapMinX;
+            double y2 = y - mapAPI.RealMapMinY;
+            return new System.Windows.Point(x2, y2);
+        }
+
 
         public byte[] GetCurrentReserveInfoMapByte()
         {

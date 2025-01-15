@@ -71,7 +71,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
 
         #region Display
         private BitmapSource _mapBitmapSource;
-
+        private BitmapSource _mapBitmapSource_label;
 
         public virtual BitmapSource MapBitmapSource
         {
@@ -84,6 +84,21 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
                 if (_mapBitmapSource != value)
                 {
                     _mapBitmapSource = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public virtual BitmapSource MapBitmapSource_label
+        {
+            get
+            {
+                return _mapBitmapSource_label;
+            }
+            set
+            {
+                if (_mapBitmapSource_label != value)
+                {
+                    _mapBitmapSource_label = value;
                     OnPropertyChanged();
                 }
             }
@@ -102,6 +117,10 @@ namespace com.mirle.ibg3k0.bc.winform.UI.Components.WPFComponents
             //Dispatcher.Invoke(() =>
             //{
             //});
+        }
+        public void RefreshMapBitmapSourceLabel(BitmapSource input)
+        {
+            MapBitmapSource_label = input;
         }
 
         #endregion
