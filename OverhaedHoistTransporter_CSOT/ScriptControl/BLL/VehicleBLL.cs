@@ -2010,6 +2010,43 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return false;
             }
         }
+        public bool doTransferCommandFinishWhneNoWayByAbort
+        (string vh_id, string cmd_id, string mcsCmdID, CompleteStatus completeStatus)
+        {
+            try
+            {
+                E_CMD_STATUS ohtc_cmd_status = CompleteStatusToCmdStatus(completeStatus);
+                AVEHICLE vh = scApp.VehicleBLL.getVehicleByID(vh_id);
+                scApp.VehicleBLL.getAndProcPositionReportFromRedis(vh_id);
+                bool is_initail_success = initialVhCommandInfoAndFinishCMD_OHTC(vh, cmd_id, ohtc_cmd_status);
+                if (!is_initail_success)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHx",
+                       Data: $"進行MCS command 改派流程(Abort),mcs cmd id:{mcsCmdID}.result:[初始化vh info與更新命令結束失敗]",
+                       VehicleID: vh_id);
+                    return false;
+                }
+
+                //如果是Command Interrupt Then Return To Queue，在命令結束後，要將該命令改回Queue
+                if (!SCUtility.isEmpty(mcsCmdID))
+                {
+                    ACMD_MCS cmd_mcs = scApp.CMDBLL.getCMD_MCSByID(mcsCmdID);
+                    string hostdest = cmd_mcs.HOSTDESTINATION;
+                    scApp.MapBLL.getAddressID(hostdest, out string to_adr);
+
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHx",
+                       Data: $"進行MCS command 中斷(No Way),mcs cmd id:{mcsCmdID},將該筆命令強制結束",
+                       VehicleID: vh_id);
+                    scApp.TransferService.forceFinishTransferCommand(cmd_mcs, CompleteStatus.CmpStatusChangeGuideFail);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exection:");
+                return false;
+            }
+        }
         private bool initialVhCommandInfoAndFinishCMD_OHTC(AVEHICLE vh, string cmd_id, E_CMD_STATUS ohtc_cmd_status)
         {
             try

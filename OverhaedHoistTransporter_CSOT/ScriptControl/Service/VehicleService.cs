@@ -2725,15 +2725,38 @@ namespace com.mirle.ibg3k0.sc.Service
                     //判斷是否需要進行命令改派，若算出來後不包含在原本行走路徑
                     //代表路徑有變化了就暫時不要給該block的通行權然後去下達cancel
                     //結束後再讓他把命令改回queue(尚未載到貨)、重新再派改該台車(已有載到貨)
-                    bool is_need_change_route = checkGuideSectionHasChange(request_block_vh, block_master.RealEntrySectionID);
-                    if (is_need_change_route)
+                    //bool is_need_change_route = checkGuideSectionHasChange(request_block_vh, block_master.RealEntrySectionID);
+                    //if (is_need_change_route)
+                    //{
+                    //    bool is_interrupt_success = StartProcessCommandInterruptByChangeGuideSection(request_block_vh);
+                    //    if (is_interrupt_success)
+                    //    {
+                    //        return false;
+                    //    }
+                    //}
+
+                    var check_result = checkGuideSectionHasChange(request_block_vh, block_master.RealEntrySectionID);
+                    switch (check_result)
                     {
-                        bool is_interrupt_success = StartProcessCommandInterruptByChangeGuideSection(request_block_vh);
-                        if (is_interrupt_success)
-                        {
+                        case GuideSectionChangeType.IsDiff:
+                            bool is_interrupt_success = StartProcessCommandInterruptByChangeGuideSection(request_block_vh);
+                            if (is_interrupt_success)
+                            {
+                                return false;
+                            }
+                            break;
+                        case GuideSectionChangeType.NoGuideSectionToGo:
+                            bool is_cancel_abort_success = StartProcessCommandInterruptByNoWayToGo(request_block_vh);
+                            if (is_cancel_abort_success)
+                            {
+                                return false;
+                            }
                             return false;
-                        }
+
+
                     }
+
+
                     //var check_segment_capacity_enough_result = TryCheckWillEntrySegmentCapacityEnough(request_block_vh, req_block_id);
                     //if (!check_segment_capacity_enough_result.isEnough)
                     //{
@@ -2816,6 +2839,113 @@ namespace com.mirle.ibg3k0.sc.Service
                 }
             }
         }
+
+        private bool StartProcessCommandInterruptByNoWayToGo(AVEHICLE eqpt)
+        {
+            try
+            {
+                eqpt.IsProcessingGuideChange = true;
+                string excute_ohtc_cmd_id = eqpt.OHTC_CMD;
+                ACMD_OHTC cmd_ohtc = scApp.CMDBLL.getCMD_OHTCByID(excute_ohtc_cmd_id);
+                if (cmd_ohtc == null)
+                    return false;
+                if (cmd_ohtc.INTERRUPTED_REASON.HasValue)
+                {
+                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                       Data: $"欲取消命令cmd:{cmd_ohtc},但由於該命令已是終止中 interrupted:{cmd_ohtc.INTERRUPTED_REASON.Value},故不進行處理",
+                       VehicleID: eqpt.VEHICLE_ID);
+                    return false;
+                }
+                var getResult = getCMDCancelType(eqpt, cmd_ohtc);
+                if (getResult.isSuccess)
+                {
+                    if (cmd_ohtc.IsTransferCmdByMCS)
+                    {
+                        string cmd_mcs_pause_flag = scApp.CMDBLL.GetCmdMCSPauseFlag(cmd_ohtc.CMD_ID_MCS);
+                        //if (SCUtility.isMatche(cmd_mcs_pause_flag, SCAppConstants.YES_FLAG))
+                        if (SCUtility.isMatche(cmd_mcs_pause_flag, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_GUIDE_NO_WAY))
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"欲中斷cmd:{cmd_ohtc},但由於該命令已中斷中,故不再進行處理",
+                               VehicleID: eqpt.VEHICLE_ID);
+                            return true;
+                        }
+                        if (SCUtility.isMatche(cmd_mcs_pause_flag, "0") || SCUtility.isEmpty(cmd_mcs_pause_flag))
+                        {
+                            //not thing...
+                        }
+                        else
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $"欲改派cmd:{cmd_ohtc},但由於該命令已有其他暫停流程 pause flag:{cmd_mcs_pause_flag},故不進行處理",
+                               VehicleID: eqpt.VEHICLE_ID);
+                            return false;
+                        }
+
+                        LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                           Data: $"開始進行 cmd:{cmd_ohtc} 的中斷流程...",
+                           VehicleID: eqpt.VEHICLE_ID);
+                        using (TransactionScope tx = SCUtility.getTransactionScope())
+                        {
+                            using (DBConnection_EF con = DBConnection_EF.GetUContext())
+                            {
+                                //scApp.CMDBLL.updateCMD_MCS_PauseFlag(cmd_ohtc.CMD_ID_MCS, SCAppConstants.YES_FLAG);
+                                scApp.CMDBLL.updateCMD_MCS_PauseFlag(cmd_ohtc.CMD_ID_MCS, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_GUIDE_NO_WAY);
+                                bool is_success = doAbortCommand(eqpt, excute_ohtc_cmd_id, getResult.cancelType); //A0.01
+                                if (is_success)
+                                {
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $" cmd:{cmd_ohtc} 的流程中斷成功",
+                                       VehicleID: eqpt.VEHICLE_ID);
+                                    tx.Complete();
+                                    return true;
+                                }
+                                else
+                                {
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $" cmd:{cmd_ohtc} 的流程中斷失敗",
+                                       VehicleID: eqpt.VEHICLE_ID);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //doAbortCommand(eqpt, excute_ohtc_cmd_id, getResult.cancelType); //A0.01
+                        bool is_success = doAbortCommand(eqpt, excute_ohtc_cmd_id, getResult.cancelType); //A0.01
+                        if (is_success)
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $" cmd:{cmd_ohtc} 的改派流程成功(Only move)",
+                               VehicleID: eqpt.VEHICLE_ID);
+                            return true;
+                        }
+                        else
+                        {
+                            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                               Data: $" cmd:{cmd_ohtc} 的改派流程失敗(Only move)",
+                               VehicleID: eqpt.VEHICLE_ID);
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Exception:");
+                return false;
+            }
+            finally
+            {
+                eqpt.IsProcessingGuideChange = false;
+            }
+        }
+
         private void AddAndResetContinuePassTimes(ABLOCKZONEMASTER blockZoneMaster, bool isDuplicateRequestSuccess)
         {
             if (!isDuplicateRequestSuccess)
@@ -3142,8 +3272,14 @@ namespace com.mirle.ibg3k0.sc.Service
             return (true, OnSegVhs.Last());
         }
 
+        enum GuideSectionChangeType
+        {
+            NoChange,
+            IsDiff,
+            NoGuideSectionToGo
+        }
 
-        private bool checkGuideSectionHasChange(AVEHICLE vh, string requsetSecID)
+        private GuideSectionChangeType checkGuideSectionHasChange(AVEHICLE vh, string requsetSecID)
         {
             try
             {
@@ -3153,12 +3289,12 @@ namespace com.mirle.ibg3k0.sc.Service
                        Data: $"change guide section funcion is close.",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);
-                    return false;
+                    return GuideSectionChangeType.NoChange;
                 }
 
 
                 ASECTION req_sec = scApp.SectionBLL.cache.GetSection(requsetSecID);
-                if (req_sec == null) return false;
+                if (req_sec == null) return GuideSectionChangeType.NoChange;
                 //List<string> original_pass_section_ids = vh.WillPassSectionID;
                 var try_get_current_guide_section = vh.tryGetCurrentGuideSection();
                 //if (original_pass_section_ids == null || original_pass_section_ids.Count == 0)
@@ -3168,7 +3304,7 @@ namespace com.mirle.ibg3k0.sc.Service
                        Data: $"Want to check guide section has change,but wiil pass section is null.",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);
-                    return false;
+                    return GuideSectionChangeType.NoChange;
                 }
                 //string will_pass_final_sec_id = original_pass_section_ids.Last();
                 string will_pass_final_sec_id = try_get_current_guide_section.currentGuideSection.Last();
@@ -3179,7 +3315,7 @@ namespace com.mirle.ibg3k0.sc.Service
                        Data: $"Want to check guide section has change,but final section:{will_pass_final_sec_id} not exist.",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);
-                    return false;
+                    return GuideSectionChangeType.NoChange;
                 }
                 string req_sec_form_adr = req_sec.FROM_ADR_ID;
                 string target_adr = will_pass_final_sec.TO_ADR_ID;
@@ -3194,7 +3330,7 @@ namespace com.mirle.ibg3k0.sc.Service
                            Data: $"Want to check guide section has change,result:[No change].",
                            VehicleID: vh.VEHICLE_ID,
                            CarrierID: vh.CST_ID);
-                        return false;
+                        return GuideSectionChangeType.NoChange;
                     }
                     else
                     {
@@ -3211,11 +3347,11 @@ namespace com.mirle.ibg3k0.sc.Service
 
                         if (DoubleCheckGuideSectionHasChange(vh, try_get_current_guide_section.currentGuideSection, req_sec_form_adr, target_adr))
                         {
-                            return true;
+                            return GuideSectionChangeType.IsDiff;
                         }
                         else
                         {
-                            return false;
+                            return GuideSectionChangeType.NoChange;
                         }
 
                     }
@@ -3226,13 +3362,13 @@ namespace com.mirle.ibg3k0.sc.Service
                        Data: $"Want to check guide section has change,result:[No guide section to go].",
                        VehicleID: vh.VEHICLE_ID,
                        CarrierID: vh.CST_ID);
-                    return false;
+                    return GuideSectionChangeType.NoGuideSectionToGo;
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Exception");
-                return false;
+                return GuideSectionChangeType.NoChange;
             }
         }
 
@@ -5597,8 +5733,15 @@ namespace com.mirle.ibg3k0.sc.Service
                                         (eqpt.VEHICLE_ID, reportqueues, chcek_is_special_cancel_command_result.isSpecial);
                                     break;
                                 case CompleteStatus.CmpStatusAbort:
-                                    isSuccess = scApp.ReportBLL.newReportTransferCommandAbortFinish
-                                        (eqpt.VEHICLE_ID, reportqueues, chcek_is_special_cancel_command_result.isSpecial);
+                                    if (chcek_is_special_cancel_command_result.cancelType == CommandCancelType.GuideNoWayByAbort)
+                                    {
+                                        isSuccess = scApp.ReportBLL.newReportTransferCommandNormalFinish(eqpt.VEHICLE_ID, reportqueues);
+                                    }
+                                    else
+                                    {
+                                        isSuccess = scApp.ReportBLL.newReportTransferCommandAbortFinish
+                                            (eqpt.VEHICLE_ID, reportqueues, chcek_is_special_cancel_command_result.isSpecial);
+                                    }
                                     break;
                                 case CompleteStatus.CmpStatusLoad:
                                 case CompleteStatus.CmpStatusUnload:
@@ -5658,6 +5801,10 @@ namespace com.mirle.ibg3k0.sc.Service
                                 //    isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneCommandShift(eqpt.VEHICLE_ID, cmd_id, completeStatus);
                                 //    break;
                                 case CommandCancelType.InterruptThenToQueue:
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"進行MCS command 命令回Queue,mcs cmd id:{finish_mcs_cmd}...",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
                                     isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneInterruptThenReturnToQueue(eqpt.VEHICLE_ID, cmd_id, completeStatus);
                                     break;
                                 case CommandCancelType.GuideChangeByCancel:
@@ -5677,6 +5824,13 @@ namespace com.mirle.ibg3k0.sc.Service
                                        VehicleID: eqpt.VEHICLE_ID,
                                        CarrierID: eqpt.CST_ID);
                                     isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneGuideChangeByAbort(eqpt.VEHICLE_ID, cmd_id, finish_mcs_cmd, completeStatus);
+                                    break;
+                                case CommandCancelType.GuideNoWayByAbort:
+                                    LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+                                       Data: $"進行MCS command 命令中斷流程,mcs cmd id:{finish_mcs_cmd}...",
+                                       VehicleID: eqpt.VEHICLE_ID,
+                                       CarrierID: eqpt.CST_ID);
+                                    isSuccess &= scApp.VehicleBLL.doTransferCommandFinishWhneNoWayByAbort(eqpt.VEHICLE_ID, cmd_id, finish_mcs_cmd, completeStatus);
                                     break;
                             }
                         }
@@ -6065,6 +6219,17 @@ namespace com.mirle.ibg3k0.sc.Service
                             return (false, CommandCancelType.Normal);
                     }
                 }
+                else if (SCUtility.isMatche(cmd_mcs.PAUSEFLAG, ACMD_MCS.COMMAND_PAUSE_FLAG_COMMAND_GUIDE_NO_WAY))
+                {
+                    if (cmd_mcs.TRANSFERSTATE >= E_TRAN_STATUS.Transferring)
+                    {
+                        return (true, CommandCancelType.GuideNoWayByAbort);
+                    }
+                    else
+                    {
+                        return (true, CommandCancelType.InterruptThenToQueue);
+                    }
+                }
                 else
                 {
                     return (false, CommandCancelType.Normal);
@@ -6084,7 +6249,7 @@ namespace com.mirle.ibg3k0.sc.Service
             InterruptThenToQueue,
             GuideChangeByCancel,
             GuideChangeByAbort,
-
+            GuideNoWayByAbort
         }
 
 

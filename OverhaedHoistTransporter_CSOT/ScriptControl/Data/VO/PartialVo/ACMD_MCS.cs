@@ -23,6 +23,7 @@ namespace com.mirle.ibg3k0.sc
         public const string COMMAND_PAUSE_FLAG_COMMAND_SHIFT = "S";
         public const string COMMAND_PAUSE_FLAG_COMMAND_INTERRUPT_THEN_TO_QUEUE = "I";
         public const string COMMAND_PAUSE_FLAG_COMMAND_CHANGE_GUIDE_SECTION = "C";
+        public const string COMMAND_PAUSE_FLAG_COMMAND_GUIDE_NO_WAY = "N";
         /// <summary>
         /// 1 2 4 8 16 32 64 128
         /// 1 1 1 1 1  1  1  1
