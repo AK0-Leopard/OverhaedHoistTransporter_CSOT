@@ -2746,6 +2746,7 @@ namespace com.mirle.ibg3k0.sc.Service
                             }
                             break;
                         case GuideSectionChangeType.NoGuideSectionToGo:
+                        case GuideSectionChangeType.HasErrorVhOnTargetSegment:
                             bool is_cancel_abort_success = StartProcessCommandInterruptByNoWayToGo(request_block_vh);
                             if (is_cancel_abort_success)
                             {
@@ -3276,7 +3277,8 @@ namespace com.mirle.ibg3k0.sc.Service
         {
             NoChange,
             IsDiff,
-            NoGuideSectionToGo
+            NoGuideSectionToGo,
+            HasErrorVhOnTargetSegment
         }
 
         private GuideSectionChangeType checkGuideSectionHasChange(AVEHICLE vh, string requsetSecID)
@@ -3330,7 +3332,15 @@ namespace com.mirle.ibg3k0.sc.Service
                            Data: $"Want to check guide section has change,result:[No change].",
                            VehicleID: vh.VEHICLE_ID,
                            CarrierID: vh.CST_ID);
-                        return GuideSectionChangeType.NoChange;
+                        //如果有路徑可以到達，但目的地的Segment上有故障車，就一樣不前往
+                        if (HasErrorVhOnSameSegment(will_pass_final_sec))
+                        {
+                            return GuideSectionChangeType.HasErrorVhOnTargetSegment;
+                        }
+                        else
+                        {
+                            return GuideSectionChangeType.NoChange;
+                        }
                     }
                     else
                     {
@@ -3370,6 +3380,23 @@ namespace com.mirle.ibg3k0.sc.Service
                 logger.Error(ex, "Exception");
                 return GuideSectionChangeType.NoChange;
             }
+        }
+
+        private bool HasErrorVhOnSameSegment(ASECTION targetSection)
+        {
+            var segment = scApp.SegmentBLL.cache.GetSegment(targetSection.SEG_NUM);
+            if (segment == null)
+            {
+                return false;
+            }
+            var check_result = segment.HasErrorVhOnSegment(scApp.VehicleBLL.cache);
+            if (!check_result.Has)
+            {
+                return false;
+            }
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleService), Device: DEVICE_NAME_OHx,
+               Data: $"Has error vhs:{check_result.vhIDs} on segment:{targetSection.SEG_NUM}");
+            return true;
         }
 
         private bool DoubleCheckGuideSectionHasChange(AVEHICLE vh, IEnumerable<string> currentGuideSection, string reqSecFormAdr, string targetAdr)

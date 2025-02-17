@@ -9,6 +9,7 @@ using com.mirle.ibg3k0.sc.Data.SECS;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.Data.VO.Interface;
 using com.mirle.ibg3k0.sc.ObjectRelay;
+using Newtonsoft.Json.Bson;
 using NLog;
 using RouteKit;
 using System;
@@ -502,6 +503,13 @@ namespace com.mirle.ibg3k0.sc
                 return values.OrderBy(v => v.distance).Select(v => v.vh).ToList();
             }
             return null;
+        }
+
+        public (bool Has, string vhIDs) HasErrorVhOnSegment(VehicleBLL.Cache cache)
+        {
+            var on_segment_vhs = cache.loadVhsBySegmentID(SEG_NUM);
+
+            return (on_segment_vhs.Any(), string.Join(",", on_segment_vhs.Select(v => v.VEHICLE_ID)));
         }
     }
 

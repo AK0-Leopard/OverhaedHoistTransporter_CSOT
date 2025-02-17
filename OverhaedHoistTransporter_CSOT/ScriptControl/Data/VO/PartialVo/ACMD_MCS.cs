@@ -101,6 +101,11 @@ namespace com.mirle.ibg3k0.sc
             string adr_id = portStationBLL.OperateCatch.getPortStationAdr(HOSTSOURCE);
             return adr_id;
         }
+        public string getDestAdrID(BLL.PortStationBLL portStationBLL)
+        {
+            string adr_id = portStationBLL.OperateCatch.getPortStationAdr(HOSTDESTINATION);
+            return adr_id;
+        }
         public ACMD_OHTC getExcuteCMD_OHTC(BLL.CMDBLL cmdBLL)
         {
             var excuting_ohtc_cmd = cmdBLL.getExcuteCMD_OHTCByMCSID(CMD_ID);

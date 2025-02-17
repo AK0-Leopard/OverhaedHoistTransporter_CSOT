@@ -1083,7 +1083,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                             //由於要避免同時多台車前往同一個Bay/群組進行搬送貨物造成堵塞，
                             //因此加入Port group的管理
                             var chcek_desc_port_group_enough_result = IsPortGroupCarryingCapacityEnough(waitting_excute_mcs_cmd, excute_cmd_mcs);
-                            if (DebugParameter.isOpenPortGroupLimit && !chcek_desc_port_group_enough_result.isEnough)
+                            //if (DebugParameter.isOpenPortGroupLimit && !chcek_desc_port_group_enough_result.isEnough)
+                            if (!chcek_desc_port_group_enough_result.isEnough)
                             {
                                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: "OHx",
                                    Data: $"Cmd ID:{SCUtility.Trim(waitting_excute_mcs_cmd.CMD_ID, true)} source:{SCUtility.Trim(waitting_excute_mcs_cmd.HOSTSOURCE, true)} dest:{SCUtility.Trim(waitting_excute_mcs_cmd.HOSTDESTINATION, true)} will pass excute," +
@@ -1091,10 +1092,17 @@ namespace com.mirle.ibg3k0.sc.BLL
                                 SetTransferCommandNGReason(waitting_excute_mcs_cmd.CMD_ID, chcek_desc_port_group_enough_result.reason);
                                 continue;
                             }
-                            else
+                            var chcek_desc_port_has_error_vh_result = HasErrorVhOnDestSegment(waitting_excute_mcs_cmd);
+                            if (chcek_desc_port_has_error_vh_result.has)
                             {
-                                SetTransferCommandNGReason(waitting_excute_mcs_cmd.CMD_ID, "");
+                                LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: "OHx",
+                                   Data: $"Cmd ID:{SCUtility.Trim(waitting_excute_mcs_cmd.CMD_ID, true)} source:{SCUtility.Trim(waitting_excute_mcs_cmd.HOSTSOURCE, true)} dest:{SCUtility.Trim(waitting_excute_mcs_cmd.HOSTDESTINATION, true)} will pass excute," +
+                                         $"because [{chcek_desc_port_has_error_vh_result.reason}]");
+                                SetTransferCommandNGReason(waitting_excute_mcs_cmd.CMD_ID, chcek_desc_port_has_error_vh_result.reason);
+                                continue;
                             }
+
+                            SetTransferCommandNGReason(waitting_excute_mcs_cmd.CMD_ID, "");
                             //ACMD_MCS excute_cmd = ACMD_MCSs[0];
                             string hostsource = waitting_excute_mcs_cmd.HOSTSOURCE;
                             string hostdest = waitting_excute_mcs_cmd.HOSTDESTINATION;
@@ -1176,7 +1184,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                                     isSuccess &= scApp.CMDBLL.doCreatTransferCommand(vehicleId, waitting_excute_mcs_cmd.CMD_ID, waitting_excute_mcs_cmd.CARRIER_ID,
                                                        cmd_type,
                                                        from_adr,
-                                                       to_adr, waitting_excute_mcs_cmd.PRIORITY_SUM, 0);
+                                                       to_adr,
+                                                       waitting_excute_mcs_cmd.PRIORITY_SUM, 0);
                                     //在找到車子後先把它改成PreInitial，防止Timer再找到該筆命令
                                     if (isSuccess)
                                     {
@@ -1238,6 +1247,26 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
             }
         }
+        private (bool has, string reason) HasErrorVhOnDestSegment(ACMD_MCS wantExcuteMcsCmd)
+        {
+            string destAdr = wantExcuteMcsCmd.getDestAdrID(scApp.PortStationBLL);
+            var dest_sec = scApp.SectionBLL.cache.GetSectionsByToAddress(destAdr);
+            if (dest_sec == null || !dest_sec.Any()) return (false, "");
+
+            var dest_seg = scApp.SegmentBLL.cache.GetSegment(dest_sec.First().SEG_NUM);
+            if (dest_seg == null)
+            {
+                return (false, "");
+            }
+            var check_result = dest_seg.HasErrorVhOnSegment(scApp.VehicleBLL.cache);
+            if (!check_result.Has)
+            {
+                return (false, "");
+            }
+            return (true, $"Has error vhs:{check_result.vhIDs} on segment:{dest_seg.SEG_NUM}");
+        }
+
+
 
         string lastRecordQueueCommandInfo = "";
         private void recordQueueCommandInfo(List<ACMD_MCS> queue_cmd_mcs)
@@ -1346,6 +1375,10 @@ namespace com.mirle.ibg3k0.sc.BLL
 
         private (bool isEnough, string reason) IsPortGroupCarryingCapacityEnough(ACMD_MCS waitting_excute_mcs_cmd, List<ACMD_MCS> excute_cmd_mcs)
         {
+            if (!DebugParameter.isOpenPortGroupLimit)
+            {
+                return (true, "");
+            }
             var get_watting_excute_cmd_group_id_result = waitting_excute_mcs_cmd.tryGetDestPortGroupID(scApp.PortStationBLL);
             if (!get_watting_excute_cmd_group_id_result.isExist)
                 return (true, "");
