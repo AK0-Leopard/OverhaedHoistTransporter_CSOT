@@ -17,6 +17,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace com.mirle.ibg3k0.sc
@@ -452,6 +453,24 @@ namespace com.mirle.ibg3k0.sc
             var vh_linked_node = Vehicles.Find(vh);
             return vh_linked_node.Previous.Value;
         }
+        public List<AVEHICLE> GetVehiclesAfter(AVEHICLE vh)
+        {
+            List<AVEHICLE> vehiclesAfter = new List<AVEHICLE>();
+            if (Vehicles.Count == 0 || !Vehicles.Contains(vh)) return vehiclesAfter;
+
+            var vh_linked_node = Vehicles.Find(vh);
+            var current_node = vh_linked_node.Next;
+
+            while (current_node != null)
+            {
+                vehiclesAfter.Add(current_node.Value);
+                current_node = current_node.Next;
+                SpinWait.SpinUntil(() => false, 1);
+            }
+
+            return vehiclesAfter;
+        }
+
 
         public void put(ASEGMENT newSegmentObject)
         {

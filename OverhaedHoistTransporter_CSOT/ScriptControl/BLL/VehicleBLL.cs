@@ -2715,7 +2715,8 @@ namespace com.mirle.ibg3k0.sc.BLL
         public enum FindTheParkZoneTheWay
         {
             IsOnParkZone,
-            NotOnParkZone
+            NotOnParkZone,
+            HasErrorVhOnSameSegment
         }
         const string BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE = "FIND_THE_PARK_ZONE";
         public void whenVhObstacle(string obstacleVhID, string blockedVhID)
@@ -2742,9 +2743,19 @@ namespace com.mirle.ibg3k0.sc.BLL
                 //        return;
                 //    }
                 //}
+
+                //判斷擋住路的車，前方路段是否有故障車，如果有則不用再找ParkZone直接移到該故障車的位置就好
+                var check_result = CheckForErrorVehicleOnSegment(obstacleVh);
+                if (check_result.Has)
+                {
+                    var workItem3 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, FindTheParkZoneTheWay.HasErrorVhOnSameSegment, obstacleVh, null, check_result.errorVh);
+                    scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem3);
+                    return;
+                }
+
                 if (obstacleVh.IS_PARKING &&
-                    !SCUtility.isEmpty(obstacleVh.PARK_ADR_ID) &&
-                     SCUtility.isMatche(obstacleVh.PARK_ADR_ID, obstacleVh.CUR_ADR_ID))
+                !SCUtility.isEmpty(obstacleVh.PARK_ADR_ID) &&
+                 SCUtility.isMatche(obstacleVh.PARK_ADR_ID, obstacleVh.CUR_ADR_ID))
                 {
                     //ExcuteAndFindParkZoneForDriveAway(obstacleVh);
                     //var workItem2 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, obstacleVh, FindTheParkZoneTheWay.IsOnParkZone);
@@ -2758,6 +2769,36 @@ namespace com.mirle.ibg3k0.sc.BLL
                     scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem3);
                 }
             }
+        }
+
+        private (bool Has, AVEHICLE errorVh) CheckForErrorVehicleOnSegment(AVEHICLE obstacleVh)
+        {
+            ASEGMENT seg = scApp.SegmentBLL.cache.GetSegment(obstacleVh.CUR_SEG_ID);
+            if (seg == null)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+                Data: $"Segment not found for vehicle ID: {obstacleVh.VEHICLE_ID}, Segment ID: {obstacleVh.CUR_SEG_ID}",
+                VehicleID: obstacleVh.VEHICLE_ID,
+                CarrierID: obstacleVh.CST_ID);
+                return (false, null);
+            }
+            var next_vhs_on_seg = seg.GetVehiclesAfter(obstacleVh);
+
+            var next_error_vh = next_vhs_on_seg.Where(vh => vh.IsError).FirstOrDefault();
+            if (next_error_vh == null)
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+                Data: $"No error vehicle found after vehicle ID: {obstacleVh.VEHICLE_ID} on segment ID: {seg.SEG_NUM}",
+                VehicleID: obstacleVh.VEHICLE_ID,
+                CarrierID: obstacleVh.CST_ID);
+                return (false, null);
+            }
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+                Data: $"Error vehicle found after vehicle ID: {obstacleVh.VEHICLE_ID} on segment ID: {seg.SEG_NUM}, Error vehicle ID: {next_error_vh.VEHICLE_ID}",
+                VehicleID: obstacleVh.VEHICLE_ID,
+                CarrierID: obstacleVh.CST_ID);
+
+            return (true, next_error_vh);
         }
 
         public void ExcuteAndFindParkZoneForDriveAway(AVEHICLE obstacleVh, AVEHICLE blockedVh)
@@ -3118,6 +3159,38 @@ namespace com.mirle.ibg3k0.sc.BLL
                 return default(T);
             Google.Protobuf.MessageParser<T> parser = new Google.Protobuf.MessageParser<T>(() => new T());
             return parser.ParseFrom(buf);
+        }
+
+        public void AskParkingToErrorVhPosition(AVEHICLE obstacleVh, AVEHICLE nextVhID)
+        {
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+            Data: $"Starting to move vehicle to the same segment as the error vehicle. Vehicle ID: {obstacleVh.VEHICLE_ID} ,error vh:{nextVhID.VEHICLE_ID}",
+            VehicleID: obstacleVh.VEHICLE_ID,
+            CarrierID: obstacleVh.CST_ID);
+
+            bool isSuccess = true;
+
+            if (SCUtility.isMatche(obstacleVh.CUR_ADR_ID, nextVhID.CUR_ADR_ID))
+            {
+                LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+                Data: $"Vehicle ID: {obstacleVh.VEHICLE_ID} is already at the same address as the error vehicle ID: {nextVhID.VEHICLE_ID}",
+                VehicleID: obstacleVh.VEHICLE_ID,
+                CarrierID: obstacleVh.CST_ID);
+                return;
+            }
+
+            isSuccess &= scApp.CMDBLL.doCreatTransferCommand(obstacleVh.VEHICLE_ID
+                                , string.Empty
+                                , string.Empty
+                                , E_CMD_TYPE.Move_Park
+                                , obstacleVh.CUR_ADR_ID
+                                , nextVhID.CUR_ADR_ID, 0, 0);
+
+            LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
+            Data: $"Attempted to move vehicle ID: {obstacleVh.VEHICLE_ID} to address: {nextVhID.CUR_ADR_ID} where error vehicle ID: {nextVhID.VEHICLE_ID} is located. Result: {isSuccess}",
+            VehicleID: obstacleVh.VEHICLE_ID,
+            CarrierID: obstacleVh.CST_ID);
+
         }
         #endregion Vehicle Object Info
 
