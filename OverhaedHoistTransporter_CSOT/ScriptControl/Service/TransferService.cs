@@ -295,13 +295,13 @@ namespace com.mirle.ibg3k0.sc.Service
         }
 
 
-        public bool forceFinishTransferCommand(ACMD_MCS cmdMCS , ProtocolFormat.OHTMessage.CompleteStatus completeStatus)
+        public bool forceFinishTransferCommand(ACMD_MCS cmdMCS , ProtocolFormat.OHTMessage.CompleteStatus completeStatus ,AVEHICLE vh = null)
         {
             try
             {
 
                 scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(cmdMCS.CMD_ID, E_TRAN_STATUS.Aborted, completeStatus);
-                scApp.ReportBLL.newReportTransferCommandNormalFinish(cmdMCS, null, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
+                scApp.ReportBLL.newReportTransferCommandNormalFinish(cmdMCS, vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
                 scApp.SysExcuteQualityBLL.doCommandFinish(cmdMCS.CMD_ID, completeStatus, E_CMD_STATUS.AbnormalEndByOHTC);
                 return true;
             }

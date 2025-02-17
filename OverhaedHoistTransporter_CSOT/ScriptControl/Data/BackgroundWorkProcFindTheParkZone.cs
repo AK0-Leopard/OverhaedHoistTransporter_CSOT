@@ -69,19 +69,18 @@ namespace com.mirle.ibg3k0.sc.Data
                 App.SCApplication scapp = item.Param[0] as App.SCApplication;
                 BLL.VehicleBLL.FindTheParkZoneTheWay find_the_way = (BLL.VehicleBLL.FindTheParkZoneTheWay)item.Param[1];
                 AVEHICLE obstacleVh = item.Param[2] as AVEHICLE;
-                AVEHICLE on_same_segment_error_vh = item.Param[3] as AVEHICLE;
                 switch (find_the_way)
                 {
                     case BLL.VehicleBLL.FindTheParkZoneTheWay.IsOnParkZone:
                         //scapp.VehicleBLL.ExcuteAndFindParkZoneForDriveAway(obstacleVh);
                         AVEHICLE blockedVh = item.Param[3] as AVEHICLE;
-
                         scapp.VehicleBLL.ExcuteAndFindParkZoneForDriveAway(obstacleVh, blockedVh);
                         break;
                     case BLL.VehicleBLL.FindTheParkZoneTheWay.NotOnParkZone:
                         scapp.VehicleBLL.FindParkZoneOrCycleRunZoneNew(obstacleVh);
                         break;
                     case BLL.VehicleBLL.FindTheParkZoneTheWay.HasErrorVhOnSameSegment:
+                        AVEHICLE on_same_segment_error_vh = item.Param[4] as AVEHICLE;
                         scapp.VehicleBLL.AskParkingToErrorVhPosition(obstacleVh, on_same_segment_error_vh);
                         break;
 

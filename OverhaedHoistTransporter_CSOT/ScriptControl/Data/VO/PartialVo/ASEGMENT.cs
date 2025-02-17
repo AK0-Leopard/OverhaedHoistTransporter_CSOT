@@ -459,12 +459,12 @@ namespace com.mirle.ibg3k0.sc
             if (Vehicles.Count == 0 || !Vehicles.Contains(vh)) return vehiclesAfter;
 
             var vh_linked_node = Vehicles.Find(vh);
-            var current_node = vh_linked_node.Next;
+            var current_node = vh_linked_node.Previous;
 
             while (current_node != null)
             {
                 vehiclesAfter.Add(current_node.Value);
-                current_node = current_node.Next;
+                current_node = current_node.Previous;
                 SpinWait.SpinUntil(() => false, 1);
             }
 
@@ -528,7 +528,9 @@ namespace com.mirle.ibg3k0.sc
         {
             var on_segment_vhs = cache.loadVhsBySegmentID(SEG_NUM);
 
-            return (on_segment_vhs.Any(), string.Join(",", on_segment_vhs.Select(v => v.VEHICLE_ID)));
+            var error_vhs = on_segment_vhs.Where(v => v.IsError).ToList();
+
+            return (error_vhs.Any(), string.Join(",", error_vhs.Select(v => v.VEHICLE_ID)));
         }
     }
 

@@ -2037,7 +2037,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                     LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHx",
                        Data: $"進行MCS command 中斷(No Way),mcs cmd id:{mcsCmdID},將該筆命令強制結束",
                        VehicleID: vh_id);
-                    scApp.TransferService.forceFinishTransferCommand(cmd_mcs, CompleteStatus.CmpStatusChangeGuideFail);
+                    scApp.TransferService.forceFinishTransferCommand(cmd_mcs, CompleteStatus.CmpStatusChangeGuideFail, vh);
                 }
                 return true;
             }
@@ -2748,8 +2748,8 @@ namespace com.mirle.ibg3k0.sc.BLL
                 var check_result = CheckForErrorVehicleOnSegment(obstacleVh);
                 if (check_result.Has)
                 {
-                    var workItem3 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, FindTheParkZoneTheWay.HasErrorVhOnSameSegment, obstacleVh, null, check_result.errorVh);
-                    scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem3);
+                    var workItem4 = new com.mirle.ibg3k0.bcf.Data.BackgroundWorkItem(scApp, FindTheParkZoneTheWay.HasErrorVhOnSameSegment, obstacleVh, null, check_result.errorVh);
+                    scApp.BackgroundWorkProcFindTheParkZone.triggerBackgroundWork(BACK_GROUND_KEY_WORD_FIND_THE_PARK_ZONE, workItem4);
                     return;
                 }
 
@@ -2773,6 +2773,10 @@ namespace com.mirle.ibg3k0.sc.BLL
 
         private (bool Has, AVEHICLE errorVh) CheckForErrorVehicleOnSegment(AVEHICLE obstacleVh)
         {
+            if (!DebugParameter.IsOpenForcedPushVhInSameSegmentWithErrorVh)
+            {
+                return (false, null);
+            }
             ASEGMENT seg = scApp.SegmentBLL.cache.GetSegment(obstacleVh.CUR_SEG_ID);
             if (seg == null)
             {
@@ -3168,9 +3172,12 @@ namespace com.mirle.ibg3k0.sc.BLL
             VehicleID: obstacleVh.VEHICLE_ID,
             CarrierID: obstacleVh.CST_ID);
 
-            bool isSuccess = true;
+            //取的車的current section from adr
+            var current_section = scApp.SectionBLL.cache.GetSection(nextVhID.CUR_SEC_ID);
+            if (current_section == null)
+                return;
 
-            if (SCUtility.isMatche(obstacleVh.CUR_ADR_ID, nextVhID.CUR_ADR_ID))
+            if (SCUtility.isMatche(obstacleVh.CUR_ADR_ID, current_section.FROM_ADR_ID))
             {
                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
                 Data: $"Vehicle ID: {obstacleVh.VEHICLE_ID} is already at the same address as the error vehicle ID: {nextVhID.VEHICLE_ID}",
@@ -3178,13 +3185,13 @@ namespace com.mirle.ibg3k0.sc.BLL
                 CarrierID: obstacleVh.CST_ID);
                 return;
             }
-
+            bool isSuccess = true;
             isSuccess &= scApp.CMDBLL.doCreatTransferCommand(obstacleVh.VEHICLE_ID
                                 , string.Empty
                                 , string.Empty
                                 , E_CMD_TYPE.Move_Park
                                 , obstacleVh.CUR_ADR_ID
-                                , nextVhID.CUR_ADR_ID, 0, 0);
+                                , current_section.FROM_ADR_ID, 0, 0);
 
             LogHelper.Log(logger: logger, LogLevel: LogLevel.Info, Class: nameof(VehicleBLL), Device: "OHxC",
             Data: $"Attempted to move vehicle ID: {obstacleVh.VEHICLE_ID} to address: {nextVhID.CUR_ADR_ID} where error vehicle ID: {nextVhID.VEHICLE_ID} is located. Result: {isSuccess}",

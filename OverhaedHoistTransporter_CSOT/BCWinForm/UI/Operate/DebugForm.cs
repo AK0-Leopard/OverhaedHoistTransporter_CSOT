@@ -45,11 +45,14 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             ck_CycleRunTest.Checked = DebugParameter.IsCycleRun;
             cb_blockReleaseCheckFun.Checked = DebugParameter.isOpenBlockReleaseCheckFun;
             cb_openDoubleCheckBlockReq.Checked = DebugParameter.isOpenDoubleCheckBlockReqFun;
-            cb_isUsingID132PositionCheck.Checked = DebugParameter.isOpenID132PositionCheck;
+            cb_IsOpenCheckTrageSegmentErrorVh.Checked = DebugParameter.IsOpenCheckTrageSegmentErrorVh;
             cb_isOpenAutoChangeGuide.Checked = DebugParameter.IsOpneChangeGuideSection;
             cb_openSegmentEnoughControl.Checked = DebugParameter.IsOpenZoneCapacityControl;
             cb_IsOpenAuthorizeVehiclesFromOtherSection.Checked = DebugParameter.IsOpenAuthorizeVehiclesFromOtherSection;
             cb_ZoneControlForcePassWhenDeadlock.Checked = DebugParameter.IsOpenZoneControlInterlockReleaseFunction;
+            cb_checkForcePushVhOnErrorSeg.Checked = DebugParameter.IsOpenForcedPushVhInSameSegmentWithErrorVh;
+
+
 
             cb_PassObstacleFlagWhenSendContinueRequest.Checked = sc.App.SystemParameter.IsPassObstacleFlagWhenSendContinueRequest;
             cb_isUsingRemoveReserveModule.Checked = sc.App.SystemParameter.IsUsingRemoteReserveModule;
@@ -1700,9 +1703,9 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             lbl_value_reserveModule_LorR.Text = bcApp.SCApplication.ReserveBLL.getReserveMoudleSymbol().ToString();
         }
 
-        private void cb_isUsingID132PositionCheck_CheckedChanged(object sender, EventArgs e)
+        private void cb_IsOpenCheckTrageSegmentErrorVh_CheckedChanged(object sender, EventArgs e)
         {
-            DebugParameter.isOpenID132PositionCheck = cb_isUsingID132PositionCheck.Checked;
+            DebugParameter.IsOpenCheckTrageSegmentErrorVh = cb_IsOpenCheckTrageSegmentErrorVh.Checked;
         }
 
         private void cb_isOpenAutoChangeGuide_CheckedChanged(object sender, EventArgs e)
@@ -1734,6 +1737,12 @@ namespace com.mirle.ibg3k0.bc.winform.UI
         private void cb_ZoneControlForcePassWhenDeadlock_CheckedChanged(object sender, EventArgs e)
         {
             DebugParameter.IsOpenZoneControlInterlockReleaseFunction = cb_ZoneControlForcePassWhenDeadlock.Checked;
+        }
+
+        private void cb_checkForcePushVhOnErrorSeg_CheckedChanged(object sender, EventArgs e)
+        {
+            DebugParameter.IsOpenForcedPushVhInSameSegmentWithErrorVh = cb_checkForcePushVhOnErrorSeg.Checked;
+
         }
     }
 }

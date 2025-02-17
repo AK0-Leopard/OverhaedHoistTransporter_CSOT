@@ -2462,6 +2462,9 @@ namespace com.mirle.ibg3k0.sc.App
         public static bool IsOpenZoneCapacityControl = true;
         public static bool IsOpenAuthorizeVehiclesFromOtherSection = true;
         public static bool IsOpenZoneControlInterlockReleaseFunction = true;
+        public static bool IsOpenCheckTrageSegmentErrorVh = true;
+        public static bool IsOpenForcedPushVhInSameSegmentWithErrorVh = true;
+
 
     }
 }

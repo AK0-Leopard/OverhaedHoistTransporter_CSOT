@@ -1307,8 +1307,14 @@ namespace com.mirle.ibg3k0.sc.Service
                         {
                             bool is_transfer_initial_ready =
                                 scApp.CMDBLL.isTransferStatusReady(cmd.CMD_ID_MCS, ACMD_MCS.COMMAND_STATUS_BIT_INDEX_ENROUTE);
-                            isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
-
+                            if (cmd.CMD_TPYE == E_CMD_TYPE.Unload)
+                            {
+                                isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Transferring(cmd.CMD_ID_MCS);
+                            }
+                            else
+                            {
+                                isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
+                            }
                             if (!is_transfer_initial_ready)
                             {
                                 //isSuccess &= scApp.CMDBLL.updateCMD_MCS_TranStatus2Initial(cmd.CMD_ID_MCS);
@@ -3384,6 +3390,10 @@ namespace com.mirle.ibg3k0.sc.Service
 
         private bool HasErrorVhOnSameSegment(ASECTION targetSection)
         {
+            if (!DebugParameter.IsOpenCheckTrageSegmentErrorVh)
+            {
+                return false;
+            }
             var segment = scApp.SegmentBLL.cache.GetSegment(targetSection.SEG_NUM);
             if (segment == null)
             {
@@ -5762,7 +5772,7 @@ namespace com.mirle.ibg3k0.sc.Service
                                 case CompleteStatus.CmpStatusAbort:
                                     if (chcek_is_special_cancel_command_result.cancelType == CommandCancelType.GuideNoWayByAbort)
                                     {
-                                        isSuccess = scApp.ReportBLL.newReportTransferCommandNormalFinish(eqpt.VEHICLE_ID, reportqueues);
+                                        //not thing...
                                     }
                                     else
                                     {

@@ -14,18 +14,15 @@
 // 2020/07/28    MarkChou       N/A            A0.04   派送命令前，先檢查車輛的ACT_STATUS是否為NoCommand
 //**********************************************************************************
 
-using com.mirle.ibg3k0.bcf.App;
 using com.mirle.ibg3k0.sc.App;
 using com.mirle.ibg3k0.sc.Common;
 using com.mirle.ibg3k0.sc.Data;
 using com.mirle.ibg3k0.sc.Data.DAO;
 using com.mirle.ibg3k0.sc.Data.DAO.EntityFramework;
 using com.mirle.ibg3k0.sc.Data.SECS.CSOT;
-using com.mirle.ibg3k0.sc.Data.ValueDefMapAction;
 using com.mirle.ibg3k0.sc.Data.VO;
 using com.mirle.ibg3k0.sc.ProtocolFormat.OHTMessage;
 using com.mirle.ibg3k0.sc.Service;
-using Mirle.Protos.ReserveModule;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -1093,7 +1090,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                                 SetTransferCommandNGReason(waitting_excute_mcs_cmd.CMD_ID, chcek_desc_port_group_enough_result.reason);
                                 continue;
                             }
-                            var chcek_desc_port_has_error_vh_result = HasErrorVhOnDestSegment(waitting_excute_mcs_cmd);
+                            var chcek_desc_port_has_error_vh_result = HasErrorVhOnSourceOrDestSegment(waitting_excute_mcs_cmd);
                             if (chcek_desc_port_has_error_vh_result.has)
                             {
                                 LogHelper.Log(logger: logger, LogLevel: LogLevel.Debug, Class: nameof(CMDBLL), Device: "OHx",
@@ -1248,25 +1245,56 @@ namespace com.mirle.ibg3k0.sc.BLL
                 }
             }
         }
-        private (bool has, string reason) HasErrorVhOnDestSegment(ACMD_MCS wantExcuteMcsCmd)
+        private (bool has, string reason) HasErrorVhOnSourceOrDestSegment(ACMD_MCS wantExcuteMcsCmd)
         {
-            string destAdr = wantExcuteMcsCmd.getDestAdrID(scApp.PortStationBLL);
-            var dest_sec = scApp.SectionBLL.cache.GetSectionsByToAddress(destAdr);
-            if (dest_sec == null || !dest_sec.Any()) return (false, "");
+            if (!DebugParameter.IsOpenCheckTrageSegmentErrorVh)
+            {
+                return (false, "");
+            }
 
-            var dest_seg = scApp.SegmentBLL.cache.GetSegment(dest_sec.First().SEG_NUM);
-            if (dest_seg == null)
+            bool isSourceOnVehicle = scApp.VehicleBLL.getVehicleByRealID(wantExcuteMcsCmd.HOSTSOURCE) != null;
+            if (isSourceOnVehicle)
             {
-                return (false, "");
+                //nothing thing...
             }
-            var check_result = dest_seg.HasErrorVhOnSegment(scApp.VehicleBLL.cache);
-            if (!check_result.Has)
+            else
             {
-                return (false, "");
+                string host_adr = wantExcuteMcsCmd.getSourceAdrID(scApp.PortStationBLL);
+                var source_check_result = HasErrorVhOnSourceOrDestSegment(host_adr);
+                if (source_check_result.Has)
+                {
+                    return (true, $"Has error vhs:{source_check_result.vhIDs} on source segment:{source_check_result.tatgetSeg}");
+                }
             }
-            return (true, $"Has error vhs:{check_result.vhIDs} on segment:{dest_seg.SEG_NUM}");
+
+            string destAdr = wantExcuteMcsCmd.getDestAdrID(scApp.PortStationBLL);
+            var dest_check_result = HasErrorVhOnSourceOrDestSegment(destAdr);
+            if (dest_check_result.Has)
+            {
+                return (true, $"Has error vhs:{dest_check_result.vhIDs} on dest segment:{dest_check_result.tatgetSeg}");
+            }
+            return (false, "");
         }
 
+        private (bool Has, string tatgetSeg, string vhIDs) HasErrorVhOnSourceOrDestSegment(string tragetAddress)
+        {
+
+            var target_section = scApp.SectionBLL.cache.GetSectionsByToAddress(tragetAddress);
+            if (target_section == null || !target_section.Any())
+                return (false, "", "");
+
+            var target_seg = scApp.SegmentBLL.cache.GetSegment(target_section.First().SEG_NUM);
+            if (target_seg == null)
+            {
+                return (false, "", "");
+            }
+            var check_result = target_seg.HasErrorVhOnSegment(scApp.VehicleBLL.cache);
+            if (!check_result.Has)
+            {
+                return (false, "", "");
+            }
+            return (true, target_seg.SEG_NUM, check_result.vhIDs);
+        }
 
 
         string lastRecordQueueCommandInfo = "";
