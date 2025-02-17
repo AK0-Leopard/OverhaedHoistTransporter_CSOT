@@ -133,6 +133,7 @@ namespace com.mirle.ibg3k0.sc
                 PORT_PRIORITY = this.PORT_PRIORITY,
                 PRIORITY_SUM = this.PRIORITY_SUM,
                 REPLACE = this.REPLACE,
+                COMPLETE_STATUS = this.COMPLETE_STATUS,
             };
         }
         public string DestPortGroupID { get; set; } = "";

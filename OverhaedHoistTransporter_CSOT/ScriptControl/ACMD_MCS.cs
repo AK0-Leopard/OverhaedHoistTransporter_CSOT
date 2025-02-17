@@ -30,5 +30,6 @@ namespace com.mirle.ibg3k0.sc
         public int PORT_PRIORITY { get; set; }
         public int REPLACE { get; set; }
         public int PRIORITY_SUM { get; set; }
+        public Nullable<int> COMPLETE_STATUS { get; set; }
     }
 }

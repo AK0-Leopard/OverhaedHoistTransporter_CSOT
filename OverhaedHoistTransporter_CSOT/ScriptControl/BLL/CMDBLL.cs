@@ -561,7 +561,7 @@ namespace com.mirle.ibg3k0.sc.BLL
             }
             return isSuccess;
         }
-        public bool updateCMD_MCS_TranStatus2Complete(string cmd_id, E_TRAN_STATUS tran_status)
+        public bool updateCMD_MCS_TranStatus2Complete(string cmd_id, E_TRAN_STATUS tran_status, CompleteStatus completeStatus)
         {
             bool isSuccess = true;
             //DBConnection_EF con = DBConnection_EF.GetContext();
@@ -573,6 +573,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                 {
                     cmd.TRANSFERSTATE = tran_status;
                     cmd.COMMANDSTATE = cmd.COMMANDSTATE | ACMD_MCS.COMMAND_STATUS_BIT_INDEX_COMMNAD_FINISH;
+                    cmd.COMPLETE_STATUS = (int)completeStatus;
                     cmd.CMD_FINISH_TIME = DateTime.Now;
                     cmd_mcsDao.update(con, cmd);
                 }
@@ -2474,7 +2475,7 @@ namespace com.mirle.ibg3k0.sc.BLL
                             //if (!SCUtility.isEmpty(cmd.CMD_ID_MCS))
                             if (IsMcsCommandAndExcuting(cmd))
                             {
-                                scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(cmd.CMD_ID_MCS, E_TRAN_STATUS.Aborted);
+                                scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(cmd.CMD_ID_MCS, E_TRAN_STATUS.Aborted, CompleteStatus.CmpStatusForceFinishByOp);
                                 scApp.SysExcuteQualityBLL.doCommandFinish(cmd.CMD_ID_MCS, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
                             }
                         }

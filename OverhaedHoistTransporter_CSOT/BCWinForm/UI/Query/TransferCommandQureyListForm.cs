@@ -108,7 +108,7 @@ namespace com.mirle.ibg3k0.bc.winform.UI
                             mainform.BCApp.SCApplication.VehicleBLL.doTransferCommandFinish(cmd_ohtc.VH_ID, cmd_ohtc.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp);
                             mainform.BCApp.SCApplication.VIDBLL.initialVIDCommandInfo(cmd_ohtc.VH_ID);
                         }
-                        mainform.BCApp.SCApplication.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd.CMD_ID, E_TRAN_STATUS.Aborted);
+                        mainform.BCApp.SCApplication.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd.CMD_ID, E_TRAN_STATUS.Aborted, CompleteStatus.CmpStatusForceFinishByOp);
                         mainform.BCApp.SCApplication.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd.cmd_mcs, excute_cmd_of_vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
                         mainform.BCApp.SCApplication.SysExcuteQualityBLL.doCommandFinish(mcs_cmd.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
                     }

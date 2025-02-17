@@ -1041,7 +1041,7 @@ namespace com.mirle.ibg3k0.sc.Service
                                 {
                                     scApp.VehicleBLL.doTransferCommandFinish(vh.VEHICLE_ID, vh.OHTC_CMD, CompleteStatus.CmpStatusVehicleAbort);
                                     scApp.VIDBLL.initialVIDCommandInfo(vh.VEHICLE_ID);
-                                    scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd_id, E_TRAN_STATUS.Aborted);
+                                    scApp.CMDBLL.updateCMD_MCS_TranStatus2Complete(mcs_cmd_id, E_TRAN_STATUS.Aborted, CompleteStatus.CmpStatusVehicleAbort);
                                     scApp.ReportBLL.newReportTransferCommandNormalFinish(mcs_cmd, vh, sc.Data.SECS.CSOT.SECSConst.CMD_Result_Unsuccessful, null);
                                     scApp.SysExcuteQualityBLL.doCommandFinish(mcs_cmd.CMD_ID, CompleteStatus.CmpStatusForceFinishByOp, E_CMD_STATUS.AbnormalEndByOHTC);
                                 }
