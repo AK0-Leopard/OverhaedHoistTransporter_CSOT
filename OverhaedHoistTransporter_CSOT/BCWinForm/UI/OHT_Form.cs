@@ -467,15 +467,12 @@ namespace com.mirle.ibg3k0.bc.winform.UI
             sc.BLL.CMDBLL.OHTCCommandCheckResult check_result_info = null;
             await Task.Run(() =>
              {
-                 string cmdID = DateTime.Now.ToString("yyyyMMddHHmmssfffff");
-                 scApp.CMDBLL.doCreatMCSCommand(cmdID, "10", "0", cst_id, hostsource, hostdest, "4");
-
-                 //scApp.CMDBLL.doCreatTransferCommand(vehicleId, string.Empty, cst_id,
-                 //                                E_CMD_TYPE.LoadUnload,
-                 //                                from_adr,
-                 //                                to_adr, 0, 0);
-                 //check_result_info = sc.BLL.CMDBLL.getCallContext<sc.BLL.CMDBLL.OHTCCommandCheckResult>
-                 //   (sc.BLL.CMDBLL.CALL_CONTEXT_KEY_WORD_OHTC_CMD_CHECK_RESULT);
+                 scApp.CMDBLL.doCreatTransferCommand(vehicleId, string.Empty, cst_id,
+                                                 E_CMD_TYPE.LoadUnload,
+                                                 from_adr,
+                                                 to_adr, 0, 0);
+                 check_result_info = sc.BLL.CMDBLL.getCallContext<sc.BLL.CMDBLL.OHTCCommandCheckResult>
+                    (sc.BLL.CMDBLL.CALL_CONTEXT_KEY_WORD_OHTC_CMD_CHECK_RESULT);
              });
             if (check_result_info != null && !check_result_info.IsSuccess)
             {
